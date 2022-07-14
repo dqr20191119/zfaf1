@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.wfsb.dao.PhysicalDeviceNameMapper">
+	<select id="searchPhysicalDeviceName" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT id, pdn_cus_number,
+			 		pdn_device_idnty,
+			 		pdn_device_name,
+			 		pdn_remark,
+			 		pdn_crte_user_id,
+			 		TO_CHAR(pdn_crte_time,'YYYY/MM/DD HH24:MI:SS') as pdn_crte_time,
+			 		pdn_updt_user_id,
+			 		TO_CHAR(pdn_updt_time,'YYYY/MM/DD HH24:MI:SS') as pdn_updt_time
+ 			   FROM cds_physical_device_name
+			 <where>
+			 	pdn_cus_number in ('0',#{cusNumber}) 
+			 	<if test="physicalDeviceName.pdnDeviceName!=null and physicalDeviceName.pdnDeviceName!=''">
+			 		and pdn_device_name like concat('%',#{physicalDeviceName.pdnDeviceName},'%' )
+			 	</if>
+			 	<if test="physicalDeviceName.pdnCusNumber!=null and physicalDeviceName.pdnCusNumber!=''">
+			 		AND pdn_cus_number=#{physicalDeviceName.pdnCusNumber}
+			 	</if>
+			 </where>
+	</select>  
+  <update id="updatePart" parameterType="map">
+    update CDS_PHYSICAL_DEVICE_NAME
+    <set>
+      <if test="physicalDeviceName.pdnCusNumber != null">
+        PDN_CUS_NUMBER = #{physicalDeviceName.pdnCusNumber},
+      </if>
+      <if test="physicalDeviceName.pdnDeviceIdnty != null">
+        PDN_DEVICE_IDNTY = #{physicalDeviceName.pdnDeviceIdnty},
+      </if>
+      <if test="physicalDeviceName.pdnDeviceName != null">
+        PDN_DEVICE_NAME = #{physicalDeviceName.pdnDeviceName},
+      </if>
+      <if test="physicalDeviceName.pdnRemark != null">
+        PDN_REMARK = #{physicalDeviceName.pdnRemark},
+      </if>
+      <if test="physicalDeviceName.pdnCrteUserId != null">
+        PDN_CRTE_USER_ID = #{physicalDeviceName.pdnCrteUserId},
+      </if>
+      <if test="physicalDeviceName.pdnCrteTime != null">
+        PDN_CRTE_TIME = TO_CHAR(#{physicalDeviceName.pdnCrteTime},'YYYY/MM/DD HH24:MI:SS'),
+      </if>
+      <if test="physicalDeviceName.pdnUpdtUserId != null">
+        PDN_UPDT_USER_ID = #{physicalDeviceName.pdnUpdtUserId},
+      </if>
+      <if test="physicalDeviceName.pdnUpdtTime != null">
+        PDN_UPDT_TIME =TO_CHAR(#{physicalDeviceName.pdnUpdtTime},'YYYY/MM/DD HH24:MI:SS'),
+      </if>
+    </set>
+    where ID = #{physicalDeviceName.id}
+  </update>
+  
+  <select id="simplePhysicalDeviceName" resultType="java.util.HashMap" 
+	parameterType="java.lang.String">
+		SELECT pdn_device_idnty as "value",
+				   pdn_device_name as "text"
+			 FROM CDS_PHYSICAL_DEVICE_NAME
+			 <where>
+			 	<if test="pdnCusNumber!=null and pdnCusNumber!=''">
+			 		AND PDN_CUS_NUMBER=#{pdnCusNumber}
+			 	</if>
+			 </where> 
+	</select>
+  
+</mapper>

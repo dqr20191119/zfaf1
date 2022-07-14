@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.group.dao.GroupMapper">
+	<!-- 群组管理表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.group.entity.Group">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="GMA_CUS_NUMBER" jdbcType="CHAR" property="gmaCusNumber" />
+		<result column="GMA_GRP_NAME" jdbcType="CHAR" property="gmaGrpName" />
+		<result column="GMA_TYPE_INDC" jdbcType="CHAR" property="gmaTypeIndc" />
+		<result column="GMA_SUB_TYPE_INDC" jdbcType="CHAR" property="gmaSubTypeIndc" />
+		<result column="GMA_START_TIME" jdbcType="TIMESTAMP" property="gmaStartTime" />
+		<result column="GMA_END_TIME" jdbcType="TIMESTAMP" property="gmaEndTime" />
+		<result column="GMA_REMARK" jdbcType="CHAR" property="gmaRemark" />
+		<result column="GMA_CRTE_TIME" jdbcType="TIMESTAMP" property="gmaCrteTime" />
+		<result column="GMA_CRTE_USER_ID" jdbcType="CHAR" property="gmaCrteUserId" />
+		<result column="GMA_UPDT_TIME" jdbcType="TIMESTAMP" property="gmaUpdtTime" />
+		<result column="GMA_UPDT_USER_ID" jdbcType="CHAR" property="gmaUpdtUserId" />
+		<result column="GMA_SHOW_SEQ" jdbcType="DECIMAL" property="gmaShowSeq" />
+		<result column="GMA_USE_RANGE" jdbcType="CHAR" property="gmaUseRange" />
+		<result column="GMA_SHORT_NAME" jdbcType="VARCHAR" property="gmaShortName" />
+		<result column="GMA_PARENT_ID" jdbcType="CHAR" property="gmaParentId" />
+		<result column="GMA_PURPOSE" jdbcType="CHAR" property="gmaPurpose" />
+		<result column="GMA_IS_LEAF" jdbcType="CHAR" property="gmaIsLeaf" />
+		<result column="GMA_CRTE_DEPARTMENT" jdbcType="CHAR" property="gmaCrteDepartment" />
+	</resultMap>
+	
+	<!-- 群组管理表-基础字段列 -->
+	<sql id="Base_Column_List">
+		ID, GMA_CUS_NUMBER, GMA_GRP_NAME, GMA_TYPE_INDC, GMA_SUB_TYPE_INDC, GMA_START_TIME, 
+		GMA_END_TIME, GMA_REMARK, GMA_CRTE_TIME, GMA_CRTE_USER_ID, GMA_UPDT_TIME, GMA_UPDT_USER_ID, 
+		GMA_SHOW_SEQ, GMA_USE_RANGE, GMA_SHORT_NAME, GMA_PARENT_ID, GMA_PURPOSE, GMA_IS_LEAF, 
+		GMA_CRTE_DEPARTMENT
+	</sql>
+	
+	 <update id="updatePart" parameterType="com.cesgroup.prison.group.entity.Group" >
+	    update CDS_GRP_MASTER
+	    <set >
+	      <if test="gmaCusNumber != null  and gmaCusNumber!=''" >
+	        GMA_CUS_NUMBER = #{gmaCusNumber},
+	      </if>
+	      <if test="gmaGrpName != null and gmaGrpName != ''" >
+	        GMA_GRP_NAME = #{gmaGrpName},
+	      </if>
+	      <if test="gmaTypeIndc != null and gmaTypeIndc != ''" >
+	        GMA_TYPE_INDC = #{gmaTypeIndc},
+	      </if>
+	      <if test="gmaSubTypeIndc != null and gmaSubTypeIndc != ''" >
+	        GMA_SUB_TYPE_INDC = #{gmaSubTypeIndc},
+	      </if>
+	      <if test="gmaStartTime != null and gmaStartTime != ''" >
+	        GMA_START_TIME = #{gmaStartTime},
+	      </if>
+	      <if test="gmaEndTime != null and gmaEndTime != ''" >
+	        GMA_END_TIME = #{gmaEndTime},
+	      </if>
+	      <if test="gmaRemark != null and gmaRemark != ''" >
+	        GMA_REMARK = #{gmaRemark},
+	      </if>
+	      <if test="gmaCrteTime != null and gmaCrteTime != ''" >
+	        GMA_CRTE_TIME = #{gmaCrteTime},
+	      </if>
+	      <if test="gmaCrteUserId != null and gmaCrteUserId != ''" >
+	        GMA_CRTE_USER_ID = #{gmaCrteUserId},
+	      </if>
+	      <if test="gmaUpdtTime != null and gmaUpdtTime != ''" >
+	        GMA_UPDT_TIME = #{gmaUpdtTime},
+	      </if>
+	      <if test="gmaUpdtUserId != null and gmaUpdtUserId != ''" >
+	        GMA_UPDT_USER_ID = #{gmaUpdtUserId},
+	      </if>
+	      <if test="gmaShowSeq != null and gmaShowSeq != ''" >
+	        GMA_SHOW_SEQ = #{gmaShowSeq},
+	      </if>
+	      <if test="gmaUseRange != null and gmaUseRange != ''" >
+	        GMA_USE_RANGE = #{gmaUseRange},
+	      </if>
+	      <if test="gmaShortName != null and gmaShortName != ''" >
+	        GMA_SHORT_NAME = #{gmaShortName},
+	      </if>
+	      <if test="gmaParentId != null and gmaParentId != ''" >
+	        GMA_PARENT_ID = #{gmaParentId},
+	      </if>
+	      <if test="gmaPurpose != null and gmaPurpose != ''" >
+	        GMA_PURPOSE = #{gmaPurpose},
+	      </if>
+	      <if test="gmaIsLeaf != null and gmaIsLeaf != ''" >
+	        GMA_IS_LEAF = #{gmaIsLeaf},
+	      </if>
+	      <if test="gmaCrteDepartment != null and gmaCrteDepartment != ''" >
+	        GMA_CRTE_DEPARTMENT = #{gmaCrteDepartment},
+	      </if>
+	    </set>
+	    where ID = #{id}
+	  </update>
+	
+	<select id="searchByXML" resultType="com.cesgroup.prison.group.entity.Group" 
+	parameterType="com.cesgroup.prison.group.entity.Group">
+		SELECT 	ID,
+				GMA_CUS_NUMBER,
+				GMA_GRP_NAME,
+				GMA_TYPE_INDC,
+				GMA_SUB_TYPE_INDC,
+				<!-- to_char(GMA_START_TIME,'HH24:mi:ss') as GMA_START_TIME,
+				to_char(GMA_END_TIME,'HH24:mi:ss') as GMA_END_TIME, -->
+				GMA_START_TIME,
+				GMA_END_TIME,
+				GMA_REMARK,
+				GMA_CRTE_TIME,
+				GMA_CRTE_USER_ID,
+				GMA_UPDT_TIME,
+				GMA_UPDT_USER_ID,
+				GMA_SHOW_SEQ,
+				GMA_USE_RANGE,
+				GMA_SHORT_NAME,
+				GMA_PARENT_ID,
+				GMA_PURPOSE,
+				GMA_IS_LEAF,
+				GMA_CRTE_DEPARTMENT
+		 FROM CDS_GRP_MASTER
+		<where>
+	      <if test="gmaCusNumber != null and gmaCusNumber != ''" >
+	        and GMA_CUS_NUMBER = #{gmaCusNumber}
+	      </if>
+	      <if test="gmaGrpName != null and gmaGrpName != ''" >
+	        and GMA_GRP_NAME = #{gmaGrpName}
+	      </if>
+	      <if test="gmaTypeIndc != null and gmaTypeIndc != ''" >
+	        and GMA_TYPE_INDC = #{gmaTypeIndc}
+	      </if>
+	      <if test="gmaSubTypeIndc != null and gmaSubTypeIndc != ''" >
+	        and GMA_SUB_TYPE_INDC = #{gmaSubTypeIndc}
+	      </if>
+	      <if test="gmaStartTime != null and gmaStartTime != ''" >
+	        and GMA_START_TIME = #{gmaStartTime}
+	      </if>
+	      <if test="gmaEndTime != null and gmaEndTime != ''" >
+	        and GMA_END_TIME = #{gmaEndTime}
+	      </if>
+	      <if test="gmaRemark != null and gmaRemark != ''" >
+	        and GMA_REMARK = #{gmaRemark}
+	      </if>
+	      <if test="gmaCrteTime != null and gmaCrteTime != ''" >
+	        and GMA_CRTE_TIME = #{gmaCrteTime}
+	      </if>
+	      <if test="gmaCrteUserId != null and gmaCrteUserId != ''" >
+	        and GMA_CRTE_USER_ID = #{gmaCrteUserId}
+	      </if>
+	      <if test="gmaUpdtTime != null and gmaUpdtTime != ''" >
+	        and GMA_UPDT_TIME = #{gmaUpdtTime}
+	      </if>
+	      <if test="gmaUpdtUserId != null and gmaUpdtUserId != ''" >
+	        and GMA_UPDT_USER_ID = #{gmaUpdtUserId}
+	      </if>
+	      <if test="gmaUseRange != null and gmaUseRange != ''" >
+	        and GMA_USE_RANGE = #{gmaUseRange}
+	      </if>
+	      <if test="gmaShortName != null and gmaShortName != ''" >
+	        and GMA_SHORT_NAME = #{gmaShortName}
+	      </if>
+	      <if test="gmaParentId != null and gmaParentId != ''" >
+	        and GMA_PARENT_ID = #{gmaParentId}
+	      </if>
+	      <if test="gmaPurpose != null and gmaPurpose != ''" >
+	        and GMA_PURPOSE = #{gmaPurpose}
+	      </if>
+	      <if test="gmaIsLeaf != null and gmaIsLeaf != ''" >
+	        and GMA_IS_LEAF = #{gmaIsLeaf}
+	      </if>	
+	      <if test="gmaCrteDepartment != null and gmaCrteDepartment != ''" >
+	        and GMA_CRTE_DEPARTMENT = #{gmaCrteDepartment}
+	      </if>
+	      <if test="id != null and id != ''" >
+	        and ID = #{id}
+	      </if>			
+		</where>
+		ORDER BY gma_show_seq
+	</select>
+	<select id="simpleGroupTree" resultType="java.util.HashMap" 
+	parameterType="com.cesgroup.prison.group.entity.Group">
+		SELECT 	ID AS "id",
+				GMA_PARENT_ID AS "pId",
+				GMA_GRP_NAME AS "name",
+				'group' AS "node_type",
+				GMA_CUS_NUMBER AS "cusNumber",
+				to_char(GMA_START_TIME,'HH24:mi:ss') as "startTime",
+				to_char(GMA_END_TIME,'HH24:mi:ss') as "endTime"
+		 FROM CDS_GRP_MASTER
+		<where>
+	      <if test="gmaCusNumber != null and gmaCusNumber != ''" >
+	        and GMA_CUS_NUMBER = #{gmaCusNumber}
+	      </if>
+	      <if test="gmaTypeIndc != null and gmaTypeIndc != ''" >
+	        and GMA_TYPE_INDC = #{gmaTypeIndc}
+	      </if>
+	      <if test="gmaSubTypeIndc != null and gmaSubTypeIndc != ''" >
+	        and GMA_SUB_TYPE_INDC = #{gmaSubTypeIndc}
+	      </if>
+	      <!-- 所有预案 -->
+	     <if test="gmaUseRange == null or gmaUseRange == ''" >
+	        and GMA_USE_RANGE = '0' and GMA_CRTE_DEPARTMENT = #{gmaCrteDepartment}
+	        or GMA_USE_RANGE = '1' and GMA_CRTE_USER_ID = #{gmaCrteUserId}
+	      </if>
+	      <!-- 公共预案 -->
+	      <if test="gmaUseRange == 0 " >
+	        and GMA_USE_RANGE = #{gmaUseRange} 
+	        and GMA_CRTE_DEPARTMENT = #{gmaCrteDepartment}
+	      </if>
+	      <!-- 自定义预案 -->
+	      <if test="gmaUseRange == 1 " >
+	        and GMA_USE_RANGE = #{gmaUseRange} 
+	        and GMA_CRTE_USER_ID = #{gmaCrteUserId}
+	      </if>
+	      <if test="id != null and id != ''" >
+	        and ID = #{id}
+	      </if>			
+		</where>
+		ORDER BY gma_show_seq
+	</select>
+	
+	<!-- 根据监狱编号、工作组名称，查询工作组列表 -->
+	<select id="findByGmaCusNumberAndGmaGrpName" resultMap="BaseResultMap" useCache="true">
+		SELECT
+		*
+		FROM CDS_GRP_MASTER T1
+		<where>
+			<if test="gmaCusNumber != null and gmaCusNumber != ''" >
+				AND T1.GMA_CUS_NUMBER = #{gmaCusNumber}
+			</if>
+			<if test="gmaGrpName != null and gmaGrpName != ''" >
+				AND T1.GMA_GRP_NAME = #{gmaGrpName}
+			</if>
+		</where>
+		ORDER BY T1.GMA_SHOW_SEQ
+	</select>
+	
+	<select id="queryCarame" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+				
+		select b.id,b.cbd_name from prison.CDS_GRP_RLTN_DTLS a,prison.dvc_camera_base_dtls b 
+		 where grd_grp_id= (SELECT
+				id
+				FROM CDS_GRP_MASTER T1
+				<where>
+			<if test="gmaCusNumber != null and gmaCusNumber != ''" >
+				AND T1.GMA_CUS_NUMBER = #{gmaCusNumber}
+				</if>
+			<if test="gmaGrpName != null and gmaGrpName != ''" >
+				AND T1.GMA_GRP_NAME = #{gmaGrpName}
+				</if>
+		</where>
+			)
+			and a.grd_mmbr_idnty = b.id
+
+	</select>
+</mapper>

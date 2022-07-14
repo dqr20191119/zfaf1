@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.zfjcj.dao.ZfjcjMapper">
+
+
+    <select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT a.jy_id "jyid",a.BH "zfbh",a.XM "zfxm",to_char(a.LJ_RQ,'YYYY-MM-DD hh24:mi:ss') "ljrq",a.LBMC "ljlx",a.BGMJ "bgmj",b.PIR_APPROVAL_POLICE_NAME "pirApprovalPoliceName",
+        to_char(b.PIR_APPROVAL_TIME,'YYYY-MM-DD hh24:mi:ss') "pirApprovalTime",nvl(b.PIR_APPROVAL_STTS, '2') "pirApprovalStts"
+        FROM "PRISON"."V_PRISONER_LJINFO" a
+        LEFT JOIN "PRISON"."CDS_PRISONER_INOUT_RECORD" b ON a.BH = b.PIR_ZF_BH
+        AND a.LJ_RQ = b.PIR_LJ_RQ
+        AND a.JY_ID = b.PIR_CUS_NUMBER
+        <where>
+            <if test="pirCusNumber != null" >
+                AND a.JY_ID = #{pirCusNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="pirStartTime != null and pirStartTime != ''" >
+                AND a.LJ_RQ &gt;= #{pirStartTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="pirEndTime != null and pirEndTime != ''" >
+                AND a.LJ_RQ &lt;= #{pirEndTime,jdbcType=TIMESTAMP}
+            </if>
+            AND a.LJ_RQ is not null
+            AND a.LJ_RQ >= to_date('2017-12-31 00:00:00','YYYY-MM-DD hh24:mi:ss')
+        </where>
+        ORDER BY b.PIR_APPROVAL_STTS ASC
+    </select>
+  
+</mapper>

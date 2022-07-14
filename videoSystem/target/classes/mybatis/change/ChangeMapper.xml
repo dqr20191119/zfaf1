@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.change.dao.ChangeMapper">
+
+	<!-- 通报整改——发起菜单列表所需数据 -->
+  <select id="launchListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  		SELECT cds_inspect_notice.id as id,
+  			   ino_cus_number,
+	 		   TO_CHAR(ino_inspect_time,'YYYY-MM-DD HH24:MI:SS') AS ino_inspect_time,
+	 		   TO_CHAR(ino_inspect_end_time,'YYYY-MM-DD HH24:MI:SS') AS ino_inspect_end_time,
+	 		   ino_inspect_name,
+	 		   ino_document_id,
+	 		   ino_crte_user_id,
+	 		   ino_crte_user_name,
+	 		   TO_CHAR(ino_crte_time,'YYYY-MM-DD HH24:MI:SS') AS ino_crte_time,
+	 		   ino_approval_user_id,
+	 		   TO_CHAR(ino_approval_time,'YYYY-MM-DD HH24:MI:SS') AS ino_approval_time
+		 	  FROM cds_inspect_notice
+		 	  LEFT JOIN cds_circular_changed ON
+		 	  (cds_inspect_notice.id=cch_inspect_id)
+		 	  where INO_APPROVAL_STTS_INDC='3'
+		 	  and cch_status is null
+			 <if test="inoNoticeCusNumber!= null  and inoNoticeCusNumber!=''">
+			 	  and  INO_NOTICE_CUS_NUMBER = #{inoNoticeCusNumber,jdbcType=VARCHAR}
+      		 </if>
+      		 ORDER BY ino_crte_time DESC,ino_inspect_time DESC
+  </select> 
+  
+  <!-- 通报整改——整改菜单列表所需数据 -->
+  <select id="changeListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  		SELECT cch_cus_number,
+	 		   cds_circular_changed.id as id,
+	 		   cch_changed_content,
+	 		   cch_crte_user_id,
+	 		   crte.USER_NAME as CCH_CRTE_USER_NAME,
+	 		   TO_CHAR(cch_crte_time,'YYYY-MM-DD HH24:MI:SS') AS cch_crte_time,
+	 		   ccd_dprtmnt_idnty,
+	 		   ccd_dprtmnt_name,
+	 		   ccd_changed_content,
+	 		   ccd_status,
+	 		   TO_CHAR(ino_inspect_time,'YYYY-MM-DD') AS ino_inspect_time,
+	 		   TO_CHAR(ino_inspect_end_time,'YYYY-MM-DD') AS ino_inspect_end_time,
+	 		   ino_inspect_name,
+	 		   cds_inspect_notice.id as ino_inspect_id,
+	 		   cds_circular_changed_dprtmnt.id as CHANGE_DEPARTMENT_ID
+	 	  FROM cds_circular_changed LEFT JOIN
+	 	  	   cds_circular_changed_dprtmnt ON
+	 	  	   (cch_cus_number = ccd_cus_number AND
+	 	  	    cds_circular_changed.id = ccd_changed_id) LEFT JOIN
+	 	  	   cds_inspect_notice ON
+		 	  cch_inspect_id = cds_inspect_notice.id 
+		 	  LEFT JOIN AUTH.T_USER crte ON cch_crte_user_id = crte.USER_ID
+	 	  WHERE cch_cus_number = #{cchCusNumber} AND
+				  ccd_status = '1' AND
+				  ccd_dprtmnt_idnty = #{ccdDprtmntIdnty}
+		  ORDER BY cch_crte_time DESC
+  </select> 
+  
+  <!-- 通报整改——审批菜单列表所需数据 -->
+  <select id="checkListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  		SELECT cch_cus_number,
+	 		   cds_circular_changed.id as id,
+	 		   cch_changed_content,
+	 		   cch_crte_user_id,
+	 		   crte.USER_NAME as CCH_CRTE_USER_NAME,
+	 		   TO_CHAR(cch_crte_time,'YYYY-MM-DD HH24:MI:SS') AS cch_crte_time,
+	 		   CCD_DPRTMNT_IDNTY,
+	 		   ccd_dprtmnt_name,
+	 		   ccd_changed_content,
+	 		   ccd_flow_idnty,
+	 		   ccd_status,
+	 		   TO_CHAR(ino_inspect_time,'YYYY-MM-DD') AS ino_inspect_time,
+	 		   TO_CHAR(ino_inspect_end_time,'YYYY-MM-DD') AS ino_inspect_end_time,
+	 		   ino_inspect_name,
+	 		   cds_inspect_notice.id as ino_inspect_id,
+	 		   CCD_BRANCH_LEADERS,
+	 		   CCD_BRANCH_LEADERS_NAME,
+	 		   CCD_MANAGER_LEADERS,
+	 		   CCD_MANAGER_LEADERS_NAME
+	 	  FROM cds_circular_changed LEFT JOIN
+	 	  	   cds_circular_changed_dprtmnt ON
+	 	  	   (cch_cus_number = ccd_cus_number AND
+	 	  	    cds_circular_changed.id = ccd_changed_id)  LEFT JOIN
+	 	  	   cds_inspect_notice ON
+	 	  	    cch_inspect_id = cds_inspect_notice.id
+	 	  	    LEFT JOIN AUTH.T_USER crte ON cch_crte_user_id = crte.USER_ID
+	 	  WHERE cch_cus_number = #{cchCusNumber} AND
+				  (ccd_branch_leaders = #{ccdBranchLeaders} AND
+				   ccd_status = '2') OR
+				  (ccd_manager_leaders = #{ccdManagerLeaders} AND
+				   ccd_status = '3')
+		ORDER BY cch_crte_time DESC
+  </select> 
+  
+    <!-- 通报整改——汇总菜单列表所需数据 -->
+  <select id="recordListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  		SELECT ino_cus_number,
+		 		   cds_inspect_notice.id as ino_inspect_id,
+		 		   TO_CHAR(ino_inspect_time,'YYYY-MM-DD') AS ino_inspect_time,
+		 		   TO_CHAR(ino_inspect_end_time,'YYYY-MM-DD') AS ino_inspect_end_time,
+		 		   ino_inspect_name,
+		 		   ino_document_id,
+		 		   ino_crte_user_id,
+		 		   ino_crte_user_name,
+		 		   TO_CHAR(ino_crte_time,'YYYY-MM-DD HH24:MI:SS') AS ino_crte_time,
+		 		   ino_approval_user_id,
+		 		   TO_CHAR(ino_approval_time,'YYYY-MM-DD HH24:MI:SS') AS ino_approval_time,
+		 		   cch_cus_number,
+		 		   cds_circular_changed.id as cch_changed_id,
+		 		   cch_changed_content,
+		 		   TO_CHAR(cch_crte_time,'YYYY-MM-DD HH24:MI:SS') AS cch_crte_time,
+		 		   cch_crte_user_id,
+		 		   crte.USER_NAME as CCH_CRTE_USER_NAME,
+		 		   ccd_status,
+		 		   ccd_dprtmnt_idnty,
+		 		   ccd_dprtmnt_name,
+		 		   ccd_changed_content,
+		 		   ccd_branch_leaders,
+		 		   ccd_manager_leaders,
+		 		   ccd_branch_leaders_name,
+		 		   ccd_manager_leaders_name
+		 	  FROM cds_circular_changed_dprtmnt LEFT JOIN
+		 	  	   cds_circular_changed  ON
+		 	  	   (ccd_cus_number = cch_cus_number AND
+		 	  	    ccd_changed_id = cds_circular_changed.id)  LEFT JOIN
+		 	  	   cds_inspect_notice ON
+		 	  	   (cch_inspect_id = cds_inspect_notice.id) 
+		 	  	   LEFT JOIN AUTH.T_USER crte ON cch_crte_user_id = crte.USER_ID
+		 	  where 1=1
+      		 <if test="startTime != null  and startTime!=''">
+			 	  and  INO_INSPECT_TIME  &gt;  #{startTime,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="endTime != null  and endTime!=''">
+			 	  and INO_INSPECT_TIME &lt; #{endTime ,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="ccdStatus!=null and ccdStatus!=''">
+      		 	  and ccd_status=#{ccdStatus} 
+      		 </if>
+      		 <if test="inoNoticeCusNumber!=null and inoNoticeCusNumber!=''">
+      		 	  and INO_NOTICE_CUS_NUMBER=#{inoNoticeCusNumber} 
+      		 </if>
+      		 <if test="ccdDprtmntIdnty!=null and ccdDprtmntIdnty!=''">
+      		 	  and ccd_dprtmnt_idnty=#{ccdDprtmntIdnty} 
+      		 </if>
+		ORDER BY ino_inspect_time DESC
+  </select> 
+ 
+  <update id="updateChange" parameterType="com.cesgroup.prison.change.entity.Change">
+    update CDS_CIRCULAR_CHANGED
+    <set>
+      <if test="cchCusNumber != null">
+        CCH_CUS_NUMBER = #{cchCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="cchInspectId != null">
+        CCH_INSPECT_ID = #{cchInspectId,jdbcType=VARCHAR},
+      </if>
+      <if test="cchChangedContent != null">
+        CCH_CHANGED_CONTENT = #{cchChangedContent,jdbcType=VARCHAR},
+      </if>
+      <if test="cchStatus != null">
+        CCH_STATUS = #{cchStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="cchCrteTime != null">
+        CCH_CRTE_TIME = #{cchCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cchCrteUserId != null">
+        CCH_CRTE_USER_ID = #{cchCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="cchUpdtTime != null">
+        CCH_UPDT_TIME = #{cchUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cchUpdtUserId != null">
+        CCH_UPDT_USER_ID = #{cchUpdtUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

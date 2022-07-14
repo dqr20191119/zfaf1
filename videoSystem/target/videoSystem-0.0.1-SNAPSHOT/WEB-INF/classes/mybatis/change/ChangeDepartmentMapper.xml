@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.change.dao.ChangeDepartmentMapper">
+  <select id="searchChangeDepartment" resultType="com.cesgroup.prison.change.entity.ChangeDepartment" parameterType="com.cesgroup.prison.change.entity.ChangeDepartment">
+  		select * from CDS_CIRCULAR_CHANGED_DPRTMNT
+  		<where>
+  			<if test="ccdCusNumber != null  and ccdCusNumber!=''">
+		        CCD_CUS_NUMBER = #{ccdCusNumber,jdbcType=NUMERIC}
+		      </if>
+		      <if test="ccdChangedId != null  and ccdChangedId!=''">
+		        AND CCD_CHANGED_ID = #{ccdChangedId,jdbcType=NUMERIC}
+		      </if>
+		      <if test="ccdDprtmntIdnty != null  and ccdDprtmntIdnty!=''">
+		        AND CCD_DPRTMNT_IDNTY = #{ccdDprtmntIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccdFlowIdnty != null  and ccdFlowIdnty!=''">
+		        AND CCD_FLOW_IDNTY = #{ccdFlowIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccdBranchLeaders != null  and ccdBranchLeaders!=''">
+		        AND CCD_BRANCH_LEADERS = #{ccdBranchLeaders,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccdManagerLeaders != null  and ccdManagerLeaders!=''">
+		        AND CCD_MANAGER_LEADERS = #{ccdManagerLeaders,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccdStatus != null  and ccdStatus!=''">
+		        AND CCD_STATUS = #{ccdStatus,jdbcType=NUMERIC}
+		      </if>
+		      <if test="id != null and id != ''" >
+		        and ID = #{id}
+		      </if>	
+  		</where>
+  </select>
+  
+  <update id="updateChangeDepartment" parameterType="com.cesgroup.prison.change.entity.ChangeDepartment">
+    update CDS_CIRCULAR_CHANGED_DPRTMNT
+    <set>
+      <if test="ccdCusNumber != null">
+        CCD_CUS_NUMBER = #{ccdCusNumber,jdbcType=NUMERIC},
+      </if>
+      <if test="ccdChangedId != null">
+        CCD_CHANGED_ID = #{ccdChangedId,jdbcType=NUMERIC},
+      </if>
+      <if test="ccdDprtmntIdnty != null">
+        CCD_DPRTMNT_IDNTY = #{ccdDprtmntIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdDprtmntName != null">
+        CCD_DPRTMNT_NAME = #{ccdDprtmntName,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdFlowIdnty != null">
+        CCD_FLOW_IDNTY = #{ccdFlowIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdBranchLeaders != null">
+        CCD_BRANCH_LEADERS = #{ccdBranchLeaders,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdManagerLeaders != null">
+        CCD_MANAGER_LEADERS = #{ccdManagerLeaders,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdStatus != null">
+        CCD_STATUS = #{ccdStatus,jdbcType=NUMERIC},
+      </if>
+      <if test="ccdCrteTime != null">
+        CCD_CRTE_TIME = #{ccdCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccdCrteUserId != null">
+        CCD_CRTE_USER_ID = #{ccdCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdUpdtTime != null">
+        CCD_UPDT_TIME = #{ccdUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccdUpdtUserId != null">
+        CCD_UPDT_USER_ID = #{ccdUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdChangedContent != null">
+        CCD_CHANGED_CONTENT = #{ccdChangedContent,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdBranchLeadersName != null">
+        CCD_BRANCH_LEADERS_NAME = #{ccdBranchLeadersName,jdbcType=VARCHAR},
+      </if>
+      <if test="ccdManagerLeadersName != null">
+        CCD_MANAGER_LEADERS_NAME = #{ccdManagerLeadersName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateCcdStatus" parameterType="com.cesgroup.prison.change.entity.ChangeDepartment">
+    update CDS_CIRCULAR_CHANGED_DPRTMNT
+    SET
+		   ccd_status = #{ccdStatus},
+		   ccd_updt_time = #{ccdUpdtTime},
+		   ccd_updt_user_id = #{ccdUpdtUserId}
+	 WHERE ccd_cus_number = #{ccdCusNumber} AND
+	 	   ccd_changed_id = #{ccdChangedId} AND
+	 	   ccd_dprtmnt_idnty = #{ccdDprtmntIdnty}
+  </update>
+
+	<!-- 批量新增整改部门信息-->
+	<insert id="batchInsertChaDep" parameterType="List">  
+	    insert into CDS_CIRCULAR_CHANGED_DPRTMNT(ID, CCD_CUS_NUMBER, CCD_CHANGED_ID,CCD_DPRTMNT_IDNTY,
+	    CCD_DPRTMNT_NAME,CCD_CHANGED_CONTENT,CCD_CRTE_TIME,CCD_CRTE_USER_ID,CCD_UPDT_TIME,CCD_UPDT_USER_ID,CCD_STATUS)
+	    values 
+	    <foreach collection="list" item="o" index="index" separator="," >  
+	         (#{o.id},#{o.ccdCusNumber},#{o.ccdChangedId},#{o.ccdDprtmntIdnty},
+	         #{o.ccdDprtmntName},#{o.ccdChangedContent},
+	         TO_DATE(#{o.ccdCrteTime},'YYYY-MM-DD HH24:MI:SS'),#{o.ccdCrteUserId}, 
+	         TO_DATE(#{o.ccdUpdtTime},'YYYY-MM-DD HH24:MI:SS'),#{o.ccdUpdtUserId},#{o.ccdStatus} )
+	    </foreach>
+	</insert>
+</mapper>

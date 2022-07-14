@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.ext.dao.OptLogMapper">
+
+	<insert id="insertLog" parameterType="com.cesgroup.prison.ext.entity.OptLogEntity" >
+    	insert into PRISONEXT.T_FW_LOGS 
+    	(ID, USER_ID, TIME, MODEL, ACTION, OP_TARGET, RESULT, IP, URL)
+    	values(#{id,jdbcType=VARCHAR},
+        	#{userId,jdbcType=VARCHAR},
+        	#{time,jdbcType=TIMESTAMP},
+        	#{model,jdbcType=VARCHAR},
+        	#{action,jdbcType=VARCHAR},
+        	#{opTarget,jdbcType=VARCHAR},
+        	#{result,jdbcType=VARCHAR},
+       		#{ip,jdbcType=VARCHAR},
+        	#{url,jdbcType=VARCHAR})
+  	</insert>
+	
+</mapper>

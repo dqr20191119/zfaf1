@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.prisonPath.dao.PrisonPathMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select PPI_CUS_NUMBER,
+		ID,
+		PPI_DPRTMNT_ID,
+		PPI_DPRTMNT,
+		PPI_PATH_NAME,
+		PPI_START_AREA_ID,
+		PPI_START_AREA,
+		PPI_END_AREA_ID,
+		PPI_END_AREA,
+		PPI_ACTION_INDC,
+		PPI_REMARK,
+		PPI_PATH_TYPE
+		from CDS_PRISON_PATH_INFO
+		<where>
+			<if test="prisonPathEntity.ppiCusNumber != null and prisonPathEntity.ppiCusNumber!='' ">
+				AND ppi_cus_number = #{prisonPathEntity.ppiCusNumber}
+			</if>
+
+			<if test="prisonPathEntity.ppiDprtmntId != null and prisonPathEntity.ppiDprtmntId!='' ">
+				AND ppi_dprtmnt_id = #{prisonPathEntity.ppiDprtmntId}
+			</if>
+
+			<if test="prisonPathEntity.ppiPathName != null and prisonPathEntity.ppiPathName!='' ">
+				AND ppi_path_name like concat('%', #{prisonPathEntity.ppiPathName},'%')
+			</if>
+
+			<if test="prisonPathEntity.ppiStartAreaId != null and prisonPathEntity.ppiStartAreaId!='' ">
+				AND ppi_start_area_id = #{prisonPathEntity.ppiStartAreaId}
+			</if>
+
+			<if test="prisonPathEntity.ppiEndAreaId != null and prisonPathEntity.ppiEndAreaId!='' ">
+				AND ppi_end_area_id = #{prisonPathEntity.ppiEndAreaId}
+			</if>
+
+			AND ppi_action_indc != '3'
+		</where>
+	</select>
+	<select id="findPathByAreaIdForCombobox" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "value", A.ppi_path_name "text"
+		FROM CDS_PRISON_PATH_INFO A
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND A.ppi_cus_number = #{cusNumber}
+			</if>
+			<if test="sflDprtmntId != null and sflDprtmntId != ''">
+				AND A.PPI_DPRTMNT_ID = #{sflDprtmntId}
+			</if>
+		</where>
+	</select>
+	<!-- 根据id批量逻辑删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		UPDATE CDS_PRISON_PATH_INFO set ppi_action_indc = '3' WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_PRISON_PATH_INFO
+		<set>
+			<if test="prisonPathEntity.ppiDprtmntId != null and prisonPathEntity.ppiDprtmntId!='' ">
+				ppi_dprtmnt_id = #{prisonPathEntity.ppiDprtmntId},
+			</if>
+
+			<if test="prisonPathEntity.ppiDprtmnt != null and prisonPathEntity.ppiDprtmnt!='' ">
+				ppi_dprtmnt = #{prisonPathEntity.ppiDprtmnt},
+			</if>
+
+			<if test="prisonPathEntity.ppiPathName != null and prisonPathEntity.ppiPathName!='' ">
+				ppi_path_name = #{prisonPathEntity.ppiPathName},
+			</if>
+
+			<if test="prisonPathEntity.ppiStartAreaId != null and prisonPathEntity.ppiStartAreaId!='' ">
+				ppi_start_area_id = #{prisonPathEntity.ppiStartAreaId},
+			</if>
+
+			<if test="prisonPathEntity.ppiStartArea != null and prisonPathEntity.ppiStartArea!='' ">
+				ppi_start_area = #{prisonPathEntity.ppiStartArea},
+			</if>
+
+			<if test="prisonPathEntity.ppiEndAreaId != null and prisonPathEntity.ppiEndAreaId!='' ">
+				ppi_end_area_id = #{prisonPathEntity.ppiEndAreaId},
+			</if>
+
+			<if test="prisonPathEntity.ppiEndArea != null and prisonPathEntity.ppiEndArea!='' ">
+				ppi_end_area = #{prisonPathEntity.ppiEndArea},
+			</if>
+
+			<if test="prisonPathEntity.ppiActionIndc != null and prisonPathEntity.ppiActionIndc!='' ">
+				ppi_action_indc = #{prisonPathEntity.ppiActionIndc},
+			</if>
+
+			<if test="prisonPathEntity.ppiRemark != null and prisonPathEntity.ppiRemark!='' ">
+				ppi_remark = #{prisonPathEntity.ppiRemark},
+			</if>
+
+			<if test="prisonPathEntity.ppiUpdtTime != null and prisonPathEntity.ppiUpdtTime!='' ">
+				ppi_updt_time = #{prisonPathEntity.ppiUpdtTime},
+			</if>
+
+			<if test="prisonPathEntity.ppiUpdtUserId != null and prisonPathEntity.ppiUpdtUserId!='' ">
+				ppi_updt_user_id = #{prisonPathEntity.ppiUpdtUserId},
+			</if>
+			<if test="prisonPathEntity.ppiPathType != null and prisonPathEntity.ppiPathType!='' ">
+				PPI_PATH_TYPE = #{prisonPathEntity.ppiPathType},
+			</if>
+		</set>
+		<where>
+			<if test="prisonPathEntity.id !=null and prisonPathEntity.id !=''">
+				AND (TRIM(#{prisonPathEntity.id}) is null or id = #{prisonPathEntity.id})
+			</if>
+		</where>
+	</update>
+
+</mapper>

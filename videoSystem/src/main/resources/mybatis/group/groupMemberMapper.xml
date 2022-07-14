@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.group.dao.GroupMemberMapper">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.group.entity.GroupMember">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="GRD_CUS_NUMBER" jdbcType="CHAR" property="grdCusNumber" />
+		<result column="GRD_GRP_ID" jdbcType="CHAR" property="grdGrpId" />
+		<result column="GRD_GRP_NAME" jdbcType="CHAR" property="grdGrpName" />
+		<result column="GRD_TYPE_INDC" jdbcType="CHAR" property="grdTypeIndc" />
+		<result column="GRD_MMBR_NAME" jdbcType="CHAR" property="grdMmbrName" />
+		<result column="GRD_MMBR_IDNTY" jdbcType="CHAR" property="grdMmbrIdnty" />
+		<result column="GRD_REMARK" jdbcType="CHAR" property="grdRemark" />
+		<result column="GRD_CRTE_TIME" jdbcType="TIMESTAMP" property="grdCrteTime" />
+		<result column="GRD_CRTE_USER_ID" jdbcType="CHAR" property="grdCrteUserId" />
+		<result column="GRD_UPDT_TIME" jdbcType="TIMESTAMP" property="grdUpdtTime" />
+		<result column="GRD_UPDT_USER_ID" jdbcType="CHAR" property="grdUpdtUserId" />
+		<result column="GRD_SHOW_SEQ" jdbcType="DECIMAL" property="grdShowSeq" />
+	</resultMap>
+
+	<!-- 基本字段 -->
+	<sql id="Base_Column_List">
+        ID, GRD_CUS_NUMBER, GRD_GRP_ID, GRD_GRP_NAME, GRD_TYPE_INDC, GRD_MMBR_NAME, GRD_MMBR_IDNTY,
+        GRD_REMARK, GRD_CRTE_TIME, GRD_CRTE_USER_ID, GRD_UPDT_TIME, GRD_UPDT_USER_ID, GRD_SHOW_SEQ
+    </sql>
+
+	<!-- 根据 单位编号、组ID、成员类型 查询群组成员信息 -->
+	<select id="findByGrdCusNumberAndGrdGrpIdAndGrdTypeIndc" resultMap="BaseResultMap" useCache="true">
+		select
+		<include refid="Base_Column_List"/>
+		from CDS_GRP_RLTN_DTLS T1
+		<where>
+			<if test="grdCusNumber != null and grdCusNumber != ''">
+				AND T1.GRD_CUS_NUMBER = #{grdCusNumber, jdbcType=CHAR}
+			</if>
+			<if test="grdGrpId != null and grdGrpId != ''">
+				AND T1.GRD_GRP_ID = #{grdGrpId, jdbcType=CHAR}
+			</if>
+			<if test="grdTypeIndc != null and grdTypeIndc != ''">
+				AND T1.GRD_TYPE_INDC = #{grdTypeIndc, jdbcType=CHAR}
+			</if>
+		</where>
+		order by T1.GRD_SHOW_SEQ
+	</select>
+
+	<select id="simpleMemberTree" resultType="java.util.HashMap" 
+	parameterType="java.util.List">
+		SELECT GRD_MMBR_IDNTY AS "id",
+					GRD_GRP_ID AS "pId",
+				   GRD_MMBR_NAME AS "name",
+				   'camera' AS "node_type",
+				   GRD_CUS_NUMBER AS "cusNumber",
+				   cbd_stts_indc,
+		       		cbd_type_indc 
+			 FROM CDS_GRP_RLTN_DTLS
+			 LEFT JOIN dvc_camera_base_dtls
+			 ON GRD_MMBR_IDNTY=dvc_camera_base_dtls.id
+		where GRD_GRP_ID in
+		<foreach collection="list" item="o" index="index" separator="," open="(" close=")">  
+	         #{o.id}
+	    </foreach>
+	    	 and GRD_CUS_NUMBER =  #{list[0].cusNumber} 
+	    and GRD_CUS_NUMBER = #{list[0].cusNumber}
+		order by GRD_SHOW_SEQ
+	</select>
+	
+	<!-- 批量新增 -->
+	<!--<insert id="batchInsert" parameterType="java.util.List">  
+	    insert into  CDS_GRP_RLTN_DTLS (id,GRD_CUS_NUMBER, GRD_GRP_ID,
+	     GRD_GRP_NAME,GRD_TYPE_INDC,GRD_MMBR_NAME,GRD_MMBR_IDNTY,
+	     GRD_CRTE_TIME,GRD_CRTE_USER_ID,GRD_UPDT_TIME,GRD_UPDT_USER_ID,GRD_SHOW_SEQ)  
+	     <foreach collection="list" item="o" index="index" separator="union all" >  
+	         select #{o.id},#{o.grdCusNumber}, #{o.grdGrpId},#{o.grdGrpName},
+	          #{o.grdTypeIndc},#{o.grdMmbrName}, #{o.grdMmbrIdnty},
+	           #{o.grdCrteTime},#{o.grdCrteUserId}, #{o.grdUpdtTime},#{o.grdUpdtUserId},#{o.grdShowSeq} from dual
+	    </foreach>   
+  </insert>-->
+  <insert id="batchInsert" parameterType="java.util.List">  
+	    insert into  CDS_GRP_RLTN_DTLS (id,GRD_CUS_NUMBER, GRD_GRP_ID,
+	     GRD_GRP_NAME,GRD_TYPE_INDC,GRD_MMBR_NAME,GRD_MMBR_IDNTY,
+	     GRD_CRTE_TIME,GRD_CRTE_USER_ID,GRD_UPDT_TIME,GRD_UPDT_USER_ID,GRD_SHOW_SEQ)
+	    values
+	    <foreach collection="list" item="o" index="index" separator=",">  
+	          ( #{o.id},#{o.grdCusNumber}, #{o.grdGrpId},#{o.grdGrpName},
+	          #{o.grdTypeIndc},#{o.grdMmbrName}, #{o.grdMmbrIdnty},
+	           #{o.grdCrteTime},#{o.grdCrteUserId}, #{o.grdUpdtTime},#{o.grdUpdtUserId},#{o.grdShowSeq} )
+	    </foreach>
+  </insert>
+  	<!-- 批量删除 -->
+  <delete id="batchDelete" parameterType="java.util.List">  
+	    delete from  CDS_GRP_RLTN_DTLS where ID in
+	   <foreach collection="list" item="id" index="index" separator="," open="(" close=")">  
+         #{id}
+    </foreach>  
+  </delete>
+  <!-- 通过群组ID删除 -->
+  <delete id="delByGrdGrpId" parameterType="java.lang.String">  
+	    delete from  CDS_GRP_RLTN_DTLS where GRD_GRP_ID=#{grdGrpId} 
+  </delete>
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.aqfk.monitor.dao.EvidenceMapper">
+	<select id="searchVideo" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT 	ein_file_path,
+				ein_file_name,
+				ein_ftp_path,
+				EIN_FTP_PREFIX 
+			FROM   cds_evidence_info
+		WHERE id = #{id}
+	</select>
+	
+	<select id="searchImage" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT 	ein_cus_number,
+				ein_file_path,
+				ein_file_name,
+				ein_ftp_path,
+				EIN_FTP_PREFIX
+			FROM   cds_evidence_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 查询证据信息 -->
+	<select id="listEvidence" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		 select ID,
+		 	ein_cus_number,
+		   	ein_title,
+	       	ein_content_type_indc,
+	       	ein_content_desc,
+		   	ein_problem,				       
+	       	ein_file_type_indc,
+	       	ein_addrs,
+	       	ein_file_name,
+	       	ein_file_path,
+	       	TO_CHAR(ein_crte_time,'YYYY-MM-DD HH24:MI:SS') as ein_crte_time,
+	       	ein_crte_user_id, 
+	       	crte.user_name as crte_user_name,
+	       	ein_stts_indc,
+	       	EIN_FTP_PREFIX
+		  from CDS_EVIDENCE_INFO
+		  LEFT JOIN AUTH.T_USER crte ON ein_crte_user_id = crte.USER_ID
+		 <where>
+		 	<if test="evidence.einTitle!=null and evidence.einTitle!=''">
+		 		and ein_title like concat('%',#{evidence.einTitle},'%' )
+		 	</if>
+		 	<if test="evidence.einSttsIndc!=null and evidence.einSttsIndc!=''">
+		 		and ein_stts_indc =#{evidence.einSttsIndc}
+		 	</if>
+		 	<if test="evidence.einFileTypeIndc!=null and evidence.einFileTypeIndc!=''">
+		 		and ein_file_type_indc =#{evidence.einFileTypeIndc}
+		 	</if>
+		 	<if test="startTime!=null and startTime!=''">
+		 		and ein_crte_time &gt; #{startTime}
+		 	</if>
+		 	<if test="endTime!=null and endTime!=''">
+		 		and ein_crte_time &lt; #{endTime}
+		 	</if>
+		 	<if test="evidence.einCusNumber!=null and evidence.einCusNumber!=''">
+		 		AND ein_cus_number=#{evidence.einCusNumber}
+		 	</if>
+		 </where>
+		 order by ein_crte_time desc
+	</select> 
+	<update id="updatePart" parameterType="com.cesgroup.prison.aqfk.monitor.entity.Evidence" >
+    update CDS_EVIDENCE_INFO
+    <set >
+      <if test="einCusNumber != null and einCusNumber!=''" >
+        EIN_CUS_NUMBER = #{einCusNumber},
+      </if>
+      <if test="einTitle != null and einTitle!=''" >
+        EIN_TITLE = #{einTitle},
+      </if>
+      <if test="einContentTypeIndc != null and einContentTypeIndc!=''" >
+        EIN_CONTENT_TYPE_INDC = #{einContentTypeIndc},
+      </if>
+      <if test="einContentDesc != null and einContentDesc!=''" >
+        EIN_CONTENT_DESC = #{einContentDesc},
+      </if>
+      <if test="einFileTypeIndc != null and einFileTypeIndc!=''" >
+        EIN_FILE_TYPE_INDC = #{einFileTypeIndc},
+      </if>
+      <if test="einCameraId != null and einCameraId!=''" >
+        EIN_CAMERA_ID = #{einCameraId},
+      </if>
+      <if test="einCameraName != null and einCameraName!=''" >
+        EIN_CAMERA_NAME = #{einCameraName},
+      </if>
+      <if test="einAddrs != null and einAddrs!=''" >
+        EIN_ADDRS = #{einAddrs},
+      </if>
+      <if test="einFileName != null and einFileName!=''" >
+        EIN_FILE_NAME = #{einFileName},
+      </if>
+      <if test="einFilePath != null and einFilePath!=''" >
+        EIN_FILE_PATH = #{einFilePath},
+      </if>
+      <if test="einCrteTime != null and einCrteTime!=''" >
+        EIN_CRTE_TIME = #{einCrteTime},
+      </if>
+      <if test="einCrteUserId != null and einCrteUserId!=''" >
+        EIN_CRTE_USER_ID = #{einCrteUserId},
+      </if>
+      <if test="einSttsIndc != null and einSttsIndc!=''" >
+        EIN_STTS_INDC = #{einSttsIndc},
+      </if>
+      <if test="einProblem != null and einProblem!=''" >
+        EIN_PROBLEM = #{einProblem},
+      </if>
+      <if test="einProblemType != null and einProblemType!=''" >
+        EIN_PROBLEM_TYPE = #{einProblemType},
+      </if>
+      <if test="einProblemSubType != null and einProblemSubType!=''" >
+        EIN_PROBLEM_SUB_TYPE = #{einProblemSubType},
+      </if>
+      <if test="einFtpPath != null and einFtpPath!=''" >
+        EIN_FTP_PATH = #{einFtpPath},
+      </if>
+      <if test="einFtpPrefix != null and einFtpPrefix!=''" >
+        EIN_FTP_PREFIX = #{einFtpPrefix},
+      </if>
+    </set>
+    where ID = #{id}
+  </update>
+  <!-- 批量删除 -->
+  <delete id="batchDelete" parameterType="java.util.List">  
+	    delete from  CDS_EVIDENCE_INFO where ID in
+	   <foreach collection="list" item="id" index="index" separator="," open="(" close=")">  
+         #{id}
+    </foreach>  
+  </delete> 
+  
+ <!--  add by tao 根据ids 查询数据 -->
+  <select id="findByIds" resultType="java.util.HashMap" parameterType="List">
+		SELECT *
+		FROM
+		CDS_EVIDENCE_INFO
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</select>
+    <select id="getNowEvidence" resultType="com.cesgroup.prison.aqfk.monitor.entity.Evidence">
+        SELECT *   FROM CDS_EVIDENCE_INFO WHERE EIN_CUS_NUMBER =#{cusNumber} ORDER BY EIN_CRTE_TIME desc limit 1
+    </select>
+</mapper>

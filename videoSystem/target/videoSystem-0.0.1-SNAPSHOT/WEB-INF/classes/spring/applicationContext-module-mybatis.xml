@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+default-lazy-init="true">
+
+	<description>MyBatis配置</description>
+
+	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.cesgroup.framework.mybatis.utils" use-default-filters="false" >
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+	
+	<!-- 加载配置属性文件 -->
+	<context:property-placeholder ignore-unresolvable="true" location="classpath:application.properties" />
+	<!-- 统一使用JTA事物管理 -->
+	<!--<bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
+	    <property name="forceShutdown" value="false" /> 
+	</bean>
+	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+	    <property name="transactionTimeout" value="300" />
+	</bean>
+	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" >
+	    <property name="transactionManager" ref="atomikosTransactionManager" /> 
+	    <property name="userTransaction" ref="atomikosUserTransaction" /> 
+	</bean>  -->
+
+	<!-- 事务管理配置 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean> 
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<!-- MyBatis配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="databaseIdProvider" ref="databaseIdProvider"></property>
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+		<!-- 自动扫描entity目录,省掉Configuration.xml里的手工配置 -->
+		<property name="typeAliasesPackage" value="#{globalConfiguration.entityPackage}" />
+		<property name="typeAliasesSuperType" value="com.cesgroup.framework.base.entity.BaseEntity" />
+		<!-- mybatis配置文件自动扫描路径 -->
+		<property name="mapperLocations" value="classpath*:/mybatis/**/*Mapper.xml"></property>
+		<property name="plugins">
+			<array>
+				<bean class="tk.mybatis.mapper.interceptor.BatchExecuteInterceptor" >
+					<property name="mapperHelper" ref="commonMapperHelper" />
+				</bean>
+				<ref bean="pageHelper" />
+			</array>
+		</property>
+		<!-- 分页对象工厂，支持Spring Data的Page对象 -->
+		<property name="objectFactory" ref="mybatisObjectFactory" />
+		<property name="objectWrapperFactory" ref="mybatisObjectWrapperFactory" />
+	</bean>
+	
+	
+	
+	<!-- 分页对象工厂，支持Spring Data的Page对象 -->
+	<bean id="mybatisObjectFactory" class="com.cesgroup.framework.mybatis.page.PageObjectFactory"></bean>
+	<bean id="mybatisObjectWrapperFactory" class="com.cesgroup.framework.mybatis.page.PageObjectWapperFactory"></bean>
+	
+	<!-- 数据库ID处理器 -->
+	<bean id="databaseIdProvider" class="com.cesgroup.framework.mybatis.utils.StringDatabaseIdProvider">
+		<property name="properties">
+			<value>
+				SQL Server=sqlserver
+				DB2=db2
+				Oracle=oracle
+				MySQL=mysql
+				H2=h2
+			</value>
+		</property>
+		<property name="stringDatabaseId" value="#{globalConfiguration.databaseId}"></property>
+	</bean>
+	
+	<bean id="pageHelper" class="com.cesgroup.framework.mybatis.page.PageInterceptor">
+		<property name="properties">
+			<value>
+				dialect=#{globalConfiguration.dialect}
+				reasonable=true
+				supportMethodsArguments=true
+				params=count=countSql
+				autoRuntimeDialect=true
+			</value>
+		</property>
+	</bean>
+	<!-- 配置扫描Dao接口，动态实现Dao接口，注入到spring容器中 -->
+	<bean id="mapperScannerConfigurer" class="com.cesgroup.framework.mybatis.mapper.MapperScannerConfigurer">
+		<property name="mapperHelper" ref="commonMapperHelper"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="basePackage" value="#{globalConfiguration.repositoryPackage}" />
+		<property name="annotationClass" value="com.cesgroup.framework.mybatis.mapper.annotation.MybatisRepository"/>
+		<property name="markerInterface" value="com.cesgroup.framework.base.dao.IBaseDao" />
+		<property name="mapperInterface" value="com.cesgroup.framework.mybatis.dao.BaseDao" />
+		<property name="properties">
+			<value>
+				enableMethodAnnotation=true
+				IDENTITY=#{globalConfiguration.dialect}
+				style=camelhumpAndUppercase
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="commonMapperHelper" class="com.cesgroup.framework.mybatis.mapper.mapperhelper.CommonMapperHelper"></bean>
+	
+	<!-- 泛型返回值封装处理 -->
+	<bean id="pageResultMapPostProcessor" class="com.cesgroup.framework.mybatis.mapper.ParameterizedResultMapPostProcessor">
+		<property name="classes">
+			<array>
+				<value>org.springframework.data.domain.Page</value>
+			</array>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.inspect.dao.InspectPoliceMapper">
+	<delete id="deleteByIprInspectId"
+		parameterType="java.lang.String">
+		DELETE FROM CDS_INSPECT_POLICE_RELATION
+		 <where>
+		 	 IPR_INSPECT_ID = #{iprInspectId} 
+		</where>
+	</delete>
+</mapper>

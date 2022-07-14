@@ -1,0 +1,822 @@
+body {
+    background-color: #000;
+    line-height: normal !important;
+}
+
+html,
+body,
+div,
+h4,
+h5,
+h6,
+p,
+ul,
+li,
+input,
+a,
+i,
+b,
+span {
+    box-sizing: border-box;
+    font-style: normal;
+    font-family: "Microsoft Yahei", Arial;
+    font-size: 14px;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    outline: 0px;
+    text-decoration: none;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/** 一画面布局 BEGIN **/
+.video-layout1 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout1 .video-container-level1 {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+/** 一画面布局 END **/
+
+/** 二画面布局 BEGIN **/
+.video-layout2 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout2 .video-container-level1 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout2 .video-container-level1.first {
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout2 .video-container-level1.last {
+    border-left: 0px;
+    border-right: 1px solid #00ffff;
+}
+/** 二画面布局 END **/
+
+/** 三画面布局 BEGIN **/
+.video-layout3 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout3 .video-container-level1 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout3 .video-container-level1.first {
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout3 .video-container-level1.last {
+    border-left: 0px;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout3 .video-container-level1 .video-container-level2 {
+    width: 100%;
+    height: 50%;
+    background-color: #ffffff;
+}
+
+.video-layout3 .video-container-level1 .video-container-level2.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout3 .video-container-level1 .video-container-level2.bottom {
+    border: 0px;
+}
+/** 三画面布局 END **/
+
+/** 四画面布局 BEGIN **/
+.video-layout4 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout4 .video-container-level1 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout4 .video-container-level1.first {
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout4 .video-container-level1.last {
+    border-left: 0px;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout4 .video-container-level1 .video-container-level2 {
+    width: 100%;
+    height: 50%;
+    background-color: #ffffff;
+}
+
+.video-layout4 .video-container-level1 .video-container-level2.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout4 .video-container-level1 .video-container-level2.bottom {
+    border: 0px;
+}
+/** 四画面布局 END **/
+
+/** 五画面布局 BEGIN **/
+.video-layout5 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout5 .video-container-level1 {
+    width: 100%;
+    height: 50%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout5 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout5 .video-container-level1.bottom {
+    border-top: 0px;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout5 .video-container-level1.top .video-container-level2 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    background-color: #ffffff;
+}
+
+.video-layout5 .video-container-level1.top .video-container-level2.first {
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout5 .video-container-level1.top .video-container-level2.last {
+    border: 0px;
+}
+
+.video-layout5 .video-container-level1.bottom .video-container-level2 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout5 .video-container-level1.bottom .video-container-level2.last {
+    border-right: 0px;
+}
+/** 五画面布局 END **/
+
+/** 六画面布局 BEGIN **/
+.video-layout6 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout6 .video-container-level1 {
+    width: 100%;
+    height: 50%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout6 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout6 .video-container-level1.bottom {
+    border-top: 0px;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout6 .video-container-level1.top .video-container-level2 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout6 .video-container-level1.top .video-container-level2.last {
+    border: 0px;
+}
+
+.video-layout6 .video-container-level1.bottom .video-container-level2 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout6 .video-container-level1.bottom .video-container-level2.last {
+    border-right: 0px;
+}
+/** 六画面布局 END **/
+
+/** 七画面布局 BEGIN **/
+.video-layout7 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout7 .video-container-level1 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout7 .video-container-level1.first {
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout7 .video-container-level1.last {
+    border-left: 0px;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2 {
+    width: 100%;
+    height: 50%;
+    background-color: #ffffff;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2.bottom {
+    border: 0px;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2.bottom .video-container-level3 {
+    width: 100%;
+    height: 50%;
+    border: 0px;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2.bottom .video-container-level3.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2.bottom .video-container-level3 .video-container-level4 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout7 .video-container-level1 .video-container-level2.bottom .video-container-level3 .video-container-level4.last {
+    border-right: 0px;
+}
+/** 七画面布局 END **/
+
+/** 八画面布局 BEGIN **/
+.video-layout8 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout8 .video-container-level1 {
+    width: 100%;
+    height: 50%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout8 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout8 .video-container-level1.bottom {
+    border-top: 0px;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    background-color: #ffffff;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2.first {
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2.last {
+    border: 0px;
+}
+
+.video-layout8 .video-container-level1.bottom .video-container-level2 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout8 .video-container-level1.bottom .video-container-level2.last {
+    border-right: 0px;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2.last .video-container-level3 {
+    width: 100%;
+    height: 50%;
+    border: 0px;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2.last .video-container-level3.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2.last .video-container-level3 .video-container-level4 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout8 .video-container-level1.top .video-container-level2.last .video-container-level3 .video-container-level4.last {
+    border-right: 0px;
+}
+/** 八画面布局 END **/
+
+/** 九画面布局 BEGIN **/
+.video-layout9 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout9 .video-container-level1 {
+    width: 100%;
+    height: 33.33%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout9 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+}
+
+.video-layout9 .video-container-level1 .video-container-level2 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout9 .video-container-level1 .video-container-level2.last {
+    border-right: 0px;
+}
+/** 九画面布局 END **/
+
+/** 十画面布局 BEGIN **/
+.video-layout10 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout10 .video-container-level1 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout10 .video-container-level1.first {
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout10 .video-container-level1.last {
+    border-left: 0px;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2 {
+    width: 100%;
+    height: 50%;
+    background-color: #ffffff;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2.bottom {
+    border: 0px;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2 .video-container-level3 {
+    width: 100%;
+    height: 50%;
+    border: 0px;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2 .video-container-level3.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout10 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4.last {
+    border-right: 0px;
+}
+/** 十画面布局 END **/
+
+/** 十一画面布局 BEGIN **/
+.video-layout11 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout11 .video-container-level1 {
+    width: 100%;
+    height: 50%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout11 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout11 .video-container-level1.bottom {
+    border-top: 0px;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout11 .video-container-level1.top .video-container-level2 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout11 .video-container-level1.top .video-container-level2.last {
+    border: 0px;
+}
+
+.video-layout11 .video-container-level1.bottom .video-container-level2 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout11 .video-container-level1.bottom .video-container-level2.last {
+    border-right: 0px;
+}
+
+.video-layout11 .video-container-level1 .video-container-level2 .video-container-level3 {
+    width: 100%;
+    height: 50%;
+    border: 0px;
+}
+
+.video-layout11 .video-container-level1 .video-container-level2 .video-container-level3.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout11 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout11 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4.last {
+    border-right: 0px;
+}
+/** 十一画面布局 END **/
+
+/** 十二画面布局 BEGIN **/
+.video-layout12 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout12 .video-container-level1 {
+    width: 100%;
+    height: 33.33%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout12 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+}
+
+.video-layout12 .video-container-level1 .video-container-level2 {
+    float: left;
+    width: 25%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout12 .video-container-level1 .video-container-level2.last {
+    border-right: 0px;
+}
+
+/** 十二画面布局 END **/
+
+/** 十三画面布局 BEGIN **/
+.video-layout13 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout13 .video-container-level1 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout13 .video-container-level1.first {
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout13 .video-container-level1.last {
+    border-left: 0px;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2 {
+    width: 100%;
+    height: 50%;
+    background-color: #ffffff;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2.bottom {
+    border: 0px;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2 .video-container-level3 {
+    width: 100%;
+    height: 50%;
+    border: 0px;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2 .video-container-level3.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout13 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4.last {
+    border-right: 0px;
+}
+/** 十三画面布局 END **/
+
+/** 十四画面布局 BEGIN **/
+.video-layout14 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout14 .video-container-level1 {
+    width: 100%;
+    height: 50%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout14 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout14 .video-container-level1.bottom {
+    border-top: 0px;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout14 .video-container-level1.top .video-container-level2 {
+    width: 100%;
+    height: 50%;
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout14 .video-container-level1.top .video-container-level2.bottom {
+    border: 0px;
+}
+
+.video-layout14 .video-container-level1.top .video-container-level2 .video-container-level3 {
+    float: left;
+    width: 33.33%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout14 .video-container-level1.top .video-container-level2 .video-container-level3.last {
+    border-right: 0px;
+}
+
+.video-layout14 .video-container-level1.bottom .video-container-level2 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout14 .video-container-level1.bottom .video-container-level2.last {
+    border-right: 0px;
+}
+
+.video-layout14 .video-container-level1 .video-container-level2 .video-container-level3 {
+    width: 100%;
+    height: 50%;
+    border: 0px;
+}
+
+.video-layout14 .video-container-level1 .video-container-level2 .video-container-level3.top {
+    border-bottom: 1px solid #00ffff;
+}
+
+.video-layout14 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4 {
+    float: left;
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout14 .video-container-level1 .video-container-level2 .video-container-level3 .video-container-level4.last {
+    border-right: 0px;
+}
+/** 十四画面布局 END **/
+
+/** 十五画面布局 BEGIN **/
+.video-layout15 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout15 .video-container-level1 {
+    width: 100%;
+    height: 25%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout15 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+}
+
+.video-layout15 .video-container-level1 .video-container-level2 {
+    float: left;
+    width: 25%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout15 .video-container-level1 .video-container-level2.last {
+    border: 0px;
+}
+
+.video-layout15 .video-container-level1.top .video-container-level2 {
+    width: 33.33%;
+}
+/** 十五画面布局 END **/
+
+/** 十六画面布局 BEGIN **/
+.video-layout16 {
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    margin: 4px 4px 4px 4px;
+}
+
+.video-layout16 .video-container-level1 {
+    width: 100%;
+    height: 25%;
+    border-left: 1px solid #00ffff;
+    border-right: 1px solid #00ffff;
+    border-bottom: 1px solid #00ffff;
+    background-color: #ffffff;
+}
+
+.video-layout16 .video-container-level1.top {
+    border-top: 1px solid #00ffff;
+}
+
+.video-layout16 .video-container-level1 .video-container-level2 {
+    float: left;
+    width: 25%;
+    height: 100%;
+    border-right: 1px solid #00ffff;
+}
+
+.video-layout16 .video-container-level1 .video-container-level2.last {
+    border: 0px;
+}
+/** 十六画面布局 END **/
+
+/** 视频播放器原子BEGIN **/
+.video-player {
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    margin: 2px 2px 2px 2px;
+}
+/** 视频播放器原子END **/
