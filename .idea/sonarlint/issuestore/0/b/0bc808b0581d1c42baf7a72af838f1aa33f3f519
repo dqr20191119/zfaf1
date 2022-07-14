@@ -1,0 +1,103 @@
+
+m
+java:S3776v"RRefactor this method to reduce its Cognitive Complexity from 41 to the 15 allowed.(Áì³¼ıÿÿÿÿ
+2
+java:S3626"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626¤"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626Ï"Remove this redundant jump.(ÉŠ©ƒ
+W	java:S125·"<This block of commented-out lines of code should be removed.(ãÉÈÿıÿÿÿÿ
+W	java:S125ü"<This block of commented-out lines of code should be removed.(öØàèÿÿÿÿÿ
+W	java:S125ˆ"<This block of commented-out lines of code should be removed.(öØàèÿÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(ëöÂÿÿÿÿÿ
+W	java:S125¶"<This block of commented-out lines of code should be removed.(¡Õºûÿÿÿÿ
+W	java:S125¿"<This block of commented-out lines of code should be removed.(ıëû“şÿÿÿÿ
+W	java:S125×"<This block of commented-out lines of code should be removed.(ëöÂÿÿÿÿÿ
+N
+java:S1135ñ"2Complete the task associated to this TODO comment.(ÕÌ®şÿÿÿÿ
+W	java:S125¶"<This block of commented-out lines of code should be removed.(õ¿î—ûÿÿÿÿ
+N
+java:S1135µ"2Complete the task associated to this TODO comment.(ôœ‘ûÿÿÿÿ
+?	java:S108º")Either remove or fill this block of code.(å¥‡
+p
+java:S2293¬"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ä«ëó
+g
+java:S1192Ù"KDefine a constant instead of duplicating this literal "mojEndDate" 4 times.(Œïôşÿÿÿÿ
+i
+java:S1192Ù"MDefine a constant instead of duplicating this literal "mojStartDate" 4 times.(Œïôşÿÿÿÿ
+U
+java:S1155Ã">Use isEmpty() to check whether the collection is empty or not.(•ñ¥À
+3
+java:S1643‰"Use a StringBuilder instead.(Å¯èç
+8
+java:S1643"Use a StringBuilder instead.(˜œ“éÿÿÿÿÿ
+8
+java:S1643"Use a StringBuilder instead.(¥à«¨üÿÿÿÿ
+8
+java:S1643¡"Use a StringBuilder instead.(‡Ò”øÿÿÿÿ
+8
+java:S1643Ä"Use a StringBuilder instead.(ş€›¨úÿÿÿÿ
+3
+java:S1643Æ"Use a StringBuilder instead.(­«ß¬
+2
+java:S1643Ë"Use a StringBuilder instead.(Îåªr
+p
+java:S1488W"ZImmediately return this expression instead of assigning it to the temporary variable "mv".(¿ìéÖ
+s
+java:S1488‰"\Immediately return this expression instead of assigning it to the temporary variable "list".(¾ƒÒô
+y
+java:S1488Ú"bImmediately return this expression instead of assigning it to the temporary variable "ajaxResult".(Ôêµ
+W
+java:S4973}"<Strings and Boxed types should be compared using "equals()".(ï€ØÛúÿÿÿÿ
+m
+java:S3776v"RRefactor this method to reduce its Cognitive Complexity from 41 to the 15 allowed.(Áì³¼ıÿÿÿÿ
+2
+java:S3626"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626¤"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626Ï"Remove this redundant jump.(ÉŠ©ƒ
+W	java:S125·"<This block of commented-out lines of code should be removed.(ãÉÈÿıÿÿÿÿ
+W	java:S125ü"<This block of commented-out lines of code should be removed.(öØàèÿÿÿÿÿ
+W	java:S125ˆ"<This block of commented-out lines of code should be removed.(öØàèÿÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(ëöÂÿÿÿÿÿ
+W	java:S125¶"<This block of commented-out lines of code should be removed.(¡Õºûÿÿÿÿ
+W	java:S125¿"<This block of commented-out lines of code should be removed.(ıëû“şÿÿÿÿ
+W	java:S125×"<This block of commented-out lines of code should be removed.(ëöÂÿÿÿÿÿ
+N
+java:S1135ñ"2Complete the task associated to this TODO comment.(ÕÌ®şÿÿÿÿ
+W	java:S125¶"<This block of commented-out lines of code should be removed.(õ¿î—ûÿÿÿÿ
+N
+java:S1135µ"2Complete the task associated to this TODO comment.(ôœ‘ûÿÿÿÿ
+?	java:S108º")Either remove or fill this block of code.(å¥‡
+p
+java:S2293¬"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ä«ëó
+g
+java:S1192Ù"KDefine a constant instead of duplicating this literal "mojEndDate" 4 times.(Œïôşÿÿÿÿ
+i
+java:S1192Ù"MDefine a constant instead of duplicating this literal "mojStartDate" 4 times.(Œïôşÿÿÿÿ
+U
+java:S1155Ã">Use isEmpty() to check whether the collection is empty or not.(•ñ¥À
+3
+java:S1643‰"Use a StringBuilder instead.(Å¯èç
+8
+java:S1643"Use a StringBuilder instead.(˜œ“éÿÿÿÿÿ
+8
+java:S1643"Use a StringBuilder instead.(¥à«¨üÿÿÿÿ
+8
+java:S1643¡"Use a StringBuilder instead.(‡Ò”øÿÿÿÿ
+8
+java:S1643Ä"Use a StringBuilder instead.(ş€›¨úÿÿÿÿ
+3
+java:S1643Æ"Use a StringBuilder instead.(­«ß¬
+2
+java:S1643Ë"Use a StringBuilder instead.(Îåªr
+p
+java:S1488W"ZImmediately return this expression instead of assigning it to the temporary variable "mv".(¿ìéÖ
+s
+java:S1488‰"\Immediately return this expression instead of assigning it to the temporary variable "list".(¾ƒÒô
+y
+java:S1488Ú"bImmediately return this expression instead of assigning it to the temporary variable "ajaxResult".(Ôêµ
+W
+java:S4973}"<Strings and Boxed types should be compared using "equals()".(ï€ØÛúÿÿÿÿ

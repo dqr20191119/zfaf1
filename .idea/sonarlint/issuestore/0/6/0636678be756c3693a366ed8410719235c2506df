@@ -1,0 +1,135 @@
+
+|
+java:S1149÷"eReplace the synchronized class "Vector" by an unsynchronized one such as "ArrayList" or "LinkedList".(…°Îı
+
+java:S1149ø"eReplace the synchronized class "Vector" by an unsynchronized one such as "ArrayList" or "LinkedList".(ˆŞ»ˆûÿÿÿÿ
+P
+java:S1118":Add a private constructor to hide the implicit public one.(Ÿÿ¸Ü
+`
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ó··ãÿÿÿÿÿ
+B
+java:S2885"'Make "dashFormat" an instance variable.(íõªıÿÿÿÿ
+C
+java:S2885"(Make "slashForamt" an instance variable.(÷ªÇÂüÿÿÿÿ
+;
+java:S2885"&Make "ymdFormat" an instance variable.(ÏöÔ|
+B
+java:S2885"'Make "timeFormat" an instance variable.(ÿñ³êıÿÿÿÿ
+@
+java:S2885"%Make "ymFormat" an instance variable.(è¥øÿÿÿÿ
+;
+java:S2885" Make "sdf" an instance variable.(ŞÉÿÁÿÿÿÿÿ
+`
+java:S1124W"EReorder the modifiers to comply with the Java Language Specification.(Ü©î‰ıÿÿÿÿ
+m
+java:S3776t"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(áşçôøÿÿÿÿ
+V	java:S125u"<This block of commented-out lines of code should be removed.(«×ÀÆşÿÿÿÿ
+B
+java:S1125z"'Remove the unnecessary boolean literal.(ë ıœÿÿÿÿÿ
+C
+java:S1125ˆ"'Remove the unnecessary boolean literal.(Ù¢ğùÿÿÿÿ
+C
+java:S1125"'Remove the unnecessary boolean literal.(õÈœ²ÿÿÿÿÿ
+C
+java:S1125”"'Remove the unnecessary boolean literal.(¦²€ıÿÿÿÿ
+]
+java:S1126—"AReplace this if-then-else statement by a single return statement.(ØÜ³ºşÿÿÿÿ
+C
+java:S1125—"'Remove the unnecessary boolean literal.(ØÜ³ºşÿÿÿÿ
+C
+java:S1125¤"'Remove the unnecessary boolean literal.(²œÓ•øÿÿÿÿ
+]
+java:S1126©"AReplace this if-then-else statement by a single return statement.(öøÜ·ÿÿÿÿÿ
+C
+java:S1125©"'Remove the unnecessary boolean literal.(öøÜ·ÿÿÿÿÿ
+>
+java:S1125×"'Remove the unnecessary boolean literal.(Œùğ×
+]
+java:S1126œ"AReplace this if-then-else statement by a single return statement.(‰’²åùÿÿÿÿ
+d	java:S100©"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¯§µ¦
+N
+java:S3252‚"7Use static access with "java.util.Calendar" for "DATE".(‰ëÈÔ
+M
+java:S3252¡"7Use static access with "java.util.Calendar" for "YEAR".(µâÅ
+O
+java:S3252¢"8Use static access with "java.util.Calendar" for "MONTH".(û†³¿
+N
+java:S3252£"7Use static access with "java.util.Calendar" for "DATE".(‰ëÈÔ
+W
+java:S3252¬";Use static access with "java.util.Calendar" for "FEBRUARY".(·¡îÎşÿÿÿÿ
+T
+java:S3252°"8Use static access with "java.util.Calendar" for "MONTH".(¾ÈÆøÿÿÿÿ
+S
+java:S3252²"7Use static access with "java.util.Calendar" for "YEAR".(‰²î¬ûÿÿÿÿ
+O
+java:S3252³"8Use static access with "java.util.Calendar" for "MONTH".(Š…ïœ
+>
+java:S1125µ"'Remove the unnecessary boolean literal.(ßî­·
+C
+java:S1125¶"'Remove the unnecessary boolean literal.(š£íˆÿÿÿÿÿ
+S
+java:S3252¶"7Use static access with "java.util.Calendar" for "YEAR".(š£íˆÿÿÿÿÿ
+T
+java:S3252·"8Use static access with "java.util.Calendar" for "MONTH".(İåÒşùÿÿÿÿ
+W
+java:S3252·";Use static access with "java.util.Calendar" for "FEBRUARY".(İåÒşùÿÿÿÿ
+S
+java:S3252¸"7Use static access with "java.util.Calendar" for "DATE".(ØØíåşÿÿÿÿ
+S
+java:S3252º"7Use static access with "java.util.Calendar" for "DATE".(¤òøÿÿÿÿ
+T
+java:S3252¾"8Use static access with "java.util.Calendar" for "MONTH".(´Ä’æûÿÿÿÿ
+N
+java:S3252Á"7Use static access with "java.util.Calendar" for "YEAR".(Ì‹»´
+S
+java:S3252Ã"7Use static access with "java.util.Calendar" for "YEAR".(ØÏşıÿÿÿÿ
+M
+java:S3252Ì"7Use static access with "java.util.Calendar" for "YEAR".(µâÅ
+N
+java:S3252Ù"7Use static access with "java.util.Calendar" for "YEAR".(ÎŒ¯²
+O
+java:S3252å"8Use static access with "java.util.Calendar" for "MONTH".(•µô­
+S
+java:S3252ë"7Use static access with "java.util.Calendar" for "DATE".(±ªûûÿÿÿÿ
+>
+java:S1125†"'Remove the unnecessary boolean literal.(™²ëÉ
+L
+java:S1172¹"0Remove this unused method parameter "valueDate".(ÕòÆŸÿÿÿÿÿ
+>
+java:S1125Å"'Remove the unnecessary boolean literal.(°´„‘
+C
+java:S1125Ö"'Remove the unnecessary boolean literal.(Ë£çùÿÿÿÿ
+W
+java:S1126õ"AReplace this if-then-else statement by a single return statement.(Â–H
+=
+java:S1168ñ"&Return an empty array instead of null.(¥¹ï
+X
+java:S1126•"AReplace this if-then-else statement by a single return statement.(çŒ‡Î
+X
+java:S1126Ã"AReplace this if-then-else statement by a single return statement.(µ„ÏĞ
+]
+java:S1126Ğ"AReplace this if-then-else statement by a single return statement.(±÷‹øÿÿÿÿ
+X
+java:S1126"AReplace this if-then-else statement by a single return statement.(¡Ïñ¨
+d
+java:S5361¤"HReplace this call to "replaceAll()" by a call to the "replace()" method.(ßáğÿÿÿÿÿ
+X
+java:S1126±"AReplace this if-then-else statement by a single return statement.(èğó
+u
+java:S2293ø"YReplace the type specification in this constructor call with the diamond operator ("<>").(ˆŞ»ˆûÿÿÿÿ
+g	java:S117™"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñÙ€Ó
+g	java:S117š"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶ÖŠì
+l	java:S117»"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(½–¸´øÿÿÿÿ
+g	java:S117È"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†ìºŠ
+g	java:S117œ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(şÃ‰½
+l	java:S117§"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬ôãóøÿÿÿÿ
+Z
+java:S1155µ">Use isEmpty() to check whether the collection is empty or not.(á‡Ÿüşÿÿÿÿ
+j
+java:S1104"OMake sdf a static final constant or non-public and provide accessors if needed.(ŞÉÿÁÿÿÿÿÿ
+D
+java:S1444")Make this "public static sdf" field final(ŞÉÿÁÿÿÿÿÿ
+a
+java:S2184"FCast one of the operands of this multiplication operation to a "long".(£üªšşÿÿÿÿ
+e
+java:S2259»"N"NullPointerException" will be thrown when invoking method "getDaysBetween()".(‰¤¡Ù

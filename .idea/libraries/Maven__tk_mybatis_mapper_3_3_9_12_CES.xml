@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: tk.mybatis:mapper:3.3.9.12-CES">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../Common/repository/tk/mybatis/mapper/3.3.9.12-CES/mapper-3.3.9.12-CES.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../../Common/repository/tk/mybatis/mapper/3.3.9.12-CES/mapper-3.3.9.12-CES-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../../Common/repository/tk/mybatis/mapper/3.3.9.12-CES/mapper-3.3.9.12-CES-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

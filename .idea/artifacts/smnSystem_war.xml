@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="smnSystem:war">
+    <output-path>$PROJECT_DIR$/smnService/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>smnSystem</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="smnSystem.war">
+      <element id="artifact" artifact-name="smnSystem:war exploded" />
+    </root>
+  </artifact>
+</component>

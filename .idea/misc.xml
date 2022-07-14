@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/alarmSystem" />
+    <file type="web" url="file://$PROJECT_DIR$/baseframework" />
+    <file type="web" url="file://$PROJECT_DIR$/commandSystem" />
+    <file type="web" url="file://$PROJECT_DIR$/dispatchSystem" />
+    <file type="web" url="file://$PROJECT_DIR$/emergency" />
+    <file type="web" url="file://$PROJECT_DIR$/prisonXJ" />
+    <file type="web" url="file://$PROJECT_DIR$/smnService" />
+    <file type="web" url="file://$PROJECT_DIR$/videoSystem" />
+    <file type="web" url="file://$PROJECT_DIR$/webserviceSystem" />
+    <file type="web" url="file://$PROJECT_DIR$/xxhjSystem" />
+  </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/alarmSystem/pom.xml" />
+        <option value="$PROJECT_DIR$/baseframework/pom.xml" />
+        <option value="$PROJECT_DIR$/commandSystem/pom.xml" />
+        <option value="$PROJECT_DIR$/common/pom.xml" />
+        <option value="$PROJECT_DIR$/db/pom.xml" />
+        <option value="$PROJECT_DIR$/dispatchSystem/pom.xml" />
+        <option value="$PROJECT_DIR$/electronicMap/pom.xml" />
+        <option value="$PROJECT_DIR$/emergency/pom.xml" />
+        <option value="$PROJECT_DIR$/message/pom.xml" />
+        <option value="$PROJECT_DIR$/parent/pom.xml" />
+        <option value="$PROJECT_DIR$/prisonXJ/pom.xml" />
+        <option value="$PROJECT_DIR$/secrity/pom.xml" />
+        <option value="$PROJECT_DIR$/smnService/pom.xml" />
+        <option value="$PROJECT_DIR$/socket/pom.xml" />
+        <option value="$PROJECT_DIR$/user/pom.xml" />
+        <option value="$PROJECT_DIR$/video/pom.xml" />
+        <option value="$PROJECT_DIR$/videoSystem/pom.xml" />
+        <option value="$PROJECT_DIR$/webserviceSystem/pom.xml" />
+        <option value="$PROJECT_DIR$/xxhjSystem/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="https://180.168.156.211:4429/svn/%E6%B9%96%E5%8D%97%E7%9C%81%E7%9B%91%E7%8B%B1%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%A1%B9%E7%9B%AE/14.%E7%A8%8B%E5%BA%8F/zfaf" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

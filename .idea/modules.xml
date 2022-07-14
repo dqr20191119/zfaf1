@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/alarmSystem/alarmSystem.iml" filepath="$PROJECT_DIR$/alarmSystem/alarmSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baseframework/baseframework.iml" filepath="$PROJECT_DIR$/baseframework/baseframework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commandSystem/commandSystem.iml" filepath="$PROJECT_DIR$/commandSystem/commandSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/db/db.iml" filepath="$PROJECT_DIR$/db/db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dispatchSystem/dispatchSystem.iml" filepath="$PROJECT_DIR$/dispatchSystem/dispatchSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/electronicMap/electronicMap.iml" filepath="$PROJECT_DIR$/electronicMap/electronicMap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/emergency/emergency.iml" filepath="$PROJECT_DIR$/emergency/emergency.iml" />
+      <module fileurl="file://$PROJECT_DIR$/message/message.iml" filepath="$PROJECT_DIR$/message/message.iml" />
+      <module fileurl="file://$PROJECT_DIR$/parent/parent.iml" filepath="$PROJECT_DIR$/parent/parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prisonXJ/prisonXJ.iml" filepath="$PROJECT_DIR$/prisonXJ/prisonXJ.iml" />
+      <module fileurl="file://$PROJECT_DIR$/secrity/secrity.iml" filepath="$PROJECT_DIR$/secrity/secrity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smnService/smnSystem.iml" filepath="$PROJECT_DIR$/smnService/smnSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/socket/socket.iml" filepath="$PROJECT_DIR$/socket/socket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/user/user.iml" filepath="$PROJECT_DIR$/user/user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/video/video.iml" filepath="$PROJECT_DIR$/video/video.iml" />
+      <module fileurl="file://$PROJECT_DIR$/videoSystem/videoSystem.iml" filepath="$PROJECT_DIR$/videoSystem/videoSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webserviceSystem/webserviceSystem.iml" filepath="$PROJECT_DIR$/webserviceSystem/webserviceSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xxhjSystem/xxhjSystem.iml" filepath="$PROJECT_DIR$/xxhjSystem/xxhjSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/zfaf.iml" filepath="$PROJECT_DIR$/.idea/zfaf.iml" />
+    </modules>
+  </component>
+</project>

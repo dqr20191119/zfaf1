@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="prisonXJ:war">
+    <output-path>$PROJECT_DIR$/prisonXJ/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>prisonXJ</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="prison.war">
+      <element id="artifact" artifact-name="prisonXJ:war exploded" />
+    </root>
+  </artifact>
+</component>

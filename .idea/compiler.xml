@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="alarmSystem" />
+        <module name="baseframework" />
+        <module name="commandSystem" />
+        <module name="common" />
+        <module name="db" />
+        <module name="dispatchSystem" />
+        <module name="electronicMap" />
+        <module name="emergency" />
+        <module name="message" />
+        <module name="prisonXJ" />
+        <module name="secrity" />
+        <module name="smnSystem" />
+        <module name="socket" />
+        <module name="user" />
+        <module name="video" />
+        <module name="videoSystem" />
+        <module name="webserviceSystem" />
+        <module name="xxhjSystem" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="alarmSystem" target="1.8" />
+      <module name="baseframework" target="1.8" />
+      <module name="commandSystem" target="1.8" />
+      <module name="common" target="1.8" />
+      <module name="db" target="1.8" />
+      <module name="dispatchSystem" target="1.8" />
+      <module name="electronicMap" target="1.8" />
+      <module name="emergency" target="1.8" />
+      <module name="message" target="1.8" />
+      <module name="parent" target="1.8" />
+      <module name="prisonXJ" target="1.8" />
+      <module name="secrity" target="1.8" />
+      <module name="smnSystem" target="1.8" />
+      <module name="socket" target="1.8" />
+      <module name="user" target="1.8" />
+      <module name="video" target="1.8" />
+      <module name="videoSystem" target="1.8" />
+      <module name="webserviceSystem" target="1.8" />
+      <module name="xxhjSystem" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.cesgroup.framework:framework-base:1.4.26-RELEASE">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../Common/repository/com/cesgroup/framework/framework-base/1.4.26-RELEASE/framework-base-1.4.26-RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../../Common/repository/com/cesgroup/framework/framework-base/1.4.26-RELEASE/framework-base-1.4.26-RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../../Common/repository/com/cesgroup/framework/framework-base/1.4.26-RELEASE/framework-base-1.4.26-RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,33 @@
+
+IWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(”˜²Ş
+NWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(ªÛô‰üÿÿÿÿ
+NWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(—‚º˜ıÿÿÿÿ
+MWeb:TableWithoutCaptionCheck" Add a description to this table.(¼ëùÏşÿÿÿÿ
+?	Web:S5256"%Add "<th>" headers to this "<table>".(¼ëùÏşÿÿÿÿ
+C	Web:S1827")Remove this deprecated "align" attribute.(ßÊ£˜úÿÿÿÿ
+NWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(’ïÜ…ıÿÿÿÿ
+>	Web:S1827")Remove this deprecated "align" attribute.(ê„Äæ
+C	Web:S1827"")Remove this deprecated "width" attribute.(®·Ó§úÿÿÿÿ
+MWeb:TableWithoutCaptionCheck3" Add a description to this table.(¼ëùÏşÿÿÿÿ
+?	Web:S52563"%Add "<th>" headers to this "<table>".(¼ëùÏşÿÿÿÿ
+C	Web:S18275")Remove this deprecated "align" attribute.(Øœªûÿÿÿÿ
+C	Web:S18278")Remove this deprecated "width" attribute.(®·Ó§úÿÿÿÿ
+YWeb:UnsupportedTagsInHtml5Check"(Remove this deprecated "center" element.(Úû­ƒüÿÿÿÿ
+HWeb:ImgWithoutAltCheck­"%Add an "alt" attribute to this image.(åæÙÎ
+HWeb:ImgWithoutAltCheck±"%Add an "alt" attribute to this image.(¦ïâí
+IWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(”˜²Ş
+NWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(ªÛô‰üÿÿÿÿ
+NWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(—‚º˜ıÿÿÿÿ
+MWeb:TableWithoutCaptionCheck" Add a description to this table.(¼ëùÏşÿÿÿÿ
+?	Web:S5256"%Add "<th>" headers to this "<table>".(¼ëùÏşÿÿÿÿ
+C	Web:S1827")Remove this deprecated "align" attribute.(ßÊ£˜úÿÿÿÿ
+NWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(’ïÜ…ıÿÿÿÿ
+>	Web:S1827")Remove this deprecated "align" attribute.(ê„Äæ
+C	Web:S1827"")Remove this deprecated "width" attribute.(®·Ó§úÿÿÿÿ
+MWeb:TableWithoutCaptionCheck3" Add a description to this table.(¼ëùÏşÿÿÿÿ
+?	Web:S52563"%Add "<th>" headers to this "<table>".(¼ëùÏşÿÿÿÿ
+C	Web:S18275")Remove this deprecated "align" attribute.(Øœªûÿÿÿÿ
+C	Web:S18278")Remove this deprecated "width" attribute.(®·Ó§úÿÿÿÿ
+YWeb:UnsupportedTagsInHtml5Check"(Remove this deprecated "center" element.(Úû­ƒüÿÿÿÿ
+HWeb:ImgWithoutAltCheck­"%Add an "alt" attribute to this image.(åæÙÎ
+HWeb:ImgWithoutAltCheck±"%Add an "alt" attribute to this image.(¦ïâí

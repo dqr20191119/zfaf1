@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="videoSystem:war">
+    <output-path>$PROJECT_DIR$/videoSystem/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>videoSystem</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="videoSystem.war">
+      <element id="artifact" artifact-name="videoSystem:war exploded" />
+    </root>
+  </artifact>
+</component>

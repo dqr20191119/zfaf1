@@ -1,0 +1,37 @@
+
+N
+java:S1854l"8Remove this useless assignment to local variable "user".(÷Îî–
+?
+java:S1481l")Remove this unused "user" local variable.(÷Îî–
+Q	java:S125o"<This block of commented-out lines of code should be removed.(ëÜŒÍ
+G
+java:S1135n"2Complete the task associated to this TODO comment.(¸Ê•+
+N
+java:S1135Ž"2Complete the task associated to this TODO comment.(Ê´ç›ýÿÿÿÿ
+Q	java:S125±"<This block of commented-out lines of code should be removed.(â‰¤
+@
+java:S10680"*Remove this unused "logger" private field.(³ý°‡
+p
+java:S1488>"ZImmediately return this expression instead of assigning it to the temporary variable "mv".(•ö¾ú
+u
+java:S1488E"ZImmediately return this expression instead of assigning it to the temporary variable "mv".(™¼±Îÿÿÿÿÿ
+~
+java:S1488´"bImmediately return this expression instead of assigning it to the temporary variable "ajaxResult".(·’Æãùÿÿÿÿ
+N
+java:S1854l"8Remove this useless assignment to local variable "user".(÷Îî–
+?
+java:S1481l")Remove this unused "user" local variable.(÷Îî–
+Q	java:S125o"<This block of commented-out lines of code should be removed.(ëÜŒÍ
+G
+java:S1135n"2Complete the task associated to this TODO comment.(¸Ê•+
+N
+java:S1135Ž"2Complete the task associated to this TODO comment.(Ê´ç›ýÿÿÿÿ
+Q	java:S125±"<This block of commented-out lines of code should be removed.(â‰¤
+@
+java:S10680"*Remove this unused "logger" private field.(³ý°‡
+p
+java:S1488>"ZImmediately return this expression instead of assigning it to the temporary variable "mv".(•ö¾ú
+u
+java:S1488E"ZImmediately return this expression instead of assigning it to the temporary variable "mv".(™¼±Îÿÿÿÿÿ
+~
+java:S1488´"bImmediately return this expression instead of assigning it to the temporary variable "ajaxResult".(·’Æãùÿÿÿÿ
