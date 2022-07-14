@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.MsgsubscribeMapper">
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.common.entity.MsgsubscribeEntity" resultType="com.cesgroup.prison.common.entity.MsgsubscribeEntity">
+		SELECT A.MSD_MSG_IDNTY, WM_CONCAT(A.MSD_USER_ID) MSD_USER_ID, WM_CONCAT(B.PBD_POLICE_NAME) MSD_USER_NAME FROM COM_MSG_SUBSCRIBE A 
+		LEFT JOIN V_POLICE_BASE_DTLS B ON B.PBD_CUS_NUMBER = A.MSD_CUS_NUMBER AND B.PBD_USER_ID = A.MSD_USER_ID 
+		<where>
+			<if test="msdCusNumber != null and msdCusNumber != ''"> 
+				AND A.MSD_CUS_NUMBER = #{msdCusNumber} 		
+			</if>		
+		</where>
+		GROUP BY A.MSD_MSG_IDNTY
+	</select>
+	
+	<select id="findAllData" parameterType="com.cesgroup.prison.common.entity.MsgsubscribeEntity" resultType="com.cesgroup.prison.common.entity.MsgsubscribeEntity">
+		SELECT MSD_CUS_NUMBER, MSD_USER_ID, MSD_MSG_IDNTY 
+		FROM COM_MSG_SUBSCRIBE 
+		ORDER BY MSD_MSG_IDNTY 
+	</select>
+</mapper>

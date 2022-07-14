@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.inspect.dao.InspectCheckPoliceMapper">
+  
+  <update id="updateByIcpInspectId" parameterType="com.cesgroup.prison.inspect.entity.InspectCheckPolice">
+	    update CDS_NOTICE_CHECK_POLICE    
+	    <set>
+	      <if test="icpCusNumber != null and icpCusNumber!=''">
+	        ICP_CUS_NUMBER = #{icpCusNumber,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpInspectId != null and icpInspectId!=''">
+	        ICP_INSPECT_ID = #{icpInspectId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpInspectTypeIndc != null and icpInspectTypeIndc!=''">
+	        ICP_INSPECT_TYPE_INDC = #{icpInspectTypeIndc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpPoliceIdnty != null and icpPoliceIdnty!=''"  >
+	        ICP_POLICE_IDNTY = #{icpPoliceIdnty,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpPoliceName != null and icpPoliceName!=''">
+	        ICP_POLICE_NAME = #{icpPoliceName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpRemark != null and icpRemark!=''">
+	        ICP_REMARK = #{icpRemark,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpCrteTime != null and icpCrteTime!=''">
+	        ICP_CRTE_TIME = #{icpCrteTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="icpCrteUserId != null and icpCrteUserId!=''">
+	        ICP_CRTE_USER_ID = #{icpCrteUserId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="icpUpdtTime != null and icpUpdtTime!=''">
+	        ICP_UPDT_TIME = #{icpUpdtTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="icpUpdtUserId != null and icpUpdtUserId!=''">
+	        ICP_UPDT_USER_ID = #{icpUpdtUserId,jdbcType=VARCHAR},
+	      </if>
+	  </set>
+      where 1=1
+      <if test="id != null and id!=''" >
+        and ID = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="icpInspectId != null and icpInspectId!=''">
+        and ICP_INSPECT_ID = #{icpInspectId,jdbcType=VARCHAR}
+      </if>
+	  
+  </update>
+  
+  <delete id="deleteByIcpInspectId"
+		parameterType="java.lang.String">
+		DELETE FROM CDS_NOTICE_CHECK_POLICE
+		 <where>
+		 	 ICP_INSPECT_ID = #{icpInspectId} 
+		</where>
+	</delete>
+</mapper>

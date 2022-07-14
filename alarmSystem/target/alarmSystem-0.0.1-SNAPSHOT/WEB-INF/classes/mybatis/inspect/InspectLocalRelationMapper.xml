@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.inspect.dao.InspectLocalRelationMapper">
+	<select id="inspectLocalRelationListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		  select 	N.ID as "id",
+		  			INR_CUS_NUMBER as "inrCusNumber",
+		  			INR_TYPE_INDC as "inrTypeIndc",
+		  			TO_CHAR(INR_TIME,'YYYY-MM-DD HH24:MI:SS') as "inrTime",
+		  			INR_ADDR as "inrAddr",
+		  			INR_DPRTMNT_NAME as "inrDprtmntName",
+		  			TO_CHAR(INR_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as "inrCrteTime",
+		  			INR_REMARK as "inrRemark"
+		  			
+			  from CDS_INSPECT_LOCAL_RELATION N
+			 where 1=1
+      		 <if test="inrTypeIndc != null  and inrTypeIndc !=''">
+			 	  and  N.INR_TYPE_INDC  =  #{inrTypeIndc,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="inrInspectId != null  and inrInspectId !=''">
+			 	  and N.INR_INSPECT_ID = #{inrInspectId ,jdbcType=VARCHAR}
+      		 </if>
+      		 ORDER BY inr_crte_time DESC
+  </select>
+</mapper>

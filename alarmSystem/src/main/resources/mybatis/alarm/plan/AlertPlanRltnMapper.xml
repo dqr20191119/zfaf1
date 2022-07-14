@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.alarm.plan.dao.AlertPlanRltnMapper">
+
+	<select id="listAllForAlertor" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select APR_CUS_NUMBER,APR_DVC_IDNTY,APR_DVC_NAME,APR_DVC_TYPE_INDC,APR_PLAN_ID,APR_BRAND_INDC,
+		APR_REMARK,ID
+		FROM cds_alert_plan_rltn
+		<where>
+			<if test="alertPlanRltnEntity.aprCusNumber != null and alertPlanRltnEntity.aprCusNumber!='' ">
+				AND apr_cus_number = #{alertPlanRltnEntity.aprCusNumber}
+			</if>
+			<if test="alertPlanRltnEntity.aprPlanId != null and alertPlanRltnEntity.aprPlanId!='' ">
+				AND apr_plan_id = #{alertPlanRltnEntity.aprPlanId}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateAlert" parameterType="java.util.HashMap">
+		UPDATE cds_alert_plan_rltn
+		<set>
+			<if test="alertPlanRltnEntity.aprDvcIdnty != null and alertPlanRltnEntity.aprDvcIdnty!='' ">
+				apr_dvc_idnty = #{alertPlanRltnEntity.aprDvcIdnty},
+			</if>
+
+			<if test="alertPlanRltnEntity.aprDvcName != null and alertPlanRltnEntity.aprDvcName!='' ">
+				apr_dvc_name = #{alertPlanRltnEntity.aprDvcName},
+			</if>
+
+			<if test="alertPlanRltnEntity.aprDvcTypeIndc != null and alertPlanRltnEntity.aprDvcTypeIndc!='' ">
+				apr_dvc_type_indc = #{alertPlanRltnEntity.aprDvcTypeIndc},
+			</if>
+
+			<if test="alertPlanRltnEntity.aprPlanId != null and alertPlanRltnEntity.aprPlanId!='' ">
+				apr_plan_id = #{alertPlanRltnEntity.aprPlanId},
+			</if>
+			
+			<if test="alertPlanRltnEntity.aprBrandIndc != null and alertPlanRltnEntity.aprBrandIndc!='' ">
+				APR_BRAND_INDC = #{alertPlanRltnEntity.aprBrandIndc},
+			</if>
+
+			<if test="alertPlanRltnEntity.aprRemark != null and alertPlanRltnEntity.aprRemark!='' ">
+				apr_remark = #{alertPlanRltnEntity.aprRemark},
+			</if>
+
+			<if test="alertPlanRltnEntity.aprUpdtTime != null and alertPlanRltnEntity.aprUpdtTime!='' ">
+				apr_updt_time = #{alertPlanRltnEntity.aprUpdtTime},
+			</if>
+
+			<if test="alertPlanRltnEntity.aprUpdtUserId != null and alertPlanRltnEntity.aprUpdtUserId!='' ">
+				apr_updt_user_id = #{alertPlanRltnEntity.aprUpdtUserId},
+			</if>
+
+		</set>
+		<where>
+			<if test="alertPlanRltnEntity.id !=null and alertPlanRltnEntity.id !=''">
+				AND (TRIM(#{alertPlanRltnEntity.id}) is null or id = #{alertPlanRltnEntity.id})
+			</if>
+		</where>
+	</update>
+
+
+</mapper>

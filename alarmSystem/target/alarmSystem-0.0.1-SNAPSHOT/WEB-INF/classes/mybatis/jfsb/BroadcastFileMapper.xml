@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.jfsb.dao.BroadcastFileDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.BroadcastFile">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="BFD_CUS_NUMBER" jdbcType="CHAR" property="bfdCusNumber" />
+		<result column="BFD_IDNTY" jdbcType="CHAR" property="bfdIdnty" />
+		<result column="BFD_NAME" jdbcType="CHAR" property="bfdName" />
+		<result column="BFD_REMARK" jdbcType="VARCHAR" property="bfdRemark" />
+		<result column="BFD_STTS_INDC" jdbcType="VARCHAR" property="bfdSttsIndc" />
+		<result column="BFD_ORDER" jdbcType="DECIMAL" property="bfdOrder" />
+		<result column="BFD_CRTE_TIME" jdbcType="TIMESTAMP" property="bfdCrteTime" />
+		<result column="BFD_CRTE_USER_ID" jdbcType="VARCHAR" property="bfdCrteUserId" />
+		<result column="BFD_UPDT_TIME" jdbcType="TIMESTAMP" property="bfdUpdtTime" />
+		<result column="BFD_UPDT_USER_ID" jdbcType="VARCHAR" property="bfdUpdtUserId" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		ID, BFD_CUS_NUMBER, BFD_IDNTY, BFD_NAME, BFD_REMARK, BFD_STTS_INDC, BFD_ORDER, BFD_CRTE_TIME, 
+		BFD_CRTE_USER_ID, BFD_UPDT_TIME, BFD_UPDT_USER_ID
+	</sql>
+	
+	<!-- listAll 分页查询全部的广播曲目列表 -->
+	<select id="listAll" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			DVC_BROADCAST_FILE_DTLS T1
+		<where>
+			<if test="bfdName != null and bfdName != ''">
+				AND T1.BFD_NAME LIKE '%${bfdName}%'
+			</if>
+			<if test="bfdCusNumber != null and bfdCusNumber != ''">
+				AND T1.BFD_CUS_NUMBER = '${bfdCusNumber}'
+			</if>
+			AND T1.BFD_STTS_INDC = '0'
+		</where>
+	</select>
+	
+	<!-- findById 根据主键ID查询广播曲目数据 -->
+	<select id="findById" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			DVC_BROADCAST_FILE_DTLS T1
+		WHERE T1.ID = '${id}'
+	</select>
+
+	<!-- findByIdList 根据主键ID列表查询广播设备数据 -->
+	<select id="findByIdList" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			DVC_BROADCAST_FILE_DTLS T1
+		<where>
+			<if test="idList != null">
+				T1.ID IN
+				<foreach collection="idList" item="id" index="index" separator="," open="(" close=")">
+					'${id}'
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<!-- 查询最大排序号 -->
+    <select id="findMaxOrderByBfdCusNumber" resultType="java.lang.Integer" useCache="true">
+		SELECT 
+			max(T1.BFD_ORDER) 
+		FROM 
+			DVC_BROADCAST_FILE_DTLS T1 
+		WHERE T1.BFD_CUS_NUMBER = '${bfdCusNumber}'
+    </select>
+    
+	<!-- 查询最大排序号 -->
+    <select id="findCountByBfdCusNumberAndBfdIdnty" resultType="java.lang.Integer" useCache="true">
+		SELECT 
+			count(0)
+		FROM 
+			DVC_BROADCAST_FILE_DTLS T1 
+		WHERE T1.BFD_CUS_NUMBER = '${bfdCusNumber}' AND T1.BFD_IDNTY = '${bfdIdnty}' AND T1.BFD_STTS_INDC = '0'
+    </select>
+    
+	<!-- 根据监狱编号，查询广播曲目列表 -->
+    <select id="findByBfdCusNumber" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			<include refid="Base_Column_List"></include>
+		FROM 
+			DVC_BROADCAST_FILE_DTLS T1 
+		<where>
+			<if test="bfdCusNumber != null and bfdCusNumber != ''">
+				AND T1.BFD_CUS_NUMBER = '${bfdCusNumber}'
+			</if>
+			AND T1.BFD_STTS_INDC = '0'
+			ORDER BY T1.BFD_ORDER
+		</where>
+    </select>
+</mapper>

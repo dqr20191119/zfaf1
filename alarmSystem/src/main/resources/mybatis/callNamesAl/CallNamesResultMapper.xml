@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.callNamesAl.dao.CallNamesResultMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+		CDS_CALL_NAMES_RESULT.ID as id,
+		CNR_MASTER_ID ,
+		CNR_NAD_ID ,
+		CNR_PRISONER_INDC,
+		PBD_PRISONER,
+		CNR_IS_CALLED ,
+		CNR_CUS_NUMBER
+		from
+		CDS_CALL_NAMES_RESULT
+		left join V_PRISONER_BASE_DTLS b on CNR_CUS_NUMBER = PBD_CUS_NUMBER and CNR_PRISONER_INDC = PBD_PRISONER_INDC
+		<where>
+			<if test="callNamesResultEntity.cnrMasterId != null and callNamesResultEntity.cnrMasterId!='' ">
+				AND cnr_master_id = #{callNamesResultEntity.cnrMasterId}
+			</if>
+
+			<if test="callNamesResultEntity.cnrNadId != null and callNamesResultEntity.cnrNadId!='' ">
+				AND cnr_nad_id = #{callNamesResultEntity.cnrNadId}
+			</if>
+
+			<if test="callNamesResultEntity.cnrPrisonerIndc != null and callNamesResultEntity.cnrPrisonerIndc!='' ">
+				AND cnr_prisoner_indc = #{callNamesResultEntity.cnrPrisonerIndc}
+			</if>
+
+			<if test="callNamesResultEntity.cnrIsCalled != null and callNamesResultEntity.cnrIsCalled!='' ">
+				AND cnr_is_called = #{callNamesResultEntity.cnrIsCalled}
+			</if>
+			
+			<if test="callNamesResultEntity.cnrCusNumber != null and callNamesResultEntity.cnrCusNumber!='' ">
+				AND cnr_cus_number = #{callNamesResultEntity.cnrCusNumber}
+			</if>
+
+		</where>
+		ORDER BY CNR_CRTE_TIME desc
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_CALL_NAMES_RESULT
+		<set>
+			<if test="callNamesResultEntity.cnrMasterId != null and callNamesResultEntity.cnrMasterId!='' ">
+				cnr_master_id = #{callNamesResultEntity.cnrMasterId},
+			</if>
+
+			<if test="callNamesResultEntity.cnrNadId != null and callNamesResultEntity.cnrNadId!='' ">
+				cnr_nad_id = #{callNamesResultEntity.cnrNadId},
+			</if>
+
+			<if test="callNamesResultEntity.cnrPrisonerIndc != null and callNamesResultEntity.cnrPrisonerIndc!='' ">
+				cnr_prisoner_indc = #{callNamesResultEntity.cnrPrisonerIndc},
+			</if>
+
+			<if test="callNamesResultEntity.cnrIsCalled != null and callNamesResultEntity.cnrIsCalled!='' ">
+				cnr_is_called = #{callNamesResultEntity.cnrIsCalled},
+			</if>
+
+
+			<if test="callNamesResultEntity.cnrUpdtTime != null and callNamesResultEntity.cnrUpdtTime!='' ">
+				cnr_updt_time = #{callNamesResultEntity.cnrUpdtTime},
+			</if>
+
+			<if test="callNamesResultEntity.cnrUpdtUserId != null and callNamesResultEntity.cnrUpdtUserId!='' ">
+				cnr_updt_user_id = #{callNamesResultEntity.cnrUpdtUserId},
+			</if>
+
+			<if test="callNamesResultEntity.cnrCusNumber != null and callNamesResultEntity.cnrCusNumber!='' ">
+				cnr_cus_number = #{callNamesResultEntity.cnrCusNumber},
+			</if>
+		</set>
+		<where>
+			<if test="callNamesResultEntity.id !=null and callNamesResultEntity.id !=''">
+				AND (TRIM(#{callNamesResultEntity.id}) is null or id = #{callNamesResultEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_CALL_NAMES_RESULT WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+</mapper>

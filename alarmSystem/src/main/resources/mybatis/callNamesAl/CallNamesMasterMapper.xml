@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.callNamesAl.dao.CallNamesMasterMapper">
+
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+		CDS_CALL_NAMES_MASTER.ID as id,
+		CNM_CUS_NUMBER ,
+		CNM_LCH ,
+		ABD_AREA_NAME as LC,
+		CNM_DPRTMNT_ID ,
+		TO_CHAR(CNM_START_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CNM_START_TIME ,
+		CNM_TIME_LAG ,
+		CNM_IS_END
+		from
+		CDS_CALL_NAMES_MASTER
+		left join CDS_AREA_BASE_DTLS c on ABD_CUS_NUMBER = CNM_CUS_NUMBER and CNM_LCH = ABD_AREA_ID
+		<where>
+			<if test="callNamesMasterEntity.cnmCusNumber != null and callNamesMasterEntity.cnmCusNumber!='' ">
+				AND cnm_cus_number = #{callNamesMasterEntity.cnmCusNumber}
+				and CNM_IS_END = '1'
+			</if>
+
+			<if test="callNamesMasterEntity.cnmDprtmntId != null and callNamesMasterEntity.cnmDprtmntId!='' ">
+				AND cnm_dprtmnt_id = #{callNamesMasterEntity.cnmDprtmntId}
+			</if>
+
+			<if test="callNamesMasterEntity.startTime != null and callNamesMasterEntity.startTime!='' ">
+				AND TO_CHAR(cnm_start_time, 'YYYY-MM-DD') = #{callNamesMasterEntity.startTime}
+			</if>
+
+			<if test="callNamesMasterEntity.cnmIsEnd != null and callNamesMasterEntity.cnmIsEnd!='' ">
+				AND cnm_is_end = #{callNamesMasterEntity.cnmIsEnd}
+			</if>
+
+		</where>
+		ORDER BY CNM_CRTE_TIME desc
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_CALL_NAMES_MASTER
+		<set>
+
+			<if test="callNamesMasterEntity.cnmLch != null and callNamesMasterEntity.cnmLch!='' ">
+				CNM_LCH = #{callNamesMasterEntity.cnmLch},
+			</if>
+
+			<if test="callNamesMasterEntity.cnmDprtmntId != null and callNamesMasterEntity.cnmDprtmntId!='' ">
+				cnm_dprtmnt_id = #{callNamesMasterEntity.cnmDprtmntId},
+			</if>
+
+			<if test="callNamesMasterEntity.cnmStartTime != null and callNamesMasterEntity.cnmStartTime!='' ">
+				cnm_start_time = #{callNamesMasterEntity.cnmStartTime},
+			</if>
+
+			<if test="callNamesMasterEntity.cnmTimeLag != null and callNamesMasterEntity.cnmTimeLag!='' ">
+				cnm_time_lag = #{callNamesMasterEntity.cnmTimeLag},
+			</if>
+
+			<if test="callNamesMasterEntity.cnmIsEnd != null and callNamesMasterEntity.cnmIsEnd!='' ">
+				cnm_is_end = #{callNamesMasterEntity.cnmIsEnd},
+			</if>
+
+			<if test="callNamesMasterEntity.cnmUpdtTime != null and callNamesMasterEntity.cnmUpdtTime!='' ">
+				cnm_updt_time = #{callNamesMasterEntity.cnmUpdtTime},
+			</if>
+
+			<if test="callNamesMasterEntity.cnmUpdtUserId != null and callNamesMasterEntity.cnmUpdtUserId!='' ">
+				cnm_updt_user_id = #{callNamesMasterEntity.cnmUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="callNamesMasterEntity.id !=null and callNamesMasterEntity.id !=''">
+				AND (TRIM(#{callNamesMasterEntity.id}) is null or id = #{callNamesMasterEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_CALL_NAMES_MASTER WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="findAreaDepartment" parameterType="hashmap" resultType="hashmap">
+		SELECT ADR_AREA_ID "id", ADR_AREA_NAME "name"
+		FROM CDS_AREA_DEPARTMENT_RELATION
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND ADR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="dprtmntId != null and dprtmntId != ''">
+				AND ADR_DPRTMNT_ID = #{dprtmntId}
+			</if>
+		</where>
+		ORDER BY ADR_CRTE_TIME asc
+	</select>
+
+	<select id="findJsAndZfsByLc" parameterType="hashmap" resultType="hashmap">
+		select
+		CPJ_CUS_NUMBER as jyh ,
+		CPJ_LCH as lch ,
+		CPJ_LC as lc ,
+		CPJ_JS as jsh ,
+		CPJ_CAMERA_ID as zsxt ,
+		CPJ_F_CAMERA_ID as fsxts,
+		( SELECT COUNT(1) || '' FROM CDS_CALL_NAMES_REGISTER_PRISONER LEFT JOIN V_PRISONER_BASE_DTLS
+		ON CNR_CUS_NUMBER = PBD_CUS_NUMBER AND CNR_PRISONER_INDC = PBD_PRISONER_INDC
+		WHERE
+		CNR_CUS_NUMBER = CPJ_CUS_NUMBER AND PBD_AREA_ID = CPJ_LCH AND PBD_CELL_INDC = CPJ_JS ) AS ZFS
+		FROM
+		CDS_PRISON_JS
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND CPJ_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="lch != null and lch != ''">
+				AND CPJ_LCH = #{lch}
+			</if>
+		</where>
+		ORDER BY CPJ_JS asc
+	</select>
+
+	<select id="getPrisonerIndcByJs" parameterType="java.util.HashMap" resultType="String">
+		SELECT CNR_PRISONER_INDC FROM CDS_CALL_NAMES_REGISTER_PRISONER LEFT JOIN V_PRISONER_BASE_DTLS
+		ON CNR_CUS_NUMBER = PBD_CUS_NUMBER AND CNR_PRISONER_INDC = PBD_PRISONER_INDC
+		<where>
+			<if test="jyh != null and jyh != ''">
+				AND CNR_CUS_NUMBER = #{jyh}
+			</if>
+			<if test="lch != null and lch != ''">
+				AND PBD_AREA_ID = #{lch}
+			</if>
+			<if test="jsh != null and jsh != ''">
+				AND PBD_CELL_INDC = #{jsh}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

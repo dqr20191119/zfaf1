@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.AlertorMapper">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.AlertorEntity">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="ABD_CUS_NUMBER" jdbcType="CHAR" property="abdCusNumber" />
+		<result column="ABD_IDNTY" jdbcType="CHAR" property="abdIdnty" />
+		<result column="ABD_NAME" jdbcType="CHAR" property="abdName" />
+		<result column="ABD_PRE_NAME" jdbcType="CHAR" property="abdPreName" />
+		<result column="ABD_TYPE_INDC" jdbcType="CHAR" property="abdTypeIndc" />
+		<result column="ABD_AREA_ID" jdbcType="CHAR" property="abdAreaId" />
+		<result column="ABD_AREA" jdbcType="CHAR" property="abdArea" />
+		<result column="ABD_ADDRS" jdbcType="CHAR" property="abdAddrs" />
+		<result column="ABD_IP" jdbcType="CHAR" property="abdIp" />
+		<result column="ABD_PORT" jdbcType="CHAR" property="abdPort" />
+		<result column="ABD_HOST_IDNTY" jdbcType="CHAR" property="abdHostIdnty" />
+		<result column="ABD_STTS_INDC" jdbcType="CHAR" property="abdSttsIndc" />
+		<result column="ABD_ACTION_INDC" jdbcType="CHAR" property="abdActionIndc" />
+		<result column="ABD_REMARK" jdbcType="CHAR" property="abdRemark" />
+		<result column="ABD_CRTE_TIME" jdbcType="TIMESTAMP" property="abdCrteTime" />
+		<result column="ABD_CRTE_USER_ID" jdbcType="CHAR" property="abdCrteUserId" />
+		<result column="ABD_UPDT_TIME" jdbcType="TIMESTAMP" property="abdUpdtTime" />
+		<result column="ABD_UPDT_USER_ID" jdbcType="CHAR" property="abdUpdtUserId" />
+		<result column="ABD_BRAND_INDC" jdbcType="CHAR" property="abdBrandIndc" />
+		<result column="ABD_ALERTOR_VALID" jdbcType="CHAR" property="abdAlertorValid" />
+		<result column="ABD_ALERTOR_STARTTIME" jdbcType="CHAR" property="abdAlertorStarttime" />
+		<result column="ABD_ALERTOR_ENDTIME" jdbcType="CHAR" property="abdAlertorEndtime" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, ABD_CUS_NUMBER, ABD_IDNTY, ABD_NAME, ABD_PRE_NAME, ABD_TYPE_INDC, ABD_AREA_ID, 
+		ABD_AREA, ABD_ADDRS, ABD_IP, ABD_PORT, ABD_HOST_IDNTY, ABD_STTS_INDC, ABD_ACTION_INDC, 
+		ABD_REMARK, ABD_CRTE_TIME, ABD_CRTE_USER_ID, ABD_UPDT_TIME, ABD_UPDT_USER_ID, ABD_BRAND_INDC, 
+		ABD_ALERTOR_VALID, ABD_ALERTOR_STARTTIME, ABD_ALERTOR_ENDTIME
+	</sql>
+
+	<!-- 根据主键ID，查询报警设备 -->
+	<select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM DVC_ALERTOR_BASE_DTLS T1
+		WHERE T1.ID = #{id,jdbcType=CHAR}
+	</select>
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		abd_cus_number,
+		abd_idnty,
+		abd_name,
+		abd_pre_name,
+		abd_type_indc,
+		abd_area_id,
+		abd_area,
+		abd_addrs,
+		abd_ip,
+		abd_port,
+		abd_host_idnty,
+		abd_brand_indc,
+		abd_stts_indc,
+		abd_action_indc,
+		abd_remark,
+		to_char(abd_crte_time,'YYYY-MM-DD HH24:mi:ss') as abd_crte_time,
+		abd_crte_user_id,
+		to_char(abd_updt_time,'YYYY-MM-DD HH24:mi:ss') as abd_updt_time,
+		abd_updt_user_id,
+		abd_type
+		FROM
+		dvc_alertor_base_dtls
+		<where>
+			<if test="alertorEntity.abdCusNumber!=null and alertorEntity.abdCusNumber!=''">
+				AND abd_cus_number = #{alertorEntity.abdCusNumber}
+			</if>
+
+			<if test="alertorEntity.abdName!=null and alertorEntity.abdName!=''">
+				AND abd_name like concat('%', #{alertorEntity.abdName},'%')
+			</if>
+
+			<if test="alertorEntity.abdIdnty != null and alertorEntity.abdIdnty!='' ">
+				AND abd_idnty = #{alertorEntity.abdIdnty}
+			</if>
+
+			<if test="alertorEntity.abdAreaId!=null and alertorEntity.abdAreaId!=''">
+				AND abd_area_id like concat( #{alertorEntity.abdAreaId},'%')
+			</if>
+
+			<if test="alertorEntity.abdTypeIndc != null and alertorEntity.abdTypeIndc!='' ">
+				AND abd_type_indc = #{alertorEntity.abdTypeIndc}
+			</if>
+
+			<if test="alertorEntity.abdSttsIndc!=null and alertorEntity.abdSttsIndc!=''">
+				AND abd_stts_indc = #{alertorEntity.abdSttsIndc}
+			</if>
+			<if test="alertorEntity.abdType!=null and alertorEntity.abdType!=''">
+				AND abd_type = #{alertorEntity.abdType}
+			</if>
+			AND abd_action_indc != '3'
+		</where>
+		 order by abd_type
+	</select>
+
+	<select id="findAlertorSum" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		COUNT(1) || '' as sum
+		FROM
+		dvc_alertor_base_dtls
+		<where>
+			<if test="alertorEntity.abdCusNumber!=null and alertorEntity.abdCusNumber!=''">
+				AND abd_cus_number = #{alertorEntity.abdCusNumber}
+			</if>
+			<if test="alertorEntity.abdIdnty != null and alertorEntity.abdIdnty!='' ">
+				AND abd_idnty = #{alertorEntity.abdIdnty}
+			</if>
+			AND abd_action_indc != '3'
+		</where>
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<!-- <delete id="deleteByIds" parameterType="List"> DELETE FROM dvc_alertor_base_dtls WHERE ID in <foreach collection="list" item="id" index="index" separator="," open="(" close=")"> #{id} </foreach> </delete> -->
+
+	<!-- 根据id逻辑删除 ,数据库删除报警器与预案关联数据 --> 
+	<update id="deleteByIds" parameterType="List">
+		UPDATE dvc_alertor_base_dtls set abd_action_indc = '3' WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+		<!-- 摄像头报警器，对讲报警器 -->
+		DELETE FROM CDS_ALERT_PLAN_RLTN WHERE APR_DVC_IDNTY in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			select abd_idnty from dvc_alertor_base_dtls where id = #{id} and abd_cus_number = APR_CUS_NUMBER
+		</foreach>
+		;
+	</update>
+
+	<!-- 下拉控件数据 根据监狱号获取报警器信息 -->
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "value" ,
+		abd_name As "text"
+		FROM
+		dvc_alertor_base_dtls
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND abd_cus_number = #{cusNumber}
+			</if>
+			<if test="areaId!=null and areaId!=''">
+				AND abd_area_id = #{areaId}
+			</if>
+			AND abd_stts_indc = '0' <!-- 报警器状态正常 -->
+			AND abd_action_indc != '3'
+		</where>
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE dvc_alertor_base_dtls
+		<set>
+			<if test="alertorEntity.abdIdnty != null and alertorEntity.abdIdnty!='' ">
+				abd_idnty = #{alertorEntity.abdIdnty},
+			</if>
+
+			<if test="alertorEntity.abdName != null and alertorEntity.abdName!='' ">
+				abd_name = #{alertorEntity.abdName},
+			</if>
+
+			<if test="alertorEntity.abdPreName != null and alertorEntity.abdPreName!='' ">
+				abd_pre_name = #{alertorEntity.abdPreName},
+			</if>
+
+			<if test="alertorEntity.abdTypeIndc != null and alertorEntity.abdTypeIndc!='' ">
+				abd_type_indc = #{alertorEntity.abdTypeIndc},
+			</if>
+
+			<if test="alertorEntity.abdAreaId != null and alertorEntity.abdAreaId!='' ">
+				abd_area_id = #{alertorEntity.abdAreaId},
+			</if>
+
+			<if test="alertorEntity.abdArea != null and alertorEntity.abdArea!='' ">
+				abd_area = #{alertorEntity.abdArea},
+			</if>
+
+			<if test="alertorEntity.abdAddrs != null and alertorEntity.abdAddrs!='' ">
+				abd_addrs = #{alertorEntity.abdAddrs},
+			</if>
+
+			<if test="alertorEntity.abdIp != null and alertorEntity.abdIp!='' ">
+				abd_ip = #{alertorEntity.abdIp},
+			</if>
+
+			<if test="alertorEntity.abdPort != null and alertorEntity.abdPort!='' ">
+				abd_port = #{alertorEntity.abdPort},
+			</if>
+
+			<if test="alertorEntity.abdHostIdnty != null and alertorEntity.abdHostIdnty!='' ">
+				abd_host_idnty = #{alertorEntity.abdHostIdnty},
+			</if>
+
+			<if test="alertorEntity.abdSttsIndc != null and alertorEntity.abdSttsIndc!='' ">
+				abd_stts_indc = #{alertorEntity.abdSttsIndc},
+			</if>
+
+			<if test="alertorEntity.abdActionIndc != null and alertorEntity.abdActionIndc!='' ">
+				abd_action_indc = #{alertorEntity.abdActionIndc},
+			</if>
+
+			<if test="alertorEntity.abdRemark != null and alertorEntity.abdRemark!='' ">
+				abd_remark = #{alertorEntity.abdRemark},
+			</if>
+
+			<if test="alertorEntity.abdUpdtTime != null and alertorEntity.abdUpdtTime!='' ">
+				abd_updt_time = #{alertorEntity.abdUpdtTime},
+			</if>
+
+			<if test="alertorEntity.abdUpdtUserId != null and alertorEntity.abdUpdtUserId!='' ">
+				abd_updt_user_id = #{alertorEntity.abdUpdtUserId},
+			</if>
+
+			<if test="alertorEntity.abdBrandIndc != null and alertorEntity.abdBrandIndc!='' ">
+				abd_brand_indc = #{alertorEntity.abdBrandIndc},
+			</if>
+
+			<if test="alertorEntity.abdAlertorValid != null ">
+				ABD_ALERTOR_VALID = #{alertorEntity.abdAlertorValid },
+			</if>
+
+			<if test="alertorEntity.abdAlertorStarttime != null ">
+				ABD_ALERTOR_STARTTIME = #{alertorEntity.abdAlertorStarttime},
+			</if>
+
+			<if test="alertorEntity.abdAlertorEndtime != null ">
+				ABD_ALERTOR_ENDTIME = #{alertorEntity.abdAlertorEndtime},
+			</if>
+
+		</set>
+		<where>
+			<if test="alertorEntity.id !=null and alertorEntity.id !=''">
+				AND (TRIM(#{alertorEntity.id}) is null or id = #{alertorEntity.id})
+			</if>
+		</where>
+	</update>
+	
+	<!-- findByAbdInty 根据第三方报警设备ID，查询该设备在本系统中数据 -->
+	<select id="findByAbdIdnty" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			*
+		FROM
+		dvc_alertor_base_dtls
+		<where>
+			<if test="abdIdnty != null and abdIdnty != ''">
+				AND ABD_IDNTY = #{abdIdnty}
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND ABD_CUS_NUMBER = #{cusNumber}
+			</if>
+			AND abd_stts_indc = '0' <!-- 报警器状态正常 -->
+			AND abd_action_indc != '3'
+		</where>
+	</select>
+
+</mapper>

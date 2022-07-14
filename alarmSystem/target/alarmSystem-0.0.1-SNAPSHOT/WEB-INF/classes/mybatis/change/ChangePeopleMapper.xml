@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.change.dao.ChangePeopleMapper">
+	
+	<select id="searchChangePeople" resultType="com.cesgroup.prison.change.entity.ChangePeople" parameterType="com.cesgroup.prison.change.entity.ChangePeople">
+  		select * from CDS_CIRCULAR_CHANGED_PEOPLE
+  		<where>
+  			<if test="ccpCusNumber != null and ccpCusNumber!=''">
+		        CCP_CUS_NUMBER = #{ccpCusNumber,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccpFlowId != null and ccpFlowId!=''">
+		        AND CCP_FLOW_ID = #{ccpFlowId,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccpChangedIdnty != null and ccpChangedIdnty!=''">
+		        AND CCP_CHANGED_IDNTY = #{ccpChangedIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccpDprtmntIdnty != null and ccpDprtmntIdnty!=''">
+		        AND CCP_DPRTMNT_IDNTY = #{ccpDprtmntIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccpPoliceIdnty != null and ccpPoliceIdnty!=''">
+		       AND  CCP_POLICE_IDNTY = #{ccpPoliceIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="id != null and id != ''" >
+		        and ID = #{id}
+		      </if>	
+  		</where>
+  </select>
+
+  <update id="updateChangePeople" parameterType="com.cesgroup.prison.change.entity.ChangePeople">
+    update CDS_CIRCULAR_CHANGED_PEOPLE
+    <set>
+      <if test="ccpCusNumber != null">
+        CCP_CUS_NUMBER = #{ccpCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpFlowId != null">
+        CCP_FLOW_ID = #{ccpFlowId,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpChangedIdnty != null">
+        CCP_CHANGED_IDNTY = #{ccpChangedIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpDprtmntIdnty != null">
+        CCP_DPRTMNT_IDNTY = #{ccpDprtmntIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpPoliceIdnty != null">
+        CCP_POLICE_IDNTY = #{ccpPoliceIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpPoliceName != null">
+        CCP_POLICE_NAME = #{ccpPoliceName,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpChangedMatters != null">
+        CCP_CHANGED_MATTERS = #{ccpChangedMatters,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpChangedTime != null">
+        CCP_CHANGED_TIME = #{ccpChangedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccpCrteTime != null">
+        CCP_CRTE_TIME = #{ccpCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccpCrteUserId != null">
+        CCP_CRTE_USER_ID = #{ccpCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="ccpUpdtTime != null">
+        CCP_UPDT_TIME = #{ccpUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccpUpdtUserId != null">
+        CCP_UPDT_USER_ID = #{ccpUpdtUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.alarm.plan.dao.AlarmPlanMasterMapper">
+	<!-- 报警预案基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.alarm.plan.entity.AlarmPlanMasterEntity">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="PMA_CUS_NUMBER" jdbcType="CHAR" property="pmaCusNumber" />
+		<result column="PMA_PLAN_NAME" jdbcType="CHAR" property="pmaPlanName" />
+		<result column="PMA_REMARK" jdbcType="CHAR" property="pmaRemark" />
+		<result column="PMA_CRTE_TIME" jdbcType="TIMESTAMP" property="pmaCrteTime" />
+		<result column="PMA_CRTE_USER_ID" jdbcType="CHAR" property="pmaCrteUserId" />
+		<result column="PMA_UPDT_TIME" jdbcType="TIMESTAMP" property="pmaUpdtTime" />
+		<result column="PMA_UPDT_USER_ID" jdbcType="CHAR" property="pmaUpdtUserId" />
+	</resultMap>
+
+	<!-- 报警预案基础字段 -->
+	<sql id="Base_Column_List">
+		ID, PMA_CUS_NUMBER, PMA_PLAN_NAME, PMA_REMARK, PMA_CRTE_TIME, PMA_CRTE_USER_ID, PMA_UPDT_TIME,
+		PMA_UPDT_USER_ID
+  	</sql>
+
+	<!-- 根据主键ID，查询报警预案信息 -->
+	<select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM CDS_PLAN_MASTER T1
+		WHERE T1.ID = #{id,jdbcType=CHAR}
+	</select>
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		id,
+		pma_cus_number,
+		pma_plan_name ,
+		pma_remark ,
+		pma_crte_user_id ,
+		to_char(pma_crte_time,'YYYY-MM-DD HH24:mi:ss') as pma_crte_time,
+		pma_updt_user_id ,
+		to_char(pma_updt_time,'YYYY-MM-DD HH24:mi:ss') as pma_updt_time,
+		(select wm_concat(PID_ITEM_ID) as items from CDS_PLAN_ITEM_DTLS where PID_PLAN_ID = a.id) as items
+		FROM cds_plan_master a
+		<where>
+
+			<if test="alarmPlanMasterEntity.pmaCusNumber != null and alarmPlanMasterEntity.pmaCusNumber!='' ">
+				and pma_cus_number = #{alarmPlanMasterEntity.pmaCusNumber}
+			</if>
+
+			<if test="alarmPlanMasterEntity.pmaPlanName != null and alarmPlanMasterEntity.pmaPlanName!='' ">
+				and pma_plan_name like concat('%', #{alarmPlanMasterEntity.pmaPlanName},'%')
+			</if>
+
+			<if test="alarmPlanMasterEntity.id != null and alarmPlanMasterEntity.id!='' ">
+				and id = #{alarmPlanMasterEntity.id}
+			</if>
+
+		</where>
+	</select>
+
+	<update id="updateAlarmPlanMasterInfo" parameterType="java.util.HashMap">
+		UPDATE cds_plan_master
+		<set>
+			<if test="alarmPlanMasterEntity.pmaPlanName != null and alarmPlanMasterEntity.pmaPlanName!='' ">
+				pma_plan_name = #{alarmPlanMasterEntity.pmaPlanName},
+			</if>
+
+			<if test="alarmPlanMasterEntity.pmaRemark != null and alarmPlanMasterEntity.pmaRemark!='' ">
+				pma_remark = #{alarmPlanMasterEntity.pmaRemark},
+			</if>
+
+			<if test="alarmPlanMasterEntity.pmaUpdtTime != null and alarmPlanMasterEntity.pmaUpdtTime!='' ">
+				pma_updt_time = #{alarmPlanMasterEntity.pmaUpdtTime},
+			</if>
+
+			<if test="alarmPlanMasterEntity.pmaUpdtUserId != null and alarmPlanMasterEntity.pmaUpdtUserId!='' ">
+				pma_updt_user_id = #{alarmPlanMasterEntity.pmaUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="alarmPlanMasterEntity.id !=null and alarmPlanMasterEntity.id !=''">
+				and (TRIM(#{alarmPlanMasterEntity.id}) is null or id = #{alarmPlanMasterEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 1 "门禁"; 2 "摄像机"; 3 "广播"; 4 "大屏"; 5 "对讲"; -->
+	<select id="listAllForMj" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id, DCB_NAME as DVC_NAME , DCB_STTS_INDC as STTS_INDC
+		from DVC_DOOR_CONTROL_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and DCB_CUS_NUMBER = #{cusNumber} and DCB_ACTION_INDC != '3'
+			</if>
+			<if test="areaId != null and areaId !='' ">
+				and DCB_AREA_ID = #{areaId}
+			</if>
+			<if test="itemId != null and itemId !='' and planId != null and planId !=''">
+				and id not in (select PDR_DVC_IDNTY from CDS_PLAN_DEVICE_RLTN where PDR_ITEM_ID= #{itemId} and PDR_PLAN_ID = #{planId} )
+			</if>
+
+		</where>
+	</select>
+
+	<select id="listAllForSx" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id,
+		CBD_NAME as DVC_NAME , CBD_STTS_INDC as STTS_INDC
+		from DVC_CAMERA_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and CBD_CUS_NUMBER = #{cusNumber} and CBD_ACTION_INDC != '3'
+			</if>
+			<if test="areaId != null and areaId !='' ">
+				and CBD_AREA_ID = #{areaId}
+			</if>
+			<if test="itemId != null and itemId !='' and planId != null and planId !=''">
+				and id not in (select PDR_DVC_IDNTY from CDS_PLAN_DEVICE_RLTN where PDR_ITEM_ID= #{itemId} and PDR_PLAN_ID = #{planId} )
+			</if>
+
+		</where>
+	</select>
+
+
+	<select id="listAllForGb" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id,
+		BBD_NAME as DVC_NAME , BBD_STTS_INDC as STTS_INDC
+		from DVC_BROADCAST_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and BBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="areaId != null and areaId !='' "> and BBD_AREA_ID = #{areaId} </if>
+			<if test="itemId != null and itemId !='' and planId != null and planId !=''">
+				and id not in (select PDR_DVC_IDNTY from CDS_PLAN_DEVICE_RLTN where PDR_ITEM_ID= #{itemId} and PDR_PLAN_ID = #{planId} )
+			</if>
+
+		</where>
+	</select>
+
+
+	<select id="listAllForDp" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id,
+		SPL_PLAN_NAME as DVC_NAME <!-- , SPL_STTS_INDC as STTS_INDC -->
+		from CDS_SCREEN_PLAN
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and SPL_CUS_NUMBER = #{cusNumber}  and SPL_STATUS_INDC  = '0'
+			</if>
+			<if test="itemId != null and itemId !='' and planId != null and planId !=''">
+				and id not in (select PDR_DVC_IDNTY from CDS_PLAN_DEVICE_RLTN where PDR_ITEM_ID= #{itemId} and PDR_PLAN_ID = #{planId} )
+			</if>
+		</where>
+	</select>
+
+	<select id="listAllForDj" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select TBD_IDNTY as id,
+		TBD_NAME as DVC_NAME , TBD_STTS_INDC as STTS_INDC
+		from DVC_TALKBACK_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and TBD_CUS_NUMBER = #{cusNumber} and TBD_ACTION_INDC != '3'
+			</if>
+			<if test="areaId != null and areaId !='' "> 
+				and TBD_AREA_ID = #{areaId} 
+			</if>
+			<if test="itemId != null and itemId !='' and planId != null and planId !=''">
+				and id not in (select PDR_DVC_IDNTY from CDS_PLAN_DEVICE_RLTN where PDR_ITEM_ID= #{itemId} and PDR_PLAN_ID = #{planId} )
+			</if>
+
+		</where>
+	</select>
+
+	<!-- 查询待关联的报警器 -->
+	<select id="listAllForBjq" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select 
+			ID, ABD_IDNTY, ABD_NAME , ABD_TYPE_INDC ,ABD_BRAND_INDC
+		from DVC_ALERTOR_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and ABD_CUS_NUMBER = #{cusNumber} and ID not in (select APR_DVC_IDNTY from CDS_ALERT_PLAN_RLTN ) and ABD_ACTION_INDC != '3'
+			</if>
+			<if test="areaId != null and areaId !='' ">
+				and ABD_AREA_ID = #{areaId}
+			</if>
+		</where>
+	</select>
+
+</mapper>

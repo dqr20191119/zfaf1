@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.rwgl.dao.RwxfMapper">
+
+
+    <select id="findList" parameterType="com.cesgroup.prison.rwgl.entity.RwxfEntity" resultType="com.cesgroup.prison.rwgl.entity.RwxfEntity">
+		SELECT A.* FROM CDS_RWGL_RWXF A 
+		WHERE 1 = 1  
+		<if test="jyId != null and jyId != ''"> 
+			AND A.JY_ID = #{jyId} 		
+		</if>
+	</select>
+	
+	<select id="getById" resultType="com.cesgroup.prison.rwgl.entity.RwxfEntity"> 
+		SELECT A.* FROM CDS_RWGL_RWXF A 
+		WHERE A.ID = #{id} 
+	</select>
+  
+  	<select id="updateStatus" resultType="com.cesgroup.prison.rwgl.entity.RwxfEntity"> 
+		UPDATE CDS_RWGL_RWXF A 
+		SET A.RW_STATUS = 3
+		WHERE A.ID =  #{id}
+	</select>
+  
+</mapper>

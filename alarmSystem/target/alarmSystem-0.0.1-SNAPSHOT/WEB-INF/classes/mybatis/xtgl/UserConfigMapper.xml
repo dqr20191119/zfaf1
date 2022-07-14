@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.xtgl.dao.UserConfigMapper" >
+  
+  
+  <update id="updatePart" parameterType="com.cesgroup.prison.xtgl.entity.UserConfig" >
+    update CDS_USER_CONFIG
+    <set >
+      <if test="ucCusNumber != null and ucCusNumber != ''" >
+        UC_CUS_NUMBER = #{ucCusNumber},
+      </if>
+      <if test="ucUserId != null and ucUserId != ''" >
+        UC_USER_ID = #{ucUserId},
+      </if>
+      <if test="ucMapType != null and ucMapType != ''" >
+        UC_MAP_TYPE = #{ucMapType},
+      </if>
+    </set>
+    where ID = #{id}
+  </update>
+</mapper>

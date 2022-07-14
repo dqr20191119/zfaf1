@@ -1,0 +1,353 @@
+@charset "utf-8";
+/* -------------------------------------------------
+ * reset css
+ * -------------------------------------------------
+*/
+*{word-break: break-all;margin:0; padding:0;}
+html{
+    height:100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+	-webkit-font-smoothing:antialiased;
+}
+body{
+	margin:0;
+	padding:0;
+	background-color:#ebebeb;
+	height:100%;
+	text-align:left;
+	color:#404040;
+    font:12px/1.5 Helvetica,arial;
+}
+h1,h2,h3,h4,h5,h6,p,figure,form{
+    margin:0;
+}
+table{
+	border-collapse:collapse;
+	border-spacing:0;
+}
+img{
+	border:0;
+    vertical-align:middle;
+    -ms-interpolation-mode: bicubic;
+}
+a{
+	text-decoration:none;
+	color:#000;
+	outline:0;
+}
+a:focus {
+    outline: none;
+}
+a:hover{
+    color:#cc3300;
+	text-decoration:underline;
+}
+/* hn */
+h1{
+	font-size:16px;
+	line-height:36px;
+}
+h2{
+	font-size:14px;
+	line-height:30px;
+}
+h3{
+	line-height:24px;
+}
+h3,h4,h5,h6{
+	font-size:12px;
+}
+/* ul ol dl */
+ul,li,ol{
+    margin: 0;
+	padding:0;
+	list-style: none outside none;
+}
+ul.has-style li,ol li{
+	margin-left:25px;
+}
+ul.has-style li{
+    list-style:disc;
+}
+ol li{
+	list-style:decimal;
+}
+ul.inline-style li{
+	float:left;
+	display:inline;
+}
+dl{
+    margin-bottom: 18px;
+}
+dt{
+    font-weight: bold;
+}
+dd{
+    margin:0 0 0 9px;
+	padding:0;
+}
+svg:not(:root) {
+    overflow: hidden;
+}
+pre{
+    margin:0;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap !important;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+/* clearfix */
+.clearfix:before, .clearfix:after {
+    content:"";
+    display:table;
+}
+.clearfix:after{
+	clear:both;
+	overflow:hidden;
+}
+.clearfix{
+    zoom:1;
+}
+/* -------------------------------------------------
+ * form
+ * -------------------------------------------------
+*/
+button,input,select,textarea{
+    font-size:12px;
+    font-family:tahoma;
+    margin: 0;
+	outline: 0 none;
+    vertical-align: baseline;
+    *vertical-align: middle;
+}
+textarea{
+    overflow: auto;
+    vertical-align:top;
+	resize:none;
+}
+button,input{
+    line-height:normal;
+}
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"],
+.submit-btn{
+    -webkit-appearance: button;
+    cursor: pointer;
+    *overflow: visible;
+}
+fieldset{
+    border: #B3D0F4 2px solid;
+	border-radius: 15px;
+    margin: 0 2px 18px;
+    padding: 0.35em 0.625em 0.75em;
+}
+legend{
+    border: 0;
+    padding: 0;
+    white-space: normal;
+    color: #6ea8ef;
+	font-size: 16px;
+	font-weight: bold;
+	width: auto;
+	padding: 0 15px;
+	margin-left: 15px;
+    *margin-left: -7px;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner{
+    border: 0;
+    padding: 0;
+}
+/* -------------------------------------------------
+ * css3 & html5
+ * -------------------------------------------------
+*/
+/* html5 */
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary{
+    display: block;
+}
+audio,canvas,video{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+audio:not([controls]){
+    display: none;
+    height: 0;
+}
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+input[type="search"]{
+    -webkit-appearance: textfield;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration{
+    -webkit-appearance: none;
+}
+:-moz-placeholder,
+::-webkit-input-placeholder{
+  color: #999;
+}
+
+
+
+.advancedSearchbox{
+	border:1px solid #d8d8d8;
+	background:#fff;
+}
+.advancedSearchbox form{
+	display: inline-block;
+}
+.advancedSearchbox select{
+	height: 28px;
+}
+.advancedTitle{
+	background:#f7f7f7 url(images/advancedbg.jpg) repeat-x;
+	border-bottom:1px solid #e44b07;
+	height:35px;
+	line-height:35px;
+}
+.advancedTitleText{
+	color:#753a10;
+	margin-left: 20px;
+	font-weight:bold;
+}
+.form-box{
+	width:500px;
+	margin:20px auto;
+}
+.form-item{
+	margin-bottom: 10px;
+}
+.form-item>span{
+	vertical-align: middle;
+	line-height: 25px;
+}
+.form-text{
+	width:100px;
+	text-align: right;
+	display: inline-block;
+}
+.form-input input{
+	vertical-align: middle;
+}
+.form-input label{
+	vertical-align: middle;
+	margin-right: 20px;
+	margin-left: 5px;
+}
+.form-block1,
+.form-block2{
+	display: inline-block;
+	width:79%;
+	margin: 4px 0;
+}
+.form-block2{
+	margin-left: 103px;
+}
+.form-block1 input.finput{
+	width:70px;
+	padding:2px;
+}
+.finput{
+	width: 210px;
+    padding: 5px;
+}
+.advancedsearchbtnteam{
+	text-align: center;
+	margin-top: 30px;
+}
+.advancedsearchbtn{
+	background: url(images/advancedbtn.png) no-repeat 0 0;
+	width:109px;
+	height: 45px;
+	cursor: pointer;
+	display: inline-block;
+}
+.advancedsearchbtn:hover{
+	background-position: 0 -61px;
+}
+
+.advancedcondition{
+	text-align: center;
+	margin:20px auto;
+}
+.advancedcondition select{
+	height:28px;
+}
+.advancedcondition select,
+.advancedcondition input,
+.advancedcondition span{
+	vertical-align: middle;
+	margin:0 2px;
+}
+.advancedjiansuo,
+.advancedjiansuo2{
+	background: url(images/advancedbtn.png) no-repeat 0 -124px;
+	width:71px;
+	height: 34px;
+	cursor: pointer;
+	display: inline-block;
+}
+.advancedjiansuo2{
+	background-position: 0 -217px;
+	width: 91px;
+}
+.advancedjiansuo:hover{
+	background-position: 0 -172px;
+}
+.advancedjiansuo2:hover{
+	background-position: 0 -260px;
+}
+
+.advancedresult{
+	width: 80%;
+	margin:10px auto;
+}
+.ah2{
+	text-align: left;
+	font-size: 14px;
+	font-weight: bold;
+	color: #753a10;
+}
+.yellow{
+	color:#e64e02;
+}
+.advancedresultul{
+	margin-top: 15px;
+}
+.advancedresultul li{
+	border-bottom: 1px solid #d8d8d8;
+	margin-bottom: 10px;
+}
+.advancedresultul li h1{
+	font-weight: bold;
+	font-size: 14px;
+	color:#000;
+	line-height: 25px;
+}
+.advancedresultul li h2{
+	font-weight: normal;
+	color: #000;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow: ellipsis;
+    font-size: 12px;
+    line-height: 25px;
+}
+.advancedresultul li h3{
+	font-weight: normal;
+	color: #999;
+	font-size: 12px;
+	line-height: 25px;
+}

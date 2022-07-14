@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.CommonEvidenceUseMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.common.entity.CommonEvidenceUseEntity">		
+		SELECT A.* FROM CDS_EVIDENCE_USE A WHERE A.ID = #{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.common.entity.CommonEvidenceUseEntity" resultType="com.cesgroup.prison.common.entity.CommonEvidenceUseEntity">
+		SELECT A.* FROM CDS_EVIDENCE_USE A 
+		<where>
+			<if test="ceuCusNumber != null and ceuCusNumber != ''">
+				AND A.CEU_CUS_NUMBER = #{ceuCusNumber}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.common.entity.CommonEvidenceUseEntity" resultType="com.cesgroup.prison.common.entity.CommonEvidenceUseEntity">		
+		SELECT A.*, B.EIN_TITLE, B.EIN_FILE_TYPE_INDC, B.EIN_CAMERA_NAME, B.EIN_ADDRS, B.EIN_FILE_NAME, B.EIN_FILE_PATH, B.EIN_FTP_PATH, B.EIN_CRTE_TIME 
+		FROM CDS_EVIDENCE_USE A 
+		LEFT JOIN CDS_EVIDENCE_INFO B ON B.ID = A.CEU_EVIDENCE_ID
+		<where>
+			<if test="ceuCusNumber != null and ceuCusNumber != ''">
+				AND A.CEU_CUS_NUMBER = #{ceuCusNumber}
+			</if>
+			<if test="ceuYwType != null and ceuYwType != ''">
+				AND A.CEU_YW_TYPE = #{ceuYwType}
+			</if>
+			<if test="ceuYwId != null and ceuYwId != ''">
+				AND A.CEU_YW_ID = #{ceuYwId}
+			</if>
+		</where>
+	</select>
+</mapper>

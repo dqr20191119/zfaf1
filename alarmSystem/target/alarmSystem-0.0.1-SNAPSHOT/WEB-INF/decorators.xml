@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layouts/">
+	<!-- 配置不需要渲染的路径 -->
+	<excludes>
+		<!-- 安全防控 -->
+		<pattern>/aqfk/*</pattern>
+		<!-- 群组管理 -->
+		<pattern>/xxyp/*</pattern>
+		<!-- 系统管理 -->
+		<pattern>/xtgl/*</pattern>
+
+		<pattern>/yjct/*</pattern>
+		<pattern>/common/*</pattern>
+
+		<pattern>/alarm/**</pattern>
+		<!-- 报警类型关联等级 -->
+		<pattern>/alarmTypeAndLev/**</pattern>
+		<!-- 报警预案 -->
+		<pattern>/plan/**</pattern>
+		<!-- 报警器 -->
+		<pattern>/alertor/**</pattern>
+		<!-- 大屏预案 -->
+		<pattern>/screenPlan/**</pattern>
+		<!-- 大屏预案切换 -->
+		<pattern>/screenSwitch/**</pattern>
+		<!-- 门禁控制器 -->
+		<pattern>/doorControl/**</pattern>
+		<!-- 门禁 -->
+		<pattern>/door/**</pattern>
+		<!-- 广播 -->
+		<pattern>/broadcast/**</pattern>
+		<!-- 对讲主机 -->
+		<pattern>/talkBackServer/**</pattern>
+		<!-- 对讲信息 -->
+		<pattern>/talkBackBase/**</pattern>
+		<pattern>/flow/**</pattern>
+		<!-- 实时对讲 -->
+		<pattern>/realTimeTalk/**</pattern>
+		<!-- 监内民警 -->
+		<pattern>/policeInPrison/**</pattern>
+		<!-- 今日押犯 -->
+		<pattern>/prisonerToday/**</pattern>
+		<!-- 物防设备 -->
+		<pattern>/defenseDevice/**</pattern>
+		<!-- 技防设备 -->
+		<pattern>/technicalDevice/**</pattern>
+		<!-- 信息汇聚 -->
+		<pattern>/xxhj/**</pattern>
+		<!-- 首页 -->
+		<pattern>/homeMeun/*</pattern>
+		<!-- 值班 -->
+		<pattern>/zbgl/*</pattern>
+
+		<!-- 监督单 -->
+		<pattern>/monitor/*</pattern>
+		<!-- 证据信息 -->
+		<pattern>/evidence/*</pattern>
+		<!-- 技防设备 -->
+		<pattern>/jfsb/*</pattern>
+		<!-- 物防设备 -->
+		<pattern>/wfsb/*</pattern>
+		<!-- 视频设备 -->
+		<pattern>/sppz/videoDevice/*</pattern>
+		<!-- 流媒体服务 -->
+		<pattern>/sppz/streamServer/*</pattern>
+		<!-- 视频客户端 -->
+		<pattern>/sppz/videoClient/*</pattern>
+		<!-- 群组管理 -->
+		<pattern>/groupManage/*</pattern>
+		<pattern>/dutyToday/**</pattern>
+		<pattern>/portal/*</pattern>
+
+		<pattern>/alarmprocess/*</pattern>
+
+		<!-- 路线管理 add t -->
+		<pattern>/prisonPath/*</pattern>
+
+		<pattern>/lg/*</pattern>
+
+		<pattern>/videopage/*</pattern>
+		<!-- Begin add by linhe for region(区域维护) 2017-11-23 -->
+		<pattern>/region/*</pattern>
+		<!-- 视角管理 -->
+		<pattern>/view/**</pattern>
+		<!-- 模型管理 -->
+		<pattern>/model/*</pattern>
+		<!-- 预警视图管理 -->
+		<pattern>/layer/*</pattern>
+		<!-- 点位管理 -->
+		<pattern>/point/*</pattern>
+		<pattern>/route/*</pattern>
+		<pattern>/menubar/*</pattern>
+		<pattern>/labels/*</pattern>
+		<!-- 督察通报 -->
+		<pattern>/inspect/*</pattern>
+		<pattern>/inspectlocal/*</pattern>
+		<pattern>/xctb/**</pattern>
+
+		<!-- 指挥协调 -->
+		<pattern>/zhxt/*</pattern>
+		<pattern>/alarm/**</pattern>
+		<pattern>/deviceMaintain/**</pattern>
+		<pattern>/foreign/**</pattern>
+		<pattern>/prisonerOut/**</pattern>
+		<pattern>/sporadicFlow/**</pattern>
+		<pattern>/deviceFaultType/**</pattern>
+		<pattern>/callNames/**</pattern>
+		<pattern>/doorlinkage/**</pattern>
+		<pattern>/zfjcj/**</pattern>
+		<!-- 区域部门管理 -->
+		<pattern>/regionDepart/*</pattern><!-- Add by linhe 2018-3-9 -->
+		<pattern>/viewPeople/*</pattern>
+
+		<pattern>/jobs/*</pattern>
+		<pattern>/crontab/*</pattern>
+			
+		<!-- 安全风险研判 -->
+		<pattern>/aqfxyp/**</pattern>
+		
+		<!-- 融合通讯 -->
+		<pattern>/rcs/**</pattern>
+		
+		<!-- 罪犯信息 -->
+		<pattern>/zfxx/**</pattern>
+		
+		<!-- 任务下发 -->
+		<pattern>/rwgl/rwxf/**</pattern>
+		
+		<!-- 任务接收-->
+		<pattern>/rwgl/rwjs/**</pattern>
+		
+		<!-- 安全风险评估五维架构管理 -->
+		<pattern>/wdgz/*</pattern>
+		
+		<pattern>/wwjg/*</pattern>
+		
+		<!-- 一日执勤-->
+		<pattern>/wghgl/yrzq/**</pattern>
+		
+		<!-- 外来车辆 -->
+		<pattern>/foreignCar/**</pattern>
+		
+		<!-- 外来人车 -->
+		<pattern>/foreign/**</pattern>
+		
+		<!-- 外来人员 -->
+		<pattern>/foreignPeopel/**</pattern>
+
+		<!-- 网格划分 -->
+		<pattern>/wghf/**</pattern>
+	
+		<!-- 行为侦测 -->
+		<pattern>/xwzc/**</pattern>
+		
+		<!-- 在监民警 -->
+		<pattern>/policeLocation/**</pattern>
+		
+		<!-- 危险评估 -->
+		<pattern>/wxpg/**</pattern>
+		
+		<!-- 广播播放 -->
+		<pattern>/broadcastPlay/**</pattern>
+		
+		<!-- 广播预案 -->
+		<pattern>/broadcastPlan/**</pattern>
+		
+		<!-- 案件结果 -->
+		<pattern>/securityCheck/**</pattern>n>
+		
+		<!-- 超图Demo -->
+		<pattern>/superMapDemo/**</pattern>
+		
+		<!-- 罪犯信息 -->
+		<pattern>/criminal/**</pattern>
+		
+		<!-- 人脸识别 -->
+		<pattern>/rlsb/**</pattern>
+		
+		<!-- 三维巡视记录 -->
+		<pattern>/roamRecord/**</pattern>
+		
+		<!-- 党建网格-->
+		<pattern>/djwg/*</pattern>
+				
+		<!-- 广播曲目 -->
+		<pattern>/broadcastFile/**</pattern>
+		
+		<!-- 广播控制 -->
+		<pattern>/broadcastLinkage/**</pattern>
+		
+		<!-- 广播播放记录 -->
+		<pattern>/broadcastRecord/**</pattern>
+		
+		<!-- 今日压犯数据展示-->
+		<pattern>/jryfqk/*</pattern>
+		<pattern>/jyshouye/jryfqk/*</pattern>
+		<!-- 门禁状态-->
+		<pattern>/doorstate/*</pattern>
+		<!-- 劳作工具-->
+		<pattern>/tool/*</pattern>
+		<!--bfcf  布防撤防  -->
+		<pattern>/bfcf/*</pattern>
+		<pattern>/dooropen/*</pattern>
+		<pattern>/broadcastPlan/*</pattern>
+		<!-- 安全复核 -->
+		<pattern>/aqfh/*</pattern>
+		<!--应急预案管理-->
+		<pattern>/emergency/preplanManage/**</pattern>
+		<!--应急预案工作组管理-->
+		<pattern>/emergency/groupManage/**</pattern>
+		<!--应急成员管理-->
+		<pattern>/emergency/memberManage/**</pattern>
+		<!--应急预案工作组成员管理-->
+		<pattern>/emergency/groupMemberManage/**</pattern>
+		<!--应急预案处置步骤管理-->
+		<pattern>/emergency/stepManage/**</pattern>
+		<!--应急预案处置步骤关联工作组管理-->
+		<pattern>/emergency/stepGroupManage/**</pattern>
+		<!--应急预案启动-->
+		<pattern>/emergency/preplanStart/**</pattern>
+
+		<!--应急处置记录管理-->
+		<pattern>/emergency/handle/recordManage/**</pattern>
+		<!--应急处置记录的工作组管理-->
+		<pattern>/emergency/handle/recordGroupManage/**</pattern>
+		<!--应急处置记录的工作组成员管理-->
+		<pattern>/emergency/handle/recordMemberManage/**</pattern>
+		<!--应急处置记录的处置步骤管理-->
+		<pattern>/emergency/handle/recordStepManage/**</pattern>
+		<!--应急统计管理-->
+		<pattern>/emergency/handle/recordStatisticManage/**</pattern>
+
+		<!-- 系统参数配置 -->
+		<pattern>/xtcs/**</pattern>
+	</excludes>
+	
+	<!-- 用来定义装饰器要过滤的页面 -->
+	<decorator name="default" page="default.jsp">
+		<pattern>/*</pattern>
+	</decorator>
+</decorators>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.alarm.plan.dao.AlarmEmerPlanRltnMapper">
+  <!-- 基础结果集 -->
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.alarm.plan.entity.AlarmEmerPlanRltn">
+    <id column="ID" jdbcType="CHAR" property="id" />
+    <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+    <result column="ALARM_PLAN_ID" jdbcType="CHAR" property="alarmPlanId" />
+    <result column="EMER_PLAN_ID" jdbcType="CHAR" property="emerPlanId" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
+    <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder" />
+    <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <!-- 基础字段 -->
+  <sql id="Base_Column_List">
+    ID, CUS_NUMBER, ALARM_PLAN_ID, EMER_PLAN_ID, STATUS, SHOW_ORDER, UPDATE_USER_ID, UPDATE_TIME
+  </sql>
+
+  <!-- 查询最大排序号 -->
+  <select id="findMaxShowOrderByCusNumberAndAlarmPlanId" resultType="java.lang.Integer" useCache="true">
+    SELECT
+      max(T1.SHOW_ORDER)
+    FROM CDS_ALARM_EMER_PLAN_RLTN T1
+    WHERE T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR} AND T1.ALARM_PLAN_ID = #{alarmPlanId, jdbcType=CHAR}
+  </select>
+
+  <!-- 根据报警预案ID，查询报警预案与应急预案关联关系数据 -->
+  <select id="findByAlarmPlanId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM CDS_ALARM_EMER_PLAN_RLTN T1 WHERE EXISTS (
+      SELECT * FROM T_EMER_PREPLAN T2 WHERE T1.EMER_PLAN_ID = T2.ID AND T2.STATUS = '0'
+    )
+    AND T1.ALARM_PLAN_ID = #{alarmPlanId, jdbcType=CHAR}
+    AND T1.STATUS = '0'
+    ORDER BY T1.SHOW_ORDER
+  </select>
+
+
+    <select id="getemerPlanNameByAlarmPlanId"  resultType="java.util.HashMap">
+                select
+                b.NAME "emerPlanName"
+        from
+                CDS_ALARM_EMER_PLAN_RLTN a,
+                T_EMER_PREPLAN b
+        where
+                a.EMER_PLAN_ID = b.id
+            and ALARM_PLAN_ID  =#{alarmPlanId}
+
+    </select>
+</mapper>

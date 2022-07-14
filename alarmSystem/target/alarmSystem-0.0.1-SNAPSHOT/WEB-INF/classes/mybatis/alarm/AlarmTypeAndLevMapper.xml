@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.alarm.level.dao.AlarmTypeAndLevMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT alt_cus_number,
+		alt_type_id,
+		id,
+		alt_level
+		FROM cds_alarm_type 
+		<where>
+			<if test="alarmTypeAndLevEntity.altCusNumber!=null and alarmTypeAndLevEntity.altCusNumber!=''">
+				AND (TRIM(#{alarmTypeAndLevEntity.altCusNumber}) is null or alt_cus_number = #{alarmTypeAndLevEntity.altCusNumber})
+			</if>
+
+			<if test="alarmTypeAndLevEntity.altTypeId!=null and alarmTypeAndLevEntity.altTypeId!=''">
+				AND (TRIM(#{alarmTypeAndLevEntity.altTypeId}) is null or alt_type_id = #{alarmTypeAndLevEntity.altTypeId})
+			</if>
+
+			<if test="alarmTypeAndLevEntity.altLevel!=null and alarmTypeAndLevEntity.altLevel!=''">
+				AND (TRIM(#{alarmTypeAndLevEntity.altLevel}) is null or alt_level = #{alarmTypeAndLevEntity.altLevel})
+			</if>
+		</where>
+		order by alt_type_id 
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM cds_alarm_type WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE cds_alarm_type
+		<set>
+
+			<if test="alarmTypeAndLevEntity.altTypeId != null and alarmTypeAndLevEntity.altTypeId!='' ">
+				alt_type_id = #{alarmTypeAndLevEntity.altTypeId},
+			</if>
+
+			<if test="alarmTypeAndLevEntity.altLevel != null and alarmTypeAndLevEntity.altLevel!='' ">
+				alt_level = #{alarmTypeAndLevEntity.altLevel},
+			</if>
+			
+			<if test="alarmTypeAndLevEntity.altUpdtTime != null and alarmTypeAndLevEntity.altUpdtTime!='' ">
+				alt_updt_time = #{alarmTypeAndLevEntity.altUpdtTime},
+			</if>
+
+			<if test="alarmTypeAndLevEntity.altUpdtUserId != null and alarmTypeAndLevEntity.altUpdtUserId!='' ">
+				alt_updt_user_id = #{alarmTypeAndLevEntity.altUpdtUserId},
+			</if>
+
+		</set>
+		<where>
+			<if test="alarmTypeAndLevEntity.id !=null and alarmTypeAndLevEntity.id !=''">
+				AND (TRIM(#{alarmTypeAndLevEntity.id}) is null or id = #{alarmTypeAndLevEntity.id})
+			</if>
+		</where>
+	</update>
+
+</mapper>

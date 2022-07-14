@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.CameraMapper">
+	<!-- 摄像机设备基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.Camera">
+		<id column="ID" jdbcType="CHAR" property="id" />
+	    <result column="CBD_CUS_NUMBER" jdbcType="CHAR" property="cbdCusNumber" />
+	    <result column="CBD_NAME" jdbcType="CHAR" property="cbdName" />
+	    <result column="CBD_TYPE_INDC" jdbcType="CHAR" property="cbdTypeIndc" />
+	    <result column="CBD_BRAND_NAME" jdbcType="CHAR" property="cbdBrandName" />
+	    <result column="CBD_DVR_IDNTY" jdbcType="CHAR" property="cbdDvrIdnty" />
+	    <result column="CBD_DVR_CHNNL_IDNTY" jdbcType="CHAR" property="cbdDvrChnnlIdnty" />
+	    <result column="CBD_MTRX_IDNTY" jdbcType="CHAR" property="cbdMtrxIdnty" />
+	    <result column="CBD_MTRX_CHNNL_IDNTY" jdbcType="CHAR" property="cbdMtrxChnnlIdnty" />
+	    <result column="CBD_STREAM_MEDIA_IDNTY" jdbcType="CHAR" property="cbdStreamMediaIdnty" />
+	    <result column="CBD_PRE_NEME" jdbcType="CHAR" property="cbdPreNeme" />
+	    <result column="CBD_ADDRS_CODE" jdbcType="CHAR" property="cbdAddrsCode" />
+	    <result column="CBD_IP_ADDRS" jdbcType="CHAR" property="cbdIpAddrs" />
+	    <result column="CBD_DPRTMNT" jdbcType="CHAR" property="cbdDprtmnt" />
+	    <result column="CBD_AREA_ID" jdbcType="CHAR" property="cbdAreaId" />
+	    <result column="CBD_AREA" jdbcType="CHAR" property="cbdArea" />
+	    <result column="CBD_DPRTMNT_SRNO" jdbcType="DECIMAL" property="cbdDprtmntSrno" />
+	    <result column="CBD_STTS_INDC" jdbcType="CHAR" property="cbdSttsIndc" />
+	    <result column="CBD_DVC_ADDRS" jdbcType="CHAR" property="cbdDvcAddrs" />
+	    <result column="CBD_ANALYSE_CHNNL_IDNTY" jdbcType="CHAR" property="cbdAnalyseChnnlIdnty" />
+	    <result column="CBD_ACTION_INDC" jdbcType="CHAR" property="cbdActionIndc" />
+	    <result column="CBD_CRTE_TIME" jdbcType="TIMESTAMP" property="cbdCrteTime" />
+	    <result column="CBD_CRTE_USER_ID" jdbcType="CHAR" property="cbdCrteUserId" />
+	    <result column="CBD_UPDT_TIME" jdbcType="TIMESTAMP" property="cbdUpdtTime" />
+	    <result column="CBD_UPDT_USER_ID" jdbcType="CHAR" property="cbdUpdtUserId" />
+	    <result column="CBD_STREAM_TYPE" jdbcType="CHAR" property="cbdStreamType" />
+	    <result column="CBD_USE_LIMIT" jdbcType="CHAR" property="cbdUseLimit" />
+	    <result column="CBD_PLATFORM_IDNTY" jdbcType="CHAR" property="cbdPlatformIdnty" />
+	    <result column="CBD_PLATFORM" jdbcType="CHAR" property="cbdPlatform" />
+	    <result column="CBD_VIDEO_PLAY_INDC" jdbcType="CHAR" property="cbdVideoPlayIndc" />
+	    <result column="CBD_VIDEO_PLAYBACK_INDC" jdbcType="CHAR" property="cbdVideoPlaybackIndc" />
+	    <result column="CBD_ORDER" jdbcType="DECIMAL" property="cbdOrder" />
+	    <result column="CBD_PORT" jdbcType="CHAR" property="cbdPort" />
+	    <result column="CBD_USER_NAME" jdbcType="CHAR" property="cbdUserName" />
+	    <result column="CBD_USER_PASSWORD" jdbcType="CHAR" property="cbdUserPassword" />
+	    <result column="CBD_CHNNL_IDNTY" jdbcType="CHAR" property="cbdChnnlIdnty" />
+	    <result column="CBD_OUT_SIDE" jdbcType="CHAR" property="cbdOutSide" />
+	    <result column="CBD_TALKBACK_ID" jdbcType="CHAR" property="cbdTalkbackId" />
+	    <result column="CBD_TALKBACK_NAME" jdbcType="CHAR" property="cbdTalkbackName" />
+	    <result column="CBD_TIME_VALID" jdbcType="CHAR" property="cbdTimeValid" />
+	    <result column="CBD_VALID_STARTTIME" jdbcType="CHAR" property="cbdValidStarttime" />
+	    <result column="CBD_VALID_ENDTIME" jdbcType="CHAR" property="cbdValidEndtime" />
+	    <result column="CBD_ADDRS" jdbcType="CHAR" property="cbdAddrs" />
+	</resultMap>
+	
+	<select id="searchCamera" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT dvc_camera_base_dtls.id as id,
+				   cbd_cus_number,
+				   cbd_name,
+				   cbd_type_indc,
+				   cbd_type_indc AS cbd_type_indc_ch,
+				   cbd_brand_name,
+				   cbd_dvr_idnty,
+				   cbd_dvr_chnnl_idnty,
+				   cbd_mtrx_idnty,
+				   cbd_mtrx_chnnl_idnty,
+				   cbd_stream_media_idnty,
+				   cbd_pre_neme,
+				   cbd_addrs_code,
+				   cbd_ip_addrs,
+				   cbd_port,
+				   cbd_user_name,
+				   cbd_user_password,
+				   cbd_chnnl_idnty
+				   cbd_dprtmnt,
+				   cbd_area_id,
+				   cbd_area,
+				   cbd_dprtmnt_srno,
+				   cbd_stts_indc,
+				   cbd_stts_indc AS cbd_stts_indc_ch,
+				   cbd_dvc_addrs,
+				   cbd_analyse_chnnl_idnty,
+				   cbd_use_limit,
+				   cbd_action_indc,
+				   cbd_platform_idnty,
+				   cbd_platform,
+				   cbd_video_play_indc,
+				   cbd_video_play_indc AS cbd_video_play_indc_ch,
+				   cbd_video_playback_indc,
+				   TO_CHAR(cbd_crte_time,'YYYY/MM/DD HH24:MI:SS') as cbd_crte_time,
+				   cbd_stream_type,
+				   cbd_crte_user_id,
+				   TO_CHAR(cbd_updt_time,'YYYY/MM/DD HH24:MI:SS') as cbd_updt_time,
+				   cbd_updt_user_id,
+				   vdi_device_name,
+				   ssi_server_name,
+				   CBD_OUT_SIDE,
+                   CBD_TALKBACK_ID,
+                   CBD_TALKBACK_NAME,
+                   CBD_ADDRS
+			 FROM dvc_camera_base_dtls
+			 LEFT JOIN dvc_video_device_info  ON(cbd_cus_number = vdi_cus_number AND cbd_dvr_idnty = dvc_video_device_info.id) 
+			 LEFT JOIN dvc_stream_server_info  ON(cbd_cus_number = ssi_cus_number AND cbd_stream_media_idnty=dvc_stream_server_info.id) 
+			
+			 <where>
+			 	<if test="camera.cbdName!=null and camera.cbdName!=''">
+			 		and cbd_name like concat('%',#{camera.cbdName},'%' )
+			 	</if>
+			 	<if test="camera.cbdSttsIndc!=null and camera.cbdSttsIndc!=''">
+			 		and cbd_stts_indc =#{camera.cbdSttsIndc}
+			 	</if>
+			 	<if test="camera.cbdAreaId != null and camera.cbdAreaId !=''" >
+			        and CBD_AREA_ID like '${camera.cbdAreaId}%'
+			      </if>
+			 	<if test="camera.cbdCusNumber!=null and camera.cbdCusNumber!=''">
+			 		AND cbd_cus_number=#{camera.cbdCusNumber}
+			 	</if>
+			 	AND cbd_action_indc !=3
+			 </where>
+	</select>
+	
+	<select id="searchByCbdAreaIdAndCbdCusNumber" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "id",
+				   cbd_name AS "name",
+				   0 AS "isParent",
+				   CBD_TYPE_INDC
+			 FROM dvc_camera_base_dtls
+			  <where>
+			 	<!-- <if test="cbdOutSide!=null and cbdOutSide!=''">
+			 		and CBD_OUT_SIDE =#{cbdOutSide}
+			 	</if> -->
+			 	 <if test="cbdAreaId != null and cbdAreaId !=''" >
+			        and CBD_AREA_ID like  concat(#{cbdAreaId},'%')
+			      </if>
+			 	<if test="cbdCusNumber!=null and cbdCusNumber!=''">
+			 		AND cbd_cus_number=#{cbdCusNumber}
+			 	</if>
+			 	AND cbd_action_indc !=3
+			 </where>
+	</select>
+	
+	 <update id="updatePart" parameterType="com.cesgroup.prison.jfsb.entity.Camera" >
+    update DVC_CAMERA_BASE_DTLS
+    <set >
+      <if test="cbdCusNumber != null and cbdCusNumber != ''" >
+        CBD_CUS_NUMBER = #{cbdCusNumber},
+      </if>
+      <if test="cbdName != null and cbdName != ''" >
+        CBD_NAME = #{cbdName},
+      </if>
+      <if test="cbdTypeIndc != null and cbdTypeIndc != ''" >
+        CBD_TYPE_INDC = #{cbdTypeIndc},
+      </if>
+      <if test="cbdBrandName != null and cbdBrandName != ''" >
+        CBD_BRAND_NAME = #{cbdBrandName},
+      </if>
+      <if test="cbdDvrIdnty != null and cbdDvrIdnty != ''" >
+        CBD_DVR_IDNTY = #{cbdDvrIdnty},
+      </if>
+      <if test="cbdDvrChnnlIdnty != null and cbdDvrChnnlIdnty != ''" >
+        CBD_DVR_CHNNL_IDNTY = #{cbdDvrChnnlIdnty},
+      </if>
+      <if test="cbdMtrxIdnty != null and cbdMtrxIdnty != ''" >
+        CBD_MTRX_IDNTY = #{cbdMtrxIdnty},
+      </if>
+      <if test="cbdMtrxChnnlIdnty != null and cbdMtrxChnnlIdnty != ''" >
+        CBD_MTRX_CHNNL_IDNTY = #{cbdMtrxChnnlIdnty},
+      </if>
+      <if test="cbdStreamMediaIdnty != null and cbdStreamMediaIdnty != ''" >
+        CBD_STREAM_MEDIA_IDNTY = #{cbdStreamMediaIdnty},
+      </if>
+      <if test="cbdPreNeme != null and cbdPreNeme != ''" >
+        CBD_PRE_NEME = #{cbdPreNeme},
+      </if>
+      <if test="cbdAddrsCode != null and cbdAddrsCode != ''" >
+        CBD_ADDRS_CODE = #{cbdAddrsCode},
+      </if>
+      <if test="cbdIpAddrs != null and cbdIpAddrs != ''" >
+        CBD_IP_ADDRS = #{cbdIpAddrs},
+      </if>
+      <if test="cbdPort != null and cbdPort != ''" >
+        CBD_PORT = #{cbdPort},
+      </if>
+      <if test="cbdUserName != null and cbdUserName != ''" >
+        CBD_USER_NAME = #{cbdUserName},
+      </if>
+      <if test="cbdUserPassword != null and cbdUserPassword != ''" >
+        CBD_USER_PASSWORD = #{cbdUserPassword},
+      </if>
+      <if test="cbdChnnlIdnty != null and cbdChnnlIdnty != ''" >
+        CBD_CHNNL_IDNTY = #{cbdChnnlIdnty},
+      </if>
+      <if test="cbdDprtmnt != null and cbdDprtmnt != ''" >
+        CBD_DPRTMNT = #{cbdDprtmnt},
+      </if>
+      <if test="cbdAreaId != null and cbdAreaId != ''" >
+        CBD_AREA_ID = #{cbdAreaId},
+      </if>
+      <if test="cbdArea != null and cbdArea != ''" >
+        CBD_AREA = #{cbdArea},
+      </if>
+      <if test="cbdDprtmntSrno != null and cbdDprtmntSrno != ''" >
+        CBD_DPRTMNT_SRNO = #{cbdDprtmntSrno},
+      </if>
+      <if test="cbdDvcAddrs != null and cbdDvcAddrs != ''" >
+        CBD_DVC_ADDRS = #{cbdDvcAddrs},
+      </if>
+      <if test="cbdAnalyseChnnlIdnty != null and cbdAnalyseChnnlIdnty != ''" >
+        CBD_ANALYSE_CHNNL_IDNTY = #{cbdAnalyseChnnlIdnty},
+      </if>
+      <if test="cbdSttsIndc != null and cbdSttsIndc != ''" >
+        CBD_STTS_INDC = #{cbdSttsIndc},
+      </if>
+      <if test="cbdCrteTime != null and cbdCrteTime != ''" >
+        CBD_CRTE_TIME = TO_CHAR(#{cbdCrteTime},'YYYY-MM-DD HH24:MI:SS'),
+      </if>
+      <if test="cbdCrteUserId != null and cbdCrteUserId != ''" >
+        CBD_CRTE_USER_ID = #{cbdCrteUserId},
+      </if>
+      <if test="cbdUpdtTime != null and cbdUpdtTime != ''" >
+        CBD_UPDT_TIME = TO_CHAR(#{cbdUpdtTime},'YYYY-MM-DD HH24:MI:SS'),
+      </if>
+      <if test="cbdUpdtUserId != null and cbdUpdtUserId != ''" >
+        CBD_UPDT_USER_ID = #{cbdUpdtUserId},
+      </if>
+      <if test="cbdStreamType != null and cbdStreamType != ''" >
+        CBD_STREAM_TYPE = #{cbdStreamType},
+      </if>
+      <if test="cbdUseLimit != null and cbdUseLimit != ''" >
+        CBD_USE_LIMIT = #{cbdUseLimit},
+      </if>
+      <if test="cbdPlatformIdnty != null and cbdPlatformIdnty != ''" >
+        CBD_PLATFORM_IDNTY = #{cbdPlatformIdnty},
+      </if>
+      <if test="cbdPlatform != null and cbdPlatform != ''" >
+        CBD_PLATFORM = #{cbdPlatform},
+      </if>
+      <if test="cbdVideoPlayIndc != null and cbdVideoPlayIndc != ''" >
+        CBD_VIDEO_PLAY_INDC = #{cbdVideoPlayIndc},
+      </if>
+      <if test="cbdVideoPlaybackIndc != null and cbdVideoPlaybackIndc != ''" >
+        CBD_VIDEO_PLAYBACK_INDC = #{cbdVideoPlaybackIndc},
+      </if>
+      <if test="cbdOrder != null and cbdOrder != ''" >
+        CBD_ORDER = #{cbdOrder},
+      </if>
+      <if test="cbdOutSide != null and cbdOutSide != ''" >
+        CBD_OUT_SIDE = #{cbdOutSide},
+      </if>
+      <if test="cbdTalkbackId != null and cbdTalkbackId != ''" >
+        CBD_TALKBACK_ID = #{cbdTalkbackId},
+      </if>
+      <if test="cbdTalkbackName != null and cbdTalkbackName != ''" >
+        CBD_TALKBACK_NAME = #{cbdTalkbackName},
+      </if>
+      <if test="cbdAddrs != null and cbdAddrs != ''" >
+          CBD_ADDRS = #{cbdAddrs},
+      </if>
+      <if test="cbdTimeValid != null and cbdTimeValid != ''" >
+          CBD_TIME_VALID = #{cbdTimeValid},
+      </if>
+      <if test="cbdValidStarttime != null and cbdValidStarttime != ''" >
+          CBD_VALID_STARTTIME = #{cbdValidStarttime},
+      </if>
+      <if test="cbdValidEndtime != null and cbdValidEndtime != ''" >
+          CBD_VALID_ENDTIME = #{cbdValidEndtime},
+      </if>      
+      CBD_ACTION_INDC = 2,
+    </set>
+    where ID = #{id}
+  </update>
+  
+  <!-- <delete id="deleteByAreaId" parameterType="java.lang.String">
+		DELETE FROM DVC_CAMERA_BASE_DTLS WHERE CBD_AREA_ID = #{cbdAreaId}
+  </delete> -->
+	<!--逻辑删除 -->
+  <delete id="deleteByAreaId" parameterType="java.lang.String">
+		UPDATE DVC_CAMERA_BASE_DTLS SET CBD_ACTION_INDC = 3 WHERE CBD_AREA_ID = #{cbdAreaId};
+		<!-- 报警预案 设备关联表 -->
+		DELETE FROM CDS_PLAN_DEVICE_RLTN WHERE PDR_ITEM_ID = '2' and PDR_DVC_IDNTY in  (select id from DVC_CAMERA_BASE_DTLS where CBD_AREA_ID = #{cbdAreaId});
+  		<!-- 报警器基础表 -->
+  		UPDATE dvc_alertor_base_dtls set abd_action_indc = '3' WHERE abd_type_indc = '6' and abd_host_idnty in  (select id from DVC_CAMERA_BASE_DTLS where CBD_AREA_ID = #{cbdAreaId});
+  		<!-- 报警预案 报警器关联表 -->
+  		DELETE FROM CDS_ALERT_PLAN_RLTN WHERE APR_DVC_IDNTY in (select abd_idnty from dvc_alertor_base_dtls  WHERE abd_type_indc = '6' and abd_host_idnty in  (select id from DVC_CAMERA_BASE_DTLS where CBD_AREA_ID = #{cbdAreaId} and abd_action_indc != '3'));
+  </delete>
+  
+  <!--逻辑删除 , PDR_ITEM_ID 1  "门禁"; 2 "摄像机"; 3 "广播"; 4 "大屏"; 5 "对讲"; -->
+  <delete id="deleteById" parameterType="java.lang.String">
+		UPDATE DVC_CAMERA_BASE_DTLS SET CBD_ACTION_INDC = 3 WHERE ID = #{id};
+		DELETE FROM CDS_PLAN_DEVICE_RLTN WHERE PDR_ITEM_ID = '2' and PDR_DVC_IDNTY = #{id};
+		UPDATE dvc_alertor_base_dtls set abd_action_indc = '3' WHERE abd_type_indc = '6' and abd_host_idnty = #{id};
+		DELETE FROM CDS_ALERT_PLAN_RLTN WHERE APR_DVC_IDNTY = (select abd_idnty from dvc_alertor_base_dtls  WHERE abd_type_indc = '6' and abd_host_idnty = #{id}  and abd_action_indc != '3');
+  </delete>
+  <!--批量删除  -->
+   <update id="deleteByIds" parameterType="List">
+		UPDATE DVC_CAMERA_BASE_DTLS SET CBD_ACTION_INDC = 3 WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+		DELETE FROM CDS_PLAN_DEVICE_RLTN WHERE PDR_ITEM_ID = '2' and PDR_DVC_IDNTY in
+		 <foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+		UPDATE dvc_alertor_base_dtls set abd_action_indc = '3' WHERE abd_type_indc = '6' and abd_host_idnty in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+		DELETE FROM CDS_ALERT_PLAN_RLTN WHERE APR_DVC_IDNTY in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			(select abd_idnty from dvc_alertor_base_dtls  WHERE abd_type_indc = '6' and abd_host_idnty = #{id}  and abd_action_indc != '3')
+		</foreach>
+		;
+  </update>
+  
+   <!--根据监狱编号查询正常的摄像头数量 -->
+  <select id="selectGoodCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+  		select count(*) from DVC_CAMERA_BASE_DTLS where CBD_STTS_INDC = 0 AND cbd_cus_number=#{cusNumber}
+			 	AND cbd_action_indc !=3
+  </select>
+  <!--根据监狱编号查询故障的摄像头数量 -->
+  <select id="selectBadCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(*) from DVC_CAMERA_BASE_DTLS where CBD_STTS_INDC != 0 AND cbd_cus_number=#{cusNumber}
+			 	AND cbd_action_indc !=3
+  </select>
+
+  <!--根据对讲ID获取摄像头ID 用户对讲关联摄像机，临时使用 -wq-->
+  <select id="getCameraIdByTalkbackId" parameterType="java.util.HashMap" resultType="java.lang.String">
+        select TOP 1 ID "cameraId" from DVC_CAMERA_BASE_DTLS
+        <where>
+            <if test="talkBackId!=null">
+                AND CBD_TALKBACK_ID = #{talkBackId}
+            </if>
+            <if test="cusNumber!=null">
+                AND CBD_CUS_NUMBER = #{cusNumber}
+            </if>
+        </where>
+  </select>
+
+    <!-- 根据查询条件，查询摄像机设备信息 -->
+    <select id="findByQueryMap" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			*
+		FROM
+			DVC_CAMERA_BASE_DTLS T1
+		<where>
+            <if test="cbdCusNumber != null and cbdCusNumber != ''">
+                AND T1.CBD_CUS_NUMBER = '${cbdCusNumber}'
+            </if>
+            <if test="cbdPlatformIdnty != null and cbdPlatformIdnty != ''">
+                AND T1.CBD_PLATFORM_IDNTY = '${cbdPlatformIdnty}'
+            </if>
+            <if test="cbdIpAddrs != null and cbdIpAddrs != ''">
+                AND T1.CBD_IP_ADDRS = '${cbdIpAddrs}'
+            </if>
+            AND T1.CBD_ACTION_INDC != 3
+        </where>
+	</select>
+	<!-- 根据摄像机映射ID，查询摄像机设备信息 -->
+	<select id="findByCbdPlatformIdnty" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			*
+		FROM 
+			DVC_CAMERA_BASE_DTLS T1
+        <where>
+            <if test="cbdPlatformIdnty != null and cbdPlatformIdnty != ''">
+                AND T1.CBD_PLATFORM_IDNTY = '${cbdPlatformIdnty}'
+            </if>
+            AND T1.CBD_ACTION_INDC != 3
+        </where>
+	</select>
+</mapper>

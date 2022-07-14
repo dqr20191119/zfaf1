@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.rcs.dao.RcsDao">
+	<select id="searchRcs" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+						SELECT
+				        	JOB_NO,
+				        	USER_NAME,
+				        	ifnull(POLICEAFFAIR,'') as POLICEAFFAIR,
+				        	ifnull(TELPHONE,'') as TELPHONE,
+				        	ifnull(MOBILE,'') as MOBILE 
+						FROM
+				        	auth.T_ORG A     ,
+				        	auth.T_ORG_USER B,
+				        	auth.T_USER C
+						WHERE
+				        	A.ORGANIZE_ID   = B.ORGANIZE_ID
+				    	AND B.USER_ID      = C.USER_ID	
+				    	AND A.ORGANIZE_CODE =#{rcs.cusNumber}
+				    	<if test="rcs.userName != null and rcs.userName != ''" >
+				            AND USER_NAME LIKE CONCAT('%',#{rcs.userName} ,'%' )
+				       </if>
+	</select>
+	<select id="searchJl" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+						SELECT
+				        	ID,
+				        	CUS_NUMBER,
+				        	CMD,
+				        	CELLVALUE,
+				        	CONTENT,
+				        	JOB_NO,
+				        	USER_NAME,
+				        	TO_CHAR(SEND_TIME,'YYYY/MM/DD HH24:MI:SS') AS SEND_TIME,
+				        	SEND_USER_NAME,
+				        	SEND_USER_ID,
+				        	TYPE
+						FROM
+				        	RCS_LOG     
+			<where>
+			 	<if test="rcs.userName!=null and rcs.userName!=''">
+			 		and user_name like concat('%',#{rcs.userName},'%' )
+			 	</if>
+			 	<if test="rcs.cusNumber!=null and rcs.cusNumber!=''">
+			 		and CUS_NUMBER = #{rcs.cusNumber}
+			 	</if>
+			 </where>
+	</select>
+	<update id="updateType" parameterType="com.cesgroup.prison.rcs.entity.RcsEntity" >
+    update RCS_LOG
+    <set >
+      <if test="type != null and type != ''" >
+        type = #{type}
+      </if>
+    </set>
+    where ID = #{id}
+  </update>
+  <select id="getXgnr" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+  	SELECT * 
+  	  FROM PRISON.T_ZHAF_ONEDAY_DUTY
+	 WHERE TO_CHAR(TZSJ,'HH24:MI') = TO_CHAR(SYSDATE(),'HH24:MI')
+	   AND TO_CHAR(SXSJ,'YYYY-MM-DD') = TO_CHAR(#{sxsj},'YYYY-MM-DD')
+  </select>
+  <update id="updateXgtzId" parameterType="java.util.HashMap" >
+  	UPDATE PRISON.T_ZHAF_ONEDAY_DUTY SET XGTZ_ID = #{xgtzId}
+	 WHERE ID = #{id}
+  </update>
+  <update id="updateYrzq" parameterType="java.util.HashMap" >
+  	UPDATE PRISON.T_ZHAF_ONEDAY_DUTY SET STATE = 2,FINISH_DATE = SYSDATE()
+	 WHERE XGTZ_ID LIKE CONCAT('%',#{id},'%' )
+  </update>
+	
+</mapper>

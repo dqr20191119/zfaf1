@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.AreadeviceMapper">
+	 	 
+	<select id="findAllArea" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "id", A.ABD_AREA_NAME "name", 
+		(SELECT COUNT(1) || '' FROM CDS_AREA_BASE_DTLS B WHERE B.ABD_PARENT_AREA_ID = A.ABD_AREA_ID AND B.ABD_CUS_NUMBER = A.ABD_CUS_NUMBER) "childrenNum"  
+		FROM CDS_AREA_BASE_DTLS A 
+ 		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.ABD_CUS_NUMBER = #{cusNumber}	
+			</if>
+			<if test="id != null and id != ''"> 
+				AND A.ABD_PARENT_AREA_ID = #{id} 	
+			</if>
+			<if test="id == null or id == ''"> 
+				AND (A.ABD_PARENT_AREA_ID IS NULL or A.ABD_PARENT_AREA_ID = '') 
+			</if>
+		</where>							
+		ORDER BY A.ABD_ORDER  
+	</select>
+	
+	<select id="findAllCamera" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.CBD_NAME "name", 0 "isParent", 1 "open" 
+		FROM DVC_CAMERA_BASE_DTLS A 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.CBD_CUS_NUMBER = #{cusNumber} 
+			</if>
+			<if test="id != null and id != ''"> 
+				AND A.CBD_AREA_ID = #{id} 
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.CBD_AREA_ID LIKE '${areaId}%' 
+			</if>
+			<if test="outSide != null and outSide != ''"> 
+				AND A.CBD_OUT_SIDE = #{outSide} 
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllTalk" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.TBD_NAME "name", 0 "isParent", 1 "open" 
+		FROM DVC_TALKBACK_BASE_DTLS A 
+		WHERE A.TBD_ACTION_INDC != '3' 
+		<if test="cusNumber != null and cusNumber != ''"> 
+			AND A.TBD_CUS_NUMBER = #{cusNumber}  
+		</if>
+		<if test="id != null and id != ''"> 
+			AND A.TBD_AREA_ID = #{id} 
+		</if>
+		<if test="areaId != null and areaId != ''"> 
+			AND A.TBD_AREA_ID LIKE '${areaId}%' 
+		</if>
+ 	</select>
+ 		
+ 	<select id="findAllAlertor" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.ABD_NAME "name", 0 "isParent", 1 "open" 
+		FROM DVC_ALERTOR_BASE_DTLS A 
+		WHERE A.ABD_ACTION_INDC != '3' 
+		<if test="cusNumber != null and cusNumber != ''"> 
+			AND A.ABD_CUS_NUMBER = #{cusNumber}  
+		</if>
+		<if test="id != null and id != ''"> 
+			AND A.ABD_AREA_ID = #{id} 
+		</if>
+		<if test="areaId != null and areaId != ''"> 
+			AND A.ABD_AREA_ID LIKE '${areaId}%' 
+		</if>
+ 	</select>
+ 	 	
+ 	<select id="findAllDoor" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.DCB_NAME "name", 0 "isParent", 1 "open" 
+		FROM DVC_DOOR_CONTROL_BASE_DTLS A 
+		WHERE A.DCB_ACTION_INDC != '3' 
+		<if test="cusNumber != null and cusNumber != ''"> 
+			AND A.DCB_CUS_NUMBER = #{cusNumber}  
+		</if>
+		<if test="id != null and id != ''"> 
+			AND A.DCB_AREA_ID = #{id} 
+		</if>
+		<if test="areaId != null and areaId != ''"> 
+			AND A.DCB_AREA_ID LIKE '${areaId}%' 
+		</if>
+ 	</select>
+ 		
+ 	<select id="findAllBroadcast" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.BBD_NAME "name", 0 "isParent", 1 "open" 
+		FROM DVC_BROADCAST_BASE_DTLS A 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.BBD_CUS_NUMBER = #{cusNumber}  
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.BBD_AREA_ID LIKE '${areaId}%'
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.BBD_AREA_ID LIKE '${areaId}%' 
+			</if>
+		</where>
+ 	</select>
+ 	
+ 	<select id="findAllTalkServer" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.TSE_NAME "name", 0 "isParent", 1 "open" 
+		FROM DVC_TALKBACK_SERVER A 
+		WHERE A.TSE_ACTION_INDC != '3' 
+		<if test="cusNumber != null and cusNumber != ''"> 
+			AND A.TSE_CUS_NUMBER = #{cusNumber}  
+		</if>
+		<if test="id != null and id != ''"> 
+			AND A.TSE_AREA_ID = #{id} 
+		</if>
+		<if test="areaId != null and areaId != ''"> 
+			AND A.TSE_AREA_ID LIKE '${areaId}%' 
+		</if>
+ 	</select>	
+ 		
+ 	<select id="findAllLabel" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.MLI_LABEL_CODE "name", 0 "isParent", 1 "open" 
+		FROM CDS_MESSAGE_LABEL_INFO A 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.MLI_PRISON_CODE = #{cusNumber}  
+			</if>
+			<if test="id != null and id != ''"> 
+				AND A.MLI_AREA_CODE = #{id} 
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.MLI_AREA_CODE LIKE '${areaId}%' 
+			</if>
+		</where> 
+ 	</select>
+
+	<select id="findParenAreaIdAndName" parameterType="hashmap" resultType="hashmap">
+		  SELECT C.ABD_AREA_ID "id",C.ABD_AREA_NAME "name" FROM "PRISON"."CDS_AREA_BASE_DTLS" C
+			WHERE C.ABD_AREA_ID IN (
+				SELECT DISTINCT A.ABD_PARENT_AREA_ID
+				FROM CDS_AREA_BASE_DTLS A
+				WHERE A.ABD_AREA_ID IN (SELECT DISTINCT B.ADR_AREA_ID FROM "PRISON"."CDS_AREA_DEPARTMENT_RELATION" B))
+				AND C.ABD_CUS_NUMBER = #{cusNumber}
+	</select>
+
+	<select id="findChildAreaIdAndName" parameterType="hashmap" resultType="hashmap">
+			SELECT DISTINCT A.ADR_AREA_ID "id",A.ADR_AREA_NAME "name"
+			FROM "PRISON"."CDS_AREA_DEPARTMENT_RELATION" A
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND A.ADR_CUS_NUMBER = #{cusNumber}
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询区域树结构数据 -->
+	<select id="findAreaListByQueryMap" resultType="java.util.HashMap" useCache="true">
+		SELECT
+			T1.ABD_CUS_NUMBER,
+			T1.ABD_PARENT_AREA_ID,
+			T1.ABD_AREA_ID,
+			T1.ABD_AREA_NAME
+		FROM CDS_AREA_BASE_DTLS T1
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.ABD_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="departmentId != null and departmentId != ''">
+				AND EXISTS (
+					SELECT
+						*
+					FROM CDS_AREA_DEPARTMENT_RELATION T2
+					WHERE T1.ABD_AREA_ID = T2.ADR_AREA_ID AND T1.ABD_CUS_NUMBER = T2.ADR_CUS_NUMBER
+					AND T2.ADR_DPRTMNT_ID = '${departmentId}'
+				)
+			</if>
+			AND T1.ABD_PARENT_AREA_ID IS NOT NULL
+		</where>
+		ORDER BY T1.ABD_ORDER
+	</select>
+
+	<!-- 查询广播设备数据 -->
+	<select id="findBroadcastListByQueryMap" resultType="java.util.HashMap" useCache="true">
+		SELECT
+			T1.BBD_CUS_NUMBER,
+			T1.BBD_AREA_ID,
+			T1.ID,
+			T1.BBD_NAME,
+			T1.BBD_STTS_INDC
+		FROM DVC_BROADCAST_BASE_DTLS T1
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.BBD_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="areaId != null and areaId != ''">
+				AND T1.BBD_AREA_ID = '${areaId}'
+			</if>
+			AND T1.BBD_STTS_INDC != '3'
+		</where>
+		ORDER BY T1.BBD_NAME
+	</select>
+</mapper>

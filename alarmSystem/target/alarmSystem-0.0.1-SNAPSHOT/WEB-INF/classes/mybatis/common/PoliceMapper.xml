@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.PoliceMapper">
+
+	<select id="findAllList" parameterType="com.cesgroup.prison.common.entity.PoliceEntity" resultType="com.cesgroup.prison.common.entity.PoliceEntity">
+		SELECT A.*
+		FROM V_POLICE_BASE_DTLS A
+		<where>
+			<if test="pbdLoginName != null and pbdLoginName != ''">
+				AND A.PBD_LOGIN_NAME = #{pbdLoginName}
+			</if>
+			<if test="pbdDrptmntId != null and pbdDrptmntId != ''">
+				AND A.PBD_DRPTMNT_ID = #{pbdDrptmntId}
+			</if>
+			<if test="pbdCusNumber != null and pbdCusNumber != ''">
+				AND A.PBD_CUS_NUMBER = #{pbdCusNumber}
+			</if>
+			<if test="pbdPoliceName != null and pbdPoliceName != ''">
+				AND A.PBD_POLICE_NAME like #{pbdPoliceName}
+			</if>
+		</where>
+	</select>
+
+	<select id="findPoliceByAreaIdForCombobox" parameterType="hashmap" resultType="hashmap">
+		SELECT A.PBD_USER_ID "value", A.PBD_POLICE_NAME "text"
+		FROM V_POLICE_BASE_DTLS A
+		<where>
+			<if test="areaId != null and areaId != ''">
+				AND EXISTS(SELECT 1 FROM CDS_AREA_DEPARTMENT_RELATION B
+							WHERE to_char(B.ADR_DPRTMNT_ID) = A.PBD_DRPTMNT_ID AND B.ADR_AREA_ID = #{areaId})
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND A.PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+		</where>
+	</select>
+
+	<select id="findAllPoliceForAutocomplete" parameterType="hashmap" resultType="hashmap">
+		SELECT PBD_USER_ID as "id", PBD_POLICE_NAME as "name"
+		FROM V_POLICE_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+                AND PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+		</where>
+	</select>
+
+</mapper>

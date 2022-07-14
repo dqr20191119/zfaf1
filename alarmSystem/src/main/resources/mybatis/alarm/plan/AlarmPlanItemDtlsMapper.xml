@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.alarm.plan.dao.AlarmPlanItemDtlsMapper">
+
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		pid_cus_number ,
+		pid_item_id ,
+		pid_stts_indc
+		FROM cds_plan_item_dtls
+		<where>
+			<if test="alarmPlanItemDtlsEntity.pidCusNumber != null and alarmPlanItemDtlsEntity.pidCusNumber!='' ">
+				AND pid_cus_number = #{alarmPlanItemDtlsEntity.pidCusNumber}
+			</if>
+
+			<if test="alarmPlanItemDtlsEntity.pidPlanId != null and alarmPlanItemDtlsEntity.pidPlanId!='' ">
+				AND pid_plan_id = #{alarmPlanItemDtlsEntity.pidPlanId}
+			</if>
+
+			<if test="alarmPlanItemDtlsEntity.id != null and alarmPlanItemDtlsEntity.id!='' ">
+				AND id = #{alarmPlanItemDtlsEntity.id}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateItem" parameterType="java.util.HashMap">
+		UPDATE cds_plan_item_dtls
+		<set>
+			<if test="alarmPlanItemDtlsEntity.pidSttsIndc != null and alarmPlanItemDtlsEntity.pidSttsIndc!='' ">
+				pid_stts_indc = #{alarmPlanItemDtlsEntity.pidSttsIndc},
+			</if>
+
+			<if test="alarmPlanItemDtlsEntity.pidRemark != null and alarmPlanItemDtlsEntity.pidRemark!='' ">
+				pid_remark = #{alarmPlanItemDtlsEntity.pidRemark},
+			</if>
+
+			<if test="alarmPlanItemDtlsEntity.pidUpdtTime != null and alarmPlanItemDtlsEntity.pidUpdtTime!='' ">
+				pid_updt_time = #{alarmPlanItemDtlsEntity.pidUpdtTime},
+			</if>
+
+			<if test="alarmPlanItemDtlsEntity.pidUpdtUserId != null and alarmPlanItemDtlsEntity.pidUpdtUserId!='' ">
+				pid_updt_user_id = #{alarmPlanItemDtlsEntity.pidUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="alarmPlanItemDtlsEntity.id !=null and alarmPlanItemDtlsEntity.id !=''">
+				AND (TRIM(#{alarmPlanItemDtlsEntity.id}) is null or id = #{alarmPlanItemDtlsEntity.id})
+			</if>
+		</where>
+	</update>
+
+
+	<!-- 根据报警器编号和监狱号查询关联项、关联设备信息 -->
+	<select id="queryItemsDtlsAndDevice" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		apr_plan_id,
+		(select pma_plan_name from cds_plan_master a where apr_plan_id = a.id) as plan_name,
+		pid_item_id,
+		pid_stts_indc,
+		pdr_outo_indc,
+		pdr_dvc_idnty,
+		pdr_dvc_name,
+		pdr_exec_order
+		FROM cds_plan_item_dtls
+		INNER JOIN cds_alert_plan_rltn ON pid_cus_number = apr_cus_number AND pid_plan_id = apr_plan_id
+		INNER JOIN cds_plan_device_rltn ON pid_cus_number = pdr_cus_number AND pid_plan_id = pdr_plan_id AND pid_item_id = pdr_item_id
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND pid_cus_number = #{cusNumber}
+			</if>
+			<if test="dvcIdnty != null and dvcIdnty !='' ">
+				AND apr_dvc_idnty = #{dvcIdnty}
+			</if>
+			<if test="planId != null and planId !='' ">
+				AND apr_plan_id = #{planId}
+			</if>
+			AND pid_stts_indc = 1 ORDER BY pid_item_id ASC, pdr_exec_order ASC
+		</where>
+	</select>
+
+</mapper>

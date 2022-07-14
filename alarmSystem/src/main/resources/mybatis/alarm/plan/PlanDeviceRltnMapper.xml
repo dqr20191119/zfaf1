@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.alarm.plan.dao.PlanDeviceRltnMapper">
+
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT pdr_cus_number,
+		pdr_plan_id,
+		pdr_item_id,
+		pdr_dvc_idnty,
+		pdr_dvc_name,
+		pdr_exec_order,
+		pdr_remark,
+		pdr_outo_indc,
+		id
+		FROM cds_plan_device_rltn a
+		<where>
+
+			<if test="planDeviceRltnEntity.pdrCusNumber != null and planDeviceRltnEntity.pdrCusNumber!='' ">
+				AND pdr_cus_number = #{planDeviceRltnEntity.pdrCusNumber}
+			</if>
+
+			<if test="planDeviceRltnEntity.pdrPlanId != null and planDeviceRltnEntity.pdrPlanId!='' ">
+				AND pdr_plan_id = #{planDeviceRltnEntity.pdrPlanId}
+			</if>
+
+			<if test="planDeviceRltnEntity.pdrItemId != null and planDeviceRltnEntity.pdrItemId!='' ">
+				AND pdr_item_id = #{planDeviceRltnEntity.pdrItemId}
+			</if>
+
+			<if test="planDeviceRltnEntity.pdrDvcIdnty != null and planDeviceRltnEntity.pdrDvcIdnty!='' ">
+				AND pdr_dvc_idnty = #{planDeviceRltnEntity.pdrDvcIdnty}
+			</if>
+
+			<if test="planDeviceRltnEntity.pdrDvcName != null and planDeviceRltnEntity.pdrDvcName!='' ">
+				AND pdr_dvc_name = #{planDeviceRltnEntity.pdrDvcName}
+			</if>
+
+			<if test="planDeviceRltnEntity.pdrExecOrder != null and planDeviceRltnEntity.pdrExecOrder!='' ">
+				AND pdr_exec_order = #{planDeviceRltnEntity.pdrExecOrder}
+			</if>
+			ORDER BY  pdr_exec_order asc
+		</where>
+	</select>
+
+	<update id="updatePlanDeviceRltnInfo" parameterType="java.util.HashMap">
+		UPDATE cds_plan_device_rltn
+		<set>
+			<if test="planDeviceRltnEntity.pdrExecOrder != null and planDeviceRltnEntity.pdrExecOrder!='' ">
+				pdr_exec_order = #{planDeviceRltnEntity.pdrExecOrder},
+			</if>
+			<if test="planDeviceRltnEntity.pdrOutoIndc != null and planDeviceRltnEntity.pdrOutoIndc!='' ">
+				pdr_outo_indc = #{planDeviceRltnEntity.pdrOutoIndc},
+			</if>
+			<if test="planDeviceRltnEntity.pdrRemark != null and planDeviceRltnEntity.pdrRemark!='' ">
+				pdr_remark = #{planDeviceRltnEntity.pdrRemark},
+			</if>
+			<if test="planDeviceRltnEntity.pdrUpdtTime != null and planDeviceRltnEntity.pdrUpdtTime!='' ">
+				pdr_updt_time = #{planDeviceRltnEntity.pdrUpdtTime},
+			</if>
+
+			<if test="planDeviceRltnEntity.pdrUpdtUserId != null and planDeviceRltnEntity.pdrUpdtUserId!='' ">
+				pdr_updt_user_id = #{planDeviceRltnEntity.pdrUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="planDeviceRltnEntity.id !=null and planDeviceRltnEntity.id !=''">
+				AND (TRIM(#{planDeviceRltnEntity.id}) is null or id = #{planDeviceRltnEntity.id})
+			</if>
+			<if test="planDeviceRltnEntity.pdrCusNumber != null and planDeviceRltnEntity.pdrCusNumber!='' ">
+				AND pdr_cus_number = #{planDeviceRltnEntity.pdrCusNumber}
+			</if>
+			<if test="planDeviceRltnEntity.pdrPlanId != null and planDeviceRltnEntity.pdrPlanId!='' ">
+				AND pdr_plan_id = #{planDeviceRltnEntity.pdrPlanId}
+			</if>
+
+		</where>
+	</update>
+ 
+
+</mapper>

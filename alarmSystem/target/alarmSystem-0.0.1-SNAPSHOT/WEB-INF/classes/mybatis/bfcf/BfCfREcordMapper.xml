@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.bfcf.dao.BfCfREcordMapper">
+	<!-- <resultMap id="BaseResultMap" type="com.cesgroup.prison.broadcastPlay.entity.BroadcastPlay">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+		<result column="TTS_ID" jdbcType="CHAR" property="ttsId" />
+		<result column="VOICE" jdbcType="CHAR" property="voice" />
+		<result column="VOICE_NAME" jdbcType="CHAR" property="voiceName" />
+		<result column="SPEED" jdbcType="CHAR" property="speed" />
+		<result column="VOLUME" jdbcType="CHAR" property="volume" />
+		<result column="TEXT" jdbcType="CHAR" property="text" />
+		<result column="PLAY_MODE" jdbcType="CHAR" property="playMode" />
+		<result column="VOL" jdbcType="CHAR" property="vol" />
+		<result column="DIAL_NOS" jdbcType="CHAR" property="dialNos" />
+		<result column="PLAY_STATUS" jdbcType="CHAR" property="playStatus" />
+		<result column="CREATE_USER_ID" jdbcType="VARCHAR" property="createUserId" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="UPDATE_USER_ID" jdbcType="VARCHAR" property="updateUserId" />
+		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+		
+		
+	</resultMap> -->
+	<!-- <sql id="Base_Column_List">
+		ID, CUS_NUMBER, TTS_ID, VOICE, VOICE_NAME, SPEED, VOLUME, TEXT, PLAY_MODE, VOL, DIAL_NOS, PLAY_STATUS, 
+		CREATE_USER_ID, CREATE_TIME, UPDATE_USER_ID, UPDATE_TIME
+	</sql>
+	
+	
+	<select id="listAll" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			* 
+		FROM T_BROADCAST_PLAY T1
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="text != null and text != ''">
+				AND T1.TEXT LIKE '%${text}%'
+			</if>
+		</where>
+		ORDER BY T1.CREATE_TIME DESC
+	</select>
+
+	根据id批量删除
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM T_BROADCAST_PLAY WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<select id="getXgnr" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+  	SELECT * 
+  	  FROM PRISON.T_ZHAF_ONEDAY_DUTY
+	 WHERE TO_CHAR(TZSJ,'HH24:MI') = TO_CHAR(SYSDATE(),'HH24:MI')
+	   AND TO_CHAR(SXSJ,'YYYY-MM-DD') = TO_CHAR(#{sxsj},'YYYY-MM-DD')
+  </select> -->
+	<!-- 更新布防撤防状态 -->
+  <update id="updateAbdTypeAlertorById" parameterType="com.cesgroup.prison.jfsb.entity.AlertorEntity">
+    update DVC_ALERTOR_BASE_DTLS
+    <set >
+      abd_type = #{abdType}
+    </set>
+    where id=#{id}
+  </update>
+  
+  <update id="updateAbdTypeAlertorByFenquId" parameterType="com.cesgroup.prison.jfsb.entity.AlertorEntity">
+    update DVC_ALERTOR_BASE_DTLS
+    <set >
+      abd_type = #{abdType}
+    </set>
+    where  ABD_CUS_NUMBER =#{abdCusNumber} and ABD_TYPE_INDC='3' and abd_idnty like '#{abdIdnty}||'%'
+  </update>
+  
+   <update id="updateAbdTypeAlertor" parameterType="com.cesgroup.prison.jfsb.entity.AlertorEntity">
+    update DVC_ALERTOR_BASE_DTLS
+    <set >
+      abd_type = #{abdType}
+    </set>
+    where  ABD_CUS_NUMBER =#{abdCusNumber} and ABD_TYPE_INDC='3'
+  </update>
+  
+  
+  <update id="updateStatusByMsgId" parameterType="com.cesgroup.prison.bfcf.entity.BfCfREcordEntity">
+   update CDS_BF_CF_RECORD set status = #{status} 
+   		where 
+   			msg_id =#{msgId}
+  </update>
+  
+  <select id="selectAbdTypeByFenquId" resultType="com.cesgroup.prison.jfsb.entity.AlertorEntity">
+  	select * from PRISON.DVC_ALERTOR_BASE_DTLS where  ABD_CUS_NUMBER =#{cusNumber} and ABD_TYPE_INDC='3' and abd_idnty like #{fenquId} ||'%' limit 1 
+  </select>
+  
+</mapper>
