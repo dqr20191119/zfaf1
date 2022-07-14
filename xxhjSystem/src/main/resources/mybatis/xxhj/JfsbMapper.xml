@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.jfsb.dao.JfsbMapper">
+
+	<select id="listDeviceMasterInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DMA_DEVICE_IDNTY,
+		DMA_DEVICE_NAME,
+		SUM(DMA_TOTAL_COUNT) AS DMA_TOTAL_COUNT,
+		SUM(DMA_ABNORMAL_COUNT) AS DMA_ABNORMAL_COUNT
+		FROM TABLE(FMS_F_DEVICE_MASTER())
+        <where>
+	    	<if test=" dmaCusNumber != '4300' ">
+				AND DMA_CUS_NUMBER = #{dmaCusNumber}
+			</if>
+			<if test="dmaCusNumber =='4300' ">
+			 and	DMA_CUS_NUMBER in('4303','4304','4307','4312','4336')
+			</if>
+			<if test="dmaTypeIndc != null and dmaTypeIndc != ''">
+				AND DMA_TYPE_INDC = #{dmaTypeIndc}
+			</if>
+		</where> 
+	GROUP BY DMA_DEVICE_IDNTY ,DMA_DEVICE_NAME
+	ORDER BY DMA_DEVICE_IDNTY
+	</select> 
+
+	<select id="listTechnicalCameraInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CBD_CUS_NUMBER AS CUS_NUMBER, COUNT(CBD_CUS_NUMBER) || '' AS COUNT
+		FROM DVC_CAMERA_BASE_DTLS
+		WHERE CBD_ACTION_INDC != 3
+		<if test="cbdSttsIndc != null and cbdSttsIndc != ''">
+			AND CBD_STTS_INDC != #{cbdSttsIndc}
+		</if>
+		GROUP BY CBD_CUS_NUMBER
+	</select>
+
+	<select id="listTechnicalAlertorInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT ABD_CUS_NUMBER AS CUS_NUMBER, COUNT(ABD_CUS_NUMBER) || '' AS COUNT
+		FROM DVC_ALERTOR_BASE_DTLS 
+		WHERE ABD_ACTION_INDC != 3
+		<if test="abdSttsIndc != null and abdSttsIndc != ''">
+			AND ABD_STTS_INDC = #{abdSttsIndc}
+		</if>
+		GROUP BY ABD_CUS_NUMBER
+		ORDER BY ABD_CUS_NUMBER
+	</select>
+	
+	<select id="listTechnicalInfraredInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT IBI_CUS_NUMBER AS CUS_NUMBER, COUNT(IBI_CUS_NUMBER) || '' AS COUNT
+		FROM DVC_INFRARED_BASE_INFO 
+		<where>
+			<if test="ibiDvcSttsIndc != null and ibiDvcSttsIndc != ''">
+				 AND IBI_DVC_STTS_INDC = #{ibiDvcSttsIndc}
+			</if>
+		</where>
+		GROUP BY IBI_CUS_NUMBER
+		ORDER BY IBI_CUS_NUMBER 
+	</select>
+
+	<select id="listTechnicalDoorInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DCB_CUS_NUMBER AS CUS_NUMBER, COUNT(DCB_CUS_NUMBER) || '' AS COUNT 
+		FROM DVC_DOOR_CONTROL_BASE_DTLS 	 
+	    <where>
+		    <if test="dcbSttsIndc != null and dcbSttsIndc != ''">
+		    	AND DCB_STTS_INDC = #{dcbSttsIndc} 
+			</if>
+		 	AND DCB_ACTION_INDC != 3
+		</where>
+		GROUP BY DCB_CUS_NUMBER
+		ORDER BY DCB_CUS_NUMBER 
+	</select>
+	
+	<select id="listTechnicalPowerNetworkInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PNB_CUS_NUMBER AS CUS_NUMBER, COUNT(PNB_CUS_NUMBER) || '' AS COUNT
+		FROM DVC_POWER_NETWORK_BASE_DTLS
+		<where>
+			 <if test="pnbSttsIndc != null and pnbSttsIndc != ''">
+				 AND PNB_STTS_INDC = #{pnbSttsIndc}
+			 </if>
+		</where>
+		GROUP BY PNB_CUS_NUMBER
+		ORDER BY PNB_CUS_NUMBER
+	</select>
+
+	<select id="listTechnicalSnakeInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT SWI_CUS_NUMBER AS CUS_NUMBER, COUNT(SWI_CUS_NUMBER) || '' AS COUNT
+		FROM DVC_SNAKE_WIRE_INFO
+		<where>
+			<if test="swiSttsIndc != null and swiSttsIndc != ''">
+				AND SWI_STTS_INDC = #{swiSttsIndc}
+			</if>
+		</where>
+		GROUP BY SWI_CUS_NUMBER
+		ORDER BY SWI_CUS_NUMBER
+	</select>
+
+	<select id="listOnePrisonCameraInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CBD_CUS_NUMBER AS CUS_NUMBER,
+		ID AS DEVICEID,
+		CBD_NAME AS DEVICENAME,
+		CBD_STTS_INDC AS DEVICESTTS
+		FROM DVC_CAMERA_BASE_DTLS
+		<where>
+			<if test="cbdSttsIndc != null and cbdSttsIndc != ''">
+				AND CBD_STTS_INDC != #{cbdSttsIndc}
+			</if>
+			<if test="deviceName != null and deviceName != '' ">
+				AND CBD_NAME LIKE '%'|| #{deviceName} || '%'
+			</if>
+			<if test="deviceId != null and deviceId != '' ">
+				AND ID LIKE '%'|| #{deviceId} || '%'
+			</if>
+			AND CBD_ACTION_INDC != 3
+			AND CBD_CUS_NUMBER = #{cbdCusNumber}
+		</where>
+	</select>
+
+	<select id="listOnePrisonAlertorInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT ABD_CUS_NUMBER AS CUS_NUMBER, ID AS DEVICEID, ABD_NAME AS DEVICENAME, ABD_STTS_INDC AS DEVICESTTS
+		FROM DVC_ALERTOR_BASE_DTLS
+		<where>
+			<if test="abdSttsIndc != null and abdSttsIndc != ''">
+				AND ABD_STTS_INDC = #{abdSttsIndc}
+			</if>
+			<if test="deviceName != null and deviceName != '' ">
+				AND ABD_NAME LIKE '%'|| #{deviceName} || '%'
+			</if>
+			<if test="deviceId != null and deviceId != '' ">
+				AND ID LIKE '%'|| #{deviceId} || '%'
+			</if>
+			AND ABD_ACTION_INDC != 3
+			AND ABD_CUS_NUMBER = #{abdCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonInfraredInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT IBI_CUS_NUMBER AS CUS_NUMBER, ID AS DEVICEID, IBI_NAME AS DEVICENAME, IBI_DVC_STTS_INDC AS DEVICESTTS
+		FROM DVC_INFRARED_BASE_INFO
+		<where>
+			AND IBI_CUS_NUMBER = #{ibiCusNumber}
+			<if test="ibiDvcSttsIndc != null and ibiDvcSttsIndc != ''">
+				AND IBI_DVC_STTS_INDC = #{ibiDvcSttsIndc}
+			</if>
+			<if test="deviceName != null and deviceName != '' ">
+				AND IBI_NAME LIKE '%'|| #{deviceName} || '%'
+			</if>
+			<if test="deviceId != null and deviceId != '' ">
+				AND ID LIKE '%'|| #{deviceId} || '%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="listOnePrisonPowerNetworkInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PNB_CUS_NUMBER AS CUS_NUMBER,
+		ID AS DEVICEID,
+		PNB_NAME AS DEVICENAME,
+		PNB_STTS_INDC AS DEVICESTTS
+		FROM DVC_POWER_NETWORK_BASE_DTLS
+		<where>
+			AND PNB_CUS_NUMBER = #{pnbCusNumber}
+			<if test="pnbSttsIndc != null and pnbSttsIndc != ''">
+				AND PNB_STTS_INDC = #{pnbSttsIndc}
+			</if>
+			<if test="deviceName != null and deviceName != '' ">
+				AND PNB_NAME LIKE '%'|| #{deviceName} || '%'
+			</if>
+			<if test="deviceId != null and deviceId != '' ">
+				AND ID LIKE '%'|| #{deviceId} || '%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="listOnePrisonDoorInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DCB_CUS_NUMBER AS CUS_NUMBER, DCB_IDNTY AS DEVICEID,
+		DCB_NAME AS DEVICENAME, DCB_STTS_INDC AS DEVICESTTS
+		FROM DVC_DOOR_CONTROL_BASE_DTLS
+        <where>
+			<if test="dcbSttsIndc != null and dcbSttsIndc != ''">
+				AND DCB_STTS_INDC = #{dcbSttsIndc}
+			</if>
+			<if test="deviceName != null and deviceName != '' ">
+				AND DCB_NAME LIKE '%'|| #{deviceName} || '%'
+			</if>
+			<if test="deviceId != null and deviceId != '' ">
+				AND ID LIKE '%'|| #{deviceId} || '%'
+			</if>
+			AND DCB_ACTION_INDC != 3
+			AND DCB_CUS_NUMBER = #{dcbCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonSnakeInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT SWI_CUS_NUMBER AS CUS_NUMBER,
+		ID AS DEVICEID, SWI_DEFENSE_NAME AS DEVICENAME,
+		SWI_STTS_INDC AS DEVICESTTS
+		FROM DVC_SNAKE_WIRE_INFO
+		<where>
+			AND SWI_CUS_NUMBER = #{swiCusNumber}
+			<if test="swiSttsIndc != null and swiSttsIndc != ''">
+				AND SWI_STTS_INDC = #{swiSttsIndc}
+			</if>
+			<if test="deviceName != null and deviceName != '' ">
+				AND SWI_DEFENSE_NAME LIKE '%'|| #{deviceName} || '%'
+			</if>
+			<if test="deviceId != null and deviceId != '' ">
+				AND ID LIKE '%'|| #{deviceId} || '%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="listOnePrisonCameraPart" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CBD_CUS_NUMBER, ID AS DEVICEID,
+		CBD_NAME AS DEVICENAME, CBD_STTS_INDC AS DEVICESTTS
+		FROM DVC_CAMERA_BASE_DTLS 
+		<where>
+			<if test="cbdSttsIndc != null and cbdSttsIndc != ''">
+				AND CBD_STTS_INDC != #{cbdSttsIndc}
+			</if>
+			AND CBD_ACTION_INDC != 3
+			 AND ROWNUM &lt;= 20
+			AND CBD_CUS_NUMBER = #{cbdCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonAlertorPart" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT ABD_CUS_NUMBER,
+		ID AS DEVICEID,
+		ABD_NAME AS DEVICENAME,
+		ABD_STTS_INDC AS DEVICESTTS
+		FROM DVC_ALERTOR_BASE_DTLS
+		<where>
+			<if test="abdSttsIndc != null and abdSttsIndc != ''">
+				AND ABD_STTS_INDC = #{abdSttsIndc}
+			</if>
+			AND ABD_ACTION_INDC != 3 AND ROWNUM &lt;= 20
+			AND ABD_CUS_NUMBER = #{abdCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonInfraredPart" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT IBI_CUS_NUMBER,
+		ID AS DEVICEID,
+		IBI_NAME AS DEVICENAME,
+		IBI_DVC_STTS_INDC AS DEVICESTTS
+		FROM DVC_INFRARED_BASE_INFO
+		<where>
+			<if test="ibiDvcSttsIndc != null and ibiDvcSttsIndc != ''">
+				AND IBI_DVC_STTS_INDC = #{ibiDvcSttsIndc}
+			</if>
+			AND ROWNUM &lt;= 20
+			AND IBI_CUS_NUMBER = #{ibiCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonPowerNetworkPart" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PNB_CUS_NUMBER,
+		ID AS DEVICEID,
+		PNB_NAME AS DEVICENAME,
+		PNB_STTS_INDC AS DEVICESTTS
+		FROM DVC_POWER_NETWORK_BASE_DTLS
+	   <where>
+			<if test="pnbSttsIndc != null and pnbSttsIndc != ''">
+				AND PNB_STTS_INDC = #{pnbSttsIndc}
+			</if>
+			AND ROWNUM &lt;= 20
+			AND PNB_CUS_NUMBER = #{pnbCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonDoorPart" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DCB_CUS_NUMBER,
+		DCB_IDNTY  AS DEVICEID,
+		DCB_NAME AS DEVICENAME,
+		DCB_STTS_INDC AS DEVICESTTS
+		FROM DVC_DOOR_CONTROL_BASE_DTLS
+    	<where>
+			<if test="dcbSttsIndc != null and dcbSttsIndc != ''">
+				AND DCB_STTS_INDC = #{dcbSttsIndc}
+			</if>
+			AND DCB_ACTION_INDC != 3 
+			AND ROWNUM &lt;= 20
+			AND DCB_CUS_NUMBER = #{dcbCusNumber}
+		</where>
+	</select>
+	
+	<select id="listOnePrisonSnakePart" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT SWI_CUS_NUMBER,
+		ID AS DEVICEID,
+		SWI_DEFENSE_NAME AS DEVICENAME,
+		SWI_STTS_INDC AS DEVICESTTS
+		FROM DVC_SNAKE_WIRE_INFO
+        <where>
+			<if test="swiSttsIndc != null and swiSttsIndc != ''">
+				AND SWI_STTS_INDC = #{swiSttsIndc}
+			</if>
+			AND ROWNUM &lt;= 20
+			AND SWI_CUS_NUMBER = #{swiCusNumber}
+		</where>
+	</select>
+	
+	<select id="listSysCameraInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CBD_CUS_NUMBER,
+		C.ID,
+		CBD_NAME,
+		CBD_TYPE_INDC,
+		CBD_TYPE_INDC AS CBD_TYPE_INDC_CH,
+		CBD_BRAND_NAME,
+		CBD_DVR_IDNTY,
+		CBD_DVR_CHNNL_IDNTY,
+		CBD_MTRX_IDNTY,
+		CBD_MTRX_CHNNL_IDNTY,
+		CBD_STREAM_MEDIA_IDNTY,
+		CBD_PRE_NEME,
+		CBD_ADDRS_CODE,
+		CBD_IP_ADDRS,
+		CBD_DPRTMNT,
+		CBD_AREA_ID,
+		CBD_AREA,
+		CBD_DPRTMNT_SRNO,
+		CBD_STTS_INDC,
+		CBD_STTS_INDC AS CBD_STTS_INDC_CH,
+		CBD_DVC_ADDRS,
+		CBD_ANALYSE_CHNNL_IDNTY,
+		CBD_USE_LIMIT,
+		CBD_ACTION_INDC,
+		CBD_PLATFORM_IDNTY,
+		CBD_PLATFORM,
+		CBD_VIDEO_PLAY_INDC,
+		CBD_VIDEO_PLAY_INDC AS CBD_VIDEO_PLAY_INDC_CH,
+		CBD_VIDEO_PLAYBACK_INDC,
+		CBD_CRTE_TIME,
+		CBD_STREAM_TYPE,
+		CBD_CRTE_USER_ID,
+		CBD_UPDT_TIME,
+		CBD_UPDT_USER_ID,
+		A.VDI_DEVICE_NAME AS VDI_DEVICE_NAME,
+		SSI_SERVER_NAME
+		FROM DVC_CAMERA_BASE_DTLS C
+		LEFT JOIN DVC_VIDEO_DEVICE_INFO A ON
+			(CBD_CUS_NUMBER = VDI_CUS_NUMBER AND CBD_DVR_IDNTY = A.ID)
+		LEFT JOIN DVC_STREAM_SERVER_INFO B ON
+			(CBD_CUS_NUMBER = SSI_CUS_NUMBER AND CBD_STREAM_MEDIA_IDNTY=B.ID)
+		
+		where CBD_CUS_NUMBER = #{cbdCusNumber} 
+		AND C.ID = #{id}
+	</select>
+	
+	<select id="listSysAlertorBaseInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT ABD_CUS_NUMBER,
+		ABD_IDNTY,
+		ABD_NAME,
+		ABD_PRE_NAME,
+		ABD_TYPE_INDC,ABD_AREA_ID,
+		ABD_AREA,
+		ABD_ADDRS,
+		ABD_IP,
+		ABD_PORT,
+		ABD_HOST_IDNTY,
+		ABD_STTS_INDC,
+		ABD_ACTION_INDC,
+		ABD_REMARK,
+		ID,
+		ABD_BRAND_INDC
+		FROM DVC_ALERTOR_BASE_DTLS
+		where ABD_CUS_NUMBER = #{abdCusNumber} 
+		AND ID = #{id}
+	</select>
+	
+	<select id="listSysInfraredBaseInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT IBI_CUS_NUMBER,
+		ID,
+		IBI_NAME,
+		IBI_ADDRS,
+		IBI_TYPE_INDC,
+		IBI_TYPE_INDC AS IBI_TYPE_INDC_CH,
+		IBI_DVC_STTS_INDC,
+		IBI_DVC_STTS_INDC
+		AS IBI_DVC_STTS_INDC_CH,
+		IBI_WORK_STTS_INDC,
+		IBI_WORK_STTS_INDC AS
+		IBI_WORK_STTS_INDC_CH,
+		IBI_POS_X,
+		IBI_POS_Y,
+		IBI_POS_Z,
+		IBI_POS_PITCH,
+		IBI_POS_ROTATE
+		FROM DVC_INFRARED_BASE_INFO
+		where IBI_CUS_NUMBER = #{ibiCusNumber} 
+		AND ID = #{id}
+	</select>
+	
+	<select id="listSysPowerNetworkInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PNB_CUS_NUMBER,
+		ID,
+		PNB_NAME,
+		PNB_IP,
+		PNB_A_BOX_VOLTAGE,
+		PNB_B_BOX_VOLTAGE,
+		PNB_POWER_SOURCE_VOLTAGE,
+		PNB_A_BOX_POWER_FLOW,
+		PNB_B_BOX_POWER_FLOW,
+		PNB_POWER_SOURCE_FLOW,
+		PNB_TIME,
+		PNB_STTS_INDC,
+		PNB_STTS_INDC AS PNB_STTS_INDC_CH,
+		PNB_CRTE_TIME,
+		PNB_CRTE_USER_ID,
+		PNB_UPDT_TIME,
+		PNB_UPDT_USER_ID
+		FROM DVC_POWER_NETWORK_BASE_DTLS
+		where PNB_CUS_NUMBER = #{pnbCusNumber} 
+		AND ID = #{id}
+	</select>
+	
+	<select id="listSysDoorInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DCB_CUS_NUMBER, 
+		 ID, 
+		 DCB_CTRL_IDNTY, 
+		 DCB_NAME, 
+		 DCB_PRE_NAME,
+		 DCB_TYPE_INDC, 
+		 DCB_TYPE_INDC AS DCB_TYPE_INDC_CH,
+		 DCB_ADDRS, 
+		 DCB_PORT, 
+		 DCB_NODE_ADDRS, 
+		 DCB_SN_ID, 
+		 DCB_STTS_INDC, 
+		 DCB_STTS_INDC AS DCB_STTS_INDC_CH, 
+		 DCB_CHNNL_ADDRS, 
+		 DCB_AREA_ID, 
+		 DCB_AREA,
+		 DCB_DPRTMNT, 
+		 DCB_ACTION_INDC,
+		 DCB_REMARK, 
+		 DCB_CRTE_TIME, 
+		 DCB_CRTE_USER_ID,
+		 DCB_UPDT_TIME, 
+		 DCB_UPDT_USER_ID 
+		 FROM
+		 DVC_DOOR_CONTROL_BASE_DTLS
+		 where DCB_CUS_NUMBER = #{dcbCusNumber} 
+		 AND DCB_IDNTY = #{id}
+	</select>
+	
+	<select id="listSnakeWireInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT SWI_CUS_NUMBER,
+		ID,
+		SWI_DEFENSE_IDNTY,
+		SWI_DEFENSE_NAME,
+		SWI_DETECTOR_HOST_IDNTY,
+		SWI_ADDRS,
+		SWI_STTS_INDC,
+		SWI_STTS_INDC AS
+		SWI_STTS_INDC_CH,
+		SWI_POS_X,
+		SWI_POS_Y,
+		SWI_POS_Z,
+		SWI_POS_PITCH,
+		SWI_POS_ROTATE,
+		SWI_CRTE_USER_ID,
+		SWI_CRTE_TIME,
+		SWI_UPDT_USER_ID,
+		SWI_UPDT_TIME
+		FROM DVC_SNAKE_WIRE_INFO
+		where SWI_CUS_NUMBER = #{swiCusNumber} 
+		AND ID LIKE #{id}
+	</select>
+	
+	<select id="listdeviceMaintainRecord" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DMR_RECORD_ID,
+		DMR_DEVICE_TYPE,
+		DMR_DEVICE_IDNTY,
+		DMR_DEVICE_NAME,
+		DMR_FAULT_MAINTAINER,
+		DMR_FAULT_CONTENT,
+		TO_CHAR(DMR_FAULT_MAINTAIN_TIME,'YYYY-MM-DD') AS DMR_FAULT_MAINTAIN_TIME,
+		DMR_CRTD_USER_ID,
+		DMR_CRTD_TIME,
+		DMR_UPDTD_USER_ID,
+		DMR_UPDTD_TIME
+		FROM CDS_DEVICE_MAINTAIN_RECORD
+		WHERE DMR_CUS_NUMBER = #{dmrCusNumber} 
+		AND DMR_DEVICE_TYPE = #{dmrDeviceType} 
+		AND DMR_DEVICE_IDNTY = #{dmrDeviceIdnty}
+		ORDER BY DMR_FAULT_MAINTAIN_TIME DESC
+	</select>
+</mapper>

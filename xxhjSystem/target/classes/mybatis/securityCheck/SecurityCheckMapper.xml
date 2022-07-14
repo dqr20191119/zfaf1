@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.securityCheck.dao.SecurityCheckDao">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.securityCheck.entity.SecurityCheck">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+		<result column="DEVICE_ID" jdbcType="CHAR" property="deviceId" />
+		<result column="DEVICE_NAME" jdbcType="CHAR" property="deviceName" />
+		<result column="DEVICE_ADDRESS" jdbcType="CHAR" property="deviceAddress" />
+		<result column="CHECK_RESULT" jdbcType="CHAR" property="checkResult" />
+		<result column="CHECK_TIME" jdbcType="TIMESTAMP" property="checkTime" />
+		<result column="DATA_SOURCE" jdbcType="CHAR" property="dataSource" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, CUS_NUMBER, DEVICE_ID, DEVICE_NAME, DEVICE_ADDRESS, CHECK_RESULT, CHECK_TIME, 
+		DATA_SOURCE
+	</sql>
+	
+	<!-- 分页查询 -->
+	<select id="listAll" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			* 
+		FROM T_SECURITY_CHECK T1
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="deviceName != null and deviceName != ''">
+				AND T1.DEVICE_NAME LIKE '%${deviceName}%'
+			</if>
+			<if test="checkTime != null and checkTime != ''" >
+				AND TO_CHAR(T1.CHECK_TIME, 'yyyy-MM-dd') = '${checkTime}'
+			</if>
+		</where>
+		ORDER BY T1.CHECK_TIME DESC
+	</select>
+	
+</mapper>

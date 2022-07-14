@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.znys.dao.ZnysMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.xxhj.znys.entity.ZnysEntity">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="KEY_NAME" jdbcType="VARCHAR" property="keyName" />
+    <result column="GET_KEY_TIME" jdbcType="TIMESTAMP" property="getKeyTime" />
+    <result column="GET_KEY_PERSON" jdbcType="VARCHAR" property="getKeyPerson" />
+    <result column="RETURN_KEY_TIME" jdbcType="TIMESTAMP" property="returnKeyTime" />
+    <result column="STATUE" jdbcType="VARCHAR" property="statue" />
+  </resultMap>
+  
+ <select id="findList" parameterType="com.cesgroup.prison.xxhj.znys.entity.ZnysEntity"
+		resultType="com.cesgroup.prison.xxhj.znys.entity.ZnysEntity">
+		SELECT ID, NAME, KEY_NAME, GET_KEY_TIME, 
+      GET_KEY_PERSON, RETURN_KEY_TIME, (case STATUE when '1' then '已还'
+		when '0' then '未还'
+		else '其他' end) "STATUE" FROM
+		"PRISON"."DVC_DOOR_KEY" ORDER BY GET_KEY_TIME DESC
+	</select>
+ 
+ 
+ 	<select id="searchSwdbPage" parameterType="com.cesgroup.prison.xxhj.znys.entity.ZnysEntity"
+		resultType="com.cesgroup.prison.xxhj.znys.entity.ZnysEntity">
+		SELECT ID, NAME, KEY_NAME, GET_KEY_TIME, 
+      GET_KEY_PERSON, RETURN_KEY_TIME, (case STATUE when '1' then '已还'
+		when '0' then '未还'
+		else '其他' end) "STATUE"   FROM "PRISON"."DVC_DOOR_KEY" A
+		 <where>
+			<if test="name != null and name != ''">
+				AND A.NAME = #{name}
+			</if>
+			<if test="keyName != null and keyName != ''">
+				AND A.KEY_NAME = #{keyName}
+			</if>
+			
+			<if test="getKeyTime != null and getKeyTime != ''">
+				AND GET_KEY_TIME(A.PIR_ENTER_TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{getKeyTime}
+			</if>
+			<if test="returnKeyTime != null and returnKeyTime != ''">
+				AND to_char(A.RETURN_KEY_TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{returnKeyTime}
+			</if>
+			<if test="statue != null and statue != ''">
+				AND A.STATUE= #{statue}
+			</if>
+		 </where>
+		ORDER BY GET_KEY_TIME DESC
+	</select>
+</mapper>

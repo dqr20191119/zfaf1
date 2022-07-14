@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.AffixMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.common.entity.AffixEntity">		
+		SELECT A.* FROM PORTAL.T_C_AFFIX A WHERE A.ID = #{id}
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.common.entity.AffixEntity" resultType="com.cesgroup.prison.common.entity.AffixEntity">		
+		SELECT A.* FROM PORTAL.T_C_AFFIX A 
+		<where>
+			<if test="ywId != null and ywId != ''">
+				A.YW_ID = #{ywId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="updateYwId">
+		UPDATE PORTAL.T_C_AFFIX A SET A.YW_ID = #{ywId} 
+		WHERE A.ID IN 
+		<foreach collection="idList" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach> 
+	</select>
+		
+	<select id="deleteByYwIdAndFileType">
+		DELETE FROM PORTAL.T_C_AFFIX A   
+		WHERE A.YW_ID = #{ywId} 
+		AND A.FILE_TYPE IN 
+		<foreach collection="fileTypeList" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach> 
+	</select>
+	
+	<select id="deleteByYwId">
+		DELETE FROM PORTAL.T_C_AFFIX A   
+		WHERE A.YW_ID = #{ywId} 
+	</select>
+</mapper>

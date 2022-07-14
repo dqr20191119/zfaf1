@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.wfsb.dao.WfsbMapper">
+
+	<select id="listPhysicalDeviceCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT A.PDE_DEVICE_IDNTY AS PDE_DEVICE_IDNTY, 
+		B.PDN_DEVICE_NAME,
+		SUM(A.PDE_NORMAL_COUNT) AS PDE_NORMAL_COUNT, 
+		SUM(A.PDE_ABNORMAL_COUNT) AS PDE_ABNORMAL_COUNT, 
+		A.PDE_UNIT
+		FROM CDS_PHYSICAL_DEVICE A LEFT JOIN CDS_PHYSICAL_DEVICE_NAME B ON A.PDE_DEVICE_IDNTY=B.PDN_DEVICE_IDNTY
+		<where>
+			<if test="_parameter != null and _parameter != ''">
+				AND PDE_CUS_NUMBER = #{_parameter,jdbcType=NUMERIC}
+			</if>
+		</where>
+	    GROUP BY PDE_DEVICE_IDNTY,PDN_DEVICE_NAME,PDE_UNIT
+		ORDER BY PDN_DEVICE_NAME
+		
+	</select>
+	
+	<!-- 各监狱物防设备统计 -->
+	<select id="listPhysicalDeviceCountPris" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PDE_CUS_NUMBER, SUM(PDE_NORMAL_COUNT) || '' AS PDE_NORMAL_COUNT,
+			SUM(PDE_ABNORMAL_COUNT) || '' AS PDE_ABNORMAL_COUNT,
+			MAX(PDE_UNIT) AS PDE_UNIT
+		FROM  CDS_PHYSICAL_DEVICE
+		where (PDE_DEVICE_NAME = #{_parameter})
+		GROUP BY PDE_CUS_NUMBER
+		ORDER BY PDE_CUS_NUMBER
+	</select>
+	
+</mapper>

@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 今日值班Dao映射文件 -->
+<mapper namespace="com.cesgroup.prison.zbgl.todayDuty.dao.TodayDutyDao">
+	<!-- TodayDutyDto结果集 -->
+	<resultMap id="TodayDutyDtoResultMap" type="com.cesgroup.prison.zbgl.todayDuty.dto.TodayDutyDto">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="DBD_CUS_NUMBER" jdbcType="CHAR" property="dbdCusNumber" />
+		<result column="DBD_STAFF_ID" jdbcType="CHAR" property="dbdStaffId" />
+		<result column="DBD_STAFF_NAME" jdbcType="CHAR" property="dbdStaffName" />
+		<result column="DCA_CATEGORY_NAME" jdbcType="CHAR" property="dcaCategoryName" />
+		<result column="CDM_MODE_NAME" jdbcType="CHAR" property="cdmModeName" />
+		<result column="DOR_DUTY_ORDER_NAME" jdbcType="CHAR" property="dorDutyOrderName" />
+		<result column="CDJ_JOB_NAME" jdbcType="CHAR" property="cdjJobName" />
+		<result column="DBD_DUTY_DATE" jdbcType="TIMESTAMP" property="dbdDutyDate" />
+		<result column="DOR_START_TIME" jdbcType="CHAR" property="dorStartTime" />
+		<result column="DOR_END_TIME" jdbcType="CHAR" property="dorEndTime" />
+	</resultMap>
+	
+	<!-- TodayDutyDto字段 -->
+	<sql id="TodayDutyDto_Column_List">
+		ID, DBD_CUS_NUMBER, DBD_STAFF_ID, DBD_STAFF_NAME, DCA_CATEGORY_NAME, CDM_MODE_NAME, 
+		DOR_DUTY_ORDER_NAME, CDJ_JOB_NAME, DBD_DUTY_DATE, DOR_START_TIME, DOR_END_TIME
+	</sql>
+
+	<!-- 分页查询今日值班数据 -->
+	<select id="findWithPage" parameterType="java.util.Map" resultMap="TodayDutyDtoResultMap" useCache="true">
+		SELECT 
+			T1.ID, 
+			T1.DBD_CUS_NUMBER, 
+			T1.DBD_STAFF_ID, 
+			T1.DBD_STAFF_NAME, 
+			T2.DCA_CATEGORY_NAME, 
+			T2.CDM_MODE_NAME, 
+			T3.DOR_DUTY_ORDER_NAME, 
+			T3.CDJ_JOB_NAME, 
+			T1.DBD_DUTY_DATE, 
+			T3.DOR_START_TIME, 
+			T3.DOR_END_TIME
+		FROM 
+		CDS_DUTY_BASE_DTLS T1
+		INNER JOIN (
+			SELECT 
+			T1.ID, T4.DCA_CATEGORY_NAME, T3.CDM_MODE_NAME
+			FROM CDS_DUTY_MODE_DEPARTMENT T1
+			INNER JOIN CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID
+			INNER JOIN CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID
+			INNER JOIN CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+			<where>
+				<if test="categoryName != null and categoryName != ''">
+					AND T4.DCA_CATEGORY_NAME LIKE '%${categoryName}%'
+				</if>
+				<if test="modeName != null and modeName != ''">
+					AND T3.CDM_MODE_NAME LIKE '%${modeName}%'
+				</if>
+				<if test="deptCode != null and deptCode != ''">
+					AND T1.DMD_DPRTMNT_ID = '${deptCode}'
+				</if>
+			</where>
+		) AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID
+		INNER JOIN (
+			SELECT 
+			T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, T4.CDJ_JOB_CODE, T3.DOR_START_TIME, T3.DOR_END_TIME
+			FROM CDS_DUTY_MODE_ORDER_JOB T1
+			INNER JOIN CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID
+			INNER JOIN CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID
+			INNER JOIN CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID
+			<where>
+				<if test="modeName != null and modeName != ''">
+					AND T2.CDM_MODE_NAME LIKE '%${modeName}%'
+				</if>
+				<if test="orderName != null and orderName != ''">
+					AND T3.DOR_DUTY_ORDER_NAME LIKE '%${orderName}%'
+				</if>
+				<if test="dutyJobId != null and dutyJobId != ''">
+					AND T4.ID = '${dutyJobId}'
+				</if>
+			</where>
+		) AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.DBD_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="dutyDate != null and dutyDate != ''" >
+				AND TO_CHAR(T1.DBD_DUTY_DATE, 'yyyy-MM-dd') = '${dutyDate}'
+			</if>
+			<if test="dbdStaffName != null and dbdStaffName != ''" >
+				AND T1.DBD_STAFF_NAME LIKE '%${dbdStaffName}%'
+			</if>
+		</where>
+		ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID
+	</select>
+	
+	<!-- 根据类别名称、模板名称、班次名称like，查询条件查询今日值班数据 -->
+	<select id="findByCategoryNameAndModeNameAndOrderNameLike" parameterType="java.util.Map" resultMap="TodayDutyDtoResultMap" useCache="true">
+		SELECT 
+			T1.ID, 
+			T1.DBD_CUS_NUMBER, 
+			T1.DBD_STAFF_ID, 
+			T1.DBD_STAFF_NAME, 
+			T2.DCA_CATEGORY_NAME, 
+			T2.CDM_MODE_NAME, 
+			T3.DOR_DUTY_ORDER_NAME, 
+			T3.CDJ_JOB_NAME, 
+			T1.DBD_DUTY_DATE, 
+			T3.DOR_START_TIME, 
+			T3.DOR_END_TIME
+		FROM 
+		CDS_DUTY_BASE_DTLS T1
+		INNER JOIN (
+			SELECT 
+			T1.ID, T4.DCA_CATEGORY_NAME, T3.CDM_MODE_NAME
+			FROM CDS_DUTY_MODE_DEPARTMENT T1
+			INNER JOIN CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID
+			INNER JOIN CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID
+			INNER JOIN CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+			<where>
+				<if test="categoryName != null and categoryName != ''">
+					AND T4.DCA_CATEGORY_NAME = '${categoryName}'
+				</if>
+				<if test="modeName != null and modeName != ''">
+					AND T3.CDM_MODE_NAME = '${modeName}'
+				</if>
+			</where>
+		) AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID
+		INNER JOIN (
+			SELECT 
+			T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, T4.CDJ_JOB_CODE, T3.DOR_START_TIME, T3.DOR_END_TIME
+			FROM CDS_DUTY_MODE_ORDER_JOB T1
+			INNER JOIN CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID
+			INNER JOIN CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID
+			INNER JOIN CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID
+			<where>
+				<if test="modeName != null and modeName != ''">
+					AND T2.CDM_MODE_NAME = '${modeName}'
+				</if>
+				<if test="orderName != null and orderName != ''">
+					AND T3.DOR_DUTY_ORDER_NAME LIKE '%${orderName}%'
+				</if>
+			</where>
+		) AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.DBD_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="dutyDate != null and dutyDate != ''" >
+				AND TO_CHAR(T1.DBD_DUTY_DATE, 'yyyy-MM-dd') = '${dutyDate}'
+			</if>
+		</where>
+		ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID
+	</select>
+	
+	<!-- 根据类别名称like、模板名称like、部门编号，查询条件查询今日值班数据 -->
+	<select id="findByCategoryNameLikeAndModeNameLikeAndDeptCode" parameterType="java.util.Map" resultMap="TodayDutyDtoResultMap" useCache="true">
+		SELECT 
+			T1.ID, 
+			T1.DBD_CUS_NUMBER, 
+			T1.DBD_STAFF_ID, 
+			T1.DBD_STAFF_NAME, 
+			T2.DCA_CATEGORY_NAME, 
+			T2.CDM_MODE_NAME, 
+			T3.DOR_DUTY_ORDER_NAME, 
+			T3.CDJ_JOB_NAME, 
+			T1.DBD_DUTY_DATE, 
+			T3.DOR_START_TIME, 
+			T3.DOR_END_TIME
+		FROM 
+		CDS_DUTY_BASE_DTLS T1
+		INNER JOIN (
+			SELECT 
+			T1.ID, T4.DCA_CATEGORY_NAME, T3.CDM_MODE_NAME
+			FROM CDS_DUTY_MODE_DEPARTMENT T1
+			INNER JOIN CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID
+			INNER JOIN CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID
+			INNER JOIN CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+			<where>
+				<if test="categoryName != null and categoryName != ''">
+					AND T4.DCA_CATEGORY_NAME LIKE '%${categoryName}%'
+				</if>
+				<if test="modeName != null and modeName != ''">
+					AND T3.CDM_MODE_NAME LIKE '%${modeName}%'
+				</if>
+				<if test="deptCode != null and deptCode != ''">
+					AND T1.DMD_DPRTMNT_ID = '${deptCode}'
+				</if>
+			</where>
+		) AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID
+		INNER JOIN (
+			SELECT 
+			T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, T4.CDJ_JOB_CODE, T3.DOR_START_TIME, T3.DOR_END_TIME
+			FROM CDS_DUTY_MODE_ORDER_JOB T1
+			INNER JOIN CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID
+			INNER JOIN CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID
+			INNER JOIN CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID
+			<where>
+				<if test="modeName != null and modeName != ''">
+					AND T2.CDM_MODE_NAME LIKE '%${modeName}%'
+				</if>
+			</where>
+		) AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.DBD_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="dutyDate != null and dutyDate != ''" >
+				AND TO_CHAR(T1.DBD_DUTY_DATE, 'yyyy-MM-dd') = '${dutyDate}'
+			</if>
+		</where>
+		ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID
+	</select>
+	
+	<!-- 根据部门编码、值班岗位编号，查询今日值班数据 -->
+	<select id="findByDeptCodeAndDutyJobId" parameterType="java.util.Map" resultMap="TodayDutyDtoResultMap" useCache="true">
+		SELECT 
+			T1.ID, 
+			T1.DBD_CUS_NUMBER, 
+			T1.DBD_STAFF_ID, 
+			T1.DBD_STAFF_NAME, 
+			T2.DCA_CATEGORY_NAME, 
+			T2.CDM_MODE_NAME, 
+			T3.DOR_DUTY_ORDER_NAME, 
+			T3.CDJ_JOB_NAME, 
+			T1.DBD_DUTY_DATE, 
+			T3.DOR_START_TIME, 
+			T3.DOR_END_TIME
+		FROM 
+		CDS_DUTY_BASE_DTLS T1
+		INNER JOIN (
+			SELECT 
+			T1.ID, T4.DCA_CATEGORY_NAME, T3.CDM_MODE_NAME
+			FROM CDS_DUTY_MODE_DEPARTMENT T1
+			INNER JOIN CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID
+			INNER JOIN CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID
+			INNER JOIN CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+			<where>
+				<if test="deptCode != null and deptCode != ''">
+					AND T2.DCD_DPRTMNT_ID = '${deptCode}'
+				</if>
+			</where>
+		) AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID
+		INNER JOIN (
+			SELECT 
+			T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, T4.CDJ_JOB_CODE, T3.DOR_START_TIME, T3.DOR_END_TIME
+			FROM CDS_DUTY_MODE_ORDER_JOB T1
+			INNER JOIN CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID
+			INNER JOIN CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID
+			INNER JOIN CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID
+			<where>
+				<if test="dutyJobId != null and dutyJobId != ''">
+					AND T4.ID = '${dutyJobId}'
+				</if>
+			</where>
+		) AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.DBD_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="dutyDate != null and dutyDate != ''" >
+				AND TO_CHAR(T1.DBD_DUTY_DATE, 'yyyy-MM-dd') = '${dutyDate}'
+			</if>
+		</where>
+		ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID
+	</select>
+	<!--查询今日值班数据  -->
+	<select id="getTodayDuty" resultType="com.cesgroup.prison.zbgl.todayDuty.dto.TodayDutyDto">
+			select
+		        t1.ID, 
+				t1.DBD_CUS_NUMBER, 
+				t1.DBD_STAFF_ID, 
+				t1.DBD_STAFF_NAME, 
+				t4.DOR_DUTY_ORDER_NAME, 
+				t5.CDJ_JOB_NAME, 
+				t1.DBD_DUTY_DATE, 
+				t4.DOR_START_TIME, 
+				t4.DOR_END_TIME
+		from
+		        prison.CDS_DUTY_BASE_DTLS t1      ,
+		        prison.CDS_DUTY_MODE_DEPARTMENT t2,
+		        prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+		        prison.CDS_DUTY_ORDER t4          ,
+		        prison.CDS_DUTY_JOB t5
+		where
+		        t1.DBD_DUTY_MODE_DEPARTMENT_ID          = T2.ID
+		    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+		    and t3.MOJ_JOB_ID                           = t5.id
+		    and t3.MOJ_ORDER_ID                         = t4.id
+		    and t4.DOR_STATUS ='1'
+		    and t5.CDJ_STATUS ='1'
+		    and to_char(t1.DBD_DUTY_DATE, 'yyyy-MM-dd')=to_char(#{dutyDate}, 'yyyy-MM-dd')
+		    and t2.DMD_ZT ='1'
+		    and t5.CDJ_JOB_NAME =#{orderName}
+		    and t1.DBD_CUS_NUMBER=#{cusNumber}
+	</select>
+	
+	
+	<select id="getTodayDutyListWithPage" resultMap="TodayDutyDtoResultMap" parameterType="java.util.Map"  >
+		select
+		        t1.ID, 
+				t1.DBD_CUS_NUMBER, 
+				t1.DBD_STAFF_ID, 
+				t1.DBD_STAFF_NAME, 
+				t4.DOR_DUTY_ORDER_NAME, 
+				t5.CDJ_JOB_NAME, 
+				t1.DBD_DUTY_DATE, 
+				t4.DOR_START_TIME, 
+				t4.DOR_END_TIME
+		from
+		        prison.CDS_DUTY_BASE_DTLS t1      ,
+		        prison.CDS_DUTY_MODE_DEPARTMENT t2,
+		        prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+		        prison.CDS_DUTY_ORDER t4          ,
+		        prison.CDS_DUTY_JOB t5
+		<where>
+		        t1.DBD_DUTY_MODE_DEPARTMENT_ID          = T2.ID
+		    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+		    and t3.MOJ_JOB_ID                           = t5.id
+		    and t3.MOJ_ORDER_ID                         = t4.id
+		    and t4.DOR_STATUS ='1'
+		    and t5.CDJ_STATUS ='1'
+		    and t2.DMD_ZT ='1'
+		    <if test="dutyDate !=null and dutyDate!=''">
+		    and to_char(t1.DBD_DUTY_DATE, 'yyyy-MM-dd')=to_char(#{dutyDate}, 'yyyy-MM-dd')
+		    </if>
+		    <if test="orderName !=null and orderName !=''">
+		    and t5.CDJ_JOB_NAME =#{orderName}
+		    </if>
+		    <if test=" cusNumber !=null and cusNumber !=''">
+		    and t1.DBD_CUS_NUMBER=#{cusNumber}
+		    </if>
+		    <if test=" dbdStaffName !=null and dbdStaffName !=''">
+		    and t1.DBD_STAFF_NAME like '%'||#{dbdStaffName}||'%'
+		    </if>
+		</where>    
+	</select>
+	
+</mapper>

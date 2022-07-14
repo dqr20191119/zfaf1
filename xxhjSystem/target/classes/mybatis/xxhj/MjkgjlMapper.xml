@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.mjkgjl.dao.MjkgjlMapper">
+	<resultMap id="BaseResultMap"
+		type="com.cesgroup.prison.xxhj.mjkgjl.entity.MjkgjlEntity">
+		<result column="PIR_CUS_NUMBER" jdbcType="VARCHAR" property="pirCusNumber" />
+		<result column="PIR_BRUSH_DATE" jdbcType="TIMESTAMP" property="pirBrushDate" />
+		<result column="PIR_POLICE_IDNTY" jdbcType="VARCHAR" property="pirPoliceIdnty" />
+		<result column="PIR_POLICE_NAME" jdbcType="VARCHAR" property="pirPoliceName" />
+		<result column="PIR_ENTER_TIME" jdbcType="TIMESTAMP" property="pirEnterTime" />
+		<result column="PIR_LEAVE_TIME" jdbcType="TIMESTAMP" property="pirLeaveTime" />
+		<result column="PIR_DPRTMNT_ID" jdbcType="VARCHAR" property="pirDprtmntId" />
+		<result column="PIR_DPRTMNT_NAME" jdbcType="VARCHAR" property="pirDprtmntName" />
+		<result column="PIR_DOOR_CARD_IDNTY" jdbcType="VARCHAR"
+			property="pirDoorCardIdnty" />
+		<result column="PIR_PEOPLE_TYPE_INDC" jdbcType="VARCHAR"
+			property="pirPeopleTypeIndc" />
+		<result column="PIR_REMARK" jdbcType="VARCHAR" property="pirRemark" />
+		<result column="PIR_CRTE_TIME" jdbcType="TIMESTAMP" property="pirCrteTime" />
+		<result column="PIR_CRTE_USER_ID" jdbcType="VARCHAR" property="pirCrteUserId" />
+		<result column="PIR_UPDT_TIME" jdbcType="TIMESTAMP" property="pirUpdtTime" />
+		<result column="PIR_UPDT_USER_ID" jdbcType="VARCHAR" property="pirUpdtUserId" />
+		<result column="PIR_DOOR_IDNTY" jdbcType="VARCHAR" property="pirDoorIdnty" />
+	</resultMap>
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		PIR_CUS_NUMBER, PIR_BRUSH_DATE, PIR_POLICE_IDNTY,
+		PIR_POLICE_NAME, PIR_ENTER_TIME, PIR_LEAVE_TIME,
+		PIR_DPRTMNT_ID, PIR_DPRTMNT_NAME, PIR_DOOR_CARD_IDNTY,
+		PIR_PEOPLE_TYPE_INDC, PIR_REMARK, PIR_CRTE_TIME,
+		PIR_CRTE_USER_ID, PIR_UPDT_TIME, PIR_UPDT_USER_ID,
+		PIR_DOOR_IDNTY
+	</sql>
+	<select id="findList" parameterType="com.cesgroup.prison.xxhj.mjkgjl.entity.MjkgjlEntity"
+		resultType="com.cesgroup.prison.xxhj.mjkgjl.entity.MjkgjlEntity">
+		SELECT PIR_CUS_NUMBER, PIR_BRUSH_DATE, PIR_POLICE_IDNTY,
+		PIR_POLICE_NAME, PIR_ENTER_TIME, PIR_LEAVE_TIME,
+		PIR_DPRTMNT_ID, PIR_DPRTMNT_NAME, PIR_DOOR_CARD_IDNTY,
+		(case PIR_PEOPLE_TYPE_INDC when '1' then '民警'
+		when '2' then '犯人'
+		when '3'
+		then '外来人员'
+		when '4' then '职工'
+		else '其他' end) "PIR_PEOPLE_TYPE_INDC" ,
+		PIR_REMARK, PIR_CRTE_TIME,
+		PIR_CRTE_USER_ID, PIR_UPDT_TIME, PIR_UPDT_USER_ID ,PIR_DOOR_IDNTY FROM
+		V_POLICE_INOUT_RECORD union all 
+		SELECT PIR_CUS_NUMBER, PIR_BRUSH_DATE, PIR_POLICE_IDNTY,
+		PIR_POLICE_NAME, PIR_ENTER_TIME, PIR_LEAVE_TIME,
+		PIR_DPRTMNT_ID, PIR_DPRTMNT_NAME, PIR_DOOR_CARD_IDNTY,
+		(case PIR_PEOPLE_TYPE_INDC when '1' then '民警'
+		when '2' then '犯人'
+		when '3'
+		then '外来人员' 
+		when '4' then '职工'
+		else '其他' end) "PIR_PEOPLE_TYPE_INDC" ,
+		PIR_REMARK, PIR_CRTE_TIME,
+		PIR_CRTE_USER_ID, PIR_UPDT_TIME, PIR_UPDT_USER_ID ,PIR_DOOR_IDNTY FROM
+		V_POLICE_INOUT_RECORD
+	</select>
+	
+	
+	<select id="searchSwdbPage" parameterType="com.cesgroup.prison.xxhj.mjkgjl.entity.MjkgjlEntity"
+		resultType="com.cesgroup.prison.xxhj.mjkgjl.entity.MjkgjlEntity">
+		SELECT PIR_CUS_NUMBER, PIR_BRUSH_DATE, PIR_POLICE_IDNTY,
+		PIR_POLICE_NAME, PIR_ENTER_TIME, PIR_LEAVE_TIME,
+		PIR_DPRTMNT_ID, PIR_DPRTMNT_NAME, PIR_DOOR_CARD_IDNTY,
+		(case PIR_PEOPLE_TYPE_INDC when '1' then '民警'
+		when '2' then '犯人'
+		when '3'
+		then '外来人员'
+		when '4' then '职工'
+		else '其他' end) "PIR_PEOPLE_TYPE_INDC" ,
+		PIR_REMARK, PIR_CRTE_TIME,
+		PIR_CRTE_USER_ID, PIR_UPDT_TIME, PIR_UPDT_USER_ID ,PIR_DOOR_IDNTY,PIR_DOOR_NAME  FROM V_POLICE_INOUT_RECORD A
+		where PIR_ENTER_TIME &lt;= sysdate
+			<if test="pirDoorIdnty != null and pirDoorIdnty != ''">
+				AND A.PIR_DOOR_IDNTY = #{pirDoorIdnty}
+			</if>
+			<if test="pirPeopleTypeIndc != null and pirPeopleTypeIndc != ''">
+				AND A.PIR_PEOPLE_TYPE_INDC = #{pirPeopleTypeIndc}
+			</if>
+			
+			<if test="pirEnterTime != null and pirEnterTime != ''">
+				AND to_char(A.PIR_ENTER_TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{pirEnterTime}
+			</if>
+			<if test="pirLeaveTime != null and pirLeaveTime != ''">
+				AND to_char(A.PIR_LEAVE_TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{pirLeaveTime}
+			</if>
+			
+			<if test="pirCusNumber != null and pirCusNumber != ''">
+				AND A.PIR_CUS_NUMBER = #{pirCusNumber}
+			</if>
+			<if test="pirDprtmntId != null and pirDprtmntId != ''">
+				AND A.PIR_DPRTMNT_ID = #{pirDprtmntId}
+			</if>
+		ORDER BY PIR_ENTER_TIME DESC
+	</select>
+</mapper>

@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.szbb.dao.RcgkDao">
+
+
+	<!-- 1.今日值班信息接口 -->
+	<!-- 1.1.当日值班长信息 -->
+	<select id="getJrzbzList" parameterType="java.util.Map" resultType="hashmap">
+		 SELECT 
+			T1.DBD_STAFF_NAME as "Name", T2.DCA_CATEGORY_NAME as "Group", T3.DOR_DUTY_ORDER_NAME as "Position"
+		FROM 
+			prison.CDS_DUTY_BASE_DTLS T1 
+		INNER JOIN ( 
+		SELECT 
+			T1.ID, T4.DCA_CATEGORY_NAME, 
+			T3.CDM_MODE_NAME 
+		FROM 
+			prison.CDS_DUTY_MODE_DEPARTMENT T1 
+		INNER JOIN 
+			prison.CDS_DUTY_CATEGORY_DEPARTMENT T2 
+		ON 
+			T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID 
+			AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID 
+		INNER JOIN prison.CDS_DUTY_MODE T3 
+			ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID 
+		INNER JOIN prison.CDS_DUTY_CATEGORY T4 
+			ON T3.CDM_CATEGORY_ID = T4.ID 
+		WHERE 
+		T4.DCA_CATEGORY_NAME = '监狱领导' 
+		AND T3.CDM_MODE_NAME = '监狱领导' 
+		) AS T2 
+		ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID 
+		INNER JOIN 
+		( 
+		SELECT 
+			T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, 
+			T4.CDJ_JOB_NAME, 
+			T4.CDJ_JOB_CODE, 
+			T3.DOR_START_TIME, T3.DOR_END_TIME 
+		FROM 	
+		prison.CDS_DUTY_MODE_ORDER_JOB T1 
+		INNER JOIN prison.CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID 
+		INNER JOIN prison.CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID 
+		INNER 
+		JOIN prison.CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID 
+		WHERE T2.CDM_MODE_NAME = '监狱领导' AND T3.DOR_DUTY_ORDER_NAME LIKE '%总值班长%' 
+		) AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID WHERE T1.DBD_CUS_NUMBER = #{jyCode} 
+		AND TO_CHAR(T1.DBD_DUTY_DATE, 'yyyy-MM-dd') = TO_CHAR(sysdate, 'yyyy-MM-dd') ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID 
+	</select>
+	<!-- 1.2.当日值班主任信息 -->
+	<select id="getJrzbzrList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT 
+			T1.DBD_STAFF_NAME as "Name", T2.DCA_CATEGORY_NAME as "Group", T3.DOR_DUTY_ORDER_NAME as "Position"
+		FROM 
+			prison.CDS_DUTY_BASE_DTLS T1 
+		INNER JOIN 
+		( 
+		SELECT 
+			T1.ID, T4.DCA_CATEGORY_NAME, 
+			T3.CDM_MODE_NAME 
+		FROM prison.CDS_DUTY_MODE_DEPARTMENT T1 	
+		INNER JOIN prison.CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID 
+		INNER JOIN prison.CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID 
+		INNER JOIN prison.CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+		WHERE T4.DCA_CATEGORY_NAME = '监狱领导' AND T3.CDM_MODE_NAME = '监狱领导' 
+		) AS T2 
+		ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID 
+		INNER JOIN 
+		( 
+			SELECT 
+				T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, T4.CDJ_JOB_CODE, 
+				T3.DOR_START_TIME, T3.DOR_END_TIME 
+			FROM prison.CDS_DUTY_MODE_ORDER_JOB T1 
+			INNER JOIN prison.CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID 
+			INNER JOIN prison.CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID 
+			INNER JOIN prison.CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID 
+			WHERE T2.CDM_MODE_NAME = '监狱领导' AND T3.DOR_DUTY_ORDER_NAME 
+			LIKE '%值班主任%' 
+		)
+		 AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID WHERE T1.DBD_CUS_NUMBER = #{jyCode} 
+		AND TO_CHAR(T1.DBD_DUTY_DATE, 'yyyy-MM-dd') = TO_CHAR(sysdate, 'yyyy-MM-dd') ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID 
+	</select>
+	<!-- 1.3.当日指挥中心值班员信息 -->
+	<select id="getJrzhzxzbyList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT 
+		T1.DBD_STAFF_NAME as "Name", T2.DCA_CATEGORY_NAME as "Group", T3.DOR_DUTY_ORDER_NAME as "Position"
+		FROM prison.CDS_DUTY_BASE_DTLS T1 
+		INNER JOIN 
+		(
+		 SELECT 
+		 T1.ID, T4.DCA_CATEGORY_NAME, T3.CDM_MODE_NAME 
+		FROM prison.CDS_DUTY_MODE_DEPARTMENT T1 
+		INNER JOIN prison.CDS_DUTY_CATEGORY_DEPARTMENT T2 
+		ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID 
+		INNER JOIN prison.CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID 
+		INNER JOIN prison.CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+		WHERE T4.DCA_CATEGORY_NAME = '指挥中心' AND T3.CDM_MODE_NAME = '指挥中心值班模板' 
+		) AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID 
+		INNER JOIN 
+		(
+		 SELECT 
+		 T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, T4.CDJ_JOB_CODE, 
+		T3.DOR_START_TIME, T3.DOR_END_TIME 
+		FROM prison.CDS_DUTY_MODE_ORDER_JOB T1 
+		INNER JOIN prison.CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID 
+		INNER JOIN prison.CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID 
+		INNER JOIN prison.CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID 
+		WHERE T2.CDM_MODE_NAME = '指挥中心值班模板' 
+		)
+		 AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID 
+		WHERE T1.DBD_CUS_NUMBER = #{jyCode} AND TO_CHAR(T1.DBD_DUTY_DATE, 
+		'yyyy-MM-dd') = TO_CHAR(sysdate, 'yyyy-MM-dd') ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID 
+	</select>
+	<!-- 1.4.当日值班特警信息 -->
+	<select id="getJrzbtjList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT TRIM(NAME) "Name",
+			    TRIM(PB_GROUP) "Group",
+			    TRIM(POSITION) "Position",
+			    TRIM(FIXED_PHONE) "FixedPhone",
+			    TRIM(TERMINAL) "Terminal"
+		  FROM ZFINFO.T_PB_ZHZX 
+		 WHERE TO_CHAR(ZBSJ,'YYYY-MM-DD') = TO_CHAR(SYSDATE(),'YYYY-MM-DD')
+		   AND PB_GROUP = '值班特警'
+	</select>
+	<!-- 1.5.当日其他值班人员信息 -->
+	<select id="getJrqtzbryList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT TRIM(NAME) "Name",
+			    TRIM(PB_GROUP) "Group",
+			    TRIM(POSITION) "Position",
+			    TRIM(FIXED_PHONE) "FixedPhone",
+			    TRIM(TERMINAL) "Terminal"
+		  FROM ZFINFO.T_PB_ZHZX 
+		 WHERE TO_CHAR(ZBSJ,'YYYY-MM-DD') = TO_CHAR(SYSDATE(),'YYYY-MM-DD')
+		   AND PB_GROUP = '其他值班岗位'
+	</select>
+	<!-- 1.6.当日监区执勤警力信息 -->
+	<select id="getJrjqzqjlList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT 
+			T1.DBD_STAFF_NAME as "DutyDirector", T2.DCA_CATEGORY_NAME as "PrisonAreaName" 
+		FROM 
+		prison.CDS_DUTY_BASE_DTLS T1 
+		INNER JOIN 
+		( 
+			SELECT 
+				T1.ID, T4.DCA_CATEGORY_NAME, 
+				T3.CDM_MODE_NAME 
+			FROM prison.CDS_DUTY_MODE_DEPARTMENT T1 
+			INNER JOIN prison.CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID 
+			INNER JOIN prison.CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID 
+			INNER JOIN prison.CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+			WHERE T4.DCA_CATEGORY_NAME LIKE '%监区%' AND T3.CDM_MODE_NAME LIKE '%监区%' 
+		)
+		 AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID 
+		INNER JOIN 
+		( 
+			SELECT 
+				T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, 
+				T4.CDJ_JOB_CODE, T3.DOR_START_TIME, T3.DOR_END_TIME 
+			FROM prison.CDS_DUTY_MODE_ORDER_JOB T1 
+			INNER JOIN prison.CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID 
+			INNER JOIN prison.CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID 
+			INNER JOIN prison.CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID 
+			WHERE T2.CDM_MODE_NAME LIKE '%监区%' 
+		) 
+		AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID 
+		WHERE T1.DBD_CUS_NUMBER = #{jyCode} AND TO_CHAR(T1.DBD_DUTY_DATE, 
+		'yyyy-MM-dd') = TO_CHAR(sysdate, 'yyyy-MM-dd') ORDER BY T3.CDJ_JOB_NAME, T1.DBD_STAFF_ID 
+	</select>
+	
+	<!-- 3.区域管控信息接口 -->
+	<select id="getQygkList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT 
+				ORG.ORGANIZE_NAME AS "RegionalName", 
+				NVL(MJ.COUNTS,0) AS "RegionalPoliceCount", 
+				NVL(ZF.COUNTS,0) AS "RegionalCriminalCount"
+			FROM (
+				SELECT 
+				T1.ORGANIZE_NAME 
+				FROM AUTH.T_ORG T1 WHERE EXISTS (
+					SELECT * FROM AUTH.T_ORG T2 WHERE T1.PARENT_ID = T2.ORGANIZE_ID AND T2.ORGANIZE_CODE = '${jyCode}80'
+				) GROUP BY T1.ORGANIZE_NAME
+			) AS ORG
+			LEFT JOIN (
+				SELECT 
+					T1.LOCATION_NAME, COUNT(0) AS COUNTS
+				FROM CDS_POLICE_LOCATION T1 
+				WHERE T1.PRISON_NO = #{jyCode} 
+				GROUP BY T1.LOCATION_NAME
+			) AS MJ ON ORG.ORGANIZE_NAME = MJ.LOCATION_NAME
+			LEFT JOIN (
+				SELECT T1.C_SZJQ, COUNT(0) AS COUNTS
+				FROM ZFINFO.T_ZF_JBXX T1 
+				WHERE T1.C_JY_ID = #{jyCode}
+				GROUP BY T1.C_SZJQ
+			) AS ZF ON ORG.ORGANIZE_NAME = ZF.C_SZJQ
+	</select>
+	
+	
+	<!-- 4.1.重控犯信息接口 -->
+	<select id="getZdzfxxList" parameterType="java.util.Map"  resultType="hashmap">
+  		  	select '暴力倾向' as "CriminalType", count(distinct(a.zfbh)) as "CriminalCount" from "ZFINFO"."T_HY_WXPG" a, "ZFINFO"."T_ZF_JBXX" b 
+  		  	where a.blwxpgjl='极高' and a.zfbh=b.c_zfbh and b.c_jy_id=#{jyCode}
+			union
+			select '自杀倾向' as "CriminalType", count(distinct(a.zfbh)) as "CriminalCount"  from "ZFINFO"."T_HY_WXPG" a, "ZFINFO"."T_ZF_JBXX" b 
+			where a.zswxpgjl='极高' and a.zfbh=b.c_zfbh and b.c_jy_id=#{jyCode}
+			union
+			select '脱逃倾向' as "CriminalType", count(distinct(a.zfbh)) as "CriminalCount"  from "ZFINFO"."T_HY_WXPG" a, "ZFINFO"."T_ZF_JBXX" b 
+			where a.ttwxpgjl='极高' and a.zfbh=b.c_zfbh and b.c_jy_id=#{jyCode}
+	</select>
+	
+	<!-- 4.2.重控犯信息接口 -->
+	<select id="getZkfxxList" parameterType="java.util.Map"  resultType="hashmap">
+		select '重控犯' as "CriminalType",
+			   c_szjy as "PrisionAreaName",
+			   c_xm as "Name",
+			   TRUNC(months_between(sysdate, d_csrq)/12) as "Age",
+			   c_jsh||'  '||c_cwh as "Bed",
+			   '合同诈骗罪' as "CriminalCharge",
+			   '' as "Photo"
+		from ZFINFO.T_ZF_JBXX where c_xm = '孙美玉' and c_jy_id=#{jyCode}
+		union
+		select '重控犯' as "CriminalType",
+			   c_szjy as "PrisionAreaName",
+			   c_xm as "Name",
+			   TRUNC(months_between(sysdate, d_csrq)/12) as "Age",
+			   c_jsh||'  '||c_cwh as "Bed",
+			   '销赃罪' as "CriminalCharge",
+			   '' as "Photo"
+		from ZFINFO.T_ZF_JBXX where c_xm = '于学来' and c_jy_id=#{jyCode}
+		union
+		select '重控犯' as "CriminalType",
+			   c_szjy as "PrisionAreaName",
+			   c_xm as "Name",
+			   TRUNC(months_between(sysdate, d_csrq)/12) as "Age",
+			   c_jsh||'  '||c_cwh as "Bed",
+			   '金融诈骗罪' as "CriminalCharge",
+			   '' as "Photo"
+		from ZFINFO.T_ZF_JBXX where c_xm ='李向辉' and c_jy_id=#{jyCode}
+	</select>
+	
+	<!-- 5.1.大门出入管控信息接口 - 车辆进入数量 -->
+	<select id="getCljrList" parameterType="java.util.Map"  resultType="Integer">
+		SELECT NVL(COUNTS,0) AS "VehicleEnterCount"
+		    FROM (
+		   SELECT
+		   T1.FR_TYPE, COUNT(0) AS COUNTS
+		   FROM CDS_FOREIGN_REGISTER T1 WHERE 
+		   T1.FR_CUS_NUMBER = #{jyCode} 
+		   AND TO_CHAR(T1.FR_TIME, 'yyyy-MM-dd') = to_char(sysdate(),'yyyy-MM-dd') 
+		   and T1.fr_cars_info != ''
+		   GROUP BY T1.FR_TYPE
+		  ) AS T2 WHERE T2.FR_TYPE = '1'
+	</select>
+	<!-- 5.2.大门出入管控信息接口 - 车辆驶出数量 -->
+	<select id="getClscList" parameterType="java.util.Map"  resultType="Integer">
+		SELECT NVL(COUNTS,0) AS "VehicleLeaveCount"
+		    FROM (
+		   SELECT
+		   T1.FR_TYPE, COUNT(0) AS COUNTS
+		   FROM CDS_FOREIGN_REGISTER T1 WHERE 
+		   T1.FR_CUS_NUMBER = #{jyCode} 
+		   and T1.fr_cars_info != ''
+		   AND TO_CHAR(T1.FR_TIME, 'yyyy-MM-dd') = to_char(sysdate(),'yyyy-MM-dd') 
+		   GROUP BY T1.FR_TYPE
+		  ) AS T2 WHERE T2.FR_TYPE = '2'
+	</select>
+	
+	<!-- 5.3.大门出入管控信息接口 - 人员进入数量 -->
+	<select id="getRyjrList"  parameterType="java.util.Map" resultType="Integer">
+		select count(pir_police_idnty) as "PeopleEnterCount" 
+		  from CDS_POLICE_INOUT_RECORD 
+		 where PIR_IN_OUT_INDC = '1'
+		   and to_char(pir_enter_time,'yyyy-mm-dd') = to_char(getdate(),'yyyy-mm-dd') 
+		   and pir_door_idnty='3' 
+		   and pir_cus_number=#{jyCode} 
+	</select>
+	
+	<!-- 5.4.大门出入管控信息接口 - 人员离开数量 -->
+	<select id="getRylkList" parameterType="java.util.Map"  resultType="Integer">
+		select count(pir_police_idnty) as "PeopleLeaveCount" 
+		  from CDS_POLICE_INOUT_RECORD 
+		 where PIR_IN_OUT_INDC = '2'
+		   and to_char(pir_enter_time,'yyyy-mm-dd') = to_char(getdate(),'yyyy-mm-dd') 
+		   and pir_door_idnty='100'
+		   and pir_cus_number=#{jyCode} 
+	</select>
+	
+	
+	<!-- 5.5.大门出入管控信息接口 - 设备检测集合 -->
+	<select id="getSbjcList" parameterType="java.util.Map" resultType="hashmap">
+		SELECT
+			T1.DEVICE_NAME AS "DetectType", 
+			NVL(T1.COUNTS,'0') AS "DetectCount", 
+			NVL(T2.COUNTS,'0') AS "ExceptionCount"
+		FROM (
+			-- 设备检测数量
+			SELECT
+			T1.CUS_NUMBER, T1.DEVICE_NAME, COUNT(0) AS COUNTS
+			FROM T_SECURITY_CHECK T1 
+			WHERE TO_CHAR(T1.CHECK_TIME, 'yyyy-MM-dd') = to_char(sysdate(),'yyyy-MM-dd')  and cus_number=#{jyCode} 
+			GROUP BY T1.CUS_NUMBER, T1.DEVICE_NAME
+		) AS T1
+		LEFT JOIN (
+			-- 设备检测出来的异常数
+			SELECT
+			T1.CUS_NUMBER, T1.DEVICE_NAME, COUNT(0) AS COUNTS
+			FROM (
+				SELECT 
+				* 
+				FROM T_SECURITY_CHECK T1 
+				WHERE 
+				T1.CHECK_RESULT IS NOT NULL 
+				AND T1.CHECK_RESULT &lt;&gt; '' 
+				AND T1.CHECK_RESULT NOT LIKE '未%' 
+				AND T1.CHECK_RESULT NOT LIKE 'http:%'
+				AND T1.CHECK_RESULT &lt;&gt; '正常' 
+				and cus_number=#{jyCode} 
+			) AS T1 GROUP BY T1.CUS_NUMBER, T1.DEVICE_NAME
+		) AS T2 ON T1.CUS_NUMBER = T2.CUS_NUMBER AND T1.DEVICE_NAME = T2.DEVICE_NAME
+	</select>
+	
+	<!-- 6.人脸识别信息接口 -->
+	<select id="getRlsb" parameterType="java.util.Map"  resultType="hashmap">
+		select  top 1
+			  	cap_SmallPic_Url as "Photo",
+			  	facePic_url as "OriginalPhoto",
+			  	namelist_Name as "Name",
+			  	0 as "State",
+			  	certificate_no "IdentityCard",
+			  	gender as "Sex",
+			  	to_char(getdate(),'yyyy-mm-dd hh24:mi:ss') "Time"
+			from T_RLSB_HMD
+			<!-- order by create_time desc -->
+	</select>
+	
+	<!-- 7.周界安防信息接口 -->
+	<select id="getZjafList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT '一段' as "BorderName",0 as "State" FROM dual
+		union
+		SELECT '二段' as "BorderName",0 as "State" FROM dual
+		union
+		SELECT '三段' as "BorderName",0 as "State" FROM dual
+		union
+		SELECT '四段' as "BorderName",0 as "State" FROM dual
+	</select>
+	
+	<!-- 8.手机管控信息接口 -->
+	<select id="getSjgkList" parameterType="java.util.Map"  resultType="hashmap">
+		select sjlx as "MobileType", sjsl as "MobileCount" from ZFINFO.T_QD_SJGK where jy_id=#{jyCode}
+	</select>
+	
+	<!-- 9.1.狱外押解任务信息接口 - 解押任务目的地 -->
+	<select id="getZfxm" parameterType="java.util.Map"  resultType="string">
+		SELECT CRIMINAL "Criminal"
+		  FROM T_RCGK_YWYJ_YJRW
+	</select>
+	<!-- 9.2.狱外押解任务信息接口 - 民警信息 -->
+	<select id="getMdd" parameterType="java.util.Map"  resultType="string">
+		SELECT DESTINATION "Destination"
+		  FROM T_RCGK_YWYJ_YJRW
+	</select>
+	
+	<!-- 9.3.狱外押解任务信息接口 - 民警信息 -->
+	<select id="getMjxxList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT POLICENAME "PoliceName",
+			   TEERMINAL "Teriminal"
+		  FROM T_RCGK_YWYJ_MJXX
+	</select>
+	
+	<!-- 9.4.狱外押解任务信息接口 - 规划路线 -->
+	<select id="getGhlxList" parameterType="java.util.Map" resultType="hashmap">
+		SELECT LONGITUDE  "Longitude",
+			   LATITUDE  "Latitude"
+		  FROM T_RCGK_YWYJ_GHLX
+	</select>
+	
+	<!-- 10.狱外押解车辆实时位置信息接口 -->
+	<select id="getYwyjclwzList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT LONGITUDE  "Longitude",
+			   LATITUDE  "Latitude",
+			   to_char(getdate(),'yyyy-mm-dd hh24:mi:ss') "Time"
+		  FROM T_RCGK_YWYJ_JCWZ
+	</select>
+	
+	
+	
+	<!-- 2.1今日概况信息接口 - 今日防控等级 -->
+	<!-- 三级常规防控 -->
+	<select id="getJrfkdj" parameterType="java.util.Map"  resultType="string">
+		SELECT
+	        "PACLEVEL" "PACLevel"
+		FROM
+		    T_RCGK_JRGK
+	</select>
+	<!-- 2.2今日概况信息接口 - 今日监狱执勤警力人数 -->
+	<select id="getJrjyzqjlrs" parameterType="java.util.Map"  resultType="int">
+		SELECT count(*) as "DutyPoliceCount" FROM CDS_POLICE_LOCATION where PRISON_NO = #{jyCode}
+	</select>
+	<!-- 2.3今日概况信息接口 - 在册罪犯人数 -->
+	<select id="getJrzczfrs" parameterType="java.util.Map"  resultType="hashmap">    
+		SELECT to_char(D_URL_TIME,'yyyy-MM-dd') as D_URL_TIME,ITEMS_ID,ITEMS_VALUE,ITEMS_NAME FROM ZFINFO.T_ZF_STAT WHERE TYPE = 'STAT_ZFXX' and ITEMS_ID='ZFXX_ZCRS' 
+		and jy_id=#{jyCode} and (jq_id ='' or jq_id is null) and to_char(D_URL_TIME,'yyyy-MM-dd')>to_char(sysdate-7,'yyyy-MM-dd') order by d_url_time desc
+	</select>
+	
+	<!-- 2.4今日概况罪犯时间轴  -->
+	<select id="getJrgkzfsjzList" parameterType="java.util.Map"  resultType="hashmap">
+		SELECT to_char(D_URL_TIME,'yyyy-MM-dd') as D_URL_TIME,ITEMS_ID,ITEMS_VALUE,ITEMS_NAME FROM ZFINFO.T_ZF_STAT WHERE (TYPE = 'STAT_ZF_ZYQK_V2' 
+		or TYPE = 'STAT_ZFDD' or (TYPE = 'STAT_ZFDD_ZY' AND ITEMS_ID='ZFDD_ZYZF') 
+		or (TYPE = 'STAT_ZFXX' and ITEMS_ID IN ('ZFXX_ZCRS', 'ZFXX_JWZX', 'ZFXX_LJTQ', 'ZFXX_JZZY','ZFXX_THDJ','ZFXX_JYZF')))
+		and jy_id=#{jyCode} and (jq_id ='' or jq_id is null) and to_char(D_URL_TIME,'yyyy-MM-dd')>to_char(sysdate-7,'yyyy-MM-dd') order by d_url_time desc
+	</select>
+	
+</mapper>

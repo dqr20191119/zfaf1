@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.ws.dao.DoorWsMapper">
+
+	<select id="getDoorList" parameterType="hashmap" resultType="hashmap">
+		SELECT DCB_CUS_NUMBER "prisonNumber",
+	    	DCB_IDNTY "doorID",
+	       	DCB_NAME "doorName",
+	       	DCB_TYPE_INDC "doorType",
+	       	DCB_BRAND_INDC "doorBrand",
+	       	DCB_NAME "doorLocal",
+	       	DCB_AREA_ID "areaID",
+	       	DCB_ACTION_INDC "action" 
+	  	FROM DVC_DOOR_CONTROL_BASE_DTLS
+		<where>
+			<if test='type == "0"'>
+				AND DCB_CUS_NUMBER = #{cusNumber} 
+				AND DCB_ACTION_INDC != 3 
+			</if>
+			<if test='type == "1"'>
+				AND DCB_CUS_NUMBER = #{cusNumber} 
+				AND DCB_UPDT_TIME &gt;= TO_DATE(#{updateDate}, 'yyyy-MM-dd')
+			</if>
+		</where>
+	</select>
+</mapper>

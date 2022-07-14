@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.callNames.dao.CallNamesUndoneMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id,
+		CNU_RECORD_ID,
+		CNU_CUS_NUMBER,
+		CNU_PRISONER_INDC,
+		CNU_PRISONER_NAME,
+		CNU_DPRTMNT_ID,
+		CNU_DPRTMNT,
+		CNU_LCH,
+		CNU_LC,
+		CNU_JS,
+		CNU_JSH
+		from CDS_CALL_NAMES_UNDONE_PRISONER
+		<where>
+			<if test="callNamesUndoneEntity.cnuRecordId != null and callNamesUndoneEntity.cnuRecordId!='' ">
+				AND cnu_record_id = #{callNamesUndoneEntity.cnuRecordId}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuCusNumber != null and callNamesUndoneEntity.cnuCusNumber!='' ">
+				AND cnu_cus_number = #{callNamesUndoneEntity.cnuCusNumber}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuPrisonerIndc != null and callNamesUndoneEntity.cnuPrisonerIndc!='' ">
+				AND cnu_prisoner_indc = #{callNamesUndoneEntity.cnuPrisonerIndc}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuPrisonerName != null and callNamesUndoneEntity.cnuPrisonerName!='' ">
+				AND cnu_prisoner_name = #{callNamesUndoneEntity.cnuPrisonerName}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuDprtmntId != null and callNamesUndoneEntity.cnuDprtmntId!='' ">
+				AND cnu_dprtmnt_id = #{callNamesUndoneEntity.cnuDprtmntId}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuDprtmnt != null and callNamesUndoneEntity.cnuDprtmnt!='' ">
+				AND cnu_dprtmnt = #{callNamesUndoneEntity.cnuDprtmnt}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuLch != null and callNamesUndoneEntity.cnuLch!='' ">
+				AND cnu_lch = #{callNamesUndoneEntity.cnuLch}
+			</if>
+
+			<if test="callNamesUndoneEntity.cnuJsh != null and callNamesUndoneEntity.cnuJsh!='' ">
+				AND cnu_jsh = #{callNamesUndoneEntity.cnuJsh}
+			</if>
+		</where>
+		order by CNU_LCH , CNU_JSH asc
+	</select>
+
+
+</mapper>

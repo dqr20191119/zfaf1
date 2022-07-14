@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.mjczdj.dao.DoorOperationRegistrationMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select DOR_CUS_NUMBER,
+		ID,
+		DOR_DPRTMNT_ID,
+		DOR_DPRTMNT,
+		TO_CHAR(DOR_CRTE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS DOR_CRTE_TIME,
+		DOR_CRTE_USER_ID,
+		TO_CHAR(DOR_UPDT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS DOR_UPDT_TIME,
+		DOR_UPDT_USER_ID,
+		DOR_CRTE_USER,
+		DOR_UPDT_USER
+		from CDS_DOOR_OPERATION_REGISTRATION
+		<where>
+			<if test="doorOperationRegistrationEntity.dorCusNumber!=null and doorOperationRegistrationEntity.dorCusNumber!=''">
+				AND (TRIM(#{doorOperationRegistrationEntity.dorCusNumber}) is null or dor_cus_number = #{doorOperationRegistrationEntity.dorCusNumber})
+			</if>
+			<if test="doorOperationRegistrationEntity.dorDprtmntId!=null and doorOperationRegistrationEntity.dorDprtmntId!=''">
+				AND DOR_DPRTMNT_ID = #{doorOperationRegistrationEntity.dorDprtmntId} 
+			</if>
+			<if test="doorOperationRegistrationEntity.startTime!=null and doorOperationRegistrationEntity.startTime!='' ">
+				AND DOR_CRTE_TIME &gt;= to_date(#{doorOperationRegistrationEntity.startTime},'YYYY-MM-DD HH24:mi:ss') 
+			</if>
+			<if test="doorOperationRegistrationEntity.endTime!=null and doorOperationRegistrationEntity.endTime!=''">
+				AND DOR_CRTE_TIME  &lt;= to_date(#{doorOperationRegistrationEntity.endTime},'YYYY-MM-DD HH24:mi:ss')
+			</if>
+			<if test="(doorOperationRegistrationEntity.startTime == null or doorOperationRegistrationEntity.startTime =='')and (doorOperationRegistrationEntity.endTime == null or doorOperationRegistrationEntity.endTime=='')">
+				AND (DOR_UPDT_USER_ID is null OR TO_CHAR(DOR_CRTE_TIME, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD'))
+			</if>
+			ORDER BY DOR_CRTE_TIME DESC
+		</where>
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_DOOR_OPERATION_REGISTRATION WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_DOOR_OPERATION_REGISTRATION
+		<set>
+			<if test="doorOperationRegistrationEntity.dorUpdtTime != null and doorOperationRegistrationEntity.dorUpdtTime!='' ">
+				dor_updt_time = #{doorOperationRegistrationEntity.dorUpdtTime},
+			</if>
+
+			<if test="doorOperationRegistrationEntity.dorUpdtUserId != null and doorOperationRegistrationEntity.dorUpdtUserId!='' ">
+				dor_updt_user_id = #{doorOperationRegistrationEntity.dorUpdtUserId},
+			</if>
+
+			<if test="doorOperationRegistrationEntity.dorUpdtUser != null and doorOperationRegistrationEntity.dorUpdtUser!='' ">
+				dor_updt_user = #{doorOperationRegistrationEntity.dorUpdtUser},
+			</if>
+		</set>
+		<where>
+			<if test="doorOperationRegistrationEntity.id !=null and doorOperationRegistrationEntity.id !=''">
+				AND (TRIM(#{doorOperationRegistrationEntity.id}) is null or id = #{doorOperationRegistrationEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<select id="findTodayRegistrationByDprtmntAndCusNumber" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select *
+		from CDS_DOOR_OPERATION_REGISTRATION
+		<where>
+			AND (TRIM(#{cusNumber}) is null or dor_cus_number = #{cusNumber})
+			AND DOR_DPRTMNT_ID = #{dprtmntId}
+			AND TO_CHAR(DOR_CRTE_TIME, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+		</where>
+	</select>
+
+</mapper>

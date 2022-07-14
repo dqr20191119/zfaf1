@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.zfxxcx.dao.ZfxxcxDao">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.xxhj.zfxxcx.entity.ZfxxcxEntity">
+		<result column="C_ZFBH" jdbcType="VARCHAR" property="cZfbh" />
+		<result column="C_XM" jdbcType="VARCHAR" property="cXm" />
+		<result column="C_SZJY" jdbcType="VARCHAR" property="cSzjy" />
+		<result column="C_SZJQ" jdbcType="VARCHAR" property="cSzjq" />
+		<result column="D_CSRQ" jdbcType="VARCHAR" property="dCsrq" />
+		<result column="C_MZ" jdbcType="VARCHAR" property="cMz" />
+		<result column="D_RJRQ" jdbcType="VARCHAR" property="dRjrq" />
+		<result column="C_JG" jdbcType="VARCHAR" property="cJg" />
+		<result column="C_HJDZ" jdbcType="VARCHAR" property="cHjdz" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		C_ZFBH, C_XM, C_SZJY, C_SZJQ, D_CSRQ, C_MZ, D_RJRQ,C_JG,C_HJDZ
+	</sql>
+	
+	<!-- 罪犯个人信息 查询列表 -->
+	<select id="queryZfxxInfo" resultMap="BaseResultMap" useCache="true">
+		SELECT  C_ZFBH, C_XM, C_SZJY, C_SZJQ, D_CSRQ, C_MZ, D_RJRQ,C_JG,C_HJDZ
+		FROM PRISON.T_ZF_JBXX T1
+		<where>	
+			<if test="cZfbh != null and cZfbh != ''">
+				AND T1.C_ZFBH = '${cZfbh}'
+			</if>
+		</where>
+		
+	</select>
+	
+</mapper>

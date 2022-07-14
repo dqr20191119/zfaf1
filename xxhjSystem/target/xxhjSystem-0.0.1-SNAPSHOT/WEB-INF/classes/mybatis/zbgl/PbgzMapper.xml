@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.rygl.dao.PbgzMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.zbgl.bcgl.entity.BcglEntity"> 
+		SELECT A.* FROM CDS_DUTY_ORDER A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.bcgl.entity.BcglEntity" resultType="com.cesgroup.prison.zbgl.bcgl.entity.BcglEntity">
+		SELECT A.* FROM CDS_DUTY_ORDER A 
+	    WHERE A.DOR_STATUS = '1'
+    	<if test="dorCusNumber != null and dorCusNumber != ''">
+			AND DOR_CUS_NUMBER = #{dorCusNumber}
+		</if>
+		<if test="dorDutyOrderName != null and dorDutyOrderName != ''">
+		 	AND DOR_DUTY_ORDER_NAME LIKE '%'|| #{dorDutyOrderName} || '%'
+		</if>
+		ORDER BY DOR_CRTE_TIME DESC
+	</select> 
+
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.bcgl.entity.BcglEntity" resultType="com.cesgroup.prison.zbgl.bcgl.entity.BcglEntity">
+		SELECT A.* FROM CDS_DUTY_ORDER A 
+		<where>
+			<if test='dorStatus == "1"'> 
+				AND A.DOR_STATUS = '1'  		
+			</if>
+	    	<if test="dorCusNumber != null and dorCusNumber != ''">
+				AND DOR_CUS_NUMBER = #{dorCusNumber}
+			</if>
+		</where>
+	</select> 
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_DUTY_ORDER A SET A.DOR_STATUS = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.zfxx.jyqk.dao.DhMbqkDao" >
+  
+  <delete id="deleteByJyId" parameterType="java.lang.String">
+    delete from ZFINFO.T_DH_MBFX where JY_ID = #{jyId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+	insert into ZFINFO.T_DH_MBFX (ID, MBLX, MBRC, JY_ID, CJPC, CJRQ) values
+	<foreach collection="list" item="item" index="index" separator=",">
+	(#{item.id,jdbcType=VARCHAR}, #{item.mblx,jdbcType=VARCHAR}, #{item.mbrc,jdbcType=DECIMAL}, 
+      #{item.jyId,jdbcType=VARCHAR}, #{item.cjpc,jdbcType=VARCHAR}, #{item.cjrq,jdbcType=TIMESTAMP})
+	</foreach>
+  </insert>
+  
+</mapper>

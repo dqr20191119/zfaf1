@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 罪犯基本信息数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.zfxx.zfjbxx.dao.ZfJbxxDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zfjbxx.entity.ZfJbxx">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="C_ZFBH" jdbcType="CHAR" property="cZfbh" />
+		<result column="C_ID" jdbcType="CHAR" property="cId" />
+		<result column="C_XM" jdbcType="CHAR" property="cXm" />
+		<result column="C_ZSYM" jdbcType="CHAR" property="cZsym" />
+		<result column="C_XB" jdbcType="CHAR" property="cXb" />
+		<result column="D_CSRQ" jdbcType="DATE" property="dCsrq" />
+		<result column="C_MZ" jdbcType="CHAR" property="cMz" />
+		<result column="C_BQZZMM" jdbcType="CHAR" property="cBqzzmm" />
+		<result column="C_BQWHCD" jdbcType="CHAR" property="cBqwhcd" />
+		<result column="C_BQHYZK" jdbcType="CHAR" property="cBqhyzk" />
+		<result column="C_SXZY" jdbcType="CHAR" property="cSxzy" />
+		<result column="C_BQZY" jdbcType="CHAR" property="cBqzy" />
+		<result column="C_BQZYLB" jdbcType="CHAR" property="cBqzylb" />
+		<result column="C_BQZJ" jdbcType="CHAR" property="cBqzj" />
+		<result column="C_RJBZ" jdbcType="CHAR" property="cRjbz" />
+		<result column="D_URL_TIME" jdbcType="DATE" property="dUrlTime" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, C_ZFBH, C_ID, C_XM, C_ZSYM, C_XB, D_CSRQ, C_MZ, C_BQZZMM, C_BQWHCD, C_BQHYZK, 
+		C_SXZY, C_BQZY, C_BQZYLB, C_BQZJ, C_RJBZ, D_URL_TIME
+	</sql>
+	
+	<!-- 根据罪犯标识查询罪犯信息 -->
+	<select id="findByCId" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_JBXX T1 
+		WHERE T1.C_ID = '${cId}'
+	</select>
+	
+  <insert id="insertHisBySource">
+    insert into ZFINFO.T_ZF_JBXX_HIS select * from ZFINFO.T_ZF_JBXX
+  </insert>
+  
+  <delete id="deleteAll">
+    delete from ZFINFO.T_ZF_JBXX
+  </delete>
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+	insert into ZFINFO.T_ZF_JBXX (ID, C_ZFBH, C_ID, 
+      C_XM, C_ZSYM, C_XB, D_CSRQ, 
+      C_MZ, C_BQZZMM, C_BQWHCD, 
+      C_BQHYZK, C_SXZY, C_BQZY, 
+      C_BQZYLB, C_BQZJ, C_RJBZ, 
+      D_URL_TIME, C_MSCC_LXQK, N_FJJN_ZE, 
+      N_MSPCJN_ZE, N_ZJJN_ZE, N_ZLTPJN_ZE, 
+      C_ZYDAH, C_FDAH, C_SZJY, 
+      C_SZJQ, C_FYLB, C_GZ, 
+      C_MQWHCD, C_HJZH, C_JSH, 
+      C_CWH, C_JGGJ_MC, C_FGDJ, 
+      C_SYJG, D_RJRQ, C_ZMZ_SLT, 
+      C_JG, C_JTZZ, C_HJDZ, 
+      C_YP_XZ, D_YP_XQQR, C_YP_BZLB, 
+      C_XXQ_ZXXZ, C_XXQ, D_XXQ_QR, 
+      D_XXQ_ZR, C_YP_XQ, D_YP_XQZR, 
+      C_JY_ID, C_JQ_ID, D_CJRQ, 
+      C_CJPC, C_ZJHM, C_ZJLB, C_SZB) values
+	<foreach collection="list" item="item" index="index" separator=",">
+	(#{item.id,jdbcType=VARCHAR}, #{item.cZfbh,jdbcType=VARCHAR}, #{item.cId,jdbcType=VARCHAR}, 
+      #{item.cXm,jdbcType=VARCHAR}, #{item.cZsym,jdbcType=VARCHAR}, #{item.cXb,jdbcType=VARCHAR}, #{item.dCsrq,jdbcType=DATE}, 
+      #{item.cMz,jdbcType=VARCHAR}, #{item.cBqzzmm,jdbcType=VARCHAR}, #{item.cBqwhcd,jdbcType=VARCHAR}, 
+      #{item.cBqhyzk,jdbcType=VARCHAR}, #{item.cSxzy,jdbcType=VARCHAR}, #{item.cBqzy,jdbcType=VARCHAR}, 
+      #{item.cBqzylb,jdbcType=VARCHAR}, #{item.cBqzj,jdbcType=VARCHAR}, #{item.cRjbz,jdbcType=VARCHAR}, 
+      #{item.dUrlTime,jdbcType=DATE}, #{item.cMsccLxqk,jdbcType=VARCHAR}, #{item.nFjjnZe,jdbcType=VARCHAR}, 
+      #{item.nMspcjnZe,jdbcType=VARCHAR}, #{item.nZjjnZe,jdbcType=VARCHAR}, #{item.nZltpjnZe,jdbcType=VARCHAR}, 
+      #{item.cZydah,jdbcType=VARCHAR}, #{item.cFdah,jdbcType=VARCHAR}, #{item.cSzjy,jdbcType=VARCHAR}, 
+      #{item.cSzjq,jdbcType=VARCHAR}, #{item.cFylb,jdbcType=VARCHAR}, #{item.cGz,jdbcType=VARCHAR}, 
+      #{item.cMqwhcd,jdbcType=VARCHAR}, #{item.cHjzh,jdbcType=VARCHAR}, #{item.cJsh,jdbcType=VARCHAR}, 
+      #{item.cCwh,jdbcType=VARCHAR}, #{item.cJggjMc,jdbcType=VARCHAR}, #{item.cFgdj,jdbcType=VARCHAR}, 
+      #{item.cSyjg,jdbcType=VARCHAR}, #{item.dRjrq,jdbcType=VARCHAR}, #{item.cZmzSlt,jdbcType=VARCHAR}, 
+      #{item.cJg,jdbcType=VARCHAR}, #{item.cJtzz,jdbcType=VARCHAR}, #{item.cHjdz,jdbcType=VARCHAR}, 
+      #{item.cYpXz,jdbcType=VARCHAR}, #{item.dYpXqqr,jdbcType=VARCHAR}, #{item.cYpBzlb,jdbcType=VARCHAR}, 
+      #{item.cXxqZxxz,jdbcType=VARCHAR}, #{item.cXxq,jdbcType=VARCHAR}, #{item.dXxqQr,jdbcType=VARCHAR}, 
+      #{item.dXxqZr,jdbcType=VARCHAR}, #{item.cYpXq,jdbcType=VARCHAR}, #{item.dYpXqzr,jdbcType=VARCHAR}, 
+      #{item.cJyId,jdbcType=VARCHAR}, #{item.cJqId,jdbcType=VARCHAR}, #{item.dCjrq,jdbcType=TIMESTAMP}, 
+      #{item.cCjpc,jdbcType=VARCHAR}, #{item.cZjhm,jdbcType=VARCHAR}, #{item.cZjlb,jdbcType=VARCHAR}, 
+      #{item.cSzb,jdbcType=VARCHAR})
+	</foreach>
+  </insert>
+  
+</mapper>

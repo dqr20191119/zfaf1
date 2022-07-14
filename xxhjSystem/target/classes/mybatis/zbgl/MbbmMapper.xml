@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.mbbm.dao.MbbmMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.zbgl.mbbm.entity.MbbmEntity"> 
+		SELECT A.* FROM CDS_DUTY_MODE_DEPARTMENT A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.mbbm.entity.MbbmEntity" resultType="com.cesgroup.prison.zbgl.mbbm.entity.MbbmEntity">
+		SELECT A.* ,B.CDM_MODE_NAME,B.CDM_CATEGORY_ID FROM CDS_DUTY_MODE_DEPARTMENT A LEFT JOIN CDS_DUTY_MODE B 
+		ON A.DMD_MODE_ID = B.ID 
+		<where>
+		<if test="dmdCusNumber != null and dmdCusNumber != ''">
+			AND A.DMD_CUS_NUMBER = #{dmdCusNumber}
+		</if>
+		<if test="dmdDprtmntId != null and dmdDprtmntId != ''">
+			AND A.DMD_DPRTMNT_ID = #{dmdDprtmntId}
+		</if>
+		<if test="cdmCategoryId != null and cdmCategoryId != ''">
+			AND B.CDM_CATEGORY_ID = #{cdmCategoryId}
+		</if>
+		<if test="dmdModeId != null and dmdModeId != ''">
+			AND A.DMD_MODE_ID = #{dmdModeId}
+		</if>
+		</where>
+		ORDER BY A.DMD_UPDT_TIME  DESC 
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.mbbm.entity.MbbmEntity" resultType="java.util.Map">
+		SELECT A.* ,B.CDM_MODE_NAME FROM CDS_DUTY_MODE_DEPARTMENT A LEFT JOIN CDS_DUTY_MODE B 
+		ON A.DMD_MODE_ID = B.ID 
+		<where>
+			<if test="dmdCusNumber != null and dmdCusNumber != ''">
+				AND DMD_CUS_NUMBER = #{dmdCusNumber}
+			</if>
+			<if test="dmdDprtmntId != null and dmdDprtmntId != ''">
+				AND DMD_DPRTMNT_ID = #{dmdDprtmntId}
+			</if>
+			<if test="cdmCategoryId != null and cdmCategoryId != ''">
+				AND DMD_CATEGORY_ID = #{cdmCategoryId}
+			</if>
+			<if test="dmdModeId != null and dmdModeId != ''">
+				AND DMD_MODE_ID = #{dmdModeId}
+			</if>
+			<if test="dmdStartDate != null and dmdStartDate != ''">
+				<if test="dmdEndDate != null and dmdEndDate != ''">
+				AND( (#{dmdStartDate} &gt;= A.DMD_START_DATE AND A.DMD_END_DATE &gt;= #{dmdStartDate}) OR
+				(A.DMD_START_DATE &gt;= #{dmdStartDate} AND #{dmdEndDate} &gt;= A.DMD_END_DATE) OR
+				(#{dmdEndDate} &gt;= A.DMD_START_DATE  AND A.DMD_END_DATE &gt;= #{dmdEndDate}) ) 
+				</if>
+			</if> 
+		</where> 
+		ORDER BY A.DMD_UPDT_TIME  DESC
+	</select> 
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_DUTY_MODE_DEPARTMENT A SET A.DMD_STATUS = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="deleteByConditions" parameterType="com.cesgroup.prison.zbgl.mbbm.entity.MbbmEntity"> 
+		DELETE FROM CDS_DUTY_MODE_DEPARTMENT A 
+		<where>
+			<if test="dmdModeId != null and dmdModeId != ''">    <!-- 模板ID -->
+				AND  A.DMD_MODE_ID = #{dmdModeId}
+			</if>
+			<if test="id != null and id != ''">                  <!-- 模板部门表主键 -->
+				AND  A.ID = #{id}
+			</if>
+		</where>
+	</select>
+	<!--updateDmdZtById  -->
+	<update id="updateDmdZtById" parameterType="com.cesgroup.prison.zbgl.mbbm.entity.MbbmEntity">
+		UPDATE prison.CDS_DUTY_MODE_DEPARTMENT SET  dmd_zt = #{dmdZt} 
+			<where>
+				id =#{id}
+			</where> 
+	</update>
+	
+</mapper>

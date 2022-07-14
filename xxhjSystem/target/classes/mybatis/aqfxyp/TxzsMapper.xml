@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.aqfxyp.txzs.dao.TxzsMapper">
+	 
+	<select id="getWwjgZf" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select id,name from PRISON.T_AQFX_WWJG where scflg='1';
+	</select>
+	
+	<select id="getSjfw" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			   select sjfw.id as sjfwid,sjfw.name as sjfwname,wwjg.id as wwjgid,wwjg.name as wwjgname from PRISON.T_AQFX_SJFW sjfw ,PRISON.T_AQFX_wwjg wwjg
+				where wwjg.id=sjfw.wwjg_id 
+				and wwjg.scflg = '1' and sjfw.scflg = '1'
+				order by wwjg.name
+	</select>
+	
+	
+	<select id="getWwjgKf" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			select wwjg_id,sum(kczf) as kczf  from PRISON.T_AQFX_FXCJ fxcj,PRISON.T_AQFX_WWJG wwjg where 
+			wwjg.id=fxcj.wwjg_id and fxcj.scflg='1' and wwjg.scflg='1'  and fxcj.status = '1'	
+			<if test="jyId != null and jyId != ''">
+			 and jy_Id = #{jyId,jdbcType=VARCHAR}
+			</if>
+			<if test="wgOne != null and wgOne != ''">
+				 and wg_One = #{wgOne,jdbcType=VARCHAR}
+			</if>
+			<if test="wgTwo != null and wgTwo != ''">
+				 and wg_Two = #{wgTwo,jdbcType=VARCHAR}
+			</if>
+			<if test="wgThree != null and wgThree != ''">
+			 	 and wg_Three = #{wgThree,jdbcType=VARCHAR}
+			</if>
+			group by wwjg_id;
+	</select>
+	
+	
+		<select id="getSjfwKf" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			 select fxcj.wwjg_id,fxcj.sjfw_id,sum(kczf) as kczf from PRISON.T_AQFX_FXCJ fxcj,PRISON.T_AQFX_SJFW sjfw
+				where fxcj.sjfw_id=sjfw.id
+				 and sjfw.scflg = '1' and fxcj.scflg = '1' 
+				 and fxcj.status = '1'	
+			<if test="jyId != null and jyId != ''">
+			 and jy_Id = #{jyId,jdbcType=VARCHAR}
+			</if>
+			<if test="wgOne != null and wgOne != ''">
+				 and wg_One = #{wgOne,jdbcType=VARCHAR}
+			</if>
+			<if test="wgTwo != null and wgTwo != ''">
+				 and wg_Two = #{wgTwo,jdbcType=VARCHAR}
+			</if>
+			<if test="wgThree != null and wgThree != ''">
+			 	 and wg_Three = #{wgThree,jdbcType=VARCHAR}
+			</if>
+			 group by fxcj.wwjg_id,fxcj.sjfw_id
+	</select>
+	<select id="getfxdKf" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select pgtj.wwjg_id,pgtj.fxdj_id, sum(fxcj.kczf) as kczf from PRISON.T_AQFX_PGTJ pgtj,PRISON.T_AQFX_FXCJ fxcj
+				where pgtj.id = fxcj.pgtj_id
+				 and fxcj.scflg='1' and pgtj.scflg='1' 
+				 and fxcj.status = '1'	
+				 <if test="jyId != null and jyId != ''">
+			 and jy_Id = #{jyId,jdbcType=VARCHAR}
+			</if>
+			<if test="wgOne != null and wgOne != ''">
+				 and wg_One = #{wgOne,jdbcType=VARCHAR}
+			</if>
+			<if test="wgTwo != null and wgTwo != ''">
+				 and wg_Two = #{wgTwo,jdbcType=VARCHAR}
+			</if>
+			<if test="wgThree != null and wgThree != ''">
+			 	 and wg_Three = #{wgThree,jdbcType=VARCHAR}
+			</if>
+                 group by pgtj.fxdj_id, pgtj.wwjg_id
+    </select>
+    
+    <select id="getfxd" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+				select id,name from "PRISON"."T_AQFX_FXDJ" where scflg='1';
+	</select>
+	
+	
+	  <select id="getwgOne" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT wg_TWO,wgTWOname,SUM(KCZF) as kczf FROM (
+		
+		select KCZF,fxcj.wg_One,fxcj.wg_TWO,fxcj.wg_THREE,JY_ID,fxcj.scflg,fxcj.status,
+			(select name from AUTH.T_C_CODE where code_key=fxcj.wg_One and group_key='4.13.6') as wgonename,
+			(select name from AUTH.T_C_CODE where code_key=fxcj.wg_TWO and group_key='4.13.6') as wgTWOname,
+			(select name from AUTH.T_C_CODE where code_key=fxcj.wg_THREE and group_key='4.13.6') as wgWHREEname
+		from PRISON.T_AQFX_FXCJ fxcj
+		)
+		WHERE 
+		SCFLG='1' AND STATUS='1'
+		and wgTWOname is not null 
+		<if test="jyId != null and jyId != ''">
+			 and jy_Id = #{jyId,jdbcType=VARCHAR}
+			</if>
+			group by wg_TWO,wgTWOname	 
+	</select>
+	
+	 <select id="getfxqs" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		  	select substring(FX_DATE,6,7) as  yue,sum(KCZF) AS KCZF from (
+				select  substring(FX_DATE,0,7) as FX_DATE  ,KCZF AS KCZF from PRISON.T_AQFX_FXCJ WHERE 
+				SCFLG='1' AND STATUS='1'
+				 <if test="jyId != null and jyId != ''">
+				 and jy_Id = #{jyId,jdbcType=VARCHAR}
+				 </if>
+					)
+					where substring(FX_DATE,0,4) = #{year,jdbcType=VARCHAR}
+					group by FX_DATE
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,340 @@
+.container-box {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 69px;
+  width: 100%;
+  bottom: 0;
+  background-image: url(../img/moxing/bg.jpg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.row {
+  margin-left: 0;
+  margin-right: 0
+}
+.coral-panel-header {
+  border-width: 0;
+}
+
+.container-box .coral-panel-body {
+  background-color: transparent;
+}
+
+.container-box .coral-panel-body,
+.coral-panel-header {
+  border-width: 0;
+}
+
+.wrapper {
+  height: 100%;
+  background: url(../img/rightBg.png) no-repeat 0 0;
+  padding: 25px 18px 0 30px;
+  background-size: 100% 100%;
+  color: #fff;
+}
+.wrapper .title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.wrapper .coral-textbox-hover .coral-textbox-border {
+  box-shadow: none;
+}
+
+.wrapper .coral-textbox-border {
+  background-color: transparent;
+  border-radius: 3px;
+  border-color: #e0a904;
+  color: #fff;
+}
+
+.wrapper ::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: #fff;
+}
+
+.wrapper :-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #fff;
+}
+
+.wrapper ::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #fff;
+}
+
+.wrapper :-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #fff;
+}
+.wrapper .coral-textbox-default {
+  color: #fff;
+  height: 35px;
+  font-size: 18px;
+}
+.wrapper .coral-textbox .coral-button {
+  background: #e0a904;
+  border: none;
+  padding: 1px 6px;
+  color: #fff;
+}
+
+.wrapper .coral-textbox .coral-button .iconfont {
+  font-size: 22px;
+}
+.wrapper .query-wrapper {
+  height: 10%;
+}
+.wrapper .device-nav {
+  font-size: 18px;
+}
+.wrapper .icon-camera {
+  font-size: 18px;
+}
+.wrapper .device-item {
+  padding: 4px 10px;
+  background: #144065;
+  position: relative;
+  margin-bottom: 15px;
+}
+.device-nav .iconfont {
+  font-size: 22px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+.device-nav .content {
+  text-align: right;
+  font-weight: bold;
+}
+.device-nav .all,
+.device-nav .split {
+  color: #04d7d6;
+}
+.device-nav .done {
+  color: #f08300;
+}
+/* dialog */
+
+.custom .form-wrapper {
+  width: 80%;
+  margin: 0 auto;
+}
+.custom .coral-radiolist .coral-radio-label {
+  font-size: 18px;
+  color: #c9caca;
+}
+.custom .coral-textbox-textarea {
+  height: 150px;
+}
+.custom .coral-textbox-textarea .coral-textbox-default {
+  background: #cfd1cf;
+  font-size: 18px;
+}
+.custom .row {
+  margin-bottom: 20px;
+}
+/* button */
+.custom .button-wrapper {
+  width: 80%;
+  margin-left: 30%;
+}
+.custom .button-wrapper > button {
+  margin-right: 15px;
+}
+.custom .coral-form-default {
+  padding: 0;
+}
+
+.custom .coral-radiolist .coral-radio {
+  margin-bottom: 15px;
+}
+.custom .coral-radiolist .coral-radio-label .coral-radio-icon {
+  font-size: 30px;
+  margin-right: 20px;
+  color: #c9caca;
+  cursor: pointer;
+}
+.custom .coral-radiolist .coral-radio-label .cui-icon-radio-checked {
+  color: #00fff6;
+}
+/* center */
+.center-wrapper {
+  height: 100%;
+  padding: 20px 40px;
+  color: #fff;
+}
+.center-wrapper .title {
+  font-size: 16px;
+}
+.center-container {
+  height: 80%;
+  margin: 0 auto;
+  position: relative;
+}
+.center-container .left-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(270deg);
+}
+.center-container .left-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: rotate(180deg);
+}
+.center-container .right-top {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.center-container .right-bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: rotate(90deg);
+}
+/* header */
+
+header {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 69px;
+  z-index: 1;
+  background: url(../img/moxing/header_bg.png) repeat;
+}
+.moxing .left {
+  width: 25%;
+  height: 100%;
+  float: left;
+  position: relative;
+}
+.tolist {
+  float: none;
+  margin: 0 auto;
+  position: relative;
+  cursor: pointer;
+  color: #00fff6;
+}
+.tolist .tolist-item {
+  padding: 8px 0;
+  margin: 16px 0;
+  float: left;
+  font-size: 16px;
+  text-align: center;
+  position: relative;
+}
+.tolist .tolist-item {
+  padding: 8px 0;
+  margin: 16px 0;
+  float: left;
+  font-size: 16px;
+  text-align: center;
+}
+.tolist .status {
+  width: 130px;
+  background: url(../img/border.png) no-repeat;
+  margin-right: 10px;
+  background-size: 100% 100%;
+}
+.home .status {
+  width: auto;
+  margin-right: 12px;
+  padding: 7px 17px;
+}
+.home-page.status {
+  background: url(../img/command/home.png) no-repeat;
+  background-size: 100% 100%;
+  height: 36px;
+}
+.tolist-item .tolist-menu {
+  position: absolute;
+  left: 0;
+  top: 35px;
+  background: #07111d;
+  margin: 20px 0 0 0;
+  opacity: 0;
+  visibility: hidden;
+}
+.tolist-menuitem {
+  position: relative;
+  cursor: pointer;
+}
+.tolist-item .tolist-menuitem {
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #434343;
+  width: 150px;
+  background: #07111d;
+}
+.tolist-menu ul {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  top: 0;
+  left: 150px;
+  margin: 0 0 0 20px;
+  transition: all .2s ease-in-out;
+}
+.tolist-item:hover>ul, .tolist-menuitem:hover>ul {
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  border-left: 1px solid #434343;
+}
+.header-content {
+  float: right;
+  height: 100%;
+  font-size: 14px;
+}
+.header-item.date {
+  margin-right: 30px;
+}
+.header-item {
+  float: left;
+  padding: 15px 0;
+  color: #C9CACA;
+}
+.header-item .icon, .header-item .title {
+  float: left;
+}
+.moxing .icon {
+  margin-right: 15px;
+}
+.header-item .icon {
+  font-size: 34px;
+}
+.header-item .title {
+  line-height: 1.5;
+}
+.user {
+  font-weight: bold;
+}
+.icon-police2 {
+  width: 38px;
+}
+.left-content {
+  color: #c9caca;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  left: 45px;
+}
+.left-content .iconfont {
+  padding: 0 10px;
+}
+.left-content .icon-shijue1 {
+  font-size: 41px;
+}
+.left-content .icon-xialadown {
+  font-size: 30px;
+  cursor: pointer;
+}
+.left-content .title {
+  vertical-align: super;
+}

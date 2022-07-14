@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.rlwh.dao.ZbRlwhMapper">
+    <select id="findList" parameterType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity" resultType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity">
+        SELECT * FROM CDS_DUTY_CALENDAR
+        <where>
+            <if test="startDate != null and startDate != ''">
+                AND DUTY_DATE &gt;=  #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DUTY_DATE &lt;=  #{endDate}
+            </if>
+            <if test="flag != null and flag != ''">
+                AND FLAG =  #{flag}
+            </if>
+        </where>
+        order by DUTY_DATE
+    </select>
+
+    <delete id="deleteById">
+        delete from CDS_DUTY_CALENDAR where ID = #{id}
+    </delete>
+
+    <select id="selectByEntityOrderBydutyDate" parameterType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity" resultType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity">
+        SELECT * FROM CDS_DUTY_CALENDAR
+        <where>
+            <if test="startDate != null and startDate != ''">
+                AND DUTY_DATE &gt;=  #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DUTY_DATE &lt;=  #{endDate}
+            </if>
+            <if test="flag != null and flag != ''">
+                AND FLAG =  #{flag}
+            </if>
+            <if test="weekDay != null and weekDay != ''">
+                AND WEEK_DAY =  #{weekDay}
+            </if>
+            <if test="dutyDate != null and dutyDate != ''">
+                AND DUTY_DATE =  #{dutyDate}
+            </if>
+        </where>
+        order by DUTY_DATE
+    </select>
+
+    <select id="selectDateByYear" resultType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity">
+        SELECT * FROM CDS_DUTY_CALENDAR where DUTY_DATE like '%' || #{year} ||'%'  and FLAG = #{flag}
+            order by DUTY_DATE
+
+    </select>
+
+    <select id="selectMaxDutyDateByDate"  resultType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity">
+        select max(DUTY_DATE)  DUTY_DATE  from CDS_DUTY_CALENDAR where  FLAG = #{flag} and DUTY_DATE &lt;#{date}
+    </select>
+
+
+    <update id="updateById" parameterType="com.cesgroup.prison.zbgl.rlwh.entity.ZbRlwhEntity">
+        update CDS_DUTY_CALENDAR
+        <set>
+            <if test="dutyDate != null and dutyDate !='' ">
+                DUTY_DATE =#{dutyDate},
+            </if>
+            <if test="flag != null and flag !='' ">
+                FLAG =#{flag},
+            </if>
+            <if test="createTime != null and createTime !='' ">
+                CREATE_TIME =#{createTime},
+            </if>
+            <if test="createId != null and createId !='' ">
+                CREATE_ID =#{createId},
+            </if>
+            <if test="createName != null and createName !='' ">
+                CREATE_NAME =#{createName},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+</mapper>

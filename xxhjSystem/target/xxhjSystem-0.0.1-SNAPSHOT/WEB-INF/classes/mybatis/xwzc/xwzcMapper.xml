@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xwzc.dao.XwzcMapper">
+	
+	<select id="searchXwzcList" parameterType="com.cesgroup.prison.xwzc.entity.XwzcEntity" resultType="com.cesgroup.prison.xwzc.entity.XwzcEntity">
+		SELECT A.* FROM CDS_BEHAVIOR_DETECTION A
+		 WHERE EVENT_STATE IN (0,1)
+		 <if test="sourceName != null and sourceName != ''">
+				AND A.SOURCE_NAME like '%${sourceName}%'
+		 </if>
+		 <if test="startTime != null and startTime != ''">
+				AND A.START_TIME &gt;= #{startTime,jdbcType=TIMESTAMP}
+		 </if>
+		 <if test="stopTime != null and stopTime != ''">
+				AND A.START_TIME &lt;= #{stopTime,jdbcType=TIMESTAMP}
+		 </if>
+		 <if test="eventState != null">
+				AND A.EVENT_STATE = #{eventState,jdbcType=INTEGER}
+		 </if>
+		 <if test="eventLevel != null ">
+				AND A.EVENT_LEVEL = #{eventLevel,jdbcType=INTEGER}}
+		 </if>
+		 <if test="eventTypeName != null and eventTypeName != ''">
+				AND A.EVENT_TYPE_NAME like '%${eventTypeName}%' 
+		 </if>
+		<if test="cusNumber != null and cusNumber != ''">
+			AND A.CUS_NUMBER =  #{cusNumber}
+		</if>
+            AND trim(A.SOURCE_NAME) is not null
+		 ORDER BY START_TIME DESC
+	</select>
+	<select id="searchXwzcCount" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT COUNT(A.ID) AS XWZC FROM CDS_BEHAVIOR_DETECTION A
+		 WHERE EVENT_STATE IN (0,1)
+		 <if test="StartTime != null and StartTime != ''">
+				AND A.START_TIME &gt;= #{StartTime,jdbcType=TIMESTAMP}
+		 </if>
+
+		<if test="cusNumber != null and cusNumber != ''">
+			AND A.CUS_NUMBER =  #{cusNumber}
+		</if>
+        AND trim(A.SOURCE_NAME) is not null
+	</select>
+	
+</mapper>

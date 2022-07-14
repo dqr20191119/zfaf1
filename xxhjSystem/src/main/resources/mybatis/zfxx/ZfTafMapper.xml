@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 罪犯同案犯数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.zfxx.zftaf.dao.ZfTafDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zftaf.entity.ZfTaf">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="C_ID" jdbcType="CHAR" property="cId" />
+		<result column="C_ZF_ID" jdbcType="CHAR" property="cZfId" />
+		<result column="D_URL_TIME" jdbcType="DATE" property="dUrlTime" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, C_ID, C_ZF_ID, D_URL_TIME
+	</sql>
+	
+	<!-- 根据罪犯标识、同案犯标识，查询罪犯同案犯信息 -->
+	<select id="findByCIdAndCZfId" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_TAF T1 
+		WHERE T1.C_ID = '${cId}' AND T1.C_ZF_ID = '${cZfId}'
+	</select>
+	
+  <insert id="insertHisBySource">
+    insert into ZFINFO.T_ZF_TAF_HIS select * from ZFINFO.T_ZF_TAF
+  </insert>
+  
+  <delete id="deleteAll">
+    delete from ZFINFO.T_ZF_TAF
+  </delete>
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+	insert into ZFINFO.T_ZF_TAF (ID, C_ID, C_ZF_ID, 
+      D_URL_TIME, D_CJRQ, C_CJPC, C_ZFBH) values
+	<foreach collection="list" item="item" index="index" separator=",">
+	(#{item.id,jdbcType=VARCHAR}, #{item.cId,jdbcType=VARCHAR}, #{item.cZfId,jdbcType=VARCHAR}, 
+      #{item.dUrlTime,jdbcType=DATE}, #{item.dCjrq,jdbcType=TIMESTAMP}, #{item.cCjpc,jdbcType=VARCHAR}, 
+      #{item.cZfbh,jdbcType=VARCHAR})
+	</foreach>
+  </insert>
+  
+</mapper>

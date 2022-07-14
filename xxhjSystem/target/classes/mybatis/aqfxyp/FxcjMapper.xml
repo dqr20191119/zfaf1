@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Descripgion: 风险采集数据操作类映射文件FxcjMapper -->
+<mapper namespace="com.cesgroup.prison.aqfxyp.fxcj.dao.FxcjMapper">
+	<!-- 风险点实体类基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.aqfxyp.fxcj.entity.Fxcj">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="JY_ID" jdbcType="CHAR" property="jyId" />
+		<result column="JY_NAME" jdbcType="CHAR" property="jyName" />
+		<result column="WG_ONE" jdbcType="CHAR" property="wgOne" />
+		<result column="WG_TWO" jdbcType="CHAR" property="wgTwo" />
+		<result column="WG_THREE" jdbcType="CHAR" property="wgThree" />
+		<result column="FX_DATE" jdbcType="TIMESTAMP" property="fxDate" />
+		<result column="JH_JJSJ" jdbcType="TIMESTAMP" property="jhJjsj" />
+		<result column="FXD_ID" jdbcType="CHAR" property="fxdId" />
+		<result column="FXD_NAME" jdbcType="CHAR" property="fxdName" />
+		<result column="PGTJ_ID" jdbcType="CHAR" property="pgtjId" />
+		<result column="PGTJ_NAME" jdbcType="CHAR" property="pgtjName" />
+		<result column="DXKF" jdbcType="CHAR" property="dxkf" />
+		<result column="KCSL" jdbcType="CHAR" property="kcsl" />
+		<result column="KCZF" jdbcType="CHAR" property="kczf" />
+		<result column="STATUS" jdbcType="CHAR" property="status" />
+		<result column="SJFW_ID" jdbcType="CHAR" property="sjfwId" />
+		<result column="SJFW_NAME" jdbcType="CHAR" property="sjfwName" />
+		<result column="WWJG_ID" jdbcType="CHAR" property="wwjgId" />
+		<result column="WWJG_NAME" jdbcType="CHAR" property="wwjgName" />
+		<result column="C_CJR_ID" jdbcType="CHAR" property="cCjrId" />
+		<result column="C_CJR" jdbcType="CHAR" property="cCjr" />
+		<result column="C_CJ_RQ" jdbcType="TIMESTAMP" property="cCjRq" />
+		<result column="C_GXR_ID" jdbcType="CHAR" property="cGxrId" />
+		<result column="C_GXR" jdbcType="CHAR" property="cGxr" />
+		<result column="C_GX_RQ" jdbcType="TIMESTAMP" property="cGxRq" />
+		<result column="SCFLG" jdbcType="CHAR" property="scflg" />
+		<result column="BZ" jdbcType="CHAR" property="bz" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID,JY_ID,JY_NAME,WG_ONE,WG_TWO,WG_THREE,FX_DATE,WWJG_ID,WWJG_NAME,SJFW_ID,SJFW_NAME,FXD_ID,JH_JJSJ
+		FXD_NAME,PGTJ_ID,PGTJ_NAME,DXKF,KCSL,KCZF,STATUS,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ
+	</sql>
+	
+	<insert id="insertDb" parameterType="java.util.HashMap" >
+    	insert into PRISON.T_ZHAF_ONEDAY_DUTY(ID, PRISON_ID, DEPART_ID, DEPART_NAME, 
+    	START_TIME, END_TIME, CREATE_TIME, CREATE_USER_ID, DATA_TYPE, 
+    	STATE, IS_TIMEOUT, TITLE, FINISH_DATE, 
+    	MARK, FINISH_USER_NAME, FINISH_USER_ID, FXCJ_ID) 
+    	values
+    	(
+			#{id,jdbcType=VARCHAR},
+			#{prisonId,jdbcType=VARCHAR},
+			#{departId,jdbcType=VARCHAR},
+			#{departName,jdbcType=VARCHAR},
+			#{startTime,jdbcType=VARCHAR},
+			#{endTime,jdbcType=VARCHAR},
+			#{createTime,jdbcType=TIMESTAMP},
+			#{createUserId,jdbcType=VARCHAR},
+			#{dataType,jdbcType=VARCHAR},
+			#{state,jdbcType=VARCHAR},
+		    #{isTimeout,jdbcType=VARCHAR},
+			#{title,jdbcType=VARCHAR},
+			#{finishDate,jdbcType=VARCHAR},
+			 #{mark,jdbcType=VARCHAR},
+			 #{finishUserName,jdbcType=VARCHAR},
+			 #{finishUserId,jdbcType=VARCHAR},
+			 #{fxcjId,jdbcType=VARCHAR})
+  
+  	</insert>
+	
+	
+	
+	<!-- 分页查询风险采集数据 -->
+	<select id="findList" parameterType="com.cesgroup.prison.aqfxyp.fxcj.entity.Fxcj" resultType="com.cesgroup.prison.aqfxyp.fxcj.entity.Fxcj" useCache="true">
+		select
+        A.ID     ,
+        A.JY_ID  ,
+        A.JY_NAME,
+        (
+                select
+                        name
+                from
+                        AUTH.T_C_CODE
+                where
+                        code_key =A.wg_One
+                    and group_key='4.13.6'
+        ) as WG_ONE,
+        (
+                select
+                        name
+                from
+                        AUTH.T_C_CODE
+                where
+                        code_key =A.wg_TWO
+                    and group_key='4.13.6'
+        ) as WG_TWO,
+        (
+                select
+                        name
+                from
+                        AUTH.T_C_CODE
+                where
+                        code_key =A.wg_THREE
+                    and group_key='4.13.6'
+        ) as WG_THREE   ,
+        A.FX_DATE         ,
+        A.WWJG_ID         ,
+       A. WWJG_NAME       ,
+        A.SJFW_ID         ,
+        A.SJFW_NAME       ,
+       A. FXD_ID          ,
+       A. JH_JJSJ FXD_NAME,
+       A. PGTJ_ID         ,
+       A. PGTJ_NAME       ,
+       A. DXKF            ,
+       A. KCSL            ,
+       A. KCZF            ,
+       A. STATUS          ,
+       A. C_CJR_ID        ,
+       A. C_CJR           ,
+      A.  C_CJ_RQ         ,
+       A. C_GXR_ID        ,
+      A.  C_GXR           ,
+       A. C_GX_RQ         ,
+       A. SCFLG           ,
+      A.  BZ
+from
+        "PRISON"."T_AQFX_FXCJ" A WHERE  A.SCFLG = '1' 
+		<if test="wwjgId != null and wwjgId != ''">
+			AND A.WWJG_ID = #{wwjgId}
+		</if>
+		<if test="sjfwId != null and sjfwId != ''">
+			AND A.SJFW_ID = #{sjfwId}
+		</if>
+		<if test="bz != null and bz != ''">
+			AND A.BZ like '%${bz}%'
+		</if>
+		<if test="jyId != null and jyId != ''">
+			and  jy_Id =  #{jyId}
+		</if>
+	</select> 
+	
+	<select id="findListNew" parameterType="com.cesgroup.prison.aqfxyp.fxcj.entity.Fxcj" resultType="com.cesgroup.prison.aqfxyp.fxcj.entity.Fxcj" useCache="true">
+	select * from(select
+        A.ID     ,
+        A.JY_ID  ,
+        A.JY_NAME,
+        (
+                select
+                        name
+                from
+                        AUTH.T_C_CODE
+                where
+                        code_key =A.wg_One
+                    and group_key='4.13.6'
+        ) as WG_ONE,
+        (
+                select
+                        name
+                from
+                        AUTH.T_C_CODE
+                where
+                        code_key =A.wg_TWO
+                    and group_key='4.13.6'
+        ) as WG_TWO,
+        (
+                select
+                        name
+                from
+                        AUTH.T_C_CODE
+                where
+                        code_key =A.wg_THREE
+                    and group_key='4.13.6'
+        ) as WG_THREE   ,
+        A.FX_DATE         ,
+        A.WWJG_ID         ,
+       A. WWJG_NAME       ,
+        A.SJFW_ID         ,
+        A.SJFW_NAME       ,
+       A. FXD_ID          ,
+       A. JH_JJSJ FXD_NAME,
+       A. PGTJ_ID         ,
+       A. PGTJ_NAME       ,
+       A. DXKF            ,
+       A. KCSL            ,
+       A. KCZF            ,
+       A. STATUS          ,
+       A. C_CJR_ID        ,
+       A. C_CJR           ,
+      A.  C_CJ_RQ         ,
+       A. C_GXR_ID        ,
+      A.  C_GXR           ,
+       A. C_GX_RQ         ,
+       A. SCFLG           ,
+      A.  BZ
+from
+        "PRISON"."T_AQFX_FXCJ" A  where A.SCFLG='1'  and A.status='1' 
+		<if test="date != null and date != ''">
+			and   substring(A.FX_DATE,0,7) = #{date}
+		</if>
+
+		) d where 1=1
+		<if test="wwName != null and wwName != ''">
+	 		AND WWJG_NAME = #{wwName}
+		</if>
+		<if test="jQName != null and jQName != ''">
+			and (select max(a1.organize_name )  
+			 from AUTH.T_ORG a1, AUTH.T_USER b1, AUTH.T_ORG_USER c1 
+			where a1.organize_id=c1.organize_id 
+			and b1.user_id=c1.user_id 
+			and b1.user_id = d.c_cjr_id ) = #{jQName}
+		</if>
+		<if test="bz != null and bz != ''">
+			AND A.  BZ like '%${bz}%'
+		</if>
+		<if test="jyId != null and jyId != ''">
+			and  jy_Id =  #{jyId}
+		</if>
+
+	</select>
+	<select id="getById" resultType="com.cesgroup.prison.aqfxyp.fxcj.entity.Fxcj"> 
+		select 
+		<include refid="Base_Column_List"></include>
+		from T_AQFX_FXCJ
+		where SCFLG='1' and id=#{id}
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE T_AQFX_FXCJ A SET A.SCFLG = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="getAllwG" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select *
+		FROM AUTH.T_C_CODE
+		 where 
+		 group_key = #{groupkey,jdbcType=VARCHAR}
+		<if test="parentId != null and parentId != ''">
+		 and
+		  parent_id = #{parentId,jdbcType=VARCHAR}
+		</if>
+		<if test="codeKeyClass != null and codeKeyClass != ''">
+			and  code_key like  '${codeKeyClass}%'
+		</if>
+
+	</select>
+	<select id="getFxfbwg" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select *
+		FROM AUTH.T_C_CODE
+		where
+		group_key = #{groupkey,jdbcType=VARCHAR}
+
+		<if test="jyId != null and jyId != ''">
+			and  code_key like  '${jyId}%'
+		</if>
+			and name like '%监区网格%' order by ORDER_NUMBER
+	</select>
+	<select id="getFxfbwgBj" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+
+		select
+		*
+		from
+		AUTH.T_C_CODE
+		where
+		group_key = #{groupkey,jdbcType=VARCHAR}
+		<if test="jyId != null and jyId != ''">
+			and  code_key like  '${jyId}%'
+		</if>
+		and instr(name, '监区网格')=0
+		and instr(name, '网格')   &gt;0
+		and length(code_key) &gt;6
+		and rownum  &lt; ${bj}
+		order by
+		ORDER_NUMBER
+	</select>
+	
+	<select id="getAllwGkkkk" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select organize_name as NAME, sum(kczf) AS KF from
+		(select a.organize_name, d.kczf from AUTH.T_ORG a, AUTH.T_USER b, AUTH.T_ORG_USER c, PRISON.T_AQFX_FXCJ d 
+		where a.organize_id=c.organize_id and b.user_id=c.user_id and b.user_id=d.c_cjr_id and d.scflg='1' and  d.status='1' and jy_id=#{jyId})
+		group by organize_name
+	</select>
+</mapper>

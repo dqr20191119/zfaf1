@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.doorstate.dao.DoorStateMapper" >
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.doorstate.entity.DoorStateEntity" >
+    <id column="ID" property="id" jdbcType="CHAR" />
+    <result column="DSD_CUS_NUMBER" property="dsdCusNumber" jdbcType="CHAR" />
+    <result column="DSD_DOOR_ID" property="dsdDoorId" jdbcType="CHAR" />
+    <result column="DSD_DOOR_NAME" property="dsdDoorName" jdbcType="CHAR" />
+    <result column="DSD_ROOM_ID" property="dsdRoomId" jdbcType="CHAR" />
+    <result column="DSD_ROOM_NAME" property="dsdRoomName" jdbcType="CHAR" />
+    <result column="DSD_DEPT_ID" property="dsdDeptId" jdbcType="CHAR" />
+    <result column="DSD_DEPT_NAME" property="dsdDeptName" jdbcType="CHAR" />
+    <result column="DSD_DOOR_STATE" property="dsdDoorState" jdbcType="CHAR" />
+    <result column="DSD_UPDT_USER_ID" property="dsdUpdtUserId" jdbcType="VARCHAR" />
+    <result column="DSD_UPDT_TIME" property="dsdUpdtTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DSD_CUS_NUMBER, DSD_DOOR_ID, DSD_DOOR_NAME, DSD_ROOM_ID, DSD_ROOM_NAME, DSD_DEPT_ID, 
+    DSD_DEPT_NAME, DSD_DOOR_STATE, DSD_UPDT_USER_ID, DSD_UPDT_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_DOOR_STATE_DTLS
+    where ID = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from CDS_DOOR_STATE_DTLS
+    where ID = #{id,jdbcType=CHAR}
+  </delete>
+
+  <!-- 分页面查询-->
+
+  <select id="listAll" resultMap="BaseResultMap" useCache="true">
+    SELECT
+    *
+    FROM CDS_DOOR_STATE_DTLS T1
+    <where>
+      <if test="dsdCusNumber != null and dsdCusNumber != ''">
+        AND T1.DSD_CUS_NUMBER =  #{dsdCusNumber,jdbcType=CHAR }
+      </if>
+      <if test="dsdDoorName != null and dsdDoorName != ''">
+        AND T1.DSD_DOOR_NAME LIKE concat('%',#{dsdDoorName},'%' )
+      </if>
+
+      <if test="dsdDoorState != null and dsdDoorState != ''">
+        AND T1.DSD_DOOR_STATE = #{dsdDoorState}
+      </if>
+
+    </where>
+    ORDER BY T1.DSD_UPDT_TIME DESC
+  </select>
+  <select id="findByDsdCusNumberAndDsdDoorId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_DOOR_STATE_DTLS
+    where DSD_CUS_NUMBER = #{dsdCusNumber,jdbcType=CHAR}
+    AND DSD_DOOR_ID = #{dsdDoorId,jdbcType=CHAR}
+  </select>
+
+
+    <select id="listAllByDoorStateEntity" resultType="com.cesgroup.prison.doorstate.entity.DoorStateEntity" parameterType="com.cesgroup.prison.doorstate.entity.DoorStateEntity">
+        select
+         *
+        from
+            CDS_DOOR_STATE_DTLS
+        <where>
+            <if test="dsdCusNumber !=null and dsdCusNumber !='' ">
+                DSD_CUS_NUMBER = #{dsdCusNumber,jdbcType=CHAR}
+            </if>
+            <if test="dsdDoorId !=null and dsdDoorId !='' ">
+                AND DSD_DOOR_ID = #{dsdDoorId,jdbcType=CHAR}
+            </if>
+            <if test="dsdDoorName !=null and dsdDoorName !='' ">
+                <bind name="bindDsdDoorName" value="'%'+dsdDoorName+'%'"/>
+                AND DSD_DOOR_NAME like #{bindDsdDoorName,jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+  <!-- 通过门禁状态查询门禁的数量 查询异常的数量-->
+  <select id="getDoorNumByStatus" parameterType="java.lang.String"  resultType="java.lang.Integer">
+            SELECT COUNT(1)
+            FROM CDS_DOOR_STATE_DTLS
+            WHERE DSD_DOOR_STATE !='0' and DSD_DOOR_STATE !='1' and DSD_DOOR_STATE !='3'
+                AND DSD_CUS_NUMBER = #{cusNumber,jdbcType=CHAR};
+    </select>
+    <!--  根据监狱号删除门禁状态信息-->
+  <delete id="deleteByCusNumber" parameterType="java.lang.String" >
+    delete from CDS_DOOR_STATE_DTLS
+    where DSD_CUS_NUMBER = #{dsdCusNumber,jdbcType=CHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.cesgroup.prison.doorstate.entity.DoorStateEntity" >
+    insert into CDS_DOOR_STATE_DTLS (ID, DSD_CUS_NUMBER, DSD_DOOR_ID, 
+      DSD_DOOR_NAME, DSD_ROOM_ID, DSD_ROOM_NAME, 
+      DSD_DEPT_ID, DSD_DEPT_NAME, DSD_DOOR_STATE, 
+      DSD_UPDT_USER_ID, DSD_UPDT_TIME)
+    values (#{id,jdbcType=CHAR}, #{dsdCusNumber,jdbcType=CHAR}, #{dsdDoorId,jdbcType=CHAR}, 
+      #{dsdDoorName,jdbcType=CHAR}, #{dsdRoomId,jdbcType=CHAR}, #{dsdRoomName,jdbcType=CHAR}, 
+      #{dsdDeptId,jdbcType=CHAR}, #{dsdDeptName,jdbcType=CHAR}, #{dsdDoorState,jdbcType=CHAR}, 
+      #{dsdUpdtUserId,jdbcType=VARCHAR}, #{dsdUpdtTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cesgroup.prison.doorstate.entity.DoorStateEntity" >
+    insert into CDS_DOOR_STATE_DTLS
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dsdCusNumber != null" >
+        DSD_CUS_NUMBER,
+      </if>
+      <if test="dsdDoorId != null" >
+        DSD_DOOR_ID,
+      </if>
+      <if test="dsdDoorName != null" >
+        DSD_DOOR_NAME,
+      </if>
+      <if test="dsdRoomId != null" >
+        DSD_ROOM_ID,
+      </if>
+      <if test="dsdRoomName != null" >
+        DSD_ROOM_NAME,
+      </if>
+      <if test="dsdDeptId != null" >
+        DSD_DEPT_ID,
+      </if>
+      <if test="dsdDeptName != null" >
+        DSD_DEPT_NAME,
+      </if>
+      <if test="dsdDoorState != null" >
+        DSD_DOOR_STATE,
+      </if>
+      <if test="dsdUpdtUserId != null" >
+        DSD_UPDT_USER_ID,
+      </if>
+      <if test="dsdUpdtTime != null" >
+        DSD_UPDT_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="dsdCusNumber != null" >
+        #{dsdCusNumber,jdbcType=CHAR},
+      </if>
+      <if test="dsdDoorId != null" >
+        #{dsdDoorId,jdbcType=CHAR},
+      </if>
+      <if test="dsdDoorName != null" >
+        #{dsdDoorName,jdbcType=CHAR},
+      </if>
+      <if test="dsdRoomId != null" >
+        #{dsdRoomId,jdbcType=CHAR},
+      </if>
+      <if test="dsdRoomName != null" >
+        #{dsdRoomName,jdbcType=CHAR},
+      </if>
+      <if test="dsdDeptId != null" >
+        #{dsdDeptId,jdbcType=CHAR},
+      </if>
+      <if test="dsdDeptName != null" >
+        #{dsdDeptName,jdbcType=CHAR},
+      </if>
+      <if test="dsdDoorState != null" >
+        #{dsdDoorState,jdbcType=CHAR},
+      </if>
+      <if test="dsdUpdtUserId != null" >
+        #{dsdUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="dsdUpdtTime != null" >
+        #{dsdUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cesgroup.prison.doorstate.entity.DoorStateEntity" >
+    update CDS_DOOR_STATE_DTLS
+    <set >
+      <if test="dsdCusNumber != null" >
+        DSD_CUS_NUMBER = #{dsdCusNumber,jdbcType=CHAR},
+      </if>
+      <if test="dsdDoorId != null" >
+        DSD_DOOR_ID = #{dsdDoorId,jdbcType=CHAR},
+      </if>
+      <if test="dsdDoorName != null" >
+        DSD_DOOR_NAME = #{dsdDoorName,jdbcType=CHAR},
+      </if>
+      <if test="dsdRoomId != null" >
+        DSD_ROOM_ID = #{dsdRoomId,jdbcType=CHAR},
+      </if>
+      <if test="dsdRoomName != null" >
+        DSD_ROOM_NAME = #{dsdRoomName,jdbcType=CHAR},
+      </if>
+      <if test="dsdDeptId != null" >
+        DSD_DEPT_ID = #{dsdDeptId,jdbcType=CHAR},
+      </if>
+      <if test="dsdDeptName != null" >
+        DSD_DEPT_NAME = #{dsdDeptName,jdbcType=CHAR},
+      </if>
+      <if test="dsdDoorState != null" >
+        DSD_DOOR_STATE = #{dsdDoorState,jdbcType=CHAR},
+      </if>
+      <if test="dsdUpdtUserId != null" >
+        DSD_UPDT_USER_ID = #{dsdUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="dsdUpdtTime != null" >
+        DSD_UPDT_TIME = #{dsdUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cesgroup.prison.doorstate.entity.DoorStateEntity" >
+    update CDS_DOOR_STATE_DTLS
+    set DSD_CUS_NUMBER = #{dsdCusNumber,jdbcType=CHAR},
+      DSD_DOOR_ID = #{dsdDoorId,jdbcType=CHAR},
+      DSD_DOOR_NAME = #{dsdDoorName,jdbcType=CHAR},
+      DSD_ROOM_ID = #{dsdRoomId,jdbcType=CHAR},
+      DSD_ROOM_NAME = #{dsdRoomName,jdbcType=CHAR},
+      DSD_DEPT_ID = #{dsdDeptId,jdbcType=CHAR},
+      DSD_DEPT_NAME = #{dsdDeptName,jdbcType=CHAR},
+      DSD_DOOR_STATE = #{dsdDoorState,jdbcType=CHAR},
+      DSD_UPDT_USER_ID = #{dsdUpdtUserId,jdbcType=VARCHAR},
+      DSD_UPDT_TIME = #{dsdUpdtTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=CHAR}
+  </update>
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.zfxx.zfdm.dao.ZfXsdmDao">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zfdm.entity.ZfXsdm">
+		<result column="DMSJ" jdbcType="TIMESTAMP" property="dmsj" />
+		<result column="ZRS" jdbcType="INTEGER" property="zrs" />
+		<result column="QQRS" jdbcType="INTEGER" property="qqrs" />
+		<result column="CORPID" jdbcType="VARCHAR" property="corpid" />
+		<result column="DEPTID" jdbcType="VARCHAR" property="deptid" />
+		<result column="CORPNAME" jdbcType="VARCHAR" property="corpname" />
+		<result column="DEPTNAME" jdbcType="VARCHAR" property="deptname" />
+		<result column="CORPORDER" jdbcType="INTEGER" property="corporder" />
+		<result column="DEPTORDER" jdbcType="INTEGER" property="deptorder" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		DMSJ, ZRS, QQRS, CORPID, DEPTID, CORPNAME, DEPTNAME, CORPORDER, DEPTORDER
+	</sql>
+	
+	<!-- 查询罪犯巡视点名记录列表 -->
+	<select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM ZFINFO.T_ZX_XSDM T1
+		<where>
+			<if test="corpname != null and corpname != ''">
+				AND T1.CORPNAME = '${corpname}'
+			</if>
+			<if test="deptname != null and deptname != ''">
+				AND T1.DEPTNAME LIKE '%${deptname}%'
+			</if>
+			<if test="dmsj != null and dmsj != ''">
+				AND TO_CHAR(T1.DMSJ, 'yyyy-MM-dd') = '${dmsj}'
+			</if>
+		</where>
+		ORDER BY DMSJ DESC
+	</select>
+	
+	
+	<select id="findqbjqxydmr" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+		select count(*) as zs,jq_id,jy_id from YZGL.T_YZGL_DK_JBXX
+		where   zf_zt1='1' and zf_zt2='11'
+		<if test="jyId != null and jyId != ''">
+			AND jy_id =#{jyId}
+		</if>
+		group by jy_id,jq_id
+	</select>
+	
+	<select id="findydmr" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select count(*) as zs,jq_id,jy_id from YZGL.T_YZGL_DK_JBXX where bh in(
+			select distinct prisoner_b_h from PRISON.T_ZFDM_DTLS where cell_no = ( 
+				select distinct cell_no from PRISON.T_ZFDM_DTLS where call_time = (
+					select max(call_time) FROM  PRISON.T_ZFDM_DTLS where 
+					1=1 
+					<if test="jyId != null and jyId != ''">
+						AND cus_number =#{jyId}
+					</if>
+				)
+			)
+		) and zf_zt1='1' and zf_zt2='11' and jy_id =#{jyId}
+		group by jy_id,jq_id
+	</select>
+	
+	<select id="finndListpd" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		 SELECT * FROM DUAL
+	</select>
+	
+	<!-- 根据监狱名称、监区名称，查询罪犯巡视点名记录，并按照点名时间倒序排列 -->
+	<select id="findByCorpnameAndDeptnameOrderByDmsjDesc" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM ZFINFO.T_ZX_XSDM T1
+		<where>
+			<if test="corpname != null and corpname != ''">
+				AND T1.CORPNAME = '${corpname}'
+			</if>
+			<if test="deptname != null and deptname != ''">
+				AND T1.DEPTNAME = '${deptname}'
+			</if>
+		</where>
+		ORDER BY DMSJ DESC
+	</select>
+	
+	
+	<!-- 根据监狱名称、监区名称，查询罪犯巡视点名记录，并按照点名时间倒序排列 -->
+	<select id="findByDmsjAndCorpnameAndDeptnameOrderByDmsjDesc" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM ZFINFO.T_ZX_XSDM T1
+		<where>
+			<if test="corpname != null and corpname != ''">
+				AND T1.CORPNAME = '${corpname}'
+			</if>
+			<if test="deptname != null and deptname != ''">
+				AND T1.DEPTNAME = '${deptname}'
+			</if>
+			<if test="dmsj != null and dmsj != ''">
+				AND TO_CHAR(T1.DMSJ, 'yyyy-MM-dd') = '${dmsj}'
+			</if>
+		</where>
+		ORDER BY DMSJ DESC
+	</select>
+</mapper>

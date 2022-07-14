@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 罪犯当前状态数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.zfxx.zfdqzt.dao.ZfDqztDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zfdqzt.entity.ZfDqzt">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="C_ZFBH" jdbcType="CHAR" property="cZfbh" />
+		<result column="C_ID" jdbcType="CHAR" property="cId" />
+		<result column="C_ZYDAH" jdbcType="CHAR" property="cZydah" />
+		<result column="C_FDAH" jdbcType="CHAR" property="cFdah" />
+		<result column="C_SZJY" jdbcType="CHAR" property="cSzjy" />
+		<result column="C_SZJQ" jdbcType="CHAR" property="cSzjq" />
+		<result column="C_FYLB" jdbcType="CHAR" property="cFylb" />
+		<result column="C_MQWHCD" jdbcType="CHAR" property="cMqwhcd" />
+		<result column="C_GZ" jdbcType="CHAR" property="cGz" />
+		<result column="C_MSCC_LXQK" jdbcType="CHAR" property="cMsccLxqk" />
+		<result column="N_FJJN_ZE" jdbcType="CHAR" property="nFjjnZe" />
+		<result column="N_MSPCJN_ZE" jdbcType="CHAR" property="nMspcjnZe" />
+		<result column="N_ZJJN_ZE" jdbcType="CHAR" property="nZjjnZe" />
+		<result column="N_ZLTPJN_ZE" jdbcType="CHAR" property="nZltpjnZe" />
+		<result column="C_JSH" jdbcType="CHAR" property="cJsh" />
+		<result column="C_CWH" jdbcType="CHAR" property="cCwh" />
+		<result column="C_HJZH" jdbcType="CHAR" property="cHjzh" />
+		<result column="C_JGGJ_JH" jdbcType="CHAR" property="cJggjJh" />
+		<result column="C_JGGJ_MC" jdbcType="CHAR" property="cJggjMc" />
+		<result column="C_FGDJ" jdbcType="CHAR" property="cFgdj" />
+		<result column="D_URL_TIME" jdbcType="DATE" property="dUrlTime" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, C_ZFBH, C_ID, C_ZYDAH, C_FDAH, C_SZJY, C_SZJQ, C_FYLB, C_MQWHCD, C_GZ, C_MSCC_LXQK, 
+		N_FJJN_ZE, N_MSPCJN_ZE, N_ZJJN_ZE, N_ZLTPJN_ZE, C_JSH, C_CWH, C_HJZH, C_JGGJ_JH, 
+		C_JGGJ_MC, C_FGDJ, D_URL_TIME
+	</sql>
+	
+	<!-- 根据罪犯标识查询罪犯当前状态 -->
+	<select id="findByCId" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_DQZT T1 
+		WHERE T1.C_ID = '${cId}'
+	</select>
+</mapper>

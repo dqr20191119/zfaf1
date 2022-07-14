@@ -1,0 +1,245 @@
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+.layout-wrap-dianming div, .layout-wrap-dianming ul,
+	.layout-wrap-dianming ol, .layout-wrap-dianming li,
+	.layout-wrap-dianming h3, .layout-wrap-dianming p {
+	font-family: Verdana, "Microsoft YaHei", "微软雅黑", Arial, Helvetica,
+		sans-serif;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	font-size: 100%;
+}
+
+.layout-wrap-dianming {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(1, 25, 69, 1);
+}
+
+.layout-wrap-dianming  .layout-container {
+	position: relative;
+	height: 100%;
+}
+
+.layout-wrap-dianming .clearfix::after {
+	display: block;
+	height: 0px;
+	line-height: 0;
+	clear: both;
+	visibility: hidden;
+}
+ 
+ 
+ .callNames-content .coral-textbox-default {
+    color: #fff;
+}
+ 
+
+.layout-wrap-dianming .layout-main {
+	position: relative;
+	margin-left: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+/* 左面板 */
+.layout-wrap-dianming  .layout-left {
+	display: block;
+	position: relative;
+	float: left;
+	overflow: auto;
+	width: 25%;
+	height: 100%;
+	border-right: 1px solid #ddd;
+}
+/* 右面板 */
+.layout-wrap-dianming  .callNames-right {
+	position: relative;
+	margin-left: 26%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.layout-wrap-dianming .callNames-content {
+	position: relative;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.layout-wrap-dianming  .callNames-content  .left_title {
+	margin-left: 50px;
+	margin-top: 0;
+    margin-bottom: 5px;
+	font-size: 25px;
+	color: #fff;
+}
+
+.layout-wrap-dianming  ul, .layout-wrap-dianming  li {
+	list-style: none;
+}
+
+/* .layout-wrap-dianming .js_box {
+	width: 100%;
+	 overflow: hidden;  
+	 
+} */
+
+/* .callNames-content .js_div{
+	width: 100%;
+	 
+} */
+
+.layout-wrap-dianming .js_box li {
+	width: 32.33%;
+	height: 190px;
+	border: 1px solid #808ca3;
+	margin: 5px 5px 0 0;
+	float: left;
+}
+
+.layout-wrap-dianming .js_box.specialbox1 li {
+	width: 48%;
+}
+
+.layout-wrap-dianming .js_box li div {
+	width: 100%;
+}
+
+.layout-wrap-dianming .js_box li div.zt_title {
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	overflow: hidden;
+	background: #051a3f;
+	opacity: 0.8;
+}
+
+.layout-wrap-dianming .js_box li div.zt_done {
+	width: 253px;
+	height: 88px;
+	background: url(../images/callNames/zt_done.png) no-repeat;
+	margin: 0 auto;
+}
+
+.layout-wrap-dianming .js_box li div.zt_done>p {
+	background: url(../images/callNames/zt_donel.png) no-repeat left;
+	color: #01de15;
+	font-size: 14px;
+	margin: 15px auto;
+	width: 120px;
+	text-indent: 30px;
+}
+
+.layout-wrap-dianming .js_box li div.zt_done>div p {
+	line-height: 88px;
+	font-size: 40px;
+	color: #ffffff;
+	text-indent: 12px;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_done>div p span {
+	line-height: 88px;
+	font-size: 40px;
+	color: #ffffff;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_title p {
+	float: left;
+	font-size: 20px;
+	color: #ffffff;
+	margin-left: 19px;
+}
+
+.layout-wrap-dianming  a {
+	text-decoration: none;
+	color: #333;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_title a {
+	
+}
+
+.layout-wrap-dianming .js_box li div.zt_h>p {
+	background: url(../images/callNames/zt_hp.png) no-repeat left;
+	color: #f08300;
+	font-size: 14px;
+	margin: 15px auto;
+	width: 120px;
+	text-indent: 30px;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_h>a>div {
+	width: 253px;
+	height: 88px;
+	background: url(../images/callNames/zt_h.png) no-repeat;
+	margin: 0 auto;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_h>a>div p,
+	.layout-wrap-dianming  .js_box li div.zt_done>a>div p {
+	line-height: 88px;
+	font-size: 40px;
+	color: #ffffff;
+	text-indent: 12px;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_h>a>div p span {
+	line-height: 88px;
+	font-size: 40px;
+	color: #0a0a0a;
+}
+
+
+
+/* .layout-wrap-dianming .js_box li div.zt_none>p {
+	background: url(../images/callNames/zt_hp.png) no-repeat left;
+	color: #f08300;
+	font-size: 14px;
+	margin: 15px auto;
+	width: 120px;
+	text-indent: 30px;
+} */
+
+
+.layout-wrap-dianming .js_box li div.zt_none > div {
+    width: 253px;
+    height: 88px;
+    margin: 0 auto;
+    border-radius: 4px;
+    background-color: #FF4500;
+}
+
+.layout-wrap-dianming  .js_box li div.zt_none>div p,
+	.layout-wrap-dianming  .js_box li div.zt_done>a>div p {
+	line-height: 88px;
+	font-size: 20.8px;
+	color: #ffffff;
+	text-indent: 12px;
+}
+
+/* .layout-wrap-dianming  .js_box li div.zt_none>div p span {
+	line-height: 88px;
+	font-size: 40px;
+	color: #0a0a0a;
+} */
+
+
+
+.callNames-content .notData {
+    color: white;
+    font-size: 65px;
+    width: 100%;
+    text-align: center;
+}
+
+
+
+
+

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.sy.dao.SyMapper">
+
+	<select id="queryForeignCarCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT 'totalCount' AS KEY, COUNT(FCD_RGSTR_IDNTY) AS COUNT
+		FROM V_FOREIGN_CAR_DTLS
+		where TRUNC(FCD_ENTER_TIME) = TRUNC(SYSDATE)
+		<if test="para != null and para != ''">
+    		AND FCD_CUS_NUMBER = #{para} 
+    	</if>
+		UNION ALL
+		SELECT 'INSIDECOUNT' AS KEY, COUNT(FCD_RGSTR_IDNTY) AS COUNT
+		FROM V_FOREIGN_CAR_DTLS
+		where TRUNC(FCD_ENTER_TIME) = TRUNC(SYSDATE)
+		AND (FCD_ENTER_TIME >= FCD_LEAVE_TIME OR FCD_LEAVE_TIME IS NULL)
+		<if test="para != null and para != ''">
+	    	AND FCD_CUS_NUMBER = #{para} 
+	    </if>
+		UNION ALL
+		SELECT 'leaveCount' AS KEY, COUNT(FCD_RGSTR_IDNTY) AS COUNT
+		FROM V_FOREIGN_CAR_DTLS
+        where TRUNC(FCD_ENTER_TIME) = TRUNC(SYSDATE) AND FCD_LEAVE_TIME>= FCD_ENTER_TIME 
+        AND FCD_LEAVE_TIME IS NOT NULL
+		<if test="para != null and para != ''">
+	    	AND FCD_CUS_NUMBER = #{para} 
+	    </if>
+		UNION ALL
+		SELECT 'waitCount' AS KEY, COUNT(FCD_RGSTR_IDNTY) AS COUNT
+		FROM V_FOREIGN_CAR_DTLS
+		where  TRUNC(FCD_OPRTN_TIME) = TRUNC(SYSDATE) AND FCD_ENTER_TIME IS NULL
+		AND FCD_LEAVE_TIME IS NULL
+		<if test="para != null and para != ''">
+	    	FCD_CUS_NUMBER = #{para} 
+	    </if>
+	</select>
+
+	<select id="queryForeignPeopleCount" resultType="java.util.Map" parameterType="java.util.HashMap">	
+    	SELECT 'totalCount' AS KEY, COUNT(FPD_PEOPLE_NAME) AS COUNT
+	    FROM (SELECT FPD_PEOPLE_NAME FROM V_FOREIGN_PEOPLE_DTLS
+        where TRUNC(FPD_ENTER_TIME) = TRUNC(SYSDATE))
+		<if test="para != null and para != ''">
+	    	AND FPD_CUS_NUMBER = #{para} 
+	    </if>
+	    UNION ALL
+		SELECT 'insideCount' AS KEY, COUNT(FPD_PEOPLE_NAME) AS COUNT
+		FROM (SELECT FPD_PEOPLE_NAME FROM V_FOREIGN_PEOPLE_DTLS
+        where TRUNC(fpd_enter_time) = TRUNC(SYSDATE) AND 
+        (fpd_enter_time >= fpd_leave_time or fpd_leave_time is null))
+        <if test="para != null and para != ''">
+	    	AND FPD_CUS_NUMBER = #{para} 
+	    </if>
+		UNION ALL
+		SELECT 'leaveCount' AS KEY, COUNT(FPD_PEOPLE_NAME) AS COUNT 
+		FROM (SELECT FPD_PEOPLE_NAME FROM V_FOREIGN_PEOPLE_DTLS
+        where  TRUNC(FPD_ENTER_TIME) = TRUNC(SYSDATE)
+        AND (FPD_LEAVE_TIME >= FPD_ENTER_TIME OR FPD_LEAVE_TIME IS NOT NULL))
+        <if test="para != null and para != ''">
+	    	AND FPD_CUS_NUMBER = #{para} 
+	    </if>
+        UNION ALL
+		SELECT 'waitCount' AS KEY, COUNT(FPD_PEOPLE_NAME) AS COUNT
+		FROM (SELECT FPD_PEOPLE_NAME FROM V_FOREIGN_PEOPLE_DTLS
+        where  TRUNC(FPD_OPRTN_TIME) = TRUNC(SYSDATE) AND FPD_ENTER_TIME IS NULL
+		AND FPD_LEAVE_TIME IS NULL)  
+        <if test="para != null and para != ''">
+	    	AND FPD_CUS_NUMBER = #{para} 
+	    </if>
+	</select>
+	
+	<select id="queryKeynotePrisoner1" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT 'XJF' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT  FROM  V_PRISONER_XJF 
+	    where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;= TRUNC(SYSDATE)  
+	    <if test="para != null and para != ''">
+        	AND PBD_CUS_NUMBER = #{para}   
+        </if>
+	    UNION ALL      
+		SELECT 'FLG' AS key, COUNT(PBD_PRSNR_IDNTY) AS count FROM  V_PRISONER_XJF 
+		where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;= TRUNC(SYSDATE) 
+		AND PBD_SUB_TYPE = 3
+	    <if test="para != null and para != ''">
+        	AND PBD_CUS_NUMBER = #{para} 
+        </if>	      
+		UNION ALL
+		SELECT 'QNS' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT  FROM V_PRISONER_XJF 
+		where TRUNC(pbd_entry_prisoner_date) &lt;= TRUNC(SYSDATE) 
+	    AND pbd_sub_type = 17      
+	    <if test="para!=null and para!=''">
+        	AND PBD_CUS_NUMBER = #{para} 
+        </if>
+	</select>
+		
+	<select id="queryKeynotePrisoner2" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT 'OTHER' AS KEY,COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_XJF
+		where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;= TRUNC(SYSDATE) 
+		AND PBD_SUB_TYPE = 100
+	    <if test="para != null and para != ''">
+        	AND PBD_CUS_NUMBER = #{para}
+        </if>
+		UNION ALL
+		SELECT 'WZF' AS KEY,COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_WZF
+		where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;=TRUNC(SYSDATE)
+	    <if test="para != null and para != ''">
+        	AND PBD_CUS_NUMBER = #{para} 
+        </if>
+		UNION ALL
+		SELECT 'WJF' AS key, count(PBD_PRSNR_IDNTY) AS count
+		FROM V_PRISONER_WJF
+		where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;=TRUNC(SYSDATE)   
+	    <if test="para!=null and para!=''">
+       		AND PBD_CUS_NUMBER = #{para} 
+        </if>
+	</select>
+	
+	<select id="queryKeynotePrisoner3" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT 'XZJX' AS KEY,	COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_XZJX
+		where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;=TRUNC(SYSDATE) 
+	    <if test="para!=null and para!=''">
+        	AND PBD_CUS_NUMBER = #{para} 
+        </if>
+		UNION ALL	
+		SELECT 'LKF' AS KEY, COUNT(b.PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_LKF a
+		LEFT JOIN V_PRISONER_MASTER_BASE b 
+		ON(a.PBD_CUS_NUMBER = b.PBD_CUS_NUMBER AND a.PBD_PRSNR_IDNTY = b.PBD_PRSNR_IDNTY)
+		where TRUNC(b.PBD_ENTRY_PRISONER_DATE) &lt;=TRUNC(SYSDATE) 
+		<if test="para != null and para != ''">
+        	AND a.PBD_CUS_NUMBER = #{para} 
+        </if>
+		UNION ALL
+		SELECT 'WGF' AS KEY, COUNT(*) AS COUNT
+		FROM V_PRISONER_WGF 
+		where TRUNC(PBD_ENTRY_PRISONER_DATE) &lt;=TRUNC(SYSDATE) 
+		<if test="para!=null and para!=''">
+        	AND PBD_CUS_NUMBER = #{para} 
+        </if>
+	</select>
+</mapper>

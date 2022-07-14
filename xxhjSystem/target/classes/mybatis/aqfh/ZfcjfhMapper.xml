@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.aqfh.zfcjfh.dao.ZfcjfhMapper">
+
+	
+	<select id="findList" parameterType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity" resultType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity">
+		SELECT * FROM CDS_AQFH_ZFCJFH 
+	   <where>
+	   	<if test="cusNumber !=null and cusNumber !=''">
+	   	 and CUS_NUMBER = #{cusNumber}
+	   	</if>
+	   	<if test="jqId !=null and jqId !=''">
+	   	 and  JQ_ID  = #{jqId}
+	   	 </if>
+	   	 <if test=" zt !=null and zt !=''">
+	   	 	and  ZT = #{zt}
+	   	 </if>
+	   </where>
+	   order by SF_RQ DESC,ZT
+	</select> 
+	
+	<update id="updateById" parameterType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity">
+		update CDS_AQFH_ZFCJFH 
+			<set>
+				<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+				<if test="zt !=null and zt!=''">
+					ZT  = #{zt},
+				</if>
+				<if test="shrId !=null and shrId != ''">
+					SHR_ID  = #{shrId},
+				</if>
+				<if test="shRq !=null and shRq != ''">
+					SH_RQ  = #{shRq},
+				</if>
+				<if test="shrName !=null and shrName != ''">
+					SHR_NAME  = #{shrName},
+				</if>
+			</set>
+			where id = #{id}
+	</update>
+	
+	<select id="getTodaySfzfData" parameterType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity" resultType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity">
+		select
+        a.jy_id  "cusNumber"  ,
+        a.jq_id   "jqId" ,
+        a.xm      "name",
+        a.zf_bh   "zfBh",
+        a.cs_rq   "csRq",
+        (select name from auth.t_c_code b where a.mz=b.code_key and group_key='4.3.6')as "mz",
+        a.jg  "jg"    ,
+        YZGL.GET_ZM  (a.zm) as "zm"  ,
+        (select name from auth.t_c_code b where a.xz=b.code_key and group_key='4.5.17')as "xz",
+        YZGL.CONVERT_XQ (a.xq)as "xq",
+        a.xq_qr  "xqQr" ,
+        a.xq_zr  "xqZr" ,
+        YZGL.CONVERT_XQ (a.zx_xq)as "zxXq",
+        a.zx_xq_zr "zxXqZr",
+        a.sf_rq   "sfRq",
+        (select name from auth.t_c_code b where a.sf_lb=b.code_key and group_key='4.6.2') as "sflb"
+from
+        "YZGL"."T_YZGL_SFGL_DJ" a
+		<where>
+			<if test=" cusNumber !=null and cusNumber !='' ">
+	          a.jy_id  =#{cusNumber}
+			</if>
+	         <if test=" sfRq !=null and sfRq !='' ">
+	          and to_char(a.sf_rq,'yyyy-MM-dd')  =to_char(#{sfRq},'yyyy-MM-dd') 
+			</if>
+			
+		</where> 
+	</select>
+	
+	<!--selectByZfCj  -->
+	<select id="selectByZfCj" parameterType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity" resultType="com.cesgroup.prison.aqfh.zfcjfh.entity.ZfcjfhEntity">
+		        select * from CDS_AQFH_ZFCJFH
+		        <where>
+		        	<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber}
+				</if>
+				<if test="sfRq !=null and sfRq !=''">
+				 and 	to_char(SF_RQ,'yyyy-MM-dd')  =to_char(#{sfRq},'yyyy-MM-dd')
+				</if>
+		        </where>
+	
+	</select>
+</mapper>

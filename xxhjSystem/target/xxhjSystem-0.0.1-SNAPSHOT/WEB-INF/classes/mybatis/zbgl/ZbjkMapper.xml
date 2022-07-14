@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.zbcx.dao.ZbjkMapper">
+	<select id="cds_dutyControl_inout_record" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT MIN(PIR_ENTER_TIME) AS PIR_ENTER_TIME, MAX(PIR_LEAVE_TIME) AS PIR_LEAVE_TIME,
+		TO_CHAR(PIR_BRUSH_DATE,'YYYY-MM-DD') AS PIR_BRUSH_DATE, PIR_POLICE_IDNTY
+		FROM V_POLICE_INOUT_RECORD
+		<where>
+			<if test="dbdCusNumber != null and dbdCusNumber != ''">
+					AND PIR_CUS_NUMBER = #{dbdCusNumber}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND PIR_BRUSH_DATE &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND #{endDate} &gt;= PIR_BRUSH_DATE
+			</if>
+			<if test="dbdStaffId != null and dbdStaffId != ''">
+				AND PIR_POLICE_IDNTY = #{dbdStaffId}
+			</if>
+	    </where>
+	    	GROUP BY PIR_BRUSH_DATE,PIR_POLICE_IDNTY
+	</select>
+</mapper>

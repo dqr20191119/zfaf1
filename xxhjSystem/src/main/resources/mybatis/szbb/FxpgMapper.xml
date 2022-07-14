@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 数字冰雹数据对接  3.安全风险评估 --> 
+<mapper namespace="com.cesgroup.prison.szbb.dao.FxpgDao">
+
+
+	<!-- 1.监狱排名 -->
+	<select id="getJypmList"  parameterType="java.util.Map" resultType="hashmap">
+		select "PrisonName", "Grade" from (select jy_name as "PrisonName" ,1000-sum(kczf) as "Grade" 
+			from T_AQFX_FXCJ 
+			where scflg='1' and status='1' 
+		group by jy_name  
+		union
+		select name AS "PrisonName",
+				   0 as "Grade" 
+			from auth.T_C_CODE 
+			where GROUP_KEY = '4.13.2' 
+			and code_key like '11%'
+			and code_key!='1100'
+			and code_key not in (select distinct(jy_id) from T_AQFX_FXCJ)) order by "Grade" desc
+	</select>
+	
+	<!-- 2.1 已发风险 -->
+	<select id="getJffxList" parameterType="java.util.Map"  resultType="hashmap">
+	select fxcj.pgtj_name as "RiskName",
+	   TO_CHAR(fxcj.fx_date, 'yyyy-MM-dd hh24:mi:ss') as "OccurTime",
+	   pgtj.fxdj_name as "Level",
+	   fxcj.wwjg_name as "Type" 
+	  from T_AQFX_FXCJ fxcj,T_AQFX_PGTJ pgtj 
+	 where fxcj.scflg='1' and fxcj.status='1' and pgtj.id=fxcj.pgtj_id and fxcj.jy_id=#{jyCode} order by fxcj.fx_date desc
+	</select>
+	
+	<!-- 2.2 近期风险 -->
+	<select id="getJqfxList" parameterType="java.util.Map"  resultType="hashmap">
+		select fxcj.pgtj_name as "RiskName",
+		   TO_CHAR(fxcj.fx_date, 'yyyy-MM-dd hh24:mi:ss') as "OccurTime",
+		   pgtj.fxdj_name as "Level",
+		   fxcj.wwjg_name as "Type" 
+		  from T_AQFX_FXCJ fxcj,T_AQFX_PGTJ pgtj 
+		 where fxcj.scflg='1' and fxcj.status='1' and pgtj.id=fxcj.pgtj_id and fxcj.jy_id=#{jyCode} order by fxcj.fx_date desc
+	</select>
+	
+	<!-- 3.频发风险 -->
+	<select id="getPffxList" parameterType="java.util.Map"  resultType="hashmap">
+		select FXD_NAME as "RiskPoint",
+			   count(*) as "Count" 
+		  from T_AQFX_FXCJ 
+		 where scflg='1'  and status='1' AND FXD_NAME !='' and jy_id=#{jyCode}
+		 group by FXD_NAME 
+	</select>
+	
+	<!-- 4.人地事物情风险等级接口 -->
+	<select id="getFxdjList" parameterType="java.util.Map"  resultType="hashmap">
+		select type as "Type",SCORE "Score",'安全' as "SecurityLevel" 
+		from (
+		select wwjg_name as Type,sum(kczf) as Score  from T_AQFX_FXCJ where scflg='1' and status='1' and jy_id=#{jyCode}  group by wwjg_name
+		) where Score &lt;=100
+		union
+		select *,'轻度危险' as SecurityLevel from (
+		select wwjg_name as Type,sum(kczf) as Score  from T_AQFX_FXCJ where scflg='1' and status='1' and jy_id=#{jyCode}  group by wwjg_name
+		) where Score &lt;=200 and Score &gt;100
+		union
+		select *,'中度危险' as SecurityLevel from (
+		select wwjg_name as Type,sum(kczf) as Score  from T_AQFX_FXCJ where scflg='1' and status='1' and jy_id=#{jyCode}  group by wwjg_name
+		) where Score &lt;=300 and Score &gt;200
+		union
+		select *,'重度危险' as SecurityLevel from (
+		select wwjg_name as Type,sum(kczf) as Score  from T_AQFX_FXCJ where scflg='1' and status='1' and jy_id=#{jyCode}  group by wwjg_name
+		) where Score &lt;=400 and Score&gt;300
+		union
+		select *,'特别危险' as SecurityLevel from (
+		select wwjg_name as Type,sum(kczf) as Score  from T_AQFX_FXCJ where scflg='1' and status='1' and jy_id=#{jyCode}  group by wwjg_name
+		) where Score&gt;400
+	</select>
+	
+	<!-- 5.全部风险点 -->
+	<select id="getAllfxdList"  parameterType="java.util.Map" resultType="hashmap">
+		select name "RiskPointName",
+		 		qzdj_name "Weight",
+		 		wwjg_name "Type"
+		 from T_AQFX_FXD 
+		 where scflg='1'
+	</select>
+	
+	<!-- 6.当前发生风险点 -->
+	<select id="getDqfxdList" parameterType="java.util.Map"  resultType="hashmap">
+		select fxcj.fxd_name as "RiskPointName",
+				fxd.qzdj_name as "Weight",
+				fxcj.wwjg_name as "Type"
+		 from  T_AQFX_FXCJ fxcj,T_AQFX_FXD fxd 
+		 where fxcj.scflg='1'  and fxcj.status='1' and fxcj.jy_id=#{jyCode}
+		 and fxd.id = fxcj.fxd_id
+	</select>
+	
+	<!-- 7.当前发生风险详情 -->
+	<select id="getDqfsfxList"  parameterType="java.util.Map" resultType="hashmap">
+		select fxcj.pgtj_name as "RiskDetail",
+			   fxcj.kczf as "Deduction",
+			   fxd.qzdj_name as "Weight",
+			   fxcj.wwjg_name as "Type"
+		  from T_AQFX_FXCJ fxcj,T_AQFX_FXD fxd 
+		 where fxcj.scflg='1' and fxcj.status='1' and fxcj.jy_id=#{jyCode}
+		   and fxd.id = fxcj.fxd_id
+	</select>
+	
+	<!-- 8.立体化网格风险 -->
+	<select id="getWgfxList"  parameterType="java.util.Map" resultType="hashmap">
+		 select pgtj_name as "GridRiskDetail", kczf as "Deduction", wwjg_name as "type"
+	       from(
+			 (select fxcj.jy_id,fxcj.pgtj_name,fxcj.kczf,wg.name,fxcj.wwjg_name from T_AQFX_FXCJ fxcj,
+			 (select name,code_key from AUTH.T_C_CODE where group_key='4.13.6' and code_key like '${jyCode}%' and len(code_key)=6)wg
+			   where fxcj.scflg='1' and fxcj.status='1' and fxcj.wg_one=wg.code_key) 
+			 	union
+			 (select fxcj.jy_id,fxcj.pgtj_name,fxcj.kczf,wg.name,fxcj.wwjg_name from 
+			 	T_AQFX_FXCJ fxcj, (select name,code_key from AUTH.T_C_CODE where group_key='4.13.6' and code_key like '${jyCode}%' and len(code_key)=8)wg
+			   	where fxcj.scflg='1' and fxcj.status='1' and fxcj.wg_two=wg.code_key)
+			 ) where jy_id=#{jyCode}
+	</select>
+	
+	<!-- 9.立体化网格评估 -->
+	<select id="getWgpgList"  parameterType="java.util.Map" resultType="hashmap">
+		 select GridName "GridName","COUNT" "Count"
+		 from (
+		 (select name as GridName,count(wg_one) as Count from(
+		 select fxcj.pgtj_name,fxcj.kczf,wg.name,fxcj.wg_one,wg.code_key from 
+		 T_AQFX_FXCJ fxcj
+		 left join
+		 (select name,code_key from AUTH.T_C_CODE 
+		   where group_key='4.13.6' 
+		     and code_key like '${jyCode}%' 
+		     and len(code_key)=6) wg
+		   on fxcj.scflg='1' 
+		   and fxcj.wg_one=wg.code_key 
+		   and fxcj.wg_one is not null 
+		   and fxcj.status='1' 
+		   and fxcj.jy_id=#{jyCode}
+		 )
+		 group by name,code_key
+		 )
+		 union
+		 (
+		  select name as GridName,count(wg_two) as Count from(
+		   select fxcj.pgtj_name,fxcj.kczf,wg.name,fxcj.wg_two,wg.code_key from 
+		 T_AQFX_FXCJ fxcj
+		 left join
+		 (select name,code_key from AUTH.T_C_CODE where group_key='4.13.6' and code_key like '${jyCode}%' and len(code_key)=8)wg
+		   on fxcj.scflg='1' and fxcj.status='1' and fxcj.jy_id=#{jyCode} and fxcj.wg_two=wg.code_key and fxcj.wg_two is not null
+		 )
+		 group by name,code_key
+		 )
+		 ) where GridName is not null
+	</select>
+	
+	<!-- 10.网格扣分 -->
+	<select id="getWgkfList"  parameterType="java.util.Map" resultType="hashmap">
+		select wg.name "GridName",
+			   to_number(fxcj.kczf) "Deduction",
+			   pgtj.fxdj_name "RiskLevel"
+		from T_AQFX_FXCJ fxcj,
+		(select name,code_key from AUTH.T_C_CODE where group_key='4.13.6' and code_key like '${jyCode}%' and len(code_key)=6)wg
+		,T_AQFX_PGTJ pgtj
+		 where fxcj.scflg='1' and fxcj.status='1' and fxcj.jy_id=#{jyCode} and fxcj.wg_one = wg.code_key and pgtj.id= fxcj.pgtj_id
+		union
+		select wg.name,fxcj.kczf,pgtj.fxdj_name from T_AQFX_FXCJ fxcj,
+		(select name,code_key from AUTH.T_C_CODE where group_key='4.13.6' and code_key like '${jyCode}%' and len(code_key)=8)wg
+		,T_AQFX_PGTJ pgtj
+		 where fxcj.scflg='1' and fxcj.status='1' and fxcj.jy_id=#{jyCode} and fxcj.wg_two = wg.code_key and pgtj.id= fxcj.pgtj_id
+	</select>
+	
+	
+</mapper>

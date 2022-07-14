@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    					http://www.springframework.org/schema/beans/spring-beans.xsd 
+    					http://cxf.apache.org/jaxws 
+    					http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	
+	<!-- 权限验证拦截器 -->
+	<bean id="authInterceptor" class="com.cesgroup.prison.ws.interceptor.AuthInterceptor"></bean>
+	
+	<!-- 报警器信息
+		 http://127.0.0.1:8080/webserviceSystem/ws/AlertorWsServiceImpl?wsdl -->
+	<bean id="alertorWsServiceImpl" class="com.cesgroup.prison.ws.service.AlertorWsServiceImpl"/>
+	<jaxws:endpoint id="alertorWsService" implementor="#alertorWsServiceImpl" address="/AlertorWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<!-- 摄像机信息 -->
+	<bean id="cameraWsServiceImpl" class="com.cesgroup.prison.ws.service.CameraWsServiceImpl"/>
+	<jaxws:endpoint id="cameraWsService" implementor="#cameraWsServiceImpl" address="/CameraWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<!-- 录像机信息(视频设备) -->
+	<bean id="videoDeviceWsServiceImpl" class="com.cesgroup.prison.ws.service.VideoDeviceWsServiceImpl"/>
+	<jaxws:endpoint id="videoDeviceWsService" implementor="#videoDeviceWsServiceImpl" address="/VideoDeviceWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<!-- 门禁信息 -->
+	<bean id="doorWsServiceImpl" class="com.cesgroup.prison.ws.service.DoorWsServiceImpl"/>
+	<jaxws:endpoint id="doorWsService" implementor="#doorWsServiceImpl" address="/DoorWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+
+	<!-- 广播信息 -->
+	<bean id="broadcastWsServiceImpl" class="com.cesgroup.prison.ws.service.BroadcastWsServiceImpl"/>
+	<jaxws:endpoint id="broadcastWsService" implementor="#broadcastWsServiceImpl" address="/BroadcastWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<!-- 对讲主机信息 -->
+	<bean id="talkServerWsServiceImpl" class="com.cesgroup.prison.ws.service.TalkServerWsServiceImpl"/>
+	<jaxws:endpoint id="talkServerWsService" implementor="#talkServerWsServiceImpl" address="/TalkServerWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<!-- 对讲分机信息 -->
+	<bean id="talkWsServiceImpl" class="com.cesgroup.prison.ws.service.TalkWsServiceImpl"/>
+	<jaxws:endpoint id="talkWsService" implementor="#talkWsServiceImpl" address="/TalkWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<!-- 大屏预案信息 -->
+	<bean id="screenPlanWsServiceImpl" class="com.cesgroup.prison.ws.service.ScreenPlanWsServiceImpl"/>
+	<jaxws:endpoint id="screenPlanWsService" implementor="#screenPlanWsServiceImpl" address="/ScreenPlanWsServiceImpl">
+		<jaxws:inInterceptors>
+			<ref bean="authInterceptor" />           
+        </jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	
+	
+	<!-- 
+	<bean id="PrisonGooutServiceImpl" class="com.hz.fm.ws.service.impl.PrisonGooutServiceImpl"/>
+	<jaxws:endpoint id="PrisonGooutService" implementor="#PrisonGooutServiceImpl" address="/PrisonGooutServiceImpl"></jaxws:endpoint>
+	
+	<bean id="departmentServiceImpl" class="com.hz.fm.ws.service.impl.DepartmentServiceImpl"/>
+	<jaxws:endpoint id="departmentService" implementor="#departmentServiceImpl" address="/departmentService"></jaxws:endpoint>
+	 -->
+	<!-- 警员信息WebService
+	<bean id="policeServiceImpl" class="com.hz.fm.ws.service.impl.PoliceServiceImpl"/>
+	<jaxws:endpoint id="policeService" implementor="#policeServiceImpl" address="/PoliceService"></jaxws:endpoint>
+	 --><!-- 罪犯信息WebService 
+    <bean id="prisonerInfoServiceImpl" class="com.hz.fm.ws.service.impl.PrisonerInfoServiceImpl"/>
+	<jaxws:endpoint id="prisonerInfoService" implementor="#prisonerInfoServiceImpl" address="/PrisonerInfoService"></jaxws:endpoint>
+	--><!-- 设备信息WebService 
+    <bean id="deviceInfoServiceImpl" class="com.hz.fm.ws.service.impl.DeviceInfoServiceImpl"/>
+	<jaxws:endpoint id="deviceInfoService" implementor="#deviceInfoServiceImpl" address="/deviceInfoService"></jaxws:endpoint>
+ 	--><!-- 警员图片更新到数据库
+    <bean id="getImgServiceImpl" class="test.test.Image.GetPoliceImgImpl"/>
+	<jaxws:endpoint id="getImgService" implementor="#getImgServiceImpl" address="/getImgService"></jaxws:endpoint>  
+	 --> <!-- 犯人图片更新到数据库 -->
+	<!-- <bean id="getPrisonerImgServiceImpl" class="test.test.Image.GetPrisonerImgImpl"/>
+	<jaxws:endpoint id="getPrisnerImgService" implementor="#getPrisonerImgServiceImpl" address="/PrisnerImgService"></jaxws:endpoint>   -->
+	<!-- 值班信息WebService 
+	 <bean id="dutyInfoServiceImpl" class="com.hz.fm.ws.service.impl.DutyInfoServiceImpl"/>
+	<jaxws:endpoint id="dutyInfoService" implementor="#dutyInfoServiceImpl" address="/dutyInfoService"></jaxws:endpoint>
+	--> <!-- 值班信息WebService 
+	 <bean id="screenInfoServiceImpl" class="com.hz.fm.ws.service.impl.ScreenInfoServiceImpl"/>
+	<jaxws:endpoint id="screenInfoService" implementor="#screenInfoServiceImpl" address="/screenInfoService"></jaxws:endpoint>
+	
+	--> <!-- 罪犯释放WebService 
+	<bean id="PrisonerReleaseServiceImpl" class="com.hz.fm.ws.service.impl.PrisonerReleaseServiceImpl"/>
+	<jaxws:endpoint id="PrisonerReleaseService" implementor="#PrisonerReleaseServiceImpl" address="/PrisonerReleaseServiceImpl"></jaxws:endpoint>
+	
+	<bean id="deviceInfoImpl" class="com.hz.ws.service.impl.DeviceInfoImpl"/>
+	<jaxws:endpoint id="deviceInfo" implementor="#deviceInfoImpl" address="/deviceInfo"></jaxws:endpoint>
+	
+	--> <!-- 蛇腹网信息WebService 
+	<bean id="snakeServiceImpl" class="com.hz.fm.ws.service.impl.SnakeServiceImpl"/>
+	<jaxws:endpoint id="snakeService" implementor="#snakeServiceImpl" address="/snakeServiceImpl"></jaxws:endpoint>
+	
+	--><!-- 门禁控制器信息WebService 
+	<bean id="doorControlServiceImpl" class="com.hz.fm.ws.service.impl.DoorControlServiceImpl"/>
+	<jaxws:endpoint id="doorControlService" implementor="#doorControlServiceImpl" address="/doorControlServiceImpl"></jaxws:endpoint>
+	-->
+	<!-- 技防设备信息WebService 
+	<bean id="ServiceImpl" class="com.hz.fm.ws.service.impl.ServiceImpl"/>
+	<jaxws:endpoint id="Service" implementor="#ServiceImpl" address="/ServiceImpl"></jaxws:endpoint>
+	-->
+</beans>

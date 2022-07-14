@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.szbb.dao.ZszhDao">
+
+	<!-- 1.战时指挥 - 现场警员 -->
+	<select id="getXcjyList" parameterType="java.util.Map"  resultType="hashmap">
+		  SELECT   T1.USER_NAME AS "Name", 
+					CASE T1.SEX  
+						WHEN '0' THEN '女'
+						WHEN '1' THEN '男'  
+						ELSE '未知'
+					END AS "Sex",
+					T1.AGE AS "Age", 
+					nvl(T1.POLICEAFFAIR,'') AS "Terminal"
+			  FROM AUTH.T_USER T1 
+			 WHERE EXISTS (
+				      SELECT * 
+				        FROM PRISON.CDS_POLICE_LOCATION T2 
+				       WHERE T1.JOB_NO = T2.POLICE_NO and t2.prison_no=#{jyCode} 
+			) AND T1.STATUS = '0'
+	</select>
+	
+	<!-- 2.战时指挥 - 待援警员 -->
+	<select id="getDyjyList" parameterType="java.util.Map"  resultType="hashmap">
+			select '一监区' as "Department",'5' as "Count" 
+			from dual
+	</select>
+	
+	<!-- 3.战时指挥 - 待命车辆 -->
+	<select id="getDmclList" parameterType="java.util.Map"  resultType="hashmap">
+		select '押解车' as "VehicleType",
+			   '京AD3C60' as "PlateNumber",
+			   '陈宇' as "Driver",
+			   '18297239924' as "Phone",
+			   '2524' as "Terminal"
+		from dual
+		union
+		select '押解车' as "VehicleType",
+			   '京AD667G' as "PlateNumber",
+			   '张明' as "Driver",
+			   '18293750371' as "Phone",
+			   '2740' as "Terminal"
+		from dual
+		union
+		select '押解车' as "VehicleType",
+			   '京AD2B71' as "PlateNumber",
+			   '王林' as "Driver",
+			   '13987242033' as "Phone",
+			   '3941' as "Terminal"
+		from dual
+	</select>
+	
+	<!-- 4.战时指挥 - 警务装备 -->
+	<select id="getJwzbList" parameterType="java.util.Map"  resultType="hashmap">
+		select '手铐' as "DeviceName",
+			   '12' as "Count",
+			   '警械' as "DeviceType" 
+		  from dual
+	</select>
+	
+	<!-- 5.战时指挥 - 事件信息 	-->
+	<select id="getSjxx"  parameterType="java.util.Map" resultType="hashmap">
+			  select a."EventSource", a."AlarmTime", a."EventDetail", a."Time",code.name as "AlarmLevel"
+				from (select top 1 a.ARD_ALERT_LEVEL_INDC ,b.ABD_AREA, decode(b.ABD_AREA, null, '无', b.ABD_AREA) as "EventSource",
+					   to_char(a.ARD_ALERT_TIME,'yyyy-mm-dd hh24:mi:ss') as "AlarmTime",
+					   decode(a.ARD_LOCAL_CASE, null, '无', a.ARD_LOCAL_CASE) as "EventDetail",
+					   to_char(getdate(),'yyyy-mm-dd hh24:mi:ss') "Time"
+				from  cds_alert_record_dtls a
+					left join dvc_alertor_base_dtls b
+					on a.ard_cus_number = b.abd_cus_number 
+					and a.ard_alertor_idnty = b.id 
+					where a.ard_cus_number=#{jyCode}) a left join auth.t_c_code code
+					on code.code_key = a.ARD_ALERT_LEVEL_INDC 
+					and code.GROUP_KEY = '4.20.25'
+	</select>
+	
+	<!-- 6.战时指挥 - 事件流程 -->
+	<select id="getSjlcList" parameterType="java.util.Map"  resultType="hashmap">
+		  select 
+				b.dmi_Method_Name as "ProcessName",
+				to_number(a.epc_order_seq) as "ProcessIndex"
+			from cds_emergency_plan_config a
+			left join cds_disposal_method_info b
+			on a.EPC_CONFIG_ITEM_FID = b.id 
+			where a.epc_cus_number = #{jyCode} 
+			and a.EPC_CONFIG_TYPE = '1'
+	</select>
+	
+	<!-- 7.战时指挥 - 当前流程 -->
+	<select id="getDqlc" parameterType="java.util.Map"  resultType="hashmap">
+		select top 1
+			c.dmi_Method_Name as "ProcessName",
+			b.epc_order_seq as "ProcessIndex",
+		    to_char(getdate(),'yyyy-mm-dd hh24:mi:ss') "Time"
+		from prison.cds_emergency_handle_record a 
+		left join prison.cds_emergency_plan_config b
+		on a.EHR_EM_PLAN_FID = b.epc_plan_fid and b.EPC_CONFIG_TYPE = '1'
+		left join prison.cds_disposal_method_info c
+		on b.EPC_CONFIG_ITEM_FID = c.id 
+		where a.ehr_cus_number = #{jyCode} 
+		and a.ehr_type = '1'
+	</select>
+	
+	<!-- 8.战时指挥 - 涉事部位 -->
+	<select id="getSsbm" parameterType="java.util.Map"  resultType="hashmap">
+		select '二监区' as "PrisonAreaName", 
+		       '林庚学' as "PrisonAreaPolice", 
+		       '狱警' as "JobLevel", 
+		       '张盼盼' as "CriminalName", 
+		       'a11032123311.png' as "CriminalPhoto", 
+		       '29' as "CriminalAge",
+			   '北京' as "CriminalNativePlace", 
+			   '盗窃' as "CriminalCharge", 
+			   '严管' as "CriminalLevel", 
+			   to_char(getdate(),'yyyy-mm-dd hh24:mi:ss') as "IntoPrisonTime", 
+			   '3年' as "Sentence", 
+			   to_char(getdate(),'yyyy-mm-dd hh24:mi:ss') as "Time"  
+		  from dual
+	</select>
+	
+</mapper>

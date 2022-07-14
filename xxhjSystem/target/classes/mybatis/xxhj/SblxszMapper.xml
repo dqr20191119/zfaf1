@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.zfsjsb.sblxsz.dao.SblxszMapper">
+
+    <insert id="insertInfo" parameterType="com.cesgroup.prison.xxhj.zfsjsb.sblxsz.entity.SblxszEntity" >
+        insert into CDS_PRISON_REPORT_TYPE_DEPARTMENT
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="prtdTypeCode != null" >
+                PRTD_TYPE_CODE,
+            </if>
+            <if test="prtdDprtmntId != null" >
+                PRTD_DPRTMNT_ID,
+            </if>
+            <if test="prtdIsCalc != null" >
+                PRTD_IS_CALC,
+            </if>
+            <if test="prtdRemark != null" >
+                PRTD_REMARK,
+            </if>
+            <if test="prtdCrteTime != null" >
+                PRTD_CRTE_TIME,
+            </if>
+            <if test="prtdCrteUserId != null" >
+                PRTD_CRTE_USER_ID,
+            </if>
+            <if test="prtdCrteUserName != null" >
+                PRTD_CRTE_USER_NAME,
+            </if>
+            <if test="prtdUpdtTime != null" >
+                PRTD_UPDT_TIME,
+            </if>
+            <if test="prtdUpdtUserId != null" >
+                PRTD_UPDT_USER_ID,
+            </if>
+            <if test="prtdUpdtUserName != null" >
+                PRTD_UPDT_USER_NAME,
+            </if>
+            <if test="prtdStatus != null" >
+                PRTD_STATUS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdTypeCode != null" >
+                #{prtdTypeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdDprtmntId != null" >
+                #{prtdDprtmntId,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdIsCalc != null" >
+                #{prtdIsCalc,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdRemark != null" >
+                #{prtdRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdCrteTime != null" >
+                #{prtdCrteTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prtdCrteUserId != null" >
+                #{prtdCrteUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdCrteUserName != null" >
+                #{prtdCrteUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdUpdtTime != null" >
+                #{prtdUpdtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prtdUpdtUserId != null" >
+                #{prtdUpdtUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdUpdtUserName != null" >
+                #{prtdUpdtUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdStatus != null" >
+                #{prtdStatus,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateInfo" parameterType="com.cesgroup.prison.xxhj.zfsjsb.sblxsz.entity.SblxszEntity" >
+        update CDS_PRISON_REPORT_TYPE_DEPARTMENT
+        <set>
+            <if test="prtdTypeCode != null" >
+                PRTD_TYPE_CODE = #{prtdTypeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdDprtmntId != null" >
+                PRTD_DPRTMNT_ID = #{prtdDprtmntId,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdIsCalc != null" >
+                PRTD_IS_CALC = #{prtdIsCalc,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdRemark != null" >
+                PRTD_REMARK = #{prtdRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdCrteTime != null" >
+                PRTD_CRTE_TIME = #{prtdCrteTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prtdCrteUserId != null" >
+                PRTD_CRTE_USER_ID = #{prtdCrteUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdCrteUserName != null" >
+                PRTD_CRTE_USER_NAME = #{prtdCrteUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdUpdtTime != null" >
+                PRTD_UPDT_TIME = #{prtdUpdtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prtdUpdtUserId != null" >
+                PRTD_UPDT_USER_ID = #{prtdUpdtUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdUpdtUserName != null" >
+                PRTD_UPDT_USER_NAME = #{prtdUpdtUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="prtdStatus != null" >
+                PRTD_STATUS = #{prtdStatus,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE ID = #{id,jdbcType=CHAR}
+    </update>
+
+    <delete id="deleteByTypeId" parameterType="java.lang.String">
+        delete from CDS_PRISON_REPORT_TYPE_DEPARTMENT
+        where PRTD_TYPE_CODE = #{id}
+    </delete>
+
+
+    <select id="findByTypeCode" parameterType="com.cesgroup.prison.xxhj.zfsjsb.sblxsz.entity.SblxszEntity" resultType="java.util.HashMap">
+        select
+        ID as "id",
+        PRTD_DPRTMNT_ID as "prtdDprtmntId",
+        PRTD_IS_CALC as "prtdIsCalc"
+        from CDS_PRISON_REPORT_TYPE_DEPARTMENT
+        <where>
+            <if test="prtdTypeCode!=null and prtdTypeCode!=''">
+                and PRTD_TYPE_CODE = #{prtdTypeCode}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByTypeCodes" parameterType="List">
+        delete from CDS_PRISON_REPORT_TYPE_DEPARTMENT
+        where PRTD_TYPE_CODE in
+        <foreach collection="list" item="id" index="index" separator=","
+                 open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

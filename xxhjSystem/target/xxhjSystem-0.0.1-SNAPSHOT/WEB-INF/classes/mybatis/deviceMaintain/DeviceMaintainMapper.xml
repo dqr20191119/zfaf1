@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.deviceMaintain.dao.DeviceMaintainMapper">
+
+	<!-- 查询事务信息 -->
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		dma_cus_number,
+		dma_dprmnt_idnty,
+		dma_dprmnt_name,
+		dma_submit_type,
+		dma_device_type,
+		dma_device_idnty,
+		dma_device_name,
+		dma_fault_type,
+		(SELECT dft_fault_name FROM cds_device_fault_type WHERE dma_cus_number = dft_cus_number AND dma_fault_type = id) AS dma_fault_type_ch,
+		dma_fault_content,
+		(SELECT dft_fault_name FROM cds_device_fault_type WHERE dma_cus_number = dft_cus_number AND dma_fault_content = id) AS dma_fault_content_ch,
+		dma_fault_addrs,
+		dma_fault_desc,
+		dma_fault_submitter_id,
+		dma_fault_submitter,
+		to_char(dma_fault_submit_time,'YYYY-MM-DD HH24:mi:ss') as dma_fault_submit_time,
+		dma_maintain_term,
+		dma_maintain_desc,
+		dma_maintain_person_id,
+		dma_maintain_person,
+		dma_maintain_result,
+		to_char(dma_maintain_start_time,'YYYY-MM-DD HH24:mi:ss') as dma_maintain_start_time,
+		to_char(dma_maintain_end_time,'YYYY-MM-DD HH24:mi:ss') as dma_maintain_end_time,
+		dma_maintain_timeout_indc,
+		dma_dprtmnt_leader_id,
+		dma_dprtmnt_leader,
+		dma_dprtmnt_idea,
+		to_char(dma_sure_time,'YYYY-MM-DD HH24:mi:ss') as dma_sure_time,
+		dma_remind_people_id,
+		dma_remind_people,
+		dma_remind_stts,
+		dma_remind_type,
+		to_char(dma_remind_time,'YYYY-MM-DD HH24:mi:ss') as dma_remind_time,
+		dma_stts_indc,
+		dma_remark
+		FROM cds_device_maintain
+		<where>
+			<if test="deviceMaintainEntity.dmaCusNumber != null and deviceMaintainEntity.dmaCusNumber!='' ">
+				AND dma_cus_number = #{deviceMaintainEntity.dmaCusNumber}
+			</if>
+
+			<if test="deviceMaintainEntity.actionType != null and deviceMaintainEntity.actionType =='handle' ">
+				AND (dma_stts_indc = '1' or dma_stts_indc = '2')
+			</if>
+			
+			<if test="deviceMaintainEntity.actionType != null and deviceMaintainEntity.actionType =='oversee' ">
+				AND (dma_stts_indc = '1' or dma_stts_indc = '2')
+				<!-- 事务监督列表查询条件，当前时间大于等于（事务提交时间+维修时限） ，提醒状态为 未提醒 -->
+				AND to_char(dma_fault_submit_time + to_number(dma_maintain_term)/24/60,'YYYY-MM-DD HH24:mi:ss') &lt;= SYSDATE
+				AND dma_remind_stts = 0
+			 
+			</if>
+
+			<if test="deviceMaintainEntity.actionType != null and deviceMaintainEntity.actionType =='feedBack' ">
+				AND dma_stts_indc = '3'
+			</if>
+			
+			<!-- 提交时间区间查询 -->
+			<if test="deviceMaintainEntity.startTime!=null and deviceMaintainEntity.startTime!='' ">
+				AND dma_fault_submit_time &gt;= to_date(#{deviceMaintainEntity.startTime},'YYYY-MM-DD HH24:mi:ss') 
+			</if>
+			<if test="deviceMaintainEntity.endTime!=null and deviceMaintainEntity.endTime!=''">
+				AND dma_fault_submit_time  &lt;= to_date(#{deviceMaintainEntity.endTime},'YYYY-MM-DD HH24:mi:ss')
+			</if>
+			
+			<if test="deviceMaintainEntity.dmaFaultType!=null and deviceMaintainEntity.dmaFaultType!=''">
+				AND (TRIM(#{deviceMaintainEntity.dmaFaultType}) is null or dma_fault_type = #{deviceMaintainEntity.dmaFaultType})
+			</if>
+			
+			<if test="deviceMaintainEntity.dmaMaintainTerm!=null and deviceMaintainEntity.dmaMaintainTerm!=''">
+				AND (TRIM(#{deviceMaintainEntity.dmaMaintainTerm}) is null or DMA_MAINTAIN_TERM = #{deviceMaintainEntity.dmaMaintainTerm})
+			</if>
+			
+			<if test="deviceMaintainEntity.dmaSttsIndc!=null and deviceMaintainEntity.dmaSttsIndc!=''">
+				AND (TRIM(#{deviceMaintainEntity.dmaSttsIndc}) is null or dma_stts_indc = #{deviceMaintainEntity.dmaSttsIndc})
+			</if>
+
+		</where>
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM cds_device_maintain WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 查询单条报备记录 -->
+	<select id="findById" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		dma_cus_number,
+		dma_dprmnt_idnty,
+		dma_dprmnt_name,
+		dma_submit_type,
+		dma_device_type,
+		dma_device_idnty,
+		dma_device_name,
+		dma_fault_type,
+		(SELECT dft_fault_name FROM cds_device_fault_type WHERE dma_cus_number = dft_cus_number AND dma_fault_type = id) AS dma_fault_type_ch,
+		dma_fault_content,
+		(SELECT dft_fault_name FROM cds_device_fault_type WHERE dma_cus_number = dft_cus_number AND dma_fault_content = id) AS dma_fault_content_ch,
+		dma_fault_addrs,
+		dma_fault_desc,
+		dma_fault_submitter_id,
+		dma_fault_submitter,
+		to_char(dma_fault_submit_time,'YYYY-MM-DD HH24:mi:ss') as dma_fault_submit_time,
+		dma_maintain_term,
+		dma_maintain_desc,
+		dma_maintain_person_id,
+		dma_maintain_person,
+		dma_maintain_result,
+		to_char(dma_maintain_start_time,'YYYY-MM-DD HH24:mi:ss') as dma_maintain_start_time,
+		to_char(dma_maintain_end_time,'YYYY-MM-DD HH24:mi:ss') as dma_maintain_end_time,
+		dma_maintain_timeout_indc,
+		dma_dprtmnt_leader_id,
+		dma_dprtmnt_leader,
+		dma_dprtmnt_idea,
+		to_char(dma_sure_time,'YYYY-MM-DD HH24:mi:ss') as dma_sure_time,
+		dma_remind_people_id,
+		dma_remind_people,
+		dma_remind_stts,
+		dma_remind_type,
+		to_char(dma_remind_time,'YYYY-MM-DD HH24:mi:ss') as dma_remind_time,
+		dma_stts_indc,
+		dma_remark
+		FROM cds_device_maintain
+		<where>
+			<if test="id !=null and id !=''">
+				AND (TRIM(#{id}) is null or id = #{id})
+			</if>
+		</where>
+	</select>
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE cds_device_maintain
+		<set>
+			<if test="deviceMaintainEntity.dmaDprmntIdnty != null and deviceMaintainEntity.dmaDprmntIdnty!='' ">
+				dma_dprmnt_idnty = #{deviceMaintainEntity.dmaDprmntIdnty},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDprmntName != null and deviceMaintainEntity.dmaDprmntName!='' ">
+				dma_dprmnt_name = #{deviceMaintainEntity.dmaDprmntName},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultSubmitterId != null and deviceMaintainEntity.dmaFaultSubmitterId!='' ">
+				dma_fault_submitter_id = #{deviceMaintainEntity.dmaFaultSubmitterId},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultSubmitter != null and deviceMaintainEntity.dmaFaultSubmitter!='' ">
+				dma_fault_submitter = #{deviceMaintainEntity.dmaFaultSubmitter},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultSubmitTime != null and deviceMaintainEntity.dmaFaultSubmitTime!='' ">
+				dma_fault_submit_time = #{deviceMaintainEntity.dmaFaultSubmitTime},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaSubmitType != null and deviceMaintainEntity.dmaSubmitType!='' ">
+				dma_submit_type = #{deviceMaintainEntity.dmaSubmitType},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDeviceType != null and deviceMaintainEntity.dmaDeviceType!='' ">
+				dma_device_type = #{deviceMaintainEntity.dmaDeviceType},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDeviceIdnty != null and deviceMaintainEntity.dmaDeviceIdnty!='' ">
+				dma_device_idnty = #{deviceMaintainEntity.dmaDeviceIdnty},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDeviceName != null and deviceMaintainEntity.dmaDeviceName!='' ">
+				dma_device_name = #{deviceMaintainEntity.dmaDeviceName},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultType != null and deviceMaintainEntity.dmaFaultType!='' ">
+				dma_fault_type = #{deviceMaintainEntity.dmaFaultType},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultContent != null and deviceMaintainEntity.dmaFaultContent!='' ">
+				dma_fault_content = #{deviceMaintainEntity.dmaFaultContent},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultAddrs != null and deviceMaintainEntity.dmaFaultAddrs!='' ">
+				dma_fault_addrs = #{deviceMaintainEntity.dmaFaultAddrs},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaFaultDesc != null and deviceMaintainEntity.dmaFaultDesc!='' ">
+				dma_fault_desc = #{deviceMaintainEntity.dmaFaultDesc},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainTerm != null and deviceMaintainEntity.dmaMaintainTerm!='' ">
+				dma_maintain_term = #{deviceMaintainEntity.dmaMaintainTerm},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainDesc != null and deviceMaintainEntity.dmaMaintainDesc!='' ">
+				dma_maintain_desc = #{deviceMaintainEntity.dmaMaintainDesc},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainPersonId != null and deviceMaintainEntity.dmaMaintainPersonId!='' ">
+				dma_maintain_person_id = #{deviceMaintainEntity.dmaMaintainPersonId},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainPerson != null and deviceMaintainEntity.dmaMaintainPerson!='' ">
+				dma_maintain_person = #{deviceMaintainEntity.dmaMaintainPerson},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainResult != null and deviceMaintainEntity.dmaMaintainResult!='' ">
+				dma_maintain_result = #{deviceMaintainEntity.dmaMaintainResult},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainStartTime != null and deviceMaintainEntity.dmaMaintainStartTime!='' ">
+				dma_maintain_start_time = #{deviceMaintainEntity.dmaMaintainStartTime},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainEndTime != null and deviceMaintainEntity.dmaMaintainEndTime!='' ">
+				dma_maintain_end_time = #{deviceMaintainEntity.dmaMaintainEndTime},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaMaintainTimeoutIndc != null and deviceMaintainEntity.dmaMaintainTimeoutIndc!='' ">
+				dma_maintain_timeout_indc = #{deviceMaintainEntity.dmaMaintainTimeoutIndc},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDprtmntLeaderId != null and deviceMaintainEntity.dmaDprtmntLeaderId!='' ">
+				dma_dprtmnt_leader_id = #{deviceMaintainEntity.dmaDprtmntLeaderId},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDprtmntLeader != null and deviceMaintainEntity.dmaDprtmntLeader!='' ">
+				dma_dprtmnt_leader = #{deviceMaintainEntity.dmaDprtmntLeader},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaDprtmntIdea != null and deviceMaintainEntity.dmaDprtmntIdea!='' ">
+				dma_dprtmnt_idea = #{deviceMaintainEntity.dmaDprtmntIdea},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaSureTime != null and deviceMaintainEntity.dmaSureTime!='' ">
+				dma_sure_time = #{deviceMaintainEntity.dmaSureTime},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaRemindPeopleId != null and deviceMaintainEntity.dmaRemindPeopleId!='' ">
+				dma_remind_people_id = #{deviceMaintainEntity.dmaRemindPeopleId},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaRemindPeople != null and deviceMaintainEntity.dmaRemindPeople!='' ">
+				dma_remind_people = #{deviceMaintainEntity.dmaRemindPeople},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaRemindStts != null and deviceMaintainEntity.dmaRemindStts!='' ">
+				dma_remind_stts = #{deviceMaintainEntity.dmaRemindStts},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaRemindType != null and deviceMaintainEntity.dmaRemindType!='' ">
+				dma_remind_type = #{deviceMaintainEntity.dmaRemindType},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaRemindTime != null and deviceMaintainEntity.dmaRemindTime!='' ">
+				dma_remind_time = #{deviceMaintainEntity.dmaRemindTime},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaSttsIndc != null and deviceMaintainEntity.dmaSttsIndc!='' ">
+				dma_stts_indc = #{deviceMaintainEntity.dmaSttsIndc},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaRemark != null and deviceMaintainEntity.dmaRemark!='' ">
+				dma_remark = #{deviceMaintainEntity.dmaRemark},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaUpdtUserId != null and deviceMaintainEntity.dmaUpdtUserId!='' ">
+				dma_updt_user_id = #{deviceMaintainEntity.dmaUpdtUserId},
+			</if>
+
+			<if test="deviceMaintainEntity.dmaUpdtTime != null and deviceMaintainEntity.dmaUpdtTime!='' ">
+				dma_updt_time = #{deviceMaintainEntity.dmaUpdtTime},
+			</if>
+		</set>
+
+		<where>
+			<if test="deviceMaintainEntity.id !=null and deviceMaintainEntity.id !=''">
+				AND (TRIM(#{deviceMaintainEntity.id}) is null or id = #{deviceMaintainEntity.id})
+			</if>
+		</where>
+	</update>
+
+</mapper>

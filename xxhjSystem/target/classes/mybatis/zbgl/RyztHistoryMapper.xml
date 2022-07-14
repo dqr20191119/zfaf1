@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.rygl.dao.RyztHistoryMapper">
+
+    <select id="selectByZbryId" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyztHistoryEntity" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyztHistoryEntity">
+
+            select * from CDS_DUTY_ZBRYGL_RYZT_H
+            <where>
+            <if test="zbryId != null and zbryId !='' ">
+              and  ZBRY_ID = #{zbryId}
+            </if>
+            <if test="ryzt != null and ryzt !='' ">
+              and  RYZT = #{ryzt}
+            </if>
+            <if test="year != null and year !='' ">
+              and  (start_date like '%' || #{year} ||'%' or end_date like '%' || #{year} ||'%')
+            </if>
+            </where>
+	</select>
+</mapper>

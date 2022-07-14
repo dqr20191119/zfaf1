@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.wwjg.fxgkgl.dao.FxgkglMapper">
+	<!-- 风险评估条件实体类基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="CODE" jdbcType="CHAR" property="code" />
+		<result column="NAME" jdbcType="CHAR" property="name" />
+		<result column="C_CJR_ID" jdbcType="CHAR" property="cCjrId" />
+		<result column="C_CJR" jdbcType="CHAR" property="cCjr" />
+		<result column="C_CJ_RQ" jdbcType="TIMESTAMP" property="cCjRq" />
+		<result column="C_GXR_ID" jdbcType="CHAR" property="cGxrId" />
+		<result column="C_GXR" jdbcType="CHAR" property="cGxr" />
+		<result column="C_GX_RQ" jdbcType="TIMESTAMP" property="cGxRq" />
+		<result column="SCFLG" jdbcType="CHAR" property="scflg" />
+		<result column="BZ" jdbcType="CHAR" property="bz" />
+		<result column="SJFW_ID" jdbcType="CHAR" property="sjfwId" />
+		<result column="SJFW_NAME" jdbcType="CHAR" property="sjfwName" />
+		<result column="WWJG_ID" jdbcType="CHAR" property="wwjgId" />
+		<result column="WWJG_NAME" jdbcType="CHAR" property="wwjgName" />
+		<result column="FXD_ID" jdbcType="CHAR" property="fxdId" />
+		<result column="FXD_NAME" jdbcType="CHAR" property="fxdName" />
+		<result column="FXDJ_ID" jdbcType="CHAR" property="fxdjId" />
+		<result column="FXDJ_NAME" jdbcType="CHAR" property="fxdjName" />
+		<result column="KFZ" jdbcType="CHAR" property="kfz" />
+		<result column="SXSM" jdbcType="CHAR" property="sxsm" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, CODE, NAME, C_CJR_ID, C_CJR, C_CJ_RQ, C_GXR_ID, C_GXR, C_GX_RQ, SCFLG, BZ, SJFW_ID, SJFW_NAME, WWJG_ID, WWJG_NAME, 
+		FXD_ID, FXD_NAME, FXDJ_ID, FXDJ_NAME, KFZ, SXSM
+	</sql>
+	
+	<!-- 根据风险点ID、删除标志状态位，查询风险评估数据list -->
+	<select id="findByFxdIdAndScflg" resultMap="BaseResultMap" useCache="true">
+		select 
+			<include refid="Base_Column_List"></include>
+		from 
+			T_AQFX_FXGK T1 
+		where T1.FXD_ID = '${fxdId}' and T1.SCFLG = '${scflg}'
+	</select>
+	
+	<select id="getById" resultType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity"> 
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,SJFW_ID,
+			SJFW_NAME,WWJG_ID,WWJG_NAME,FXD_ID,FXD_NAME,FXDJ_ID,FXDJ_NAME,KFZ,SXSM
+		from T_AQFX_FXGK
+		where SCFLG='1' and id=#{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity" resultType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity">
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,SJFW_ID,
+			SJFW_NAME,WWJG_ID,WWJG_NAME,FXD_ID,FXD_NAME,FXDJ_ID,FXDJ_NAME,KFZ,SXSM
+		from T_AQFX_FXGK
+		WHERE  SCFLG = '1' 
+		<if test="code != null and code != ''">
+			AND CODE = #{code}
+		</if>
+		<if test="name != null and name != ''">
+			AND NAME = #{name}
+		</if>
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity" resultType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity">
+		SELECT A.* FROM T_AQFX_FXGK A WHERE  A.SCFLG = '1' 
+	  
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE T_AQFX_FXGK A SET A.SCFLG = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="getByCode" resultType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity"> 
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,SJFW_ID,
+			SJFW_NAME,WWJG_ID,WWJG_NAME,FXD_ID,FXD_NAME,FXDJ_ID,FXDJ_NAME,KFZ,SXSM
+		from T_AQFX_FXGK
+		where SCFLG='1' and CODE=#{code}
+	</select>
+	
+	<select id="getByFxcjId" resultType="com.cesgroup.prison.wwjg.fxgkgl.entity.FxgkglEntity"> 
+		select fxgk.* from prison.T_AQFX_FXGK fxgk,
+		(
+			select fxd_id,fxdj_id,wwjg_id,sjfw_id from "PRISON"."T_AQFX_PGTJ" where id = (
+			select pgtj_id from "PRISON"."T_AQFX_FXCJ" where id=#{id}
+			)
+			
+		)pgtj
+		where fxgk.wwjg_id = pgtj.wwjg_id
+		and fxgk.sjfw_id = pgtj.sjfw_id
+		and fxgk.fxd_id = pgtj.fxd_id
+		and fxgk.fxdj_id = pgtj.fxdj_id
+	</select>
+	 
+	<select id="finndListWDGZ" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		 SELECT * FROM DUAL
+	</select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.gwgl.dao.GwglMapper">
+
+	<!-- DutyJobDto结果集 -->
+	<resultMap id="DutyJobDtoResultMap" type="com.cesgroup.prison.zbgl.gwgl.dto.DutyJobDto">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CDJ_CUS_NUMBER" jdbcType="CHAR" property="cdjCusNumber" />
+		<result column="CDJ_JOB_NAME" jdbcType="CHAR" property="cdjJobName" />
+		<result column="CDJ_CATEGORY_ID" jdbcType="CHAR" property="cdjCategoryId" />
+		<result column="DCA_CATEGORY_NAME" jdbcType="CHAR" property="dcaCategoryName" />
+		<result column="DCD_DPRTMNT_ID" jdbcType="CHAR" property="dcdDprtmntId" />
+	</resultMap>
+	
+	<!-- DutyJobDto字段 -->
+	<sql id="DutyJobDto_Column_List">
+		ID, CDJ_CUS_NUMBER, CDJ_JOB_NAME, CDJ_CATEGORY_ID, DCA_CATEGORY_NAME, DCD_DPRTMNT_ID
+	</sql>
+
+	<select id="getById" resultType="com.cesgroup.prison.zbgl.gwgl.entity.GwglEntity"> 
+		SELECT A.* FROM CDS_DUTY_JOB A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.gwgl.entity.GwglEntity" resultType="com.cesgroup.prison.zbgl.gwgl.entity.GwglEntity">
+		SELECT A.* ,B.DCA_CATEGORY_NAME FROM CDS_DUTY_JOB A LEFT JOIN CDS_DUTY_CATEGORY B ON A.CDJ_CATEGORY_ID = B.ID
+		WHERE A.CDJ_STATUS = '1'
+		<if test="cdjCusNumber != null and cdjCusNumber != ''">
+			AND CDJ_CUS_NUMBER = #{cdjCusNumber}
+		</if>
+		<if test="cdjJobName != null and cdjJobName != ''">
+		 	AND CDJ_JOB_NAME LIKE '%'|| #{cdjJobName} || '%'
+		</if>
+		ORDER BY CDJ_UPDT_TIME DESC
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.gwgl.entity.GwglEntity" resultType="com.cesgroup.prison.zbgl.gwgl.entity.GwglEntity">
+		SELECT A.* FROM CDS_DUTY_JOB A 
+		<where>
+	    	<if test="cdjCusNumber != null and cdjCusNumber != ''">
+				AND CDJ_CUS_NUMBER = #{cdjCusNumber}
+			</if>
+			<if test='cdjStatus == "1"'> 
+				AND A.CDJ_STATUS = '1'  		
+			</if>
+	   		<if test="cdjCategoryId != null and cdjCategoryId != ''">
+			 	AND CDJ_CATEGORY_ID = #{cdjCategoryId}
+			</if>
+		</where>
+	</select> 
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_DUTY_JOB A SET A.CDJ_STATUS = '0',A.CDJ_UPDT_TIME = SYSDATE
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<!-- 根据部门编码查询该部门关联的值班岗位信息 -->
+	<select id="findDutyJobDtoListByDeptCode" resultMap="DutyJobDtoResultMap" useCache="true">
+		SELECT 
+			T1.ID, 
+			T1.CDJ_CUS_NUMBER, 
+			T1.CDJ_JOB_NAME, 
+			T1.CDJ_CATEGORY_ID, 
+			T3.DCA_CATEGORY_NAME, 
+			T2.DCD_DPRTMNT_ID
+		FROM CDS_DUTY_JOB T1 
+		INNER JOIN CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.CDJ_CATEGORY_ID = T2.DCD_CATEGORY_ID
+		INNER JOIN CDS_DUTY_CATEGORY T3 ON T1.CDJ_CATEGORY_ID = T3.ID
+		where t1.cdj_status='1'
+			<if test="deptCode != null and deptCode != ''">
+				AND T2.DCD_DPRTMNT_ID = '${deptCode}'
+			</if>
+		ORDER BY T1.CDJ_CRTE_TIME ASC
+	</select>
+</mapper>

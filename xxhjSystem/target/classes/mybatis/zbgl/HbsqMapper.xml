@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.hbsq.dao.HbsqMapper">
+
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.hbsq.entity.HbsqEntity" resultType="com.cesgroup.prison.zbgl.hbsq.entity.HbsqEntity">
+		SELECT A.* FROM CDS_DUTY_HBSQ A 
+	   <where>
+	   	<if test="cusNumber !=null and cusNumber !=''">
+	   	 and CUS_NUMBER = #{cusNumber}
+	   	</if>
+	   	<if test="sqrName !=null and sqrName !=''">
+	   	 and  SQR_NAME LIKE '%' ||#{sqrName} ||'%'
+	   	 </if>
+	   	 <if test=" spr !=null and spr !=''">
+	   	 	and  SPR = #{spr}
+	   	 </if>
+	   	  <if test=" zt !=null and zt !=''">
+	   	 	and  ZT = #{zt}
+	   	 </if>
+	   	 <if test=" sprName !=null and sprName !=''">
+	   	 	and  SPR_NAME = #{sprName}
+	   	 </if>
+	   	 <if test=" startDate !=null and startDate !=''">
+	   	 	and  <![CDATA[ SQ_DATE >=#{startDate}]]>  
+	   	 </if>
+	   	 <if test=" endDate !=null and endDate !=''">
+	   	 	and  <![CDATA[ SQ_DATE <=#{endDate}]]>  
+	   	 </if>
+	   	  
+	   </where>
+	   order by SPYJ 
+	</select> 
+
+	<update id="updateById" parameterType="com.cesgroup.prison.zbgl.hbsq.entity.HbsqEntity">
+		update CDS_DUTY_HBSQ 
+			<set>
+				<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+				<if test="deptNumber !=null and deptNumber!=''">
+					DEPT_NUMBER= #{deptNumber},
+				</if>
+				<if test="zbOrder !=null and zbOrder !=''">
+					ZB_ORDER  = #{zbOrder},
+				</if>
+				<if test="dutyDate !=null and dutyDate!=''">
+					DUTY_DATE  = #{dutyDate},
+				</if>
+				<if test="tdr !=null and tdr!=''">
+					TDR  = #{tdr},
+				</if>
+				<if test="sqr !=null and sqr!=''">
+					SQR  = #{sqr},
+				</if>
+				<if test="sqDate !=null and sqDate!=''">
+					SQ_DATE  = #{sqDate},
+				</if>
+				<if test="spyj !=null and spyj!=''">
+					SPYJ  = #{spyj},
+				</if>
+				<if test="hbr !=null and hbr!=''">
+					HBR  = #{hbr},
+				</if>
+				<if test="spr !=null and spr!=''">
+					SPR  = #{spr},
+				</if>
+				<if test="remark !=null and remark!=''">
+					REMARK  = #{remark},
+				</if>
+				<if test="hbLy !=null and hbLy!=''">
+					HB_LY  = #{hbLy},
+				</if>
+				<if test="spDate !=null and spDate!=''">
+					SP_DATE  = #{spDate},
+				</if>
+				<if test="hbDate !=null and hbDate!=''">
+					HB_DATE  = #{hbDate},
+				</if>
+				<if test="zt !=null and zt!=''">
+					ZT  = #{zt},
+				</if>
+				<if test="sqrName !=null and sqrName!=''">
+					SQR_NAME  = #{sqrName},
+				</if>
+				<if test="sprName !=null and sprName!=''">
+					SPR_NAME  = #{sprName},
+				</if>
+				<if test="tdrzbOrder !=null and tdrzbOrder!=''">
+					TDRZB_ORDER  = #{tdrzbOrder},
+				</if>
+			</set>
+			
+			where id = #{id}
+	</update>
+	
+	<update id="updateZbrById" parameterType="com.cesgroup.prison.zbgl.zbbp.entity.ZbbpEntity">
+	update prison.CDS_DUTY_BASE_DTLS 
+	<set> 
+	DBD_STAFF_ID =#{dbdStaffId},
+	DBD_STAFF_NAME =#{dbdStaffName} 
+	</set>
+	<where>
+		id = #{id}
+	</where>
+	</update>
+	
+	
+	
+	<select id="checkZbrIsZbbp" parameterType="com.cesgroup.prison.zbgl.hbsq.dto.ZbrxxDto" resultType="java.lang.Integer">
+	 	select
+			count(*) 
+	from
+	        prison.CDS_DUTY_BASE_DTLS t1      ,
+	        prison.CDS_DUTY_MODE_DEPARTMENT t2,
+	        prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+	        prison.CDS_DUTY_ORDER t4          ,
+	        prison.CDS_DUTY_JOB t5
+	where
+	        t1.DBD_DUTY_MODE_DEPARTMENT_ID          = T2.ID
+	    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+	    and t3.MOJ_JOB_ID                           = t5.id
+	    and t3.MOJ_ORDER_ID                         = t4.id
+	    and t4.DOR_STATUS ='1'
+	    and t5.CDJ_STATUS ='1'
+	    and t1.DBD_CUS_NUMBER=#{cusNumber}
+	    and to_char(t1.DBD_DUTY_DATE, 'yyyy-MM-dd')=to_char(#{dutyDate}, 'yyyy-MM-dd')
+	    and t4.id = #{orderId}
+	    and t1.DBD_STAFF_ID = #{zbrId}
+	</select>
+	
+	<!-- <select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_DUTY_ORDER A SET A.DOR_STATUS = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select> -->
+
+    <select id="checkIsZhz" resultType="java.util.Map">
+        select
+		        t1.ID,
+				t1.DBD_CUS_NUMBER,
+				t1.DBD_STAFF_ID,
+				t1.DBD_STAFF_NAME,
+				t4.DOR_DUTY_ORDER_NAME,
+				t5.CDJ_JOB_NAME,
+				t1.DBD_DUTY_DATE,
+				t4.DOR_START_TIME,
+				t4.DOR_END_TIME
+		from
+		        prison.CDS_DUTY_BASE_DTLS t1      ,
+		        prison.CDS_DUTY_MODE_DEPARTMENT t2,
+		        prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+		        prison.CDS_DUTY_ORDER t4          ,
+		        prison.CDS_DUTY_JOB t5
+		<where>
+		        t1.DBD_DUTY_MODE_DEPARTMENT_ID          = T2.ID
+		    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+		    and t3.MOJ_JOB_ID                           = t5.id
+		    and t3.MOJ_ORDER_ID                         = t4.id
+		    and t2.DMD_ZT='1'
+		    and t4.DOR_STATUS ='1'
+		    and t5.CDJ_STATUS ='1'
+		    and t5.CDJ_JOB_NAME='指挥长'
+            <if test="cusNumber !=null and cusNumber !='' ">
+                and t1.DBD_CUS_NUMBER =#{cusNumber}
+            </if>
+            <if test="zbrName !=null and zbrName !='' ">
+                and t1.DBD_STAFF_NAME =#{zbrName}
+            </if>
+		   <if test="dutyDate !=null and dutyDate !='' ">
+		    and to_char(t1.DBD_DUTY_DATE, 'yyyy-MM-dd')=to_char(#{dutyDate}, 'yyyy-MM-dd')
+           </if>
+        </where>
+    </select>
+</mapper>

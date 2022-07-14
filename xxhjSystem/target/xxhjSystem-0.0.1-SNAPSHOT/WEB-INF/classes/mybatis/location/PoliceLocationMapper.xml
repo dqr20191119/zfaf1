@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 民警所在位置数据表mybatis映射文件 -->
+<mapper namespace="com.cesgroup.prison.location.dao.PoliceLocationDao">
+	<!-- 民警所在位置表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.location.entity.PoliceLocation">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="POLICE_NO" jdbcType="CHAR" property="policeNo" />
+		<result column="POLICE_NAME" jdbcType="CHAR" property="policeName" />
+		<result column="LOCATION_NO" jdbcType="CHAR" property="locationNo" />
+		<result column="LOCATION_NAME" jdbcType="CHAR" property="locationName" />
+		<result column="LOCATION_PX" jdbcType="DECIMAL" property="locationPx" />
+		<result column="PRISON_NO" jdbcType="CHAR" property="prisonNo" />
+		<result column="PRISON_NAME" jdbcType="CHAR" property="prisonName" />
+		<result column="DATA_SOURCE" jdbcType="CHAR" property="dataSource" />
+		<result column="MQ_SYNC_TIME" jdbcType="TIMESTAMP" property="mqSyncTime" />
+	</resultMap>
+	
+	<!-- 民警所在位置表-基础字段列 -->
+	<sql id="Base_Column_List">
+		ID, POLICE_NO, POLICE_NAME, LOCATION_NO, LOCATION_NAME, LOCATION_PX, PRISON_NO, PRISON_NAME, DATA_SOURCE, MQ_SYNC_TIME
+	</sql>
+	
+	<!-- 根据数据源查询数据列表 -->
+	<select id="findByDataSource" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			<include refid="Base_Column_List"></include>
+		FROM CDS_POLICE_LOCATION T1
+		<where>
+			<if test="dataSource != null and dataSource != ''">
+				AND T1.DATA_SOURCE = '${dataSource}'
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据数据源，删除数据源下的数据 -->
+	<delete id="deleteByDataSource" parameterType="java.lang.String">
+		DELETE FROM CDS_POLICE_LOCATION T1
+		<where>
+			<if test="dataSource != null and dataSource != ''">
+				AND T1.DATA_SOURCE = '${dataSource}'
+			</if>
+		</where>
+	</delete>
+	
+	<!-- 查询在监民警列表 -->
+	<select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM CDS_POLICE_LOCATION T1
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.PRISON_NO = '${cusNumber}'
+			</if>
+			<if test="deptCode != null and deptCode != ''">
+				AND T1.LOCATION_NO = '${deptCode}'
+			</if>
+			<if test="policeNo != null and policeNo != ''">
+				AND T1.POLICE_NO LIKE '%${policeNo}%'
+			</if>
+			<if test="policeName != null and policeName != ''">
+				AND T1.POLICE_NAME LIKE '%${policeName}%'
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND T1.LOCATION_NAME = '${deptName}'
+			</if>
+		</where>
+		ORDER BY LOCATION_PX, LOCATION_NAME
+	</select>
+	
+	<!-- 查询生物识别在监民警列表 -->
+	<select id="findSwsbWithPage" resultType="java.util.Map" useCache="true">
+		SELECT 
+			* 
+		FROM 
+		(
+			SELECT 
+				T1.PRISON_NO, T1.PRISON_NAME, T1.LOCATION_NO, T1.LOCATION_NAME, COUNT(T1.POLICE_NO) AS POLICE_COUNT
+			FROM 
+				CDS_POLICE_LOCATION T1
+			GROUP BY 
+				T1.PRISON_NO, T1.PRISON_NAME, T1.LOCATION_NO, T1.LOCATION_NAME
+		) T1 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.PRISON_NO = '${cusNumber}'
+			</if>
+			<if test="deptCode != null and deptCode != ''">
+				AND T1.LOCATION_NO = '${deptCode}'
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND T1.LOCATION_NAME LIKE '%${deptName}%'
+			</if>
+		</where>
+		ORDER BY 
+			T1.LOCATION_NO
+	</select>
+</mapper>

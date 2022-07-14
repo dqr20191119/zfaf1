@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.ws.dao.TalkServerWsMapper">
+
+	<select id="getTalkServerList" parameterType="hashmap" resultType="hashmap">
+		SELECT TSE_CUS_NUMBER "prisonNumber",
+	    	TSE_IDNTY "alarmID",
+	       	TSE_NAME "alarmName",
+	       	null "talkType",
+	       	TSE_BRAND "talkBrand",
+	       	TSE_NAME "alarmLocal",
+	       	TSE_AREA_ID "areaID",
+	       	TSE_ACTION_INDC "action"
+	  	FROM DVC_TALKBACK_SERVER
+		<where>
+			<if test='type == "0"'>
+				AND TSE_CUS_NUMBER = #{cusNumber} 
+				AND TSE_ACTION_INDC != 3 
+			</if>
+			<if test='type == "1"'>
+				AND TSE_CUS_NUMBER = #{cusNumber} 
+				AND TSE_UPDT_TIME &gt;= TO_DATE(#{updateDate}, 'yyyy-MM-dd')
+			</if>
+		</where>
+	</select>
+</mapper>

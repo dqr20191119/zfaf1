@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.cesgroup.prison.jryfqk.dao.JryfqkDao">
+	
+	<select id="getJryafq" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+	select  * from zfinfo.T_ZF_STAT where type='STAT_ZFXX'  and jq_id = #{jqName}  and jy_id= #{jyId} 
+	and D_URL_TIME=
+	(
+	select D_URL_TIME from (select * from zfinfo.T_ZF_STAT where  type='STAT_ZFXX'   and jq_id = #{jqName}  and jy_id= #{jyId} 
+	order by D_URL_TIME DESC) where rownum=1
+	)
+	
+	</select>
+	
+	<select id="getZfddry" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+	select  * from zfinfo.T_ZF_STAT where type='STAT_ZFDD'  and jq_id = #{jqName}  and jy_id= #{jyId} 
+	and D_URL_TIME=
+	(
+	select D_URL_TIME from (select * from zfinfo.T_ZF_STAT where  type='STAT_ZFDD'  and jq_id = #{jqName}  and jy_id= #{jyId} 
+	order by D_URL_TIME DESC) where rownum=1
+	)
+	
+	</select>
+	
+	 <select id="findListDr" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from zfinfo.T_ZF_SY sy,zfinfo.t_zf_jbxx jbxx
+	where 
+	( sy.c_sylb = '省内调入' or sy.c_sylb='外省调入' or sy.c_sylb='分局调入')
+	and to_char(sy.D_URL_TIME,'yyyy-MM-dd')=#{urlTime} and sy.c_zfbh = jbxx.c_zfbh and jbxx.c_jy_id=#{jyId} 
+	<if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	
+	<select id="findListSy" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 	 select distinct(jbxx.c_zfbh) as bh, jbxx.* from zfinfo.T_ZF_SY sy,zfinfo.t_zf_jbxx jbxx
+		where 
+		  to_char(sy.D_URL_TIME,'yyyy-MM-dd')=#{urlTime} and sy.c_zfbh = jbxx.c_zfbh and jbxx.c_jy_id=#{jyId} 
+		  <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListDc" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from zfinfo.T_ZF_LJ lj,zfinfo.t_zf_jbxx jbxx
+		where (c_ljlb='调出省内' or c_ljlb='调出外省' or c_ljlb='调至分局' )and
+		  to_char(lj.D_URL_TIME,'yyyy-MM-dd')=#{urlTime} and lj.c_zfbh = jbxx.c_zfbh and jbxx.c_jy_id=#{jyId} 
+		  <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListSf" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from zfinfo.T_ZF_LJ lj,zfinfo.t_zf_jbxx jbxx
+		where (c_ljlb='刑满释放' or c_ljlb='假释' or c_ljlb='假释' or c_ljlb='特赦释放' )and
+		   to_char(lj.D_URL_TIME,'yyyy-MM-dd')=#{urlTime} and lj.c_zfbh = jbxx.c_zfbh and jbxx.c_jy_id=#{jyId} 
+		     <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListSw" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from zfinfo.T_ZF_LJ lj,zfinfo.t_zf_jbxx jbxx
+		where (c_ljlb='病亡' or c_ljlb='保外就医病亡' )
+		and
+		to_char(lj.D_URL_TIME,'yyyy-MM-dd')=#{urlTime} and lj.c_zfbh = jbxx.c_zfbh and jbxx.c_jy_id=#{jyId} 
+		  <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListWcjy" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from ZFINFO.T_ZF_JZZY_WC wcjy,zfinfo.t_zf_jbxx jbxx
+		where (wcjy.c_jzlb='监内住院' or wcjy.c_jzlb='监外住院' )
+		and to_char(wcjy.D_URL_TIME,'yyyy-MM-dd')=#{urlTime}
+		   and wcjy.c_zfbh = jbxx.c_zfbh 
+		  and jbxx.c_jy_id =#{jyId} 
+		   and wcjy.c_zfbh not in(select sj.c_zfbh from "ZFINFO"."T_ZF_JZZY_SJ" sj)
+		    <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListJhzs" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from ZFINFO.T_ZF_JHZS jhzs,zfinfo.t_zf_jbxx jbxx
+		where  to_char(jhzs.D_URL_TIME,'yyyy-MM-dd')=#{urlTime}
+		   and jhzs.c_zfbh = jbxx.c_zfbh 
+		  and jbxx.c_jy_id =#{jyId} 
+		   and (jhzs.D_zzrq = '' or jhzs.D_zzrq>=#{urlTime})
+		    <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListYwjy" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from ZFINFO.T_ZF_JYZF jyzf,zfinfo.t_zf_jbxx jbxx
+	where  to_char(jyzf.D_URL_TIME,'yyyy-MM-dd')=#{urlTime}
+	   and jyzf.c_zfbh = jbxx.c_zfbh 
+	  and jbxx.c_jy_id=#{jyId} 
+	   and (jyzf.D_zzrq = '' or jyzf.D_zzrq>=#{urlTime})  
+	    <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListZyjwzx" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 
+	select distinct(jbxx.c_zfbh) as bh,jbxx.* from ZFINFO.T_ZF_ZYJWZX zyjwzx,zfinfo.t_zf_jbxx jbxx
+	where  to_char(zyjwzx.D_URL_TIME,'yyyy-MM-dd')=#{urlTime}
+	   and zyjwzx.c_zfbh = jbxx.c_zfbh 
+	  and jbxx.c_jy_id=#{jyId} 
+	   and (zyjwzx.d_sjrq='' or zyjwzx.d_sjrq>=#{urlTime})
+	  
+	   and (zyjwzx.d_zzrq='' or zyjwzx.d_zzrq>=#{urlTime})
+	    <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListLjtq" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 select distinct(jbxx.c_zfbh) as bh,jbxx.* from ZFINFO.T_ZF_LJTQ_SJ ljtq,zfinfo.t_zf_jbxx jbxx
+		where  to_char(ljtq.D_URL_TIME,'yyyy-MM-dd')=#{urlTime}
+	    and ljtq.c_zfbh = jbxx.c_zfbh 
+	    and jbxx.c_jy_id=#{jyId} 
+	     and (ljtq.D_GJRQ='' or ljtq.D_GJRQ>=#{urlTime})
+	      <if test="jqName != null and jqName != ''">
+			AND jbxx.c_szjq = #{jqName}
+		</if>
+	 </select>
+	 
+	 <select id="findListAllCommon" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  		  select bh as id, bh as c_zfbh, xm as c_xm ,  to_char(rj_rq, 'yyyy-mm-dd') as D_RJRQ  
+			 , (select name from auth.t_c_code where code_key =  xb and is_valid = '1' and group_key = '4.3.3') as  C_XB
+			 ,(select name from auth.t_c_code where code_key =  xz and is_valid = '1' and group_key = '4.5.17') as C_XXQ_ZXXZ
+			 ,to_char(xq_qr, 'yyyy-mm-dd') as  D_XXQ_QR , to_char(xq_zr, 'yyyy-mm-dd')  as  D_XXQ_ZR   
+			 ,(select name from auth.t_c_code where code_key = hjdz_ssq and is_valid = '1' and group_key = '4.3.2')||hjdz_dz   as C_HJDZ
+			   from  yzgl.t_yzgl_dk_jbxx    where  1=1 
+		 <if test="myType != null and myType==1"> <!--myType 1表示在册、 9表示在押、 10表示监外就诊 ， 37表示住院 heqh20190922   -->
+		  	and  zf_zt1 = '1'   
+		 </if>
+		 <if test="myType != null and myType==9">
+		  	and zf_zt1='1' and zf_zt2 in ('10','11','12','13','14','15','19')  
+		 </if>
+		 <if test="myType != null and myType==10">
+		 	and  zf_zt1='1' and zf_zt2='12' 
+		 </if>
+		 <if test="myType != null and myType==37">
+		  	and   zf_zt1='1' and zf_zt2='13'  
+		 </if>
+ 		 <if test="jqId != null and jqId != ''">
+		 	and jq_id = #{jqId}
+		 </if>
+		 <if test="jyId != null and jyId != ''">
+		 	and jy_id = #{jyId}
+		 </if>
+	 </select>
+	 <select id="findListZaiCe" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	 	select XM,(select name from auth.t_c_code where code_key =  xb and is_valid = '1' and group_key = '4.3.3') as  C_XB,
+			JOB_NO,RSGX_DWMC,GZDW from JCZG.T_JCZG_JCXX_JBXX where c_scbz='0' 
+			<if test="sj = 1">
+			and  jy_id in  ('4312','4336','4304','4307','4303')
+			</if>
+			<if test="jyId != null and jyId != ''">
+			AND JY_ID=#{jyId}
+			</if>
+			<if test="jqId != null and jqId != ''"> 
+			AND JQ_ID=#{jqId}
+			</if>
+	 </select>
+	 <select id="findListZaiYa" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	select 
+	 r.cip_police_name as xm , 
+	 u.job_no as jh,
+	 u.MOBILE as tel,
+	 o.ORGANIZE_NAME as dw
+	from 
+    AUTH.T_USER u, 
+    AUTH.T_ORG_USER ou, 
+    AUTH.T_ORG o, 
+    PRISON.CDS_CUR_INPRSN_POLICE_RECORD r
+	where u.user_id=ou.user_id and ou.bindorgid=o.organize_id and r.cip_police_name=u.user_name 
+	and ou.usertype ='0'
+	 <if test="jyId != null and jyId != ''" >
+	and r.cip_cus_number =#{jyId}
+	</if>
+	<if test="mytime !=null and mytime!=''">
+	and cip_enter_time like '%${mytime}%'
+	</if>
+	<if test="jqId !=null and jqId !=''">
+	and o.organize_code like '%${jqId}%'
+	</if>
+ 
+	 </select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.cgsgxx.dao.CgsgxxMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.xxhj.cgsgxx.entity.CgsgxxEntity"> 
+		SELECT A.* FROM CDS_PRISONER_WORK_RECORD A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.xxhj.cgsgxx.vo.CgsgxxVo" resultType="com.cesgroup.prison.xxhj.cgsgxx.entity.CgsgxxEntity">
+		SELECT A.* FROM prison.CDS_PRISONER_WORK_RECORD A
+		<where>
+		<if test="pwrCusNumber != null and pwrCusNumber != ''">
+			AND A.PWR_CUS_NUMBER = #{pwrCusNumber}
+		</if>
+		<if test="pwrDprtmntId != null and pwrDprtmntId != ''">
+			AND A.PWR_DPRTMNT_ID = #{pwrDprtmntId}
+		</if>
+		<if test="pwrStatus != null and pwrStatus != ''" >
+			AND A.PWR_STATUS = #{pwrStatus,jdbcType=TIMESTAMP}
+		</if>
+		<if test="pwrTimeStart != null and pwrTimeStart != ''" >
+			AND A.PWR_START_TIME &gt;= #{pwrTimeStart,jdbcType=TIMESTAMP}
+		</if>
+		<if test="pwrTimeEnd != null and pwrTimeEnd != ''" >
+			AND A.PWR_START_TIME &lt;= #{pwrTimeEnd,jdbcType=TIMESTAMP}
+		</if>
+		</where>
+		ORDER BY A.PWR_START_TIME DESC
+	</select> 
+	
+	<delete id="deleteByIds" parameterType="arraylist">
+		DELETE FROM CDS_PRISONER_WORK_RECORD A
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach>
+		AND PWR_STATUS != '2'
+ 	</delete>
+
+	<update id="completeByIds" parameterType="arraylist">
+		UPDATE CDS_PRISONER_WORK_RECORD A
+		SET PWR_BACK_TIME = sysdate, PWR_STATUS = '2'
+		WHERE A.ID IN
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		AND PWR_STATUS != '2'
+		AND PWR_BACK_TIME IS NULL
+	</update>
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 一日执勤模板与执勤工作项关联关系表数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.yrzq.template.dao.TemplateTaskDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.yrzq.template.entity.TemplateTask">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="TEMPLATE_ID" jdbcType="CHAR" property="templateId" />
+		<result column="TASK_ID" jdbcType="CHAR" property="taskId" />
+		<result column="START_TASK_TIME" jdbcType="TIMESTAMP" property="startTaskTime" />
+		<result column="END_TASK_TIME" jdbcType="TIMESTAMP" property="endTaskTime" />
+		<result column="STATUS" jdbcType="CHAR" property="status" />
+		<result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder" />
+		<result column="CREATE_USER" jdbcType="CHAR" property="createUser" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="UPDATE_USER" jdbcType="CHAR" property="updateUser" />
+		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, TEMPLATE_ID, TASK_ID, START_TASK_TIME, END_TASK_TIME, STATUS, SHOW_ORDER, CREATE_USER, 
+		CREATE_TIME, UPDATE_USER, UPDATE_TIME
+	</sql>
+</mapper>

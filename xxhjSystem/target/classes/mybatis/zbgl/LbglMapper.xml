@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.lbgl.dao.LbglMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.zbgl.lbgl.entity.LbglEntity"> 
+		SELECT A.ID, A.DCA_CUS_NUMBER, A.DCA_CATEGORY_NAME, A.DCA_REMARK, A.DCA_STATUS,WM_CONCAT(B.DCD_DPRTMNT_ID) DCA_DPRTMNT_ID 
+		FROM CDS_DUTY_CATEGORY A  
+		LEFT JOIN CDS_DUTY_CATEGORY_DEPARTMENT B ON B.DCD_CATEGORY_ID = A.ID
+		WHERE  A.DCA_STATUS = '1' AND A.ID = #{id} 
+		GROUP BY A.ID, A.DCA_CUS_NUMBER, A.DCA_CATEGORY_NAME, A.DCA_REMARK, A.DCA_STATUS
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.lbgl.entity.LbglEntity" resultType="com.cesgroup.prison.zbgl.lbgl.entity.LbglEntity">
+		SELECT A.ID, A.DCA_CUS_NUMBER, A.DCA_CATEGORY_NAME, A.DCA_REMARK, A.DCA_STATUS,
+		wm_concat(B.DCD_DPRTMNT_ID) DCA_DPRTMNT_ID
+		FROM CDS_DUTY_CATEGORY A  
+		LEFT JOIN (select * from 
+		(select t.*, row_number() over (partition by DCD_CATEGORY_ID order by DCD_DPRTMNT_ID)  from CDS_DUTY_CATEGORY_DEPARTMENT t) ) B ON B.DCD_CATEGORY_ID = A.ID
+		WHERE  A.DCA_STATUS = '1' 
+		<if test="dcaCusNumber != null and dcaCusNumber != ''">
+			AND DCA_CUS_NUMBER = #{dcaCusNumber}
+		</if>
+		<if test="dcaCategoryName != null and dcaCategoryName != ''">
+		 	AND DCA_CATEGORY_NAME LIKE '%'|| #{dcaCategoryName} || '%'
+		</if>
+		GROUP BY A.ID, A.DCA_CUS_NUMBER, A.DCA_CATEGORY_NAME, A.DCA_REMARK, A.DCA_STATUS
+		
+		
+		<!-- SELECT A.ID, A.DCA_CUS_NUMBER, A.DCA_CATEGORY_NAME, A.DCA_REMARK, A.DCA_STATUS, WM_CONCAT(B.DCD_DPRTMNT_ID) DCA_DPRTMNT_ID
+        FROM CDS_DUTY_CATEGORY A
+        LEFT JOIN CDS_DUTY_CATEGORY_DEPARTMENT B ON B.DCD_CATEGORY_ID = A.ID
+		WHERE  A.DCA_STATUS = '1' 
+        <if test="dcaCusNumber != null and dcaCusNumber != ''">
+			AND DCA_CUS_NUMBER = #{dcaCusNumber}
+		</if>
+		<if test="dcaCategoryName != null and dcaCategoryName != ''">
+		 	AND DCA_CATEGORY_NAME LIKE '%'|| #{dcaCategoryName} || '%'
+		</if>
+        GROUP BY A.ID, A.DCA_CUS_NUMBER, A.DCA_CATEGORY_NAME, A.DCA_REMARK, A.DCA_STATUS -->
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.lbgl.entity.LbglEntity" resultType="com.cesgroup.prison.zbgl.lbgl.entity.LbglEntity">
+		SELECT A.* FROM CDS_DUTY_CATEGORY A 
+		<where>
+			<if test="dcaCusNumber != null and dcaCusNumber != ''">
+				AND DCA_CUS_NUMBER = #{dcaCusNumber}
+			</if>
+			<if test='dcaStatus == "1"'> 
+				AND A.DCA_STATUS = '1'  		
+			</if>
+		</where> 
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_DUTY_CATEGORY A SET A.DCA_STATUS = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+</mapper>

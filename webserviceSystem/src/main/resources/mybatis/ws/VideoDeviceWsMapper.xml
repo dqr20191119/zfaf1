@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.ws.dao.VideoDeviceWsMapper">
+
+	<select id="getVideoDeviceList" parameterType="hashmap" resultType="hashmap">
+		SELECT VDI_CUS_NUMBER "prisonNumber",
+		   ID "corderID",
+		   VDI_DEVICE_NAME "corderName",
+		   VDI_TYPE_INDC "corderType",
+		   VDI_BRAND "corderBrand",
+		   VDI_IP_ADDRS "corderIp",
+		   VDI_PORT "corderPort",
+		   VDI_USER_NAME "username",
+		   VDI_USER_PASSWORD "password",
+		   VDI_AREA_ID "areaID",
+		   null "action"
+		FROM DVC_VIDEO_DEVICE_INFO
+		<where>
+			<if test='type == "0"'>
+				AND VDI_CUS_NUMBER = #{cusNumber} 
+			</if>
+			<if test='type == "1"'>
+				AND VDI_CUS_NUMBER = #{cusNumber} 
+				AND VDI_CRTE_TIME &gt;= TO_DATE(#{updateDate}, 'yyyy-MM-dd')
+			</if>
+		</where>
+	</select>
+</mapper>

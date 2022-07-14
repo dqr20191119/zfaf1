@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.rygl.dao.RyglMapper">
+
+    <select id="getById" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+		SELECT A.* FROM CDS_DUTY_ZBRYGL A
+		WHERE A.ID = #{id} 
+	</select>
+
+    <select id="findList" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity"
+            resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        SELECT * FROM CDS_DUTY_ZBRYGL
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="deptNumber != null and deptNumber != ''">
+                AND DEPT_NUMBER = #{deptNumber}
+            </if>
+            <if test="policeBh != null and policeBh != ''">
+                AND POLICE_BH =#{policeBh}
+            </if>
+            <if test="ryzt != null and ryzt != ''">
+                AND RYZT = #{ryzt}
+            </if>
+            <if test="name != null and name != ''">
+                AND name like '%'||#{name}||'%'
+            </if>
+            <if test="job != null and job != ''">
+                AND JOB = #{job}
+            </if>
+        </where>
+        order by PB_ORDER
+    </select>
+
+
+    <select id="remindMessageByRyzy" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity"
+            resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select * from "PRISON"."CDS_DUTY_ZBRYGL" where RYZT in('4','5','6') and END_DATE &gt;=#{startDate}  and END_DATE &lt;=#{endDate};
+
+    </select>
+
+
+    <select id="selectByNodutyByStartDate" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select * from CDS_DUTY_ZBRYGL where RYZT in ('2','4','5','6') and CUS_NUMBER =#{cusNumber} and  start_date &lt;=#{startDate}  and  end_date &gt;=#{startDate};
+    </select>
+
+
+
+    <delete id="deleteByIds" parameterType="List">
+        DELETE FROM CDS_DUTY_ZBRYGL WHERE ID in
+        <foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--获取省局的组织信息-->
+    <select id="listSjzzxx" resultType="com.cesgroup.prison.zbgl.rygl.dto.JyzzxxDto">
+
+        select organize_code  cusNumber,organize_name cusName from (
+
+        SELECT
+                t.organize_id        ,
+                t.organize_name      ,
+                t.organize_type_id   ,
+                t.comments           ,
+                t.organize_code      ,
+                T.PARENT_ID          ,
+                T.ORGANIZE_TYPE_NAME ,
+                T_OT.ORGANIZETYPE_KEY,
+                T.FLAG1
+        from
+                auth.T_ORG T
+        inner join auth.T_ORGANIZETYPE t_ot
+        on
+                T_OT.ORGANIZETYPE_ID = t.organize_type_name
+        WHERE
+                t.parent_id =
+                (
+                        SELECT t_o.organize_id from auth.T_ORG T_O where T_O.ORGANIZE_CODE =  '4300'
+                )
+            and
+                (
+                        flag2 is null
+                     or flag2  = '0'
+                )
+
+        ORDER BY
+                t.showorder asc
+
+               ) a
+
+            where a.organize_code like '4300%'
+    </select>
+
+    <select id="selecListtByIds" parameterType="List" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select * from CDS_DUTY_ZBRYGL WHERE ID in
+        <foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        order by PB_ORDER
+    </select>
+
+
+    <select id="selectListByJob" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity"
+            resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select * from CDS_DUTY_ZBRYGL
+        <where>
+            <if test="cusNumber !=null and cusNumber !=''">
+                and CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="job !=null and job !=''">
+                and JOB = #{job}
+            </if>
+            <if test="name !=null and name !=''">
+                and NAME like '%'||#{name}||'%'
+            </if>
+            <if test="ryzt != null and ryzt != ''">
+                and RYZT = #{ryzt}
+            </if>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+        </where>
+        order by PB_ORDER
+    </select>
+
+
+    <select id="selectListByJobOrderzhzMidOrder" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity"
+            resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select * from CDS_DUTY_ZBRYGL
+        <where>
+            <if test="cusNumber !=null and cusNumber !=''">
+                and CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="job !=null and job !=''">
+                and JOB = #{job}
+            </if>
+            <if test="name !=null and name !=''">
+                and NAME like '%'||#{name}||'%'
+            </if>
+            <if test="ryzt != null and ryzt != ''">
+                and RYZT = #{ryzt}
+            </if>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+        </where>
+        order by ZHZ_MID_ORDER
+    </select>
+
+
+
+    <select id="selectListByJobAndRyzt" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity"
+            resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select * from CDS_DUTY_ZBRYGL
+        <where>
+            <if test="cusNumber !=null and cusNumber !=''">
+                and CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="job !=null and job !=''">
+                and JOB = #{job}
+            </if>
+            and ryzt in('1','4','5')
+        </where>
+        order by PB_COUNT,PB_ORDER
+    </select>
+
+
+    <select id="selectLastDutyRyDtoByDutyQueryDto" resultType="com.cesgroup.prison.zbgl.rygl.dto.LastDutyRyDto" parameterType="com.cesgroup.prison.zbgl.rygl.dto.DutyQueryDto">
+        SELECT * FROM (
+                  select
+                      WM_CONCAT(t1.DBD_STAFF_ID) ID   ,
+                      WM_CONCAT(t1.DBD_STAFF_NAME) NAME,
+                      t1.DBD_DUTY_DATE DUTY_DATE,
+                        t1.DBD_CUS_NUMBER  CUS_NUMBER
+                  from
+                      prison.CDS_DUTY_BASE_DTLS t1      ,
+                      prison.CDS_DUTY_MODE_DEPARTMENT t2,
+                      prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+                      prison.CDS_DUTY_ORDER t4          ,
+                      prison.CDS_DUTY_JOB t5
+                  where
+                          t1.DBD_DUTY_MODE_DEPARTMENT_ID          = t2.ID
+                    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+                    and t3.MOJ_JOB_ID                           = t5.id
+                    and t3.MOJ_ORDER_ID                         = t4.id
+                    and t4.DOR_STATUS ='1'
+                    and t5.CDJ_STATUS ='1'
+                    and t2.DMD_ZT = '1'
+                    <if test="cusNumber !=null and cusNumber !=''">
+                    and t1.DBD_CUS_NUMBER =#{cusNumber}
+                    </if>
+                    <if test="dutyOrderName !=null and dutyOrderName !=''">
+                    and t4.DOR_DUTY_ORDER_NAME = #{dutyOrderName}
+                    </if>
+                    <if test="jobName !=null and jobName !=''">
+                    and t5.CDJ_JOB_NAME =#{jobName}
+                    </if>
+                  GROUP BY t1.DBD_DUTY_MODE_ORDER_JOB_ID,t3.MOJ_ORDER_ID,t1.DBD_DUTY_DATE,t2.DMD_DPRTMNT_ID,t1.DBD_CUS_NUMBER,t4.DOR_START_TIME,t4.DOR_DUTY_ORDER_NAME ,
+                           t5.CDJ_JOB_NAME ,
+                           t4.DOR_END_TIME
+                  order by t1.DBD_DUTY_DATE,t4.DOR_START_TIME,t4.DOR_END_TIME
+              ) A  where  ID in(
+                    select id from PRISON.CDS_DUTY_ZBRYGL
+                    <where>
+                    <if test="cusNumber !=null and cusNumber !=''">
+                         CUS_NUMBER =#{cusNumber}
+                    </if>
+                    <if test="job !=null and job !=''">
+                        and  JOB =#{job}
+                    </if>
+                    </where>
+                    )
+                <if test="dutyDate !=null and dutyDate !=''">
+                    and DUTY_DATE=#{dutyDate}
+                </if>
+
+    </select>
+
+    <select id="selectOrderNameByIdAndFlag" resultType="com.cesgroup.prison.zbgl.rygl.dto.DutyQueryDto">
+        SELECT A.DUTY_DATE,A.DUTY_ORDER_NAME FROM (
+                  select
+                      WM_CONCAT(t1.DBD_STAFF_ID) ID   ,
+                      WM_CONCAT(t1.DBD_STAFF_NAME) NAME,
+                      t1.DBD_DUTY_DATE DUTY_DATE,
+                      t1.DBD_CUS_NUMBER  CUS_NUMBER,
+                      t4.DOR_DUTY_ORDER_NAME DUTY_ORDER_NAME
+                  from
+                      prison.CDS_DUTY_BASE_DTLS t1      ,
+                      prison.CDS_DUTY_MODE_DEPARTMENT t2,
+                      prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+                      prison.CDS_DUTY_ORDER t4          ,
+                      prison.CDS_DUTY_JOB t5
+                  where
+                          t1.DBD_DUTY_MODE_DEPARTMENT_ID          = t2.ID
+                    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+                    and t3.MOJ_JOB_ID                           = t5.id
+                    and t3.MOJ_ORDER_ID                         = t4.id
+                    and t4.DOR_STATUS ='1'
+                    and t5.CDJ_STATUS ='1'
+                    and t2.DMD_ZT = '1'
+                    and t1.DBD_CUS_NUMBER =#{cusNumber}
+                  GROUP BY t1.DBD_DUTY_MODE_ORDER_JOB_ID,t3.MOJ_ORDER_ID,t1.DBD_DUTY_DATE,t2.DMD_DPRTMNT_ID,t1.DBD_CUS_NUMBER,t4.DOR_START_TIME,t4.DOR_DUTY_ORDER_NAME ,
+                           t5.CDJ_JOB_NAME ,
+                           t4.DOR_END_TIME
+                  order by t1.DBD_DUTY_DATE,t4.DOR_START_TIME,t4.DOR_END_TIME
+              ) A   inner join prison.CDS_DUTY_CALENDAR B on A.DUTY_DATE =B.DUTY_DATE
+                    where A.ID = #{id}
+                        and B.FLAG = #{flag}
+            order by A.DUTY_DATE
+    </select>
+
+
+
+
+
+    <select id="dutyCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*)  from CDS_DUTY_ZBRYGL A left join  (
+            select
+            WM_CONCAT(t1.DBD_STAFF_ID) ID   ,
+            WM_CONCAT(t1.DBD_STAFF_NAME) NAME,
+            t1.DBD_DUTY_DATE DUTY_DATE,
+            t1.DBD_CUS_NUMBER  CUS_NUMBER
+            from
+            prison.CDS_DUTY_BASE_DTLS t1      ,
+            prison.CDS_DUTY_MODE_DEPARTMENT t2,
+            prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+            prison.CDS_DUTY_ORDER t4          ,
+            prison.CDS_DUTY_JOB t5
+            where
+            t1.DBD_DUTY_MODE_DEPARTMENT_ID          = t2.ID
+            and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+            and t3.MOJ_JOB_ID                           = t5.id
+            and t3.MOJ_ORDER_ID                         = t4.id
+            and t4.DOR_STATUS ='1'
+            and t5.CDJ_STATUS ='1'
+            and t2.DMD_ZT = '1'
+            <if test="cusNumber !=null and cusNumber !='' ">
+            and t1.DBD_CUS_NUMBER =#{cusNumber}
+            </if>
+            <if test="orderName !=null and orderName !='' ">
+            and t4.DOR_DUTY_ORDER_NAME = #{orderName}
+            </if>
+            GROUP BY t1.DBD_DUTY_MODE_ORDER_JOB_ID,t3.MOJ_ORDER_ID,t1.DBD_DUTY_DATE,t2.DMD_DPRTMNT_ID,t1.DBD_CUS_NUMBER,t4.DOR_START_TIME,t4.DOR_DUTY_ORDER_NAME ,
+            t5.CDJ_JOB_NAME ,
+            t4.DOR_END_TIME
+            order by t1.DBD_DUTY_DATE,t4.DOR_START_TIME,t4.DOR_END_TIME
+            ) B   on A.ID =B.ID
+        <where>
+        <if test="cusNumber !=null and cusNumber !='' ">
+            B.CUS_NUMBER =#{cusNumber}
+        </if>
+        <if test="id !=null and id !='' ">
+            and B.ID =#{id}
+        </if>
+        <if test="year !=null and year !='' ">
+            and to_char(B.DUTY_DATE,'yyyy') = #{year}
+        </if>
+
+        <if test="type !=null and type !='' ">
+          and  to_char(B.DUTY_DATE,'yyyy-MM-dd') in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        </where>
+    </select>
+
+
+
+    <update id="updatePbCount">
+        UPDATE PRISON.CDS_DUTY_ZBRYGL
+        SET
+        <if test="type==1">
+            PB_COUNT = PB_COUNT+1
+        </if>
+        <if test="type==2">
+            PB_COUNT = PB_COUNT-1
+        </if>
+        WHERE
+        ID = #{id}
+    </update>
+
+    <update id="updateById" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        UPDATE PRISON.CDS_DUTY_ZBRYGL
+        <set>
+            <if test="pbOrder !=null and pbOrder !='' ">
+                PB_ORDER =#{pbOrder},
+            </if>
+            NAME = #{name},
+            POLICE_BH = #{policeBh},
+            CSRQ = #{csrq},
+            SEX = #{sex},
+            JOB_LEVEL = #{jobLevel},
+            NL = #{nl},
+            POSITION = #{position},
+            RYZT = #{ryzt},
+            CREATE_TIME = #{createTime},
+            CREATE_NAME = #{createName},
+            UPDATE_TIME = #{updateTime},
+            UPDATE_NAME = #{updateName},
+            DEPT_NUMBER = #{deptNumber},
+            JOB = #{job},
+            START_DATE = #{startDate},
+            END_DATE = #{endDate},
+            REMARK = #{remark},
+            JD_START_DATE = #{jdStartDate},
+            JD_END_DATE =#{jdEndDate}
+        </set>
+        where ID =#{id}
+
+    </update>
+
+
+    <update id="updateBypbOrder" parameterType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        UPDATE PRISON.CDS_DUTY_ZBRYGL
+        <set>
+            PB_ORDER=PB_ORDER+1
+        </set>
+        where CUS_NUMBER = #{cusNumber}  and PB_ORDER <![CDATA[ > ]]> #{pbOrder}
+
+    </update>
+
+    <select id="getMaxPbOrderByJob" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity" >
+        select max(PB_ORDER) as  PB_ORDER  from  PRISON.CDS_DUTY_ZBRYGL
+        <where>
+            <if test="cusNumber !=null and cusNumber !=''">
+                CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="job !=null and job !=''">
+               and JOB = #{job}
+            </if>
+        </where>
+    </select>
+
+
+
+
+
+    <update id="updateDutyFlagById" parameterType="com.cesgroup.prison.zbgl.rygl.entity.DutyFlagEntity">
+        UPDATE PRISON.CDS_DUTY_FLAG
+        <set>
+            ZHZ_FLAG =#{zhzFlag},
+            WZBZ_H_FLAG = #{wzbzHFlag},
+            WZBY_H_FLAG =#{wzbyHFlag},
+            MZBZ_H_FLAG =#{mzbzHFlag},
+            MZBY_H_FLAG =#{mzbyHFlag},
+            WZBZ_W_FLAG =#{wzbzWFlag},
+            WZBY_W_FLAG =#{wzbyWFlag},
+            MZBZ_W_FLAG =#{mzbzWFlag},
+            MZBY_W_FLAG =#{mzbyWFlag},
+            ZHZ_ZB_FLAG_DUTY_DATE =#{zhzZbFlagDutyDate},
+            MZBZ_W_N_FLAG =#{mzbzWNFlag},
+        </set>
+        where ID =#{id}
+    </update>
+
+
+
+
+    <select id="getMaxPbOrder" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select max(PB_ORDER) as  PB_ORDER  from  PRISON.CDS_DUTY_ZBRYGL
+    </select>
+
+
+    <select id="getMaxAndMinPbOrderByJob" resultType="java.util.Map">
+        select max(pb_order) as "maxPbOrder",min(pb_order) as "minPbOrder" from CDS_DUTY_ZBRYGL where  CUS_NUMBER=#{cusNumber} and  JOB =#{job};
+    </select>
+
+
+    <select id="getNextPbOrder" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+        select  top 1 * from  CDS_DUTY_ZBRYGL where  CUS_NUMBER=#{cusNumber} and  JOB =#{job} and PB_ORDER &gt;#{pbOrder}  order by PB_COUNT,PB_ORDER;
+    </select>
+
+    <select id="getByJobAndDutyDate" resultType="com.cesgroup.prison.zbgl.rygl.entity.RyglEntity">
+    SELECT * FROM CDS_DUTY_ZBRYGL WHERE CUS_NUMBER=#{cusNumber} AND RYZT IN('4','5')   AND JOB =#{job}  AND   (START_DATE &gt;#{dutyDate} or END_DATE &lt;#{dutyDate})
+    </select>
+    <select id="getDutyFlag" resultType="com.cesgroup.prison.zbgl.rygl.entity.DutyFlagEntity">
+        select * from  CDS_DUTY_FLAG
+            <where>
+                CUS_NUMBER =#{cusNumber}
+            </where>
+    </select>
+
+    <update id="updateDutyFlag" parameterType="com.cesgroup.prison.zbgl.rygl.entity.DutyFlagEntity">
+        update CDS_DUTY_FLAG
+        <set>
+            <if test="zhzFlag !=null and zhzFlag !='' ">
+                ZHZ_FLAG = #{zhzFlag},
+            </if>
+            <if test="wzbzFlag !=null and wzbzFlag !='' ">
+                WZBZ_FLAG =#{wzbzFlag},
+            </if>
+            <if test="wzbyFlag !=null and wzbyFlag !='' ">
+                WZBY_FLAG =#{wzbyFlag},
+            </if>
+            <if test="mzbzFlag !=null and mzbzFlag !='' ">
+                MZBZ_FLAG =#{mzbzFlag},
+            </if>
+            <if test="mzbyFlag !=null and mzbyFlag !='' ">
+                MZBY_FLAG =#{mzbyFlag},
+            </if>
+            <if test="zhzZbFlag !=null and zhzZbFlag !='' ">
+                ZHZ_ZB_FLAG =#{zhzZbFlag},
+            </if>
+        </set>
+        <where>
+            CUS_NUMBER =#{cusNumber}
+        </where>
+    </update>
+
+
+    <select id="getUserInfoByCusNumber" resultType="java.util.Map">
+        select
+        t_o.organize_name                 ,
+        t_o.organize_code                 ,
+        t_o_f5.organize_name as unitName  ,
+        t_o_f5.organize_code as orgUnitKey,
+        t_u.user_id                       ,
+        t_u.job_no                        ,
+        t_u.ic_no                         ,
+        t_u.user_name                     ,
+        t_u.login_name                    ,
+        t_u.sex                           ,
+        t_u.age                           ,
+        t_u.birthday                      ,
+        t_u.political                     ,
+        t_u.rank                          ,
+        t_u.title                         ,
+        t_u.station                       ,
+        t_u.mobile                        ,
+        t_u.telphone                      ,
+        t_u.telphoneip                    ,
+        t_u.telphonefamily                ,
+        t_u.shortnum                      ,
+        t_u.email                         ,
+        t_u.fax                           ,
+        t_u.interphone                    ,
+        t_u.oasys                         ,
+        t_u.policeaffair                  ,
+        t_u.urlpath as imageurl           ,
+        t_u.card_no
+        from
+        auth.t_user t_u
+        inner join auth.t_org_user t_o_u
+        on
+        t_o_u.user_id = t_u.user_id
+        inner join auth.t_org t_o
+        on
+        t_o.organize_id = t_o_u.organize_id
+        inner join auth.t_org t_o_f5
+        on
+        t_o_f5.organize_id = t_u.flag5
+        where
+        t_o_f5.ORGANIZE_CODE = #{cusNumber}
+        and t_o_u.usertype    = 0
+        and
+        (
+        t_u.status is null
+        or t_u.status <![CDATA[ <> ]]> '1'
+        )
+
+    </select>
+</mapper>

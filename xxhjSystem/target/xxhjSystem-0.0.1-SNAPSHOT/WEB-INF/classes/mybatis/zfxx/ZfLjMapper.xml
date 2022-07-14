@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 罪犯离监数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.zfxx.zflj.dao.ZfLjDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zflj.entity.ZfLj">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="C_ZFBH" jdbcType="CHAR" property="cZfbh" />
+		<result column="C_ID" jdbcType="CHAR" property="cId" />
+		<result column="D_LJRQ" jdbcType="DATE" property="dLjrq" />
+		<result column="C_LJLB" jdbcType="CHAR" property="cLjlb" />
+		<result column="C_QX" jdbcType="CHAR" property="cQx" />
+		<result column="C_QX_QH" jdbcType="CHAR" property="cQxQh" />
+		<result column="C_QX_MX" jdbcType="CHAR" property="cQxMx" />
+		<result column="D_URL_TIME" jdbcType="DATE" property="dUrlTime" />
+	</resultMap>
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, C_ZFBH, C_ID, D_LJRQ, C_LJLB, C_QX, C_QX_QH, C_QX_MX, D_URL_TIME
+	</sql>
+	<!-- 根据罪犯标识、离监日期，查询罪犯离监信息 -->
+	<select id="findByCIdAndCLjlbAndDLjrq" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_LJ T1 
+		WHERE T1.C_ID = '${cId}' AND T1.C_LJLB = '${cLjlb}' AND to_char(T1.D_LJRQ, 'yyyy-MM-dd') = '${dLjrq}'
+	</select>
+</mapper>

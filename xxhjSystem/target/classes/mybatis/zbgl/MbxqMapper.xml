@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.mbxq.dao.MbxqMapper">
+
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.mbxq.entity.MbxqEntity" resultType="com.cesgroup.prison.zbgl.mbxq.entity.MbxqEntity">
+		SELECT A.*,B.DOR_DUTY_ORDER_NAME,B.DOR_START_TIME,B.DOR_END_TIME,C.CDJ_JOB_NAME FROM CDS_DUTY_MODE_ORDER_JOB A 
+		LEFT JOIN CDS_DUTY_ORDER B ON B.ID = A.MOJ_ORDER_ID 
+		LEFT JOIN CDS_DUTY_JOB C ON C.ID = A.MOJ_JOB_ID
+		<where>
+			<if test="mojCusNumber != null and mojCusNumber != ''">
+				AND MOJ_CUS_NUMBER = #{mojCusNumber}
+			</if>
+			<if test="mojModeId != null and mojModeId != ''">
+				AND MOJ_MODE_ID = #{mojModeId}
+			</if>
+			<if test="mojJobId != null and mojJobId != ''">
+				AND MOJ_JOB_ID = #{mojJobId}
+			</if>
+			<if test="mojOrderId != null and mojOrderId != ''">
+				AND MOJ_ORDER_ID = #{mojOrderId}
+			</if>
+		</where> 
+		order by  MOJ_SQLNO
+	</select>
+	
+	
+	<select id="deleteByConditions" parameterType="arraylist"> 
+		DELETE FROM CDS_DUTY_MODE_ORDER_JOB A 
+		<where>
+			<if test="mojModeId != null and mojModeId != ''">
+				AND MOJ_MODE_ID = #{mojModeId}
+		    </if>
+		</where> 
+	</select>
+	
+</mapper>

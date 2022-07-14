@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.ws.dao.AlertorWsMapper">
+
+	<select id="getAlertorList" parameterType="hashmap" resultType="hashmap">
+		SELECT ABD_CUS_NUMBER "prisonNumber",
+	    	ABD_IDNTY "alarmID",
+	       	ABD_NAME "alarmName",
+	       	ABD_TYPE_INDC "alarmType",
+	       	ABD_BRAND_INDC "alarmBrand",
+	       	ABD_NAME "alarmLocal",
+	       	ABD_AREA_ID "areaID",
+	       	ABD_ACTION_INDC "action",
+	       	ABD_IP "alarmIp",
+	       	ABD_PORT "alarmPort",
+	       	ABD_ALERTOR_VALID "isValid",
+	       	ABD_ALERTOR_STARTTIME "validStartTime",
+	       	ABD_ALERTOR_ENDTIME "validEndTime"
+	  	FROM DVC_ALERTOR_BASE_DTLS
+		<where>
+			<if test='type == "0"'>
+				AND ABD_CUS_NUMBER = #{cusNumber} 
+				AND ABD_ACTION_INDC != 3 
+			</if>
+			<if test='type == "1"'>
+				AND ABD_CUS_NUMBER = #{cusNumber} 
+				AND ABD_UPDT_TIME &gt;= TO_DATE(#{updateDate}, 'yyyy-MM-dd')
+			</if>
+		</where>
+	</select>
+	
+	<select id="getAlertorListByType" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_IDNTY "alarmId",
+		A.ABD_ALERTOR_VALID "isValid",
+	    A.ABD_ALERTOR_STARTTIME "validStartTime",
+	    A.ABD_ALERTOR_ENDTIME "validEndTime",
+		<if test='type == "6"'>
+			B.CBD_IP_ADDRS "cameraIp",
+			B.CBD_DVR_CHNNL_IDNTY "channelId",
+			C.VDI_IP_ADDRS "corderIp",
+			C.VDI_PORT "corderPort",
+			C.VDI_USER_NAME "username",
+			C.VDI_USER_PASSWORD "password",
+			C.VDI_BRAND "brand"
+		</if>
+		<if test='type == "9"'>
+			B.TBD_IDNTY "talkId"
+		</if>
+	  	FROM DVC_ALERTOR_BASE_DTLS A 
+	  	<if test='type == "6"'>
+		  	LEFT JOIN DVC_CAMERA_BASE_DTLS B ON A.ABD_HOST_IDNTY = B.ID
+		  	LEFT JOIN DVC_VIDEO_DEVICE_INFO C ON C.ID = B.CBD_DVR_IDNTY
+	  	</if>
+	  	<if test='type == "9"'>
+	  		LEFT JOIN DVC_TALKBACK_BASE_DTLS B ON B.ID = A.ABD_HOST_IDNTY
+	  	</if>
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber} 
+		AND A.ABD_ACTION_INDC != 3 
+		AND A.ABD_TYPE_INDC = #{type}			 
+	</select>
+</mapper>

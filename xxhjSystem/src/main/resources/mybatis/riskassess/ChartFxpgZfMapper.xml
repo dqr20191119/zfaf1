@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Desc: 风险评估总分实体类映射文件ChartFxpgZfMapper.xml -->
+<mapper namespace="com.cesgroup.prison.riskassess.fxpg.dao.ChartFxpgZfDao">
+	<!--  -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.riskassess.fxpg.entity.ChartFxpgZf">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CATEGORY" jdbcType="CHAR" property="category" />
+		<result column="SCORE" jdbcType="DECIMAL" property="score" />
+	</resultMap>
+	<!--  -->
+	<sql id="Base_Column_List">
+		ID, CATEGORY, SCORE
+	</sql>
+	<!-- Desc: 根据风险评估种类查询风险评估总分数据findByCategory -->
+	<select id="findByCategory" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			TEST_AQFX_CHART_FXPG_ZF T1
+		WHERE 
+			T1.CATEGORY = '${category}'
+	</select>
+	
+</mapper>

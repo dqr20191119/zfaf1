@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.xxhj.jnmj.dao.JnmjMapper">
+
+	<!-- 查询监区显示种类 -->
+	<select id="queryDutyConfig" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT * FROM CDS_CONFIG 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+			    cus_NUMBER = #{cusNumber}
+			</if>
+		</where>
+    </select>
+    
+    <!-- 根据刷卡查询各监狱监内民警人数列表  （省局）-->
+	<select id="queryInsidePoliceCountByPrison" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CIP_CUS_NUMBER, COUNT(ID) || '' AS COUNT
+		FROM CDS_CUR_INPRSN_POLICE_RECORD
+		GROUP BY CIP_CUS_NUMBER
+		ORDER BY CIP_CUS_NUMBER
+	</select>
+	
+	<!-- 根据组织结构查询监狱在监民警人数总数  首页显示 -->
+	<select id="querySYInsidePoliceCountByOrg" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT COUNT(1) AS INSIDE_POLICE_COUNT FROM  V_POLICE_BASE_DTLS 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据刷卡查询监狱在监民警人数总数  首页显示 -->
+	<select id="querySYInsidePoliceCountByRecord" resultType="java.util.Map" parameterType="java.util.HashMap">
+<!-- 		<select id="queryInsidePoliceCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+ -->	
+		SELECT COUNT(ID) AS INSIDE_POLICE_COUNT
+		FROM CDS_CUR_INPRSN_POLICE_RECORD  LEFT JOIN V_POLICE_BASE_DTLS ON 
+		(PBD_CUS_NUMBER = CIP_CUS_NUMBER AND TO_CHAR(PBD_POLICE_IDNTY) = CIP_POLICE_IDNTY)
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND CIP_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="drpmntId != null and drpmntId != ''">
+				AND PBD_DRPTMNT_ID = #{drpmntId}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据排班查询监狱民警人数总数 首页显示 -->
+	<select id="querySYInsidePoliceCountByDuty" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT DBD_CUS_NUMBER,COUNT(1) AS INSIDE_POLICE_COUNT FROM CDS_DUTY_BASE_DTLS A
+		LEFT JOIN CDS_DUTY_MODE_DEPARTMENT E ON E.ID = A.DBD_DUTY_MODE_DEPARTMENT_ID
+		LEFT JOIN CDS_DUTY_MODE_ORDER_JOB C ON C.ID = A.DBD_DUTY_MODE_ORDER_JOB_ID
+		RIGHT JOIN CDS_DUTY_ORDER D ON D.ID = C.MOJ_ORDER_ID AND DOR_STATUS != '0'
+		WHERE TO_CHAR (DBD_DUTY_DATE,'yyyy-mm-dd') = TO_CHAR (sysdate,'yyyy-mm-dd')
+		<if test="cusNumber != null and cusNumber != ''">
+			 AND DBD_CUS_NUMBER = #{cusNumber}
+		</if>
+		GROUP BY DBD_CUS_NUMBER
+	</select>
+	
+	<!-- 根据组织结构查询监狱在监民警人数（监区数量与总人数 PIR_DPRTMNT_ID 为0  时  是总人数) -->
+	<select id="queryInsidePoliceCountByOrg" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT COUNT(1) AS COUNT,nvl(PBD_DRPTMNT_ID,'0') AS PIR_DPRTMNT_ID
+		FROM  V_POLICE_BASE_DTLS 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="drpmntId != null and drpmntId != ''">
+				AND PBD_DRPTMNT_ID = #{drpmntId}
+			</if>
+		</where>
+		GROUP BY ROLLUP (PBD_DRPTMNT_ID)
+	</select>
+	
+	<!-- 根据刷卡查询当前各监区在监民警 (一个sql查出整个页面的数据)-->
+	<select id="queryPrisonDrptmntPoliceCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+	
+		SELECT SUM(COUNT)AS COUNT, NVL(PIR_DPRTMNT_ID,'0') AS PIR_DPRTMNT_ID  
+		FROM (SELECT DECODE(PBD_DRPTMNT_ID, NULL, '-1', PBD_DRPTMNT_ID) AS PIR_DPRTMNT_ID, COUNT(1)  AS COUNT FROM CDS_CUR_INPRSN_POLICE_RECORD LEFT JOIN V_POLICE_BASE_DTLS ON
+		(PBD_CUS_NUMBER = CIP_CUS_NUMBER AND TO_CHAR(PBD_POLICE_IDNTY) = CIP_POLICE_IDNTY)
+			<where>
+				<if test="cusNumber != null and cusNumber != ''">
+					AND CIP_CUS_NUMBER = #{cusNumber}
+				</if>
+				<if test="drpmntId != null and drpmntId != ''">
+					AND PBD_DRPTMNT_ID = #{drpmntId}
+				</if>
+			</where>
+		GROUP BY (PBD_DRPTMNT_ID))
+		GROUP BY ROLLUP(PIR_DPRTMNT_ID)
+	</select>
+	
+	<!-- 根据排班查询监狱在监民警人数 （监区数量与总人数)-->
+	<select id="queryPrisonDrptmntPoliceCountByDuty" resultType="java.util.Map" parameterType="java.util.HashMap">
+        SELECT COUNT(1) AS COUNT, NVL(E.DMD_DPRTMNT_ID,'0') AS PIR_DPRTMNT_ID,
+        (select YZGL.GETDB(e.dmd_dprtmnt_id) from dual) as dprtmnt_name FROM CDS_DUTY_BASE_DTLS A
+		LEFT JOIN CDS_DUTY_MODE_DEPARTMENT E ON E.ID = A.DBD_DUTY_MODE_DEPARTMENT_ID
+		LEFT JOIN CDS_DUTY_MODE_ORDER_JOB C ON C.ID = A.DBD_DUTY_MODE_ORDER_JOB_ID
+		RIGHT JOIN CDS_DUTY_ORDER D ON D.ID = C.MOJ_ORDER_ID AND DOR_STATUS != '0'
+		WHERE TO_CHAR (DBD_DUTY_DATE,'yyyy-mm-dd') = TO_CHAR (sysdate,'yyyy-mm-dd')
+		<if test="cusNumber != null and cusNumber != ''">
+			 AND DBD_CUS_NUMBER = #{cusNumber}
+		</if>
+		<if test="drpmntId != null and drpmntId != ''">
+			 AND DMD_DPRTMNT_ID = #{drpmntId}
+		</if>
+		GROUP BY ROLLUP(DMD_DPRTMNT_ID)
+		ORDER BY DMD_DPRTMNT_ID
+	</select>
+	
+	<!-- 根据排班查询民警信息 -->
+	<select id="queryPrisonDrptmntPoliceInfoByDuty" parameterType="hashmap" resultType="hashmap">
+		SELECT PBD_CUS_NUMBER,
+	    PBD_POLICE_IDNTY,
+		PBD_POLICE_NAME,
+		PBD_DOOR_CARD_IDNTY,
+		PBD_DRPTMNT_ID,
+		PBD_DRPTMNT,
+		PBD_PSTN_NAME,
+		PBD_SEX,
+		PBD_SEX AS PBD_SEX_CH,
+		TO_CHAR(PBD_BIRTH_DATE,'YYYY-MM-DD') PBD_BIRTH_DATE,
+		PBD_FIXED_PHONE,
+		PBD_IP_PHONE,
+		PBD_PHONE,
+		PBD_SHORT_PHONE,
+		PBD_FAX,
+		PBD_LOGIN_NAME,
+		PBD_TALK_NUM,
+		PBD_EMAIL,
+		PBD_OA_SYSTEM,
+		PBD_POLICE_CMMNCT,
+		PBD_FAMILY_PHONE,
+		PBD_IMG_DIR,
+		PBD_REMARK,
+		PBD_CRTE_TIME,
+		PBD_CRTE_USER_ID,
+		PBD_UPDT_TIME,
+		PBD_UPDT_USER_ID 
+		FROM CDS_DUTY_BASE_DTLS A
+		LEFT JOIN CDS_DUTY_MODE_DEPARTMENT E ON E.ID = A.DBD_DUTY_MODE_DEPARTMENT_ID
+		LEFT JOIN V_POLICE_BASE_DTLS B ON A.DBD_STAFF_ID = B.PBD_USER_ID 
+		WHERE TO_CHAR (DBD_DUTY_DATE,'yyyy-mm-dd') = TO_CHAR (sysdate,'yyyy-mm-dd')
+			<if test="para != null and para == 0">
+				AND PBD_CUS_NUMBER = #{obdOrgaIdnty} AND PBD_DRPTMNT_ID = #{pbdDrptmntId} AND ROWNUM &lt; = 20
+				<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para== 1">
+				AND PBD_CUS_NUMBER = #{obdOrgaIdnty} AND ((PBD_DRPTMNT_ID NOT IN
+					<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					 	#{item}
+					</foreach>
+					) OR PBD_DRPTMNT_ID IS NULL)
+					
+					<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+					 
+			</if>
+			<if test="para != null and para == 2">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					AND PBD_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="pbdDrptmntId != null and pbdDrptmntId != ''">
+					AND PBD_DRPTMNT_ID = #{pbdDrptmntId}
+				</if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+				<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 3">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					PBD_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="pbdDrptmntId !=null and pbdDrptmntId!=''">
+					AND (( PBD_DRPTMNT_ID NOT IN
+					<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+						#{item}
+					</foreach>
+					) OR PBD_DRPTMNT_ID IS NULL)
+			    </if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+			<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 4">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					PBD_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+			<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+	</select>
+	
+	<!-- 根据组织结构查询民警信息 -->
+	<select id="queryPrisonDrptmntPoliceInfoByOrg" parameterType="hashmap" resultType="hashmap">
+	SELECT  PBD_CUS_NUMBER,
+	    PBD_POLICE_IDNTY,
+		PBD_POLICE_NAME,
+		PBD_DOOR_CARD_IDNTY,
+		PBD_DRPTMNT_ID,
+		PBD_DRPTMNT,
+		PBD_PSTN_NAME,
+		PBD_SEX,
+		PBD_SEX AS PBD_SEX_CH,
+		TO_CHAR(PBD_BIRTH_DATE,'YYYY-MM-DD') PBD_BIRTH_DATE,
+		PBD_FIXED_PHONE,
+		PBD_IP_PHONE,
+		PBD_PHONE,
+		PBD_SHORT_PHONE,
+		PBD_FAX,
+		PBD_LOGIN_NAME,
+		PBD_TALK_NUM,
+		PBD_EMAIL,
+		PBD_OA_SYSTEM,
+		PBD_POLICE_CMMNCT,
+		PBD_FAMILY_PHONE,
+		PBD_IMG_DIR,
+		PBD_REMARK,
+		PBD_CRTE_TIME,
+		PBD_CRTE_USER_ID,
+		PBD_UPDT_TIME,
+		PBD_UPDT_USER_ID FROM V_POLICE_BASE_DTLS  
+       <where>
+			<if test="para != null and para == 0">
+				AND PBD_CUS_NUMBER = #{obdOrgaIdnty} AND PBD_DRPTMNT_ID = #{pbdDrptmntId} AND ROWNUM &lt; = 20
+				<if test="pliceLi != null and pliceLi != ''">
+							AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para== 1">
+				AND PBD_CUS_NUMBER = #{obdOrgaIdnty} AND ((PBD_DRPTMNT_ID NOT IN
+					<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					 	#{item}
+					</foreach>
+					) OR PBD_DRPTMNT_ID IS NULL)
+					<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 2">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					AND PBD_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="pbdDrptmntId != null and pbdDrptmntId != ''">
+					AND PBD_DRPTMNT_ID = #{pbdDrptmntId}
+				</if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+			<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 3">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					PBD_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="pbdDrptmntId !=null and pbdDrptmntId!=''">
+					AND (( PBD_DRPTMNT_ID NOT IN
+					<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+						#{item}
+					</foreach>
+					) OR PBD_DRPTMNT_ID IS NULL)
+			    </if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+			<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 4">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					PBD_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+				<if test="pliceLi != null and pliceLi != ''">
+						AND PBD_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据刷卡记录查询民警信息 -->
+	<select id="queryPrisonDrptmntPoliceInfo" parameterType="hashmap" resultType="hashmap">
+		SELECT CIP_CUS_NUMBER AS PBD_CUS_NUMBER,
+		CIP_POLICE_IDNTY AS PBD_POLICE_IDNTY,
+		DECODE(PBD_DRPTMNT_ID,NULL,CIP_POLICE_NAME,PBD_POLICE_NAME) AS
+		PBD_POLICE_NAME,
+		PBD_DOOR_CARD_IDNTY,
+		PBD_DRPTMNT_ID,
+		PBD_DRPTMNT,
+		PBD_PSTN_NAME,
+		PBD_SEX,
+		PBD_SEX AS PBD_SEX_CH,
+		TO_CHAR(PBD_BIRTH_DATE,'YYYY-MM-DD') PBD_BIRTH_DATE,
+		PBD_FIXED_PHONE,
+		PBD_IP_PHONE,
+		PBD_PHONE,
+		PBD_SHORT_PHONE,
+		PBD_FAX,
+		PBD_LOGIN_NAME,
+		PBD_TALK_NUM,
+		PBD_EMAIL,
+		PBD_OA_SYSTEM,
+		PBD_POLICE_CMMNCT,
+		PBD_FAMILY_PHONE,
+		PBD_IMG_DIR,
+		PBD_REMARK,
+		PBD_CRTE_TIME,
+		PBD_CRTE_USER_ID,
+		PBD_UPDT_TIME,
+		PBD_UPDT_USER_ID
+		FROM CDS_CUR_INPRSN_POLICE_RECORD LEFT JOIN V_POLICE_BASE_DTLS
+			ON (CIP_CUS_NUMBER = PBD_CUS_NUMBER AND CIP_POLICE_IDNTY = TO_CHAR(PBD_POLICE_IDNTY))
+		<where>
+			<if test="para != null and para == 0">
+				AND CIP_CUS_NUMBER = #{obdOrgaIdnty} AND PBD_DRPTMNT_ID = #{pbdDrptmntId} AND ROWNUM &lt; = 20
+					<if test="pliceLi != null and pliceLi != ''">
+						AND CIP_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para== 1">
+				AND CIP_CUS_NUMBER = #{obdOrgaIdnty} AND ((PBD_DRPTMNT_ID NOT IN
+					<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					 	#{item}
+					</foreach>
+					) OR PBD_DRPTMNT_ID IS NULL)
+				<if test="pliceLi != null and pliceLi != ''">
+						AND CIP_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 2">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					AND CIP_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="pbdDrptmntId != null and pbdDrptmntId != ''">
+					AND PBD_DRPTMNT_ID = #{pbdDrptmntId}
+				</if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+			<if test="pliceLi != null and pliceLi != ''">
+						AND CIP_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 3">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					CIP_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="pbdDrptmntId !=null and pbdDrptmntId!=''">
+					AND (( PBD_DRPTMNT_ID NOT IN
+					<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+						#{item}
+					</foreach>
+					) OR PBD_DRPTMNT_ID IS NULL)
+			    </if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+				<if test="pliceLi != null and pliceLi != ''">
+						AND CIP_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+			<if test="para != null and para == 4">
+				<if test="obdOrgaIdnty != null and obdOrgaIdnty != ''">
+					CIP_CUS_NUMBER = #{obdOrgaIdnty}
+				</if>
+				<if test="policeIdntyOrName !=null and policeIdntyOrName!=''">
+					AND (
+						PBD_POLICE_IDNTY LIKE '%${policeIdntyOrName}%' OR PBD_POLICE_NAME LIKE '%${policeIdntyOrName}%'
+					)
+				</if>
+			<if test="pliceLi != null and pliceLi != ''">
+						AND CIP_POLICE_IDNTY in 
+						<foreach collection="policeNoListss" item="itemPli" open="(" close=")" separator=",">
+							 	#{itemPli}
+						</foreach>
+					</if>
+			</if>
+		</where>
+		ORDER BY PBD_POLICE_IDNTY
+	</select>
+	
+	<!-- 民警进出记录 -->
+	<select id="listPoliceInoutRecordInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PIR_CUS_NUMBER,
+		TO_CHAR(PIR_BRUSH_DATE,'YYYY-MM-DD') AS PIR_BRUSH_DATE,
+		PIR_POLICE_IDNTY,
+		PIR_POLICE_NAME,
+		PIR_DOOR_CARD_IDNTY,
+		PIR_ENTER_TIME AS PIR_ENTER_TIME1,
+		TO_CHAR(PIR_ENTER_TIME,'YYYY-MM-DD HH24:MI:SS') AS PIR_ENTER_TIME,
+		TO_CHAR(PIR_LEAVE_TIME,'YYYY-MM-DD HH24:MI:SS') AS PIR_LEAVE_TIME,
+		PIR_ENTER_TIME AS PIR_ENTER_TIME_YS,
+		PIR_LEAVE_TIME AS
+		PIR_LEAVE_TIME_YS,
+		PIR_REMARK,
+		PIR_CRTE_TIME,
+		PIR_CRTE_USER_ID,
+		PIR_UPDT_TIME,
+		PIR_UPDT_USER_ID,
+		PBD_PSTN_NAME,
+		PBD_DRPTMNT_ID,
+		PBD_DRPTMNT
+		FROM V_POLICE_INOUT_RECORD A LEFT JOIN V_POLICE_BASE_DTLS B
+			ON (A.PIR_CUS_NUMBER = B.PBD_CUS_NUMBER AND A.PIR_POLICE_IDNTY = TO_CHAR(B.PBD_POLICE_IDNTY))
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PIR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="policeId != null and policeId != ''">
+				AND PIR_POLICE_IDNTY = #{policeId}
+			</if>
+			<if test="drpmntId != null and drpmntId != ''">
+				AND PBD_DRPTMNT_ID = #{drpmntId}
+			</if>
+			<if test="startTime != null and startTime != '' ">
+				AND PIR_ENTER_TIME &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != '' ">
+			    AND #{endTime} &gt;= PIR_ENTER_TIME
+			</if>
+		</where>
+		ORDER BY PIR_ENTER_TIME1 DESC
+	</select>
+	
+	
+	<select id="queryPoliceByDid" parameterType="hashmap" resultType="hashmap">
+		SELECT PBD_CUS_NUMBER,
+		       PBD_POLICE_IDNTY,
+		       PBD_POLICE_NAME,
+		       PBD_USER_ID,
+		       PBD_LOGIN_NAME,
+		       PBD_DRPTMNT_ID,
+		       PBD_DRPTMNT,
+		       PBD_PSTN_NAME,
+		       TO_CHAR(PBD_BIRTH_DATE,'YYYY-MM-DD') PBD_BIRTH_DATE
+		FROM V_POLICE_BASE_DTLS
+		<where>
+			 <if test="pbdcusNumber != null and pbdcusNumber != ''">
+				AND PBD_CUS_NUMBER = #{pbdcusNumber}
+			</if>
+			<if test="pbdDrptmntId != null and pbdDrptmntId != ''">
+				AND PBD_DRPTMNT_ID = #{pbdDrptmntId}
+			</if>
+			 <if test="pbdcusNumber != null and pbdcusNumber != '' and pbdDrptmntId != null and pbdDrptmntId != ''">
+			and PBD_USER_ID in(
+
+				SELECT 
+					T1.DBD_STAFF_ID
+				FROM 
+				prison.CDS_DUTY_BASE_DTLS T1 
+				INNER JOIN 
+				( 
+					SELECT 
+						T1.ID, T4.DCA_CATEGORY_NAME, 
+						T3.CDM_MODE_NAME 
+					FROM prison.CDS_DUTY_MODE_DEPARTMENT T1 
+					INNER JOIN prison.CDS_DUTY_CATEGORY_DEPARTMENT T2 ON T1.DMD_DPRTMNT_ID = T2.DCD_DPRTMNT_ID AND T1.DMD_CATEGORY_ID = T2.DCD_CATEGORY_ID 
+					INNER JOIN prison.CDS_DUTY_MODE T3 ON T1.DMD_MODE_ID = T3.ID AND T1.DMD_CATEGORY_ID = T3.CDM_CATEGORY_ID 
+					INNER JOIN prison.CDS_DUTY_CATEGORY T4 ON T3.CDM_CATEGORY_ID = T4.ID 
+					WHERE T4.DCA_CATEGORY_NAME LIKE '%监区%' AND T3.CDM_MODE_NAME LIKE '%监区%' AND T1.DMD_DPRTMNT_ID = #{pbdDrptmntId} 
+				)
+				 AS T2 ON T1.DBD_DUTY_MODE_DEPARTMENT_ID = T2.ID 
+				INNER JOIN 
+				( 
+					SELECT 
+						T1.ID, T2.CDM_MODE_NAME, T3.DOR_DUTY_ORDER_NAME, T4.CDJ_JOB_NAME, 
+						T4.CDJ_JOB_CODE, T3.DOR_START_TIME, T3.DOR_END_TIME 
+					FROM prison.CDS_DUTY_MODE_ORDER_JOB T1 
+					INNER JOIN prison.CDS_DUTY_MODE T2 ON T1.MOJ_MODE_ID = T2.ID 
+					INNER JOIN prison.CDS_DUTY_ORDER T3 ON T1.MOJ_ORDER_ID = T3.ID 
+					INNER JOIN prison.CDS_DUTY_JOB T4 ON T1.MOJ_JOB_ID = T4.ID 
+					WHERE T2.CDM_MODE_NAME LIKE '%监区%' 
+				) 
+				AS T3 ON T1.DBD_DUTY_MODE_ORDER_JOB_ID = T3.ID 
+				WHERE 
+				T1.DBD_CUS_NUMBER =   #{pbdcusNumber}
+				 
+				AND 
+				TO_CHAR(T1.DBD_DUTY_DATE, 
+				'yyyy-MM-dd') = to_char(sysdate,'yyyy-MM-dd')
+				 
+)
+</if>
+	   </where>
+	   		 ORDER BY PBD_POLICE_IDNTY
+ 	 </select>
+ 	 
+ 	 
+ 	 <select id="findPoliceByUserId" parameterType="hashmap" resultType="hashmap">
+		select 
+		PBD_CUS_NUMBER,
+		PBD_POLICE_IDNTY,
+		PBD_POLICE_NAME,
+		PBD_USER_ID,
+		PBD_LOGIN_NAME,
+		PBD_LOGIN_PWD,
+		PBD_USER_STTS_INDC,
+		PBD_DOOR_CARD_IDNTY,
+		PBD_DRPTMNT_ID,
+		PBD_DRPTMNT,
+		PBD_PSTN_NAME,
+		PBD_SEX,
+		PBD_AGE,
+		PBD_POLITICAL_STATUS,
+		PBD_OFFICIAL_TITLE,
+		TO_CHAR(PBD_BIRTH_DATE,'YYYY-MM-DD') PBD_BIRTH_DATE,
+		PBD_FIXED_PHONE,
+		PBD_IP_PHONE,
+		PBD_PHONE,
+		PBD_SHORT_PHONE,
+		PBD_FAX,
+		PBD_TALK_NUM,
+		PBD_EMAIL,
+		PBD_OA_SYSTEM,
+		PBD_POLICE_CMMNCT,
+		PBD_FAMILY_PHONE,
+		PBD_IMG_DIR,
+		PBD_IMG,
+		PBD_ACTION_INDC,
+		PBD_STATION_NAME,
+		PBD_REMARK,
+		PBD_CRTE_TIME,
+		PBD_CRTE_USER_ID,
+		PBD_UPDT_TIME,
+		PBD_UPDT_USER_ID,
+		PBD_DEGREE_INDC,
+		PBD_PROFESSION,
+		PBD_JOB_DATE,
+		PBD_POLICE_TYPE_INDC,
+		PBD_JOB_TYPE_INDC,
+		PBD_LEADER_IDNTY,
+		PBD_IS_LEADER_INDC
+		from V_POLICE_BASE_DTLS
+		<where>
+			 <if test="pbdcusNumber != null and pbdcusNumber != ''">
+				AND PBD_CUS_NUMBER = #{pbdcusNumber}
+			</if>
+			<if test="pbdUserId != null and pbdUserId != ''">
+				AND PBD_USER_ID = #{pbdUserId}
+			</if>
+	   </where>
+ 	 </select>
+ 	   <select id="querySzqy" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select * from(
+
+			select CERTIFICATE_NO,CHANNEL_NAME,st,inOut,row_number() OVER(PARTITION BY CERTIFICATE_NO ORDER BY st desc) as rowflg     from (
+			
+			
+			select * from (
+			select CERTIFICATE_NO,CHANNEL_NAME,st,'' as inOut,row_number() OVER(PARTITION BY CERTIFICATE_NO ORDER BY st desc) as row_flg   
+			 from prison.t_rlsb_hmd
+			   where to_char(st,'yyyy-MM-dd')= to_char(sysdate,'yyyy-MM-dd') and cus_number=#{jyId}
+			)temp where temp.row_flg  = '1'
+			
+			
+			union
+			
+			select * from (
+			select DRD_people_IDNTY as CERTIFICATE_NO ,DRD_DOOR_NAME AS CHANNEL_NAME,drd_bsns_date as st,drd_in_out_indc as inOut,row_number() OVER(PARTITION BY DRD_people_IDNTY ORDER BY drd_bsns_date desc) as row_flg1   
+			 from prison.cds_door_record_dtls
+			  where  drd_cus_number=#{jyId} and  to_char(drd_bsns_date,'yyyy-MM-dd')= to_char(sysdate,'yyyy-MM-dd')
+			)temp1 where temp1.row_flg1  = '1'
+			
+			<!-- union
+			select * from (
+			select DRD_people_IDNTY as CERTIFICATE_NO ,DRD_DOOR_NAME AS CHANNEL_NAME,drd_bsns_date as st,drd_in_out_indc as inOut,row_number() OVER(PARTITION BY DRD_people_IDNTY ORDER BY drd_bsns_date desc) as row_flg1   
+			 from prison.cds_door_record_dtls_h
+			)temp1 where temp1.row_flg1  = '1'
+			 -->
+			
+			)
+			
+			)
+			temp2 
+			where temp2.rowflg  = '1'
+			
+    </select>
+    
+    <select id="queryRygl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select ID,TO_CHAR(st,'yyyy-MM-dd HH24:mm:ss') as st, channel_name, location_name  
+		from  prison.t_rlsb_hmd
+		 where CERTIFICATE_NO = #{mjbh}
+		<if test="startTime != null and startTime != ''">
+			AND st &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND st &lt;= #{endTime}
+		</if>
+		order by st asc
+	</select>
+	
+	
+	
+	  <select id="queryXl" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select * from prison.CDS_PRISON_PATH_INFO where PPI_PATH_NAME = #{xlmc} 
+    </select>
+    <select id="querySzjq" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    	select user1.user_id,user1.user_name,user1.job_no,org.organize_name,org.organize_CODE,
+		orgUser.organize_id from 
+		AUTH.T_USER user1,AUTH.T_ORG_USER orgUser ,AUTH.T_ORG org
+		where user1.user_id = orgUser.user_id and org.organize_id= orgUser.organize_id
+		and 
+		 user1.job_no=#{mjbh} 
+     </select>
+    <select id="openCamare" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select b.id,b.cbd_name from prison.CDS_PRISON_PATH_CAMERA_RLTN  a,prison.dvc_camera_base_dtls b
+		where pcr_path_id = #{lxId} and a.pcr_camera_id = b.id
+
+	</select>
+</mapper>

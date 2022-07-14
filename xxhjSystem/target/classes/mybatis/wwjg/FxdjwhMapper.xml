@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.wwjg.fxdjwh.dao.FxdjwhMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.wwjg.fxdjwh.entity.FxdjwhEntity"> 
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ
+		from T_AQFX_FXDJ
+		where SCFLG='1' and id=#{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.wwjg.fxdjwh.entity.FxdjwhEntity" resultType="com.cesgroup.prison.wwjg.fxdjwh.entity.FxdjwhEntity">
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ
+		from T_AQFX_FXDJ
+		WHERE  SCFLG = '1' 
+		<if test="code != null and code != ''">
+			AND CODE = #{code}
+		</if>
+		<if test="name != null and name != ''">
+			AND NAME = #{name}
+		</if>
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.wwjg.fxdjwh.entity.FxdjwhEntity" resultType="com.cesgroup.prison.wwjg.fxdjwh.entity.FxdjwhEntity">
+		SELECT A.* FROM T_AQFX_FXDJ A WHERE  A.SCFLG = '1' 
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE T_AQFX_FXDJ A SET A.SCFLG = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="getByCode" resultType="com.cesgroup.prison.wwjg.fxdjwh.entity.FxdjwhEntity"> 
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ
+		from T_AQFX_FXDJ
+		where SCFLG='0' and CODE=#{code}
+	</select>
+</mapper>

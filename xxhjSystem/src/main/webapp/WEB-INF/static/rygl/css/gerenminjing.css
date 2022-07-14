@@ -1,0 +1,350 @@
+body {
+  background: #000;
+}
+
+ul {
+  margin: 0;
+}
+
+li {
+  list-style: none;
+}
+
+.minjing-wrapper {
+  height: 98%;
+  color: #c9caca;
+  font-size: 18px;
+}
+.minjing-wrapper span {
+  font-size: 18px;
+}
+.minjing-wrapper .item-wrapper {
+  width: 95%;
+  padding: 10px;
+  float: left;
+  height: 100%;
+}
+
+.minjing-wrapper .title {
+  font-size: 22px;
+  margin: 0;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.minjing-wrapper .left-wrapper {
+  width: 26%;
+}
+
+.minjing-wrapper .center-wrapper {
+  width: 37%;
+}
+
+.minjing-wrapper .right-wrapper {
+  width: 37%;
+}
+
+.minjing-wrapper .item {
+  height: 100%;
+  background: #0e1b2b;
+  padding: 10px 20px;
+  border-radius: 6px;
+  position: relative;
+}
+
+/* left */
+
+.minjing-wrapper .left-wrapper .basic-info {
+  height: 35%;
+  padding-top: 10px;
+}
+
+.minjing-wrapper .left-wrapper .job-info {
+  height: 60%;
+}
+
+.minjing-wrapper .job-info .title {
+  padding-top: 10px;
+}
+
+.minjing-wrapper .left-wrapper .basic-detail {
+  width: 50%;
+  float: right;
+}
+
+.minjing-wrapper .left-wrapper .basic-detail li,
+.minjing-wrapper .left-wrapper .more-detail li {
+  margin-bottom: 5px;
+}
+
+.minjing-wrapper .left-wrapper .basic-detail li:last-child {
+  margin-bottom: 0;
+}
+
+.minjing-wrapper .left-wrapper .right-name {
+  float: right;
+}
+
+.minjing-wrapper .left-wrapper .more-detail {
+  padding-top: 10px;
+}
+
+.minjing-wrapper .left-wrapper .job-list {
+  height: 95%;
+  padding-top: 10px;
+}
+
+.minjing-wrapper .job-list .list-item {
+  height: 16%;
+}
+
+.minjing-wrapper .list-item .iconfont {
+  font-size: 41px;
+}
+
+.minjing-wrapper .list-item .job-detail {
+  float: right;
+  width: 80%;
+}
+
+.minjing-wrapper .list-item .job-des {
+  background: #144065;
+  color: #fff;
+  font-size: 14px;
+  padding: 0 10px;
+  margin-bottom: 5px;
+}
+
+.minjing-wrapper .list-item .job-name {
+  margin: 0;
+  padding: 0 10px;
+  color: #00fff6;
+}
+
+/* center */
+.minjing-wrapper .coral-component-content {
+  background: transparent;
+  margin-top: 10px;
+}
+
+.minjing-wrapper .coral-tabs>.coral-tabs-nav {
+  border-color: transparent;
+  border: none;
+  border-style: none;
+  border-width: 0;
+  background: transparent;
+}
+
+.minjing-wrapper .coral-tabs>.coral-tabs-nav {
+  float: none;
+}
+
+.minjing-wrapper .coral-component-content .coral-state-active,
+.minjing-wrapper .coral-component-header .coral-state-active,
+.minjing-wrapper .coral-state-active {
+  background: url(../img/mhsy/tabCorner.png) no-repeat;
+  background-size: 100% 100%;
+  cursor: pointer;
+}
+
+.minjing-wrapper .coral-tabs>.coral-tabs-nav>.coral-tabs-active .coral-tabs-anchor,
+.minjing-wrapper .coral-tabs>.coral-tabs-nav>.coral-tabs-loading .coral-tabs-anchor {
+  border-top: none;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  color: #c9caca;
+  font-weight: normal;
+}
+
+.minjing-wrapper .coral-tabs>.coral-tabs-nav>li>.coral-tabs-anchor {
+  font-size: 18px;
+}
+
+.minjing-wrapper .coral-tabs .coral-tabs-panel {
+  background-color: transparent;
+}
+
+.minjing-wrapper .coral-tabs>.coral-tabs-nav>li>.coral-tabs-anchor {
+  color: #c9caca;
+  padding: 4px 20px;
+}
+
+.minjing-wrapper .duty-info,
+.minjing-wrapper .communication-info {
+  height: 50%;
+  position: relative;
+}
+
+.minjing-wrapper .duty-info .duty-wrapper {
+  height: 95%;
+}
+
+.minjing-wrapper .duty-info .title {
+  position: absolute;
+  top: 20px;
+}
+
+.minjing-wrapper .coral-tabs>.coral-tabs-nav>li {
+  float: right;
+}
+
+.dark.coral-dialog .minjing-wrapper .coral-tabs-panel,
+.dark.coral-dialog .minjing-wrapper .coral-tabs {
+  padding: 0;
+}
+
+.minjing-wrapper .duty-info .table-title {
+  font-size: 18px;
+  overflow: hidden;
+  color: #c9caca;
+  border: 1px solid #0e3f75;
+  padding: 0 14px;
+}
+
+.minjing-wrapper .duty-info .table-title li {
+  float: left;
+  padding: 4px 0;
+  font-size: 22px;
+}
+
+.minjing-wrapper .duty-info .date {
+  width: 30%;
+}
+
+.minjing-wrapper .duty-info .content {
+  width: 45%;
+}
+
+.minjing-wrapper .duty-info .table-content {
+  height: 75%;
+  font-size: 16px;
+}
+
+.minjing-wrapper .duty-info .table-content li {
+  width: 100%;
+  border-bottom: 1px solid #0e3f75;
+  padding: 8px 14px;
+  overflow: hidden;
+  color: #c9caca;
+}
+
+.minjing-wrapper .duty-info .table-content li span {
+  float: left;
+}
+
+.minjing-wrapper .duty-info .table-content .finish {
+  color: #00fff6;
+}
+
+.minjing-wrapper .communication-info {
+  padding-top: 5%;
+}
+
+.minjing-wrapper .coral-radiolist .coral-radio-label {
+  font-size: 16px;
+  color: #c9caca;
+}
+
+.minjing-wrapper .coral-textbox-textarea {
+  height: 140px;
+}
+
+.minjing-wrapper .coral-textbox-textarea .coral-textbox-default {
+  background: #cfd1cf;
+  font-size: 16px;
+}
+
+.minjing-wrapper .row {
+  margin-bottom: 10px;
+}
+
+/* button */
+.minjing-wrapper .button-wrapper>button {
+  margin-right: 15px;
+  font-size: 16px;
+  padding: 4px 15%;
+}
+
+.minjing-wrapper .coral-form-default {
+  padding: 0;
+}
+
+.minjing-wrapper .coral-radiolist .coral-radio {
+  margin-bottom: 0;
+}
+
+.minjing-wrapper .coral-radiolist .coral-radio-label .coral-radio-icon {
+  font-size: 20px;
+  margin-right: 20px;
+  color: #c9caca;
+  cursor: pointer;
+}
+
+.minjing-wrapper .coral-radiolist .coral-radio-label .cui-icon-radio-checked {
+  color: #00fff6;
+}
+
+.minjing-wrapper .button-wrapper {
+  width: 80%;
+  margin-left: 30%;
+}
+
+/* right */
+.minjing-wrapper .active-info,
+.minjing-wrapper .patrol-info {
+  height: 50%;
+}
+
+.minjing-wrapper .active-info .title,
+.minjing-wrapper .patrol-info .title,
+.minjing-wrapper .communication-info .title {
+  padding-top: 10px;
+}
+
+.minjing-wrapper .patrol-info {
+  padding-top: 5%;
+}
+
+.minjing-wrapper .active-track {
+  height: 75%;
+}
+
+.minjing-wrapper .track-item {
+  height: 25%;
+  border-bottom: 1px solid #0e3f75;
+  padding: 4px;
+  color: #fff;
+  overflow: hidden;
+}
+
+.minjing-wrapper .right-wrapper .time {
+  float: left;
+  width: 33%;
+}
+
+.minjing-wrapper .right-wrapper .time-date {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+.minjing-wrapper .right-wrapper .time .date {
+  margin-bottom: 0;
+  font-size: 18px;
+}
+
+.minjing-wrapper .right-wrapper .block {
+  float: left;
+  width: 33%;
+  padding: 10px 0;
+  font-size: 18px
+}
+
+.minjing-wrapper .right-wrapper .block-access {
+  float: left;
+  color: #e0a904;
+  text-align: right;
+  width: 33%;
+  padding: 10px 0;
+  font-size: 18px;
+}

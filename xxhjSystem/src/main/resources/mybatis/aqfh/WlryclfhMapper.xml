@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.aqfh.wlryclfh.dao.WlryclfhMapper">
+
+	
+	<select id="findList" parameterType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity" resultType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity">
+		SELECT * FROM CDS_AQFH_WLRYCLFH_BASE
+	   <where>
+	   	<if test="cusNumber !=null and cusNumber !=''">
+	   	 and CUS_NUMBER = #{cusNumber}
+	   	</if>
+	   	 <if test=" zt !=null and zt !=''">
+	   	 	and  ZT = #{zt}
+	   	 </if>
+	   </where>
+	   order by JJSJ DESC,ZT
+	</select> 
+	
+	<update id="updateById" parameterType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity">
+		update CDS_AQFH_WLRYCLFH_BASE
+			<set>
+				<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+				<if test="zt !=null and zt!=''">
+					ZT  = #{zt},
+				</if>
+				<if test="fhsj !=null and fhsj != ''">
+                    FHSJ  = #{fhsj},
+				</if>
+				<if test="fhmjId !=null and fhmjId != ''">
+                    FHMJ_ID  = #{fhmjId},
+				</if>
+				<if test="fhmjName !=null and fhmjName != ''">
+                    FHMJ_NAME  = #{fhmjName},
+				</if>
+			</set>
+			where id = #{id}
+	</update>
+	
+	<select id="getTodayWlryclData" parameterType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity" resultType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity">
+        select
+        ID  ,
+        JY_ID AS CUS_NUMBER,
+        JJSJ      ,
+        DLMJ_ID       ,
+        DLMJ_NAME     ,
+        JJSY        ,
+        ZT            ,
+        LX            ,
+        LKSJ          ,
+        URL
+
+        from
+        YZGL.T_YZGL_WLGL_WLRY_APP
+		<where>
+            lx in ('1', '2')
+			<if test=" cusNumber !=null and cusNumber !='' ">
+              and  JY_ID  =#{cusNumber}
+			</if>
+	         <if test=" jjsj !=null and jjsj !='' ">
+	          and to_char(JJSJ,'yyyy-MM-dd')  =to_char(#{jjsj},'yyyy-MM-dd')
+			</if>
+		</where>
+	</select>
+	
+
+	<select id="selectBywlryclfh" parameterType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity" resultType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryclfhEntity">
+		        select * from CDS_AQFH_WLRYCLFH_BASE
+        <where>
+            <if test="cusNumber !=null and cusNumber!=''">
+                CUS_NUMBER  = #{cusNumber}
+            </if>
+            <if test="jjsj !=null and jjsj !=''">
+                and 	to_char(JJSJ,'yyyy-MM-dd')  =to_char(#{jjsj},'yyyy-MM-dd')
+            </if>
+        </where>
+	
+	</select>
+
+
+    <select id="selectWlclByYwId" resultType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlclEntity" parameterType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlclEntity">
+        select * from YZGL.T_YZGL_WLGL_WLCL_CLXX_APP
+        where
+        <if test="ywId !=null and ywId !=''">
+            yw_id = #{ywId}
+        </if>
+
+
+    </select>
+
+    <select id="selectWlryByYwId" resultType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryEntity" parameterType="com.cesgroup.prison.aqfh.wlryclfh.entity.WlryEntity">
+        select
+        *
+        from  YZGL.T_YZGL_WLGL_WLRY_RYXX_APP
+        where
+        <if test="ywId !=null and ywId !=''">
+            yw_id = #{ywId}
+        </if>
+    </select>
+</mapper>

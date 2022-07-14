@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.ws.dao.ScreenPlanWsMapper">
+
+	<select id="getScreenPlanAreaListByPalnId" parameterType="hashmap" resultType="hashmap">
+		select ID "screenPlanAreaId",
+		SPR_CUS_NUMBER "cusNumber",
+		SPR_SCREEN_PLAN_ID "screenPlanId",
+		SPR_SCREEN_AREA_NAME "screenPlanAreaName",
+		SPR_IS_ROUND "isRound",
+		SPR_TIME_LAG "timeLag"
+		from CDS_SCREEN_PLAN_AREA_RLTN
+		<where>
+			<if test="cusNumber!=null and cusNumber!=''">
+				AND SPR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="screenPlanId!=null and screenPlanId!=''">
+				AND SPR_SCREEN_PLAN_ID = #{screenPlanId}
+			</if>
+		</where>
+	</select>
+
+	<select id="getScreenPlanWindowListByAreaId" parameterType="hashmap" resultType="hashmap">
+		select ID "screenPlanWindowId",
+		SWR_CUS_NUMBER "cusNumber",
+		SWR_SCREEN_PLAN_ID "screenPlanId",
+		SWR_SCREEN_AREA_ID "screenPlanAreaId",
+		SWR_SCREEN_WINDOW_NUM "screenPlanWindow"
+		from CDS_SCREEN_AREA_WINDOW_RLTN
+		<where>
+			<if test="cusNumber!=null and cusNumber!=''">
+				AND SWR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="screenPlanId!=null and screenPlanId!=''">
+				AND SWR_SCREEN_PLAN_ID = #{screenPlanId}
+			</if>
+			<if test="screenPlanAreaId!=null and screenPlanAreaId!=''">
+				AND SWR_SCREEN_AREA_ID = #{screenPlanAreaId}
+			</if>
+		</where>
+		order by SWR_SEQ_NUM asc
+	</select>
+
+	<select id="getScreenPlanCameraListByAreaId" parameterType="hashmap" resultType="hashmap">
+		select
+		SCR_SEQ_NUM "seq",
+		SCR_CUS_NUMBER "cusNumber",
+		SCR_SCREEN_PLAN_ID "screenPlanId",
+		SCR_SCREEN_AREA_ID "screenPlanAreaId",
+		SCR_CAMERA_ID "cameraId",
+		SCR_CAMERA_NAME "cameraName",
+		CBD_BRAND_NAME "cameraBrand",
+		CBD_DVR_CHNNL_IDNTY "deviceChnnl",
+		CBD_IP_ADDRS "cameraIp",
+		CBD_VIDEO_PLAY_INDC "cameraPlayType",
+		CBD_PORT "cameraPort",
+		CBD_USER_NAME "cameraUser",
+		CBD_USER_PASSWORD "cameraPaswod",
+		CBD_CHNNL_IDNTY "cameraChnnl",
+		VDI_BRAND "deviceBrand",
+		VDI_IP_ADDRS "deviceIp",
+		VDI_PORT "devicePort",
+		VDI_USER_NAME "deviceUser",
+		VDI_USER_PASSWORD "devicePaswod",
+		b.ID "deviceId"
+		from PRISON.CDS_SCREEN_AREA_CAMERA_RLTN
+		left join PRISON.DVC_CAMERA_BASE_DTLS a on(a.CBD_CUS_NUMBER = SCR_CUS_NUMBER and a.id = SCR_CAMERA_ID and CBD_ACTION_INDC != '3')
+		left join PRISON.DVC_VIDEO_DEVICE_INFO b on(b.VDI_CUS_NUMBER = a.CBD_CUS_NUMBER and b.id = a.CBD_DVR_IDNTY)
+		<where>
+			<if test="cusNumber!=null and cusNumber!=''">
+				AND SCR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="screenPlanId!=null and screenPlanId!=''">
+				AND SCR_SCREEN_PLAN_ID = #{screenPlanId}
+			</if>
+			<if test="screenPlanAreaId!=null and screenPlanAreaId!=''">
+				AND SCR_SCREEN_AREA_ID = #{screenPlanAreaId}
+			</if>
+			order by SCR_SEQ_NUM asc
+		</where>
+	</select>
+
+</mapper>

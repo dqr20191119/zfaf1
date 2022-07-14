@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.jryf.dao.JryfMapper">
+
+	<select id="insideByPrisonCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_CUS_NUMBER, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where (PBD_STTS_INDC = 1 AND PBD_PRSNR_STTS_INDC IN (11, 12, 13, 14, 15, 19))
+		GROUP BY PBD_CUS_NUMBER
+		ORDER BY PBD_CUS_NUMBER
+	</select>
+
+	<select id="freePrisonerCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CPR_CUS_NUMBER AS PBD_CUS_NUMBER, COUNT(CPR_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_RELEASE
+		where (TRUNC(cpr_updt_time) = TRUNC(SYSDATE) AND CPR_STTS_INDC = 1)
+		GROUP BY CPR_CUS_NUMBER
+		ORDER BY CPR_CUS_NUMBER
+	</select>
+	
+	<select id="todayinPrisonerCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_CUS_NUMBER, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where TRUNC(PBD_DETAIN_DATE) = TRUNC(SYSDATE) 
+		AND PBD_DETAIN_TYPE = 1
+		GROUP BY PBD_CUS_NUMBER
+		ORDER BY PBD_CUS_NUMBER
+	</select>
+	
+	<select id="repeatCheckPrisonerCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_CUS_NUMBER, count(pbd_prsnr_idnty) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1
+		AND PBD_PRSNR_STTS_INDC = 22
+		GROUP BY PBD_CUS_NUMBER
+		ORDER BY PBD_CUS_NUMBER
+	</select>
+
+	<select id="leavePrisonerCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_CUS_NUMBER, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1 AND PBD_PRSNR_STTS_INDC = 15
+		GROUP BY PBD_CUS_NUMBER
+		ORDER BY PBD_CUS_NUMBER
+	</select>
+
+	<select id="outHospitalPrisonerCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_CUS_NUMBER, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1 
+		AND (PBD_PRSNR_STTS_INDC = 12 OR PBD_PRSNR_STTS_INDC = 13)
+		GROUP BY PBD_CUS_NUMBER
+		ORDER BY PBD_CUS_NUMBER
+	</select>
+	
+	<select id="insidePrisonerDprtCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_PRSN_AREA_IDNTY, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_CUS_NUMBER = #{pbdCusNumber} 
+		AND PBD_PRSNR_STTS_INDC IN (11,12,13,14,15,19)
+		GROUP BY PBD_PRSN_AREA_IDNTY
+		ORDER BY TO_NUMBER(PBD_PRSN_AREA_IDNTY)
+	</select>
+
+	<select id="freePrisonerDprtCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT CPR_DPRTMNT_IDNTY AS PBD_PRSN_AREA_IDNTY, COUNT(CPR_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_RELEASE
+		where CPR_CUS_NUMBER = #{cprCusNumber}
+		AND TRUNC(CPR_UPDT_TIME) = TRUNC(SYSDATE)
+		AND CPR_STTS_INDC = 1
+		GROUP BY CPR_DPRTMNT_IDNTY
+		ORDER BY TO_NUMBER(CPR_DPRTMNT_IDNTY)
+	</select>
+
+	<select id="todayInPrisonerDprtCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_PRSN_AREA_IDNTY, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_CUS_NUMBER = #{pbdCusNumber} 
+		AND TRUNC(PBD_DETAIN_DATE) = TRUNC(SYSDATE)
+		AND PBD_DETAIN_TYPE = 1 
+		GROUP BY PBD_PRSN_AREA_IDNTY
+		ORDER BY TO_NUMBER(PBD_PRSN_AREA_IDNTY)
+	</select>
+
+	<select id="repeatcheckInPrisonerDprtCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_PRSN_AREA_IDNTY, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_CUS_NUMBER = #{pbdCusNumber} 
+		AND PBD_STTS_INDC = 1 
+		AND PBD_PRSNR_STTS_INDC = 22
+		GROUP BY PBD_PRSN_AREA_IDNTY
+		ORDER BY TO_NUMBER(PBD_PRSN_AREA_IDNTY)
+	</select>
+
+	<select id="leavePrisonerDprtCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_PRSN_AREA_IDNTY, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_CUS_NUMBER = #{pbdCusNumber} 
+		AND PBD_STTS_INDC = 1 
+		AND PBD_PRSNR_STTS_INDC = 15
+		GROUP BY PBD_PRSN_AREA_IDNTY
+	</select>
+
+	<select id="outHospitalPrisonerDprtCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PBD_PRSN_AREA_IDNTY, COUNT(PBD_PRSNR_IDNTY) || '' AS COUNT
+		FROM V_PRISONER_MASTER_BASE 
+		where PBD_CUS_NUMBER = #{pbdCusNumber} 
+		AND PBD_STTS_INDC = 1
+		AND (PBD_PRSNR_STTS_INDC = 12 OR PBD_PRSNR_STTS_INDC = 13)
+		GROUP BY PBD_PRSN_AREA_IDNTY
+		ORDER BY TO_NUMBER(PBD_PRSN_AREA_IDNTY)
+	</select>
+	
+	<select id="countPrisoner" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT 'inside_prisoner_count' AS key, COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1 
+		AND PBD_PRSNR_STTS_INDC IN (11,12,13,14,15,19)
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+		UNION ALL 
+		SELECT 'free_prisoner_count' AS KEY, COUNT(CPR_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_RELEASE
+		where CPR_STTS_INDC = 1 
+		AND TRUNC(CPR_UPDT_TIME) = TRUNC(SYSDATE)
+		<if test="para != null and para != ''">
+			AND CPR_CUS_NUMBER = #{para}
+		</if>
+		UNION ALL
+		SELECT 'todayin_prisoner_count' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_DETAIN_TYPE = 1 
+		AND TRUNC(PBD_DETAIN_DATE) = TRUNC(SYSDATE)
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+		UNION ALL
+		SELECT 'repeatcheck_prisoner_count' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1
+		AND PBD_PRSNR_STTS_INDC = 22
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+		UNION ALL
+		SELECT 'leave_prison_count' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1
+		AND PBD_PRSNR_STTS_INDC = 15
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+		UNION ALL
+		SELECT 'out_hospital_count' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1
+		AND (PBD_PRSNR_STTS_INDC = 12 OR PBD_PRSNR_STTS_INDC = 13)
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+	</select>
+	
+	<select id="hospitalCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+        SELECT 'prisonGooutVisit' AS KEY,COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE 
+		where PBD_STTS_INDC = 1
+		AND PBD_PRSNR_STTS_INDC = 12
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+		UNION ALL
+	    SELECT 'prisonGooutHospital' AS KEY, COUNT(PBD_PRSNR_IDNTY) AS COUNT
+		FROM V_PRISONER_MASTER_BASE
+		where PBD_STTS_INDC = 1
+		AND PBD_PRSNR_STTS_INDC = 13
+		<if test="para != null and para != ''">
+			AND PBD_CUS_NUMBER = #{para}
+		</if>
+	</select>
+	
+	<select id="queryInfoPrisonerarchives" resultType="java.util.Map" parameterType="java.util.HashMap"><!-- 罪犯档案 -->
+		SELECT PBD_CUS_NUMBER,
+		PBD_PRSNR_IDNTY,
+		PBD_PRSNR_NAME,
+	    PBD_PRSN_AREA_IDNTY,
+		PBD_SEX_INDC,
+		TO_CHAR(PBD_BIRTH_DATE, 'YYYY-MM-DD') AS PBD_BIRTH_DATE,
+		PBD_NATION,
+		PBD_CLTRE_LEVEL,
+		PBD_CRTFCTS_TYPE,
+		PBD_CRTFCTS_IDNTY,
+		PBD_NATIVE_ADDRS,
+		PBD_HOME_ADDRS,
+		PBD_MRRGE_STTS,
+		PBD_ACCSTN,
+		PBD_EXCTN_TERM,
+		PBD_SNTN_TERM,
+		TO_CHAR(PBD_SNTN_START_DATE,'YYYY-MM-DD') PBD_SNTN_START_DATE,
+		TO_CHAR(PBD_SNTN_END_DATE,'YYYY-MM-DD') PBD_SNTN_END_DATE,
+		TO_CHAR(PBD_ENTRY_PRISONER_DATE,'YYYY-MM-DD') PBD_ENTRY_PRISONER_DATE,
+		PBD_SPRT_MNGE,
+		PBD_CHARGE_TYPE,
+		PBD_TYPE_INDC,
+		PBD_STTS_INDC,
+		PBD_SNTN_DPRVTN_TERM
+		FROM V_PRISONER_MASTER 
+		<where>
+			<if test="pbdCusNumber != null and pbdCusNumber != ''">
+				PBD_CUS_NUMBER= #{pbdCusNumber}
+			</if>
+			<if test="pbdPrsnrIdnty != null and pbdPrsnrIdnty != ''">
+				AND PBD_PRSNR_IDNTY = #{pbdPrsnrIdnty}
+			</if>
+		</where>
+	</select>
+	
+	<select id="listPrisonerAccount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PAC_CUS_NUMBER,
+		PAC_PRSNR_IDNTY,
+		PAC_PRSNR_NAME,
+		TO_CHAR(PAC_OPEN_DATE,'YYYY-MM-DD') AS PAC_OPEN_DATE,
+		PAC_BASE_AMNT,
+		PAC_CONSUME_AMNT,
+		PAC_STORE_AMNT,
+		PAC_TOTAL_AMNT,
+		PAC_STTS_INDC,
+		PAC_FROZEN_DATE
+		FROM V_PRISONER_ACCOUNT
+		<where>
+			<if test="pacCusNumber != null and pacCusNumber != ''">
+				AND PAC_CUS_NUMBER = #{pacCusNumber}
+			</if>
+			<if test="pacPrsnrIdnty != null and pacPrsnrIdnty != ''">
+				AND PAC_PRSNR_IDNTY = #{pacPrsnrIdnty}
+			</if>
+		</where>
+	</select>
+	
+	<select id="listPrisonerIncome" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PIN_CUS_NUMBER,
+		PIN_PRSNR_IDNTY,
+		PIN_PRSNR_NAME,
+		PIN_TYPE,
+		PIN_AMNT,
+		TO_CHAR(PIN_DATE,'YYYY-MM-DD') AS PIN_DATE
+		FROM V_PRISONER_INCOME
+		<where>
+			<if test="pinCusNumber != null and pinCusNumber != ''">
+				AND PIN_CUS_NUMBER = #{pinCusNumber}
+			</if>
+			<if test="pinPrsnrIdnty != null and pinPrsnrIdnty != ''">
+				AND PIN_PRSNR_IDNTY = #{PINPRSNRIDNTY}
+			</if>
+		</where>
+		ORDER BY PIN_DATE DESC
+	</select>
+
+	<select id="listPrisonerPay" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PPA_CUS_NUMBER,
+		PPA_PRSNR_IDNTY,
+		PPA_PRSNR_NAME,
+		PPA_TYPE,
+		PPA_AMNT,
+		TO_CHAR(PPA_DATE,'YYYY-MM-DD') AS PPA_DATE
+		FROM V_PRISONER_PAY
+		<where>
+			<if test="ppaCusNumber != null and ppaCusNumber != ''">
+				AND PPA_CUS_NUMBER = #{ppaCusNumber}
+			</if>
+			<if test="ppaPrsnrIdnty!=null and ppaPrsnrIdnty!=''">
+				AND PPA_PRSNR_IDNTY = #{ppaPrsnrIdnty}
+			</if>
+		</where>
+		ORDER BY ppa_date desc
+	</select>
+
+	<select id="listPrisonerConsume" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PCO_CUS_NUMBER,
+		PCO_PRSNR_IDNTY,
+		PCO_PRSNR_NAME,
+		PCO_WARE_NAME,
+		PCO_UNIT_PRICE,
+		PCO_COUNT,
+		PCO_UNIT,
+		PCO_ORDER,
+		TO_CHAR(PCO_TIME,'YYYY-MM-DD')AS PCO_TIME
+		FROM V_PRISONER_CONSUME
+		<where>
+			<if test="pcoCusNumber != null and pcoCusNumber != ''">
+				AND PCO_CUS_NUMBER = #{pcoCusNumber}
+			</if>
+			<if test="pcoPrsnrIdnty != null and pcoPrsnrIdnty != ''">
+				AND PCO_PRSNR_IDNTY = #{pcoPrsnrIdnty}
+			</if>
+		</where>
+		ORDER BY PCO_TIME DESC
+	</select>
+
+	<select id="listPoliticsReward" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PPR_CUS_NUMBER,
+		PPR_CUS_NAME,
+		PPR_RECORD_ID,
+		PPR_PRSN_AREA_IDNTY,
+		PPR_PRSN_AREA,
+		PPR_PRSNR_IDNTY,
+		PPR_PRSNR_NAME,
+		PPR_RWRD_TYPE,
+		PPR_RWRD_BASIS,
+		PPR_RWRD_START_DATE,
+		PPR_RWRD_END_DATE,
+		PPR_CRTE_TIME,
+		PPR_CRTE_USER_ID,
+		PPR_UPDT_TIME,
+		PPR_UPDT_USER_ID
+		FROM V_PRISONER_POLITICS_REWARD
+		<where>
+			<if test="pprCusNumber != null and pprCusNumber != ''">
+				AND PPR_CUS_NUMBER = #{pprCusNumber}
+			</if>
+			<if test="pprPrsnrIdnty != null and pprPrsnrIdnty != ''">
+				AND PPR_PRSNR_IDNTY = #{pprPrsnrIdnty}
+			</if>
+		</where>
+	</select>
+
+	<select id="listPoliticsPunish" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PPP_CUS_NUMBER,
+		PPP_PNSH_BASIS,
+		PPP_RECORD_ID,
+		PPP_PRSN_AREA,
+		PPP_PNSH_TYPE,
+		PPP_PRSNR_IDNTY,
+		PPP_PNSH_TERM,
+		PPP_CRTE_USER_ID,
+		TO_CHAR(PPR_PNSH_DATE,'YYYY-MM-DD') AS PPR_PNSH_DATE,
+		TO_CHAR(PPR_REPORT_DATE,'YYYY-MM-DD') AS PPR_REPORT_DATE,
+		PPP_ILLEGAL_FACT,
+		PPP_PNSH_REASON,
+		PPP_CRTE_TIME,
+		PPP_UPDT_TIME,
+		PPP_UPDT_USER_ID,
+		PPR_CUS_NAME,
+		PPR_PRSN_AREA_IDNTY,
+		PPR_PRSNR_NAME
+		FROM V_PRISONER_POLITICS_PUNISH
+		<where>
+			<if test="pppCusNumber != null and pppCusNumber != ''">
+				AND PPP_CUS_NUMBER = #{pppCusNumber}
+			</if>
+			<if test="pppPrsnrIdnty!=null and pppPrsnrIdnty != ''">
+				AND PPP_PRSNR_IDNTY = #{pppPrsnrIdnty}
+			</if>
+		</where>
+		ORDER BY ppr_pnsh_date DESC
+	</select>
+	
+	<select id="listJudicialReward" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PJR_CUS_NUMBER,
+		PJR_CUS_NAME,
+		PJR_PRSN_AREA_IDNTY,
+		PJR_RECORD_ID,
+		PJR_PRSNR_IDNTY,
+		PJR_PRSNR_NAME,
+		PJR_CHNG_RANGE,
+		PJR_CHNG_TYPE,
+		PJR_OVERPLUS_TERM,
+		TO_CHAR(PJR_TEST_START_DATE,'YYYY-MM-DD') AS PJR_TEST_START_DATE,
+		TO_CHAR(PJR_TEST_END_DATE,'YYYY-MM-DD') AS PJR_TEST_END_DATE,
+		PJR_TRAIL_OFFICE_CITY,
+		PJR_TRAIL_OFFICE_TYPE,
+		TO_CHAR(PJR_TRAIL_DATE,'YYYY-MM-DD') AS PJR_TRAIL_DATE,
+		PJR_TRAIL_IDNTY,
+		PJR_ACCSTN,
+		PJR_SNTN_TYPE,
+		TO_CHAR(PJR_PRSN_START_DATE,'YYYY-MM-DD') AS PJR_PRSN_START_DATE,
+		TO_CHAR(PJR_PRSN_END_DATE,'YYYY-MM-DD') AS PJR_PRSN_END_DATE,
+		PJR_DPRVTN_POWER,
+		TO_CHAR(PJR_TRAIL_SEND_DATE,'YYYY-MM-DD') AS
+		PJR_TRAIL_SEND_DATE,
+		PJR_CRTE_TIME,
+		PJR_CRTE_USER_ID,
+		PJR_UPDT_TIME,
+		PJR_UPDT_USER_ID
+		FROM V_PRISONER_JUDICIAL_REWARD
+		<where>
+			<if test=" pjrCusNumber != null and  pjrCusNumber != ''">
+				AND PJR_CUS_NUMBER = #{ pjrCusNumber}
+			</if>
+			<if test=" pjrPrsnrIdnty != null and  pjrPrsnrIdnty != ''">
+				AND PJR_PRSNR_IDNTY = #{ pjrPrsnrIdnty}
+			</if>
+		</where>
+		ORDER BY PJR_TRAIL_DATE DESC
+	</select>
+ 
+	<select id="listPrisonerHealthy" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PHE_CUS_NUMBER,
+		PHE_CUS_NAME,
+		PHE_PRSN_AREA_IDNTY,
+		PHE_PRSN_AREA,
+		PHE_PRSNR_IDNTY,
+		PHE_PRSNR_NAME,
+		PHE_TEMPERATURE,
+		PHE_BREATH,
+		PHE_PULSE,
+		PHE_BLOOD_PRESSURE,
+		PHE_HEIGHT,
+		PHE_WEIGHT,
+		PHE_DEVELOP,
+		PHE_NUTRITION,
+		PHE_SENSE,
+		PHE_MIND,
+		PHE_FACE,
+		PHE_POSITION,
+		PHE_BASE_SUMMARY,
+		PHE_BASE_SIGN,
+		PHE_IN_HEART,
+		PHE_IN_LUNG,
+		PHE_IN_STOMACH,
+		PHE_IN_LIVER,
+		PHE_IN_SPLEEN,
+		PHE_IN_OTHER,
+		PHE_IN_SUMMARY,
+		PHE_IN_SIGN,
+		PHE_OUT_SKIN,
+		PHE_OUT_LYMPH_NODE,
+		PHE_OUT_HEAD,
+		PHE_OUT_THYROID,
+		PHE_OUT_BREAST,
+		PHE_OUT_SPINE,
+		PHE_OUT_JOINT,
+		PHE_OUT_REPRODUCTION,
+		PHE_OUT_OTHER,
+		PHE_OUT_SUMMARY,
+		PHE_OUT_SIGN,
+		PHE_LEFT_VISION,
+		PHE_RIGHT_VISION,
+		PHE_LEFT_CORRECT_VISION,
+		PHE_RIGHT_CORRECT_VISION,
+		PHE_LEFT_LISTEM,
+		PHE_RIGHT_LISTEM,
+		PHE_EYE,
+		PHE_EAR,
+		PHE_NOSE,
+		PHE_ORAL,
+		PHE_FACIAL_SUMMARY,
+		PHE_FACIAL_SIGN,
+		PHE_CRTE_TIME,
+		PHE_CRTE_USER_ID,
+		PHE_UPDT_TIME,
+		PHE_UPDT_USER_ID
+		FROM CDS_PRISONER_HEALTHY
+		<where>
+			<if test=" pheCusNumber != null and  pheCusNumber != ''">
+				AND PHE_CUS_NUMBER = #{pheCusNumber}
+			</if>
+			<if test=" phePrsnrIdnty!=null and  phePrsnrIdnty!=''">
+				AND PHE_PRSNR_IDNTY = #{ phePrsnrIdnty}
+			</if>
+		</where>
+	</select>
+	
+	<select id="listPrisonerMeeting" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PME_CUS_NUMBER,
+		PME_PRSNR_IDNTY,
+		PME_PRSNR_NAME,
+		PME_TYPE_INDC,
+		TO_CHAR(PME_START_TIME,'YYYY-MM-DD HH24:MI:SS') AS PME_START_TIME,
+		TO_CHAR(PME_END_TIME,'YYYY-MM-DD HH24:MI:SS') AS PME_END_TIME,
+		PME_MEETING_PEOPLE,
+		PCM_REMARK,
+		PME_COMMENT,
+		PCM_REPEAT_PEOPLE,
+		PME_SOUND_NAME
+		FROM CDS_PRISONER_MEETING
+		<where>
+			<if test=" pmeCusNumber != null and  pmeCusNumber != ''">
+				AND PME_CUS_NUMBER = #{pmeCusNumber}
+			</if>
+			<if test=" pmePrsnrIdnty != null and  pmePrsnrIdnty != ''">
+				AND PME_PRSNR_IDNTY = #{ pmePrsnrIdnty}
+			</if>
+		</where>
+		ORDER BY PME_START_TIME DESC
+	</select>
+	
+	<select id="listPrisonerPhone" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT PPH_CUS_NUMBER,
+		PPH_PRSNR_IDNTY,
+		PPH_PRSNR_NAME,
+		PPH_TYPE_INDC,
+		TO_CHAR(PPH_START_TIME,'YYYY-MM-DD HH24:MI:SS') AS PPH_START_TIME,
+		TO_CHAR(PPH_END_TIME,'YYYY-MM-DD HH24:MI:SS') AS PPH_END_TIME,
+		PPH_PHONE,
+		PPH_LISTEN_PEOPLE,
+		PPH_LISTEN_COUNT,
+		PPH_COMMENT,
+		PPH_COMMENT_PEOPLE,
+		PPH_RELATIVE_NAME,
+		PPH_RELATION,
+		PPH_SOUND_NAME,
+		PPH_REMARK
+		FROM CDS_PRISONER_PHONE
+		<where>
+			<if test=" pphCusNumber != null and  pphCusNumber != ''">
+				AND PPH_CUS_NUMBER = #{pphCusNumber}
+			</if>
+			<if test=" pphPrsnrIdnty != null and  pphPrsnrIdnty != ''">
+				AND PPH_PRSNR_IDNTY = #{pphPrsnrIdnty}
+			</if>
+		</where>
+		ORDER BY PPH_START_TIME DESC
+	</select>
+	
+	<select id="queryPrisonerBriefInfo" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT A.PBD_CUS_NUMBER,
+		A.PBD_PRSNR_IDNTY,
+		A.PBD_PRSNR_NAME,
+		A.PBD_PRSN_AREA_IDNTY,
+		PBD_SEX_INDC,
+		TO_CHAR(PBD_BIRTH_DATE, 'YYYY-MM-DD') AS PBD_BIRTH_DATE,
+		PBD_NATION,
+		PBD_NATIVE_ADDRS,
+		PBD_CLTRE_LEVEL,
+		PBD_STTS_INDC,
+		TO_CHAR(PBD_EXCTN_END_DATE, 'YYYY-MM-DD') AS PBD_PRSN_END_DATE,
+		PBD_DOOR_CARD_IDNTY,
+		PBD_TYPE_INDC,
+		PBD_REMARK,
+		PBD_ACCSTN,
+		PBD_SNTN_TYPE,
+		PBD_SNTN_TERM,
+		TO_CHAR(PBD_DETAIN_DATE, 'YYYY-MM-DD') AS PBD_DETAIN_DATE,
+		TO_CHAR(PBD_SNTN_START_DATE, 'YYYY-MM-DD') AS PBD_SNTN_START_DATE,
+		TO_CHAR(PBD_SNTN_END_DATE, 'YYYY-MM-DD') AS PBD_SNTN_END_DATE
+		FROM V_PRISONER_MASTER A
+		<if test="para != null and para == 0">
+			where PBD_STTS_INDC = 1 
+			AND PBD_PRSNR_STTS_INDC IN (11,12,13,14,15,19) 
+			AND PBD_CUS_NUMBER = #{cusNumber}
+			<if test="prsnrIdnty!=null and prsnrIdnty!=''"> 
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName!=null and prsnrName!=''">
+				AND PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty!=null and prsnAreaIdnty!=''">
+				AND PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			</if>
+		</if>
+		<if test="para != null and para == 1">                      
+			INNER JOIN V_PRISONER_RELEASE B ON
+		    	(A.PBD_CUS_NUMBER = B.CPR_CUS_NUMBER AND A.PBD_PRSNR_IDNTY = B.CPR_PRSNR_IDNTY)
+			where B.CPR_CUS_NUMBER = #{cusNumber}
+			AND TRUNC(B.CPR_UPDT_TIME) = TRUNC(SYSDATE) 
+			AND B.CPR_STTS_INDC = 1
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND CPR_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty} || '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND CPR_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty != null and prsnAreaIdnty != ''">
+				AND CPR_DPRTMNT_IDNTY = #{prsnAreaIdnty}
+			</if>
+		</if>
+		<if test="para != null and para == 2">
+			where PBD_CUS_NUMBER = #{cusNumber}
+			AND TRUNC(PBD_DETAIN_DATE) = TRUNC(SYSDATE) 
+			AND PBD_DETAIN_TYPE = 1
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">              
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty} || '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty!=null and prsnAreaIdnty!=''">
+				AND PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			</if>
+		</if>
+		<if test="para != null and para == 3">                                   
+			where PBD_STTS_INDC = 1 
+			AND PBD_CUS_NUMBER = #{cusNumber}
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty} || '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty != null and prsnAreaIdnty != ''">
+				AND PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			</if>
+			<if test="prsnrSttsIndc != null and prsnrSttsIndc != ''">  
+				AND PBD_PRSNR_STTS_INDC = #{prsnrSttsIndc}
+			</if>
+		</if>
+		<if test="para != null and para == 5">      
+			where PBD_STTS_INDC = 1 AND
+			PBD_PRSNR_STTS_INDC IN (11,12,13,14,15,19) 
+			AND PBD_CUS_NUMBER = #{cusNumber}
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty} || '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_PRSN_AREA_IDNTY NOT IN
+				<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach> 
+			</if>
+		</if>
+		<if test="para != null and para == 6">       
+			INNER JOIN V_PRISONER_RELEASE B ON
+				(A.PBD_CUS_NUMBER = B.CPR_CUS_NUMBER AND A.PBD_PRSNR_IDNTY = B.CPR_PRSNR_IDNTY)
+			where B.CPR_CUS_NUMBER = #{cusNumber}
+			AND TRUNC(b.CPR_UPDT_TIME) = TRUNC(SYSDATE)
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND CPR_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty} || '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND CPR_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND B.CPR_DPRTMNT_IDNTY NOT IN
+				<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</if>   
+		<if test="para != null and para == 7">         
+			where PBD_CUS_NUMBER = #{cusNumber}
+			AND TRUNC(PBD_DETAIN_DATE) = TRUNC(SYSDATE) 
+			AND PBD_DETAIN_TYPE = 1
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND CPR_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName!=null and prsnrName!=''">
+				AND CPR_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_PRSN_AREA_IDNTY NOT IN
+				<foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</if>
+		<if test="para != null and para == 8">               
+			where PBD_STTS_INDC = 1 
+			AND PBD_CUS_NUMBER = #{cusNumber}
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND CPR_PRSNR_IDNTY  LIKE  '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND CPR_PRSNR_NAME LIKE  '%' || #{prsnrName} || '%'
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_PRSN_AREA_IDNTY NOT IN
+				 <foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>)
+			</if>
+			<if test="prsnrSttsIndc != null and prsnrSttsIndc != ''">
+				AND pbd_prsnr_stts_indc = #{prsnrSttsIndc}
+			</if>
+		</if>
+		<if test="para != null and para == 9">
+			where PBD_STTS_INDC = 1 
+			AND PBD_CUS_NUMBER = #{cusNumber}
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND CPR_PRSNR_IDNTY  LIKE '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND CPR_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_PRSN_AREA_IDNTY NOT IN
+               <foreach collection="dprmtList" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<if test="pbdTypeIndc!=null and pbdTypeIndc != ''">  <!-- pbd_prsnr_stts_indc 传入22提回重审 15是特许离监 -->
+				AND pbd_type_indc = #{pbdTypeIndc}
+			</if>
+		</if>
+		<if test="para != null and para == 10">
+			where PBD_CUS_NUMBER = #{cusNumber} 
+			AND PBD_PRSNR_IDNTY = #{prsnrIdnty}
+		</if>
+	</select>
+	
+	<select id="queryHospitalPrisonerInfo" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT PBD_CUS_NUMBER,
+		PBD_PRSNR_IDNTY,
+		PBD_PRSNR_NAME,
+		PBD_PRSN_AREA_IDNTY,
+		PBD_SEX_INDC,
+		TO_CHAR(PBD_BIRTH_DATE, 'YYYY-MM-DD') AS PBD_BIRTH_DATE,
+		PBD_NATION,
+		PBD_NATIVE_ADDRS,
+		PBD_CLTRE_LEVEL,
+		PBD_STTS_INDC,
+		TO_CHAR(PBD_EXCTN_END_DATE, 'YYYY-MM-DD') AS PBD_PRSN_END_DATE,
+		PBD_DOOR_CARD_IDNTY,
+		PBD_TYPE_INDC,
+		PBD_REMARK,
+		PBD_ACCSTN,
+		PBD_SNTN_TYPE,
+		PBD_SNTN_TERM,
+		TO_CHAR(PBD_DETAIN_DATE, 'YYYY-MM-DD') AS PBD_DETAIN_DATE,
+		TO_CHAR(PBD_SNTN_START_DATE, 'YYYY-MM-DD') AS PBD_SNTN_START_DATE,
+		TO_CHAR(PBD_SNTN_END_DATE, 'YYYY-MM-DD') AS PBD_SNTN_END_DATE
+		FROM V_PRISONER_MASTER 
+		<where>
+		<if test="para != null and para == 0">
+			<if test="cusNumber != null and cusNumber != ''">
+		   		PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty!=null and prsnAreaIdnty!=''">	           
+				AND	PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			</if>
+			AND PBD_STTS_INDC = 1 
+			AND PBD_PRSNR_STTS_INDC = 12                          <!-- 外出就医 -->
+		</if>
+		<if test="para != null and para == 1">
+			<if test="cusNumber != null and cusNumber != ''">
+			    PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName!=null and prsnrName!=''">
+				AND PBD_PRSNR_NAME LIKE  '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty!=null and prsnAreaIdnty!=''">
+				AND	PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			</if>
+			AND PBD_STTS_INDC = 1 
+			AND PBD_PRSNR_STTS_INDC = 13                        <!-- 住院 -->
+		</if>
+		<if test="para != null and para == 2">
+		    <if test="cusNumber != null and cusNumber != ''">
+				PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="prsnrIdnty != null and prsnrIdnty != ''">
+				AND PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+			</if>
+			<if test="prsnrName != null and prsnrName != ''">
+				AND PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			</if>
+			<if test="prsnAreaIdnty != null and prsnAreaIdnty != ''">
+			    AND	PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			</if>
+			AND PBD_STTS_INDC = 1 
+			AND (PBD_PRSNR_STTS_INDC = 12 OR PBD_PRSNR_STTS_INDC = 13)    <!-- 就医所有 -->
+		</if>
+		</where>
+	</select>
+	
+	<select id="queryPrisonerXJF" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		<!-- 邪教犯 -->
+		SELECT B.PBD_CUS_NUMBER AS PBD_CUS_NUMBER,
+		B.PBD_PRSNR_IDNTY AS PBD_PRSNR_IDNTY,
+		B.PBD_PRSNR_NAME AS PBD_PRSNR_NAME,
+		B.PBD_PRSN_AREA_IDNTY AS PBD_PRSN_AREA_IDNTY,
+		B.PBD_SEX_INDC AS PBD_SEX_INDC,
+		TO_CHAR(B.PBD_BIRTH_DATE, 'YYYY-MM-DD') AS PBD_BIRTH_DATE,
+		B.PBD_NATION AS PBD_NATION,
+		B.PBD_NATIVE_ADDRS AS PBD_NATIVE_ADDRS,
+		B.PBD_CLTRE_LEVEL AS PBD_CLTRE_LEVEL,
+		B.PBD_STTS_INDC AS PBD_STTS_INDC,
+		TO_CHAR(B.PBD_EXCTN_END_DATE, 'YYYY-MM-DD') AS PBD_PRSN_END_DATE,
+		B.PBD_DOOR_CARD_IDNTY AS PBD_DOOR_CARD_IDNTY,
+		B.PBD_TYPE_INDC AS PBD_TYPE_INDC,
+		B.PBD_REMARK AS PBD_REMARK,
+		B.PBD_ACCSTN AS PBD_ACCSTN,
+		B.PBD_SNTN_TYPE AS PBD_SNTN_TYPE,
+		B.PBD_SNTN_TERM AS PBD_SNTN_TERM,
+		TO_CHAR(B.PBD_DETAIN_DATE, 'YYYY-MM-DD') AS PBD_DETAIN_DATE,
+		TO_CHAR(B.PBD_SNTN_START_DATE, 'YYYY-MM-DD') AS PBD_SNTN_START_DATE,
+		TO_CHAR(B.PBD_SNTN_END_DATE, 'YYYY-MM-DD') AS PBD_SNTN_END_DATE
+		FROM V_PRISONER_XJF A LEFT JOIN V_PRISONER_MASTER B ON (A.PBD_PRSNR_IDNTY = B.PBD_PRSNR_IDNTY)
+        <where>
+			<if test="para != null and para == 0">
+				<if test="cusNumber != null and cusNumber != ''">
+			    	A.PBD_CUS_NUMBER = #{cusNumber} 
+				</if>
+				<if test="prsnrIdnty != null and prsnrIdnty != ''">
+					AND A.PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+				</if>
+				<if test="prsnrName != null and prsnrName != ''">
+					AND A.PBD_PRSNR_NAME LIKE  '%' || #{prsnrName} || '%'
+				</if>
+				<if test="prsnAreaIdnty != null and prsnAreaIdnty != ''">
+					AND	A.PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryPrisonerWZF" resultType="java.util.HashMap" parameterType="java.util.HashMap">  
+		<!-- 维族犯 -->
+  		SELECT B.PBD_CUS_NUMBER AS PBD_CUS_NUMBER,
+       	B.PBD_PRSNR_IDNTY AS PBD_PRSNR_IDNTY,
+		B.PBD_PRSNR_NAME AS PBD_PRSNR_NAME,
+	   	B.PBD_PRSN_AREA_IDNTY AS PBD_PRSN_AREA_IDNTY,
+	   	B.PBD_SEX_INDC AS PBD_SEX_INDC,
+	   	TO_CHAR(B.PBD_BIRTH_DATE, 'YYYY-MM-DD') AS PBD_BIRTH_DATE,
+	  	B.PBD_NATION AS PBD_NATION,
+	   	B.PBD_NATIVE_ADDRS AS PBD_NATIVE_ADDRS,
+	   	B.PBD_CLTRE_LEVEL AS PBD_CLTRE_LEVEL,
+	   	B.PBD_STTS_INDC AS PBD_STTS_INDC,
+	   	TO_CHAR(B.PBD_EXCTN_END_DATE, 'YYYY-MM-DD') AS PBD_PRSN_END_DATE,
+       	B.PBD_DOOR_CARD_IDNTY AS PBD_DOOR_CARD_IDNTY,
+       	B.PBD_TYPE_INDC AS PBD_TYPE_INDC,
+       	B.PBD_REMARK AS PBD_REMARK,
+       	B.PBD_ACCSTN AS PBD_ACCSTN,
+       	B.PBD_SNTN_TYPE AS PBD_SNTN_TYPE,
+       	B.PBD_SNTN_TERM AS PBD_SNTN_TERM,
+ 		TO_CHAR(B.PBD_DETAIN_DATE, 'YYYY-MM-DD') AS PBD_DETAIN_DATE,
+       	TO_CHAR(B.PBD_SNTN_START_DATE, 'YYYY-MM-DD') AS PBD_SNTN_START_DATE,
+       	TO_CHAR(B.PBD_SNTN_END_DATE, 'YYYY-MM-DD') AS PBD_SNTN_END_DATE
+		FROM V_PRISONER_WZF A LEFT JOIN V_PRISONER_MASTER B ON(A.PBD_PRSNR_IDNTY = B.PBD_PRSNR_IDNTY)	      
+		<where>
+			<if test="para != null and para == 0">
+				<if test="cusNumber != null and cusNumber != ''">
+		    		B.PBD_CUS_NUMBER= #{cusNumber} 
+				</if>
+				<if test="prsnrIdnty != null and prsnrIdnty != ''">
+			   		AND A.PBD_PRSNR_IDNTY LIKE '%' || #{prsnrIdnty}|| '%'
+			    </if>
+			    <if test="prsnrName != null and prsnrName != ''">
+			    	AND A.PBD_PRSNR_NAME LIKE '%' || #{prsnrName} || '%'
+			    </if>
+			    <if test="prsnAreaIdnty != null and prsnAreaIdnty != ''">
+			    	AND	A.PBD_PRSN_AREA_IDNTY = #{prsnAreaIdnty}
+			    </if>
+		    </if>
+		</where>
+	</select>
+	
+	<select id="queryXJPrisonerCount" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM V_PRISON_COUNT_PRISONERS A 
+		<where> 
+			A.JY_ID = #{cusNumber}  
+			AND A.JQ_ID = '0'
+		</where>
+	</select>
+	
+	<select id="queryXJPrsnrCountPrisonList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM V_PRISON_COUNT_PRISONERS A 
+		where A.JY_ID != '0' 
+		AND A.JQ_ID = '0' 
+		AND A.LB = #{type}
+    </select>
+    
+	<select id="queryXJPrsnrCountDrptmntList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    	SELECT * FROM V_PRISON_COUNT_PRISONERS B 
+    	<where>
+			<if test="cusNumber != null and cusNumber != ''">
+            	AND B.JY_ID = #{cusNumber} 
+            </if>	
+            <if test="type != null and type != ''">
+            	AND B.LB = #{type}  
+            </if>	
+    	    AND B.JQ_ID != 0 
+		</where>
+    </select>
+    
+	<select id="queryPrisonerInfo" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	   SELECT A.JY_ID AS PBD_CUS_NUMBER,
+	   A.JQ_ID AS PBD_PRSN_AREA_IDNTY,
+	   A.BH AS PBD_PRSNR_IDNTY,
+	   A.XM AS PBD_PRSNR_NAME,
+	   A.ZJ_LX AS PBD_CRTFCTS_TYPE,
+	   A.ZJ_HM AS PBD_CRTFCTS_IDNTY,
+	   A.BQ_WH AS PBD_CLTRE_LEVEL,
+       A.BQ_HY AS PBD_MRRGE_STTS,
+       A.BQ_DW AS PBD_ARRST_CMPNY,
+       A.MZ AS PBD_NATION,
+       A.JG AS PBD_NATIVE_ADDRS,
+       A.JTZZ_DZ AS PBD_HOME_ADDRS,
+	   A.XB AS PBD_SEX_INDC,
+	   TO_CHAR(A.CS_RQ, 'YYYY-MM-DD')  AS PBD_BIRTH_DATE,
+	   A.SY_LB AS PBD_DETAIN_TYPE,
+	   A.FGDJ AS PBD_SPRT_MNGE,
+	   A.ZM AS PBD_ACCSTN,
+	   A.XZ AS PBD_SNTN_TYPE,
+	   A.XQ AS PBD_SNTN_TERM,
+	   TO_CHAR(A.XQ_QR, 'YYYY-MM-DD') AS PBD_SNTN_START_DATE,
+	   TO_CHAR(A.XQ_ZR, 'YYYY-MM-DD') AS PBD_SNTN_END_DATE,
+	   TO_CHAR(A.RJ_RQ, 'YYYY-MM-DD') AS PBD_ENTRY_PRISONER_DATE,
+	   A.ZD_AF AS PBD_SERIOUS_PRSNR,
+	   DECODE(A.ZD_AF, NULL, 0, 1) AS PBD_TYPE_INDC,
+	   A.BDZZQL AS PBD_SNTN_DPRVTN_TERM,
+	   A.ZX_XQ AS PBD_EXCTN_TERM,
+	   TO_CHAR(A.ZX_XQ_QR , 'YYYY-MM-DD') AS PBD_EXCTN_STRAT_DATE,
+	   TO_CHAR(A.ZX_XQ_ZR , 'YYYY-MM-DD') AS PBD_EXCTN_END_DATE,
+	   TO_CHAR (A.RJ_RQ, 'YYYY-MM-DD') AS PBD_DETAIN_DATE,
+	   A.ZF_ZT1 AS PBD_STTS_INDC,
+	   A.ZF_ZT2 AS PBD_PRSNR_STTS_INDC
+       <if test="type == 1" >                          <!-- 实押罪犯-->
+       		FROM V_PRISONER_INPRISON_ALL A 
+       </if>
+       <if test="type == 2" >                         <!-- 实押危安犯 -->
+       		FROM V_PRISONER_INPRISON_WAF A 
+       </if>
+       <if test="type == 4" >                          <!--  加戴戒具犯 -->
+       		FROM V_PRISONER_INPRISON_JDJJ A 
+       </if>
+       <if test="type == 5" >                          <!--  关禁闭 -->
+       		FROM V_PRISONER_INPRISON_GJB A 
+       </if>
+       <if test="type == 6" >                          <!-- 隔离审查 -->
+        	FROM V_PRISONER_INPRISON_GLSC A
+       </if>
+       <if test="type == 7" >                          <!-- 立案侦查 -->
+        	FROM V_PRISONER_INPRISON_LAZC A
+       </if>
+       <if test="type == 8" >                          <!-- 解回重审 -->
+       		FROM V_PRISONER_INPRISON_JHCS A                   
+       </if>
+       <if test="type == 9" >                          <!-- 暂予监外执行 -->
+        	FROM V_PRISONER_INPRISON_ZYJW A
+       </if>
+        <if test="type == 10" >                          <!-- 老病残-->
+        	FROM V_PRISONER_INPRISON_LBC A
+       </if>
+       <where>
+			<if test="cusNumber != null and cusNumber != ''">
+            	AND A.JY_ID = #{cusNumber} 
+            </if>	
+            <if test="prsnAreaIdnty != null and prsnAreaIdnty != ''">
+            	AND A.JQ_ID = #{prsnAreaIdnty} 
+            </if>	
+            <if test="prsnrIdnty != null and prsnrIdnty != ''">
+		   		AND A.BH LIKE '%' || #{prsnrIdnty} || '%'
+		    </if>
+		    <if test="prsnrName != null and prsnrName != ''">
+		    	AND A.XM LIKE '%' || #{prsnrName} || '%'
+		    </if>
+	    </where>
+   	</select>
+</mapper>

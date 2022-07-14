@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Descripgion: 风险采集数据操作类映射文件FxcjMapper -->
+<mapper namespace="com.cesgroup.prison.wghf.wgzrfp.dao.CcodeDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.wghf.wgzrfp.entiy.Ccode">
+		<id column="ID" jdbcType="CHAR" property="id" />
+	    <result column="ID" jdbcType="CHAR" property="id" />
+	    <result column="PARENT_ID" jdbcType="CHAR" property="parentId" />
+	    <result column="NAME" jdbcType="CHAR" property="name" />
+	    <result column="CODE_KEY" jdbcType="CHAR" property="codeKey" />
+	    <result column="ORDER_NUMBER" jdbcType="DECIMAL" property="orderNumber" />
+	    <result column="IS_VALID" jdbcType="CHAR" property="isValid" />
+	    <result column="IS_GROUP" jdbcType="CHAR" property="isGroup" />
+	    <result column="TYPE" jdbcType="CHAR" property="type" />
+	    <result column="GROUP_KEY" jdbcType="CHAR" property="groupKey" />
+	</resultMap>
+	
+	<!-- 基本字段 -->
+	<sql id="Base_Column_List">
+		ID, PARENT_ID, NAME, CODE_KEY, ORDER_NUMBER, IS_VALID, IS_GROUP, TYPE, GROUP_KEY
+	</sql>
+	
+	<!-- 分页查询风险采集数据 -->
+	<select id="findByCodeKey" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+		<include refid="Base_Column_List"></include>
+		FROM
+		AUTH.T_C_CODE
+		WHERE
+		GROUP_KEY ='4.13.6'
+	</select> 
+	
+</mapper>

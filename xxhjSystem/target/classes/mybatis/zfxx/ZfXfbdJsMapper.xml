@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.zfxx.zfxfbd.dao.ZfXfbdJsDao" >
+  
+  <insert id="insertHisBySource">
+    insert into ZFINFO.T_ZF_XFBD_JS_HIS select * from ZFINFO.T_ZF_XFBD_JS
+  </insert>
+  
+  <delete id="deleteAll">
+    delete from ZFINFO.T_ZF_XFBD_JS
+  </delete>
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+	 insert into ZFINFO.T_ZF_XFBD_JS (ID, C_ID, C_ZFBH, 
+      D_LJRQ, D_CBRQ, D_ZXRQ, D_URL_TIME, D_CJRQ, C_CJPC, C_JY_ID) values 
+	<foreach collection="list" item="item" index="index" separator=",">
+	(#{item.id,jdbcType=VARCHAR}, #{item.cId,jdbcType=VARCHAR}, #{item.cZfbh,jdbcType=VARCHAR}, 
+      #{item.dLjrq,jdbcType=VARCHAR}, #{item.dCbrq,jdbcType=VARCHAR}, #{item.dZxrq,jdbcType=VARCHAR}, 
+      #{item.dUrlTime,jdbcType=DATE}, #{item.dCjrq,jdbcType=TIMESTAMP}, #{item.cCjpc,jdbcType=VARCHAR}, #{item.cJyId,jdbcType=VARCHAR})
+	</foreach>
+  </insert>
+  
+</mapper>

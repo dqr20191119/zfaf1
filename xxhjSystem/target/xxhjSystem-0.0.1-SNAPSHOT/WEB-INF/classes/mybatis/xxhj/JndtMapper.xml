@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.jndt.dao.JndtMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity"> 
+		SELECT A.* FROM CDS_PRISON_ACTIVITY_RECORD A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="getHistoryById" resultType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity"> 
+		SELECT A.* FROM CDS_PRISON_ACTIVITY_RECORD_H A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity" resultType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity">
+		SELECT A.* FROM prison.CDS_PRISON_ACTIVITY_RECORD 
+		A WHERE A.PAR_OUT_CATEGORY != 'BJ' AND A.PAR_STATUS = '1' 
+		<if test="parCusNumber != null and parCusNumber != ''">
+			AND PAR_CUS_NUMBER = #{parCusNumber}
+		</if>
+		<if test="parDprtmntId != null and parDprtmntId != ''">
+			AND PAR_DPRTMNT_ID = #{parDprtmntId}
+		</if>
+		<if test="parStatus != null and parStatus != ''">
+			AND PAR_STATUS = #{parStatus}
+		</if>
+		<if test="parOutCategory != null and parOutCategory != ''">
+			AND PAR_OUT_CATEGORY = #{parOutCategory}
+		</if>
+
+		ORDER BY case when A.PAR_BACK_TIME IS NULL then 0 
+		else 1 end,  A.PAR_START_TIME DESC
+	</select> 
+	
+	<select id="findHistoryList" parameterType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity" resultType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity">
+		SELECT A.* FROM CDS_PRISON_ACTIVITY_RECORD_H
+		A WHERE A.PAR_OUT_CATEGORY != 'BJ' 
+		<if test="parCusNumber != null and parCusNumber != ''">
+			AND PAR_CUS_NUMBER = #{parCusNumber}
+		</if>
+		<if test="parDprtmntId != null and parDprtmntId != ''">
+			AND PAR_DPRTMNT_ID = #{parDprtmntId}
+		</if>
+		<if test="relationId != null and relationId != ''">
+			AND RELATION_ID = #{relationId}
+		</if>
+		ORDER BY A.PAR_UPDT_TIME DESC
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity" resultType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity">
+		SELECT A.*,B.PBD_LOGIN_NAME, B.PBD_DRPTMNT_ID, B.PBD_POLICE_IDNTY, B.PBD_TALK_NUM, C.ARD_OPRTN_STTS_INDC 
+		FROM CDS_PRISON_ACTIVITY_RECORD A 
+		LEFT JOIN V_POLICE_BASE_DTLS B ON A.PAR_START_REPORTER_ID = B.PBD_USER_ID
+		LEFT JOIN CDS_ALERT_RECORD_DTLS C ON C.ID = A.PAR_REMARK
+		WHERE TO_CHAR(A.PAR_START_TIME,'YYYY-MM-DD') = TO_CHAR (SYSDATE,'YYYY-MM-DD')
+			<if test='parStatus == "1"'> 
+				AND A.PAR_STATUS = '1'  		
+			</if>
+			<if test="parCusNumber != null and parCusNumber != ''">
+				AND PAR_CUS_NUMBER = #{parCusNumber} 
+			</if>
+			<if test="parDprtmntId != null and parDprtmntId != ''">
+				AND PAR_DPRTMNT_ID = #{parDprtmntId}
+			</if>
+			ORDER BY case when A.PAR_BACK_TIME IS NULL then 0 
+		    else 1 end, A.PAR_START_TIME DESC
+	</select>
+	 
+	<select id="deleteByIds" parameterType="arraylist"> 
+		DELETE FROM CDS_PRISON_ACTIVITY_RECORD A
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+ 	</select>
+ 	
+ 	<select id="insertHistory" parameterType="com.cesgroup.prison.xxhj.jndt.entity.JndtEntity"> 
+		INSERT INTO CDS_PRISON_ACTIVITY_RECORD_H A( 
+        "ID","RELATION_ID","PAR_CUS_NUMBER","PAR_DPRTMNT_ID","PAR_START_TIME","PAR_POLICE_ID","PAR_PRISONER_COUNT","PAR_OUT_CATEGORY","PAR_OUT_REASON","PAR_START_REPORTER_ID","PAR_REMARK","PAR_START_CRTE_TIME","PAR_START_CRTE_USER_ID","PAR_BACK_TIME","PAR_BACK_REPORTER_ID","PAR_BACK_REMARK","PAR_UPDT_TIME","PAR_UPDT_USER_ID","PAR_START_REPORTER_NAME","PAR_POLICE_NAME","PAR_START_CRTE_USER_NAME","PAR_BACK_REPORTER_NAME","PAR_UPDT_USER_NAME","PAR_POLICE_COUNT","PAR_WAF_COUNT","PAR_XSF_COUNT") 
+    	
+    	SELECT sys_guid(),"ID","PAR_CUS_NUMBER","PAR_DPRTMNT_ID","PAR_START_TIME","PAR_POLICE_ID","PAR_PRISONER_COUNT","PAR_OUT_CATEGORY","PAR_OUT_REASON","PAR_START_REPORTER_ID","PAR_REMARK","PAR_START_CRTE_TIME","PAR_START_CRTE_USER_ID","PAR_BACK_TIME","PAR_BACK_REPORTER_ID","PAR_BACK_REMARK","PAR_UPDT_TIME","PAR_UPDT_USER_ID","PAR_START_REPORTER_NAME","PAR_POLICE_NAME","PAR_START_CRTE_USER_NAME","PAR_BACK_REPORTER_NAME","PAR_UPDT_USER_NAME","PAR_POLICE_COUNT","PAR_WAF_COUNT","PAR_XSF_COUNT"
+		FROM CDS_PRISON_ACTIVITY_RECORD B WHERE B.ID =#{id}
+ 	</select>
+ 	
+ 	<select id="deleteByRelationIds" parameterType="arraylist"> 
+ 		<!-- 删除历史表中数据 -->
+		DELETE FROM CDS_PRISON_ACTIVITY_RECORD_H A  
+		WHERE A.RELATION_ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+ 	</select>
+ 	
+ 	<select id="countPeople" parameterType="arraylist" resultType="java.util.Map">  
+ 		<!-- LB 1是所有人数  0是未回人数统计 -->
+		SELECT* FROM( SELECT NVL(PAR_DPRTMNT_ID,'0') AS PAR_DPRTMNT_ID, 1 AS LB, SUM(PAR_PRISONER_COUNT) AS PAR_PRISONER_COUNT, SUM( PAR_POLICE_COUNT) AS PAR_POLICE_COUNT FROM
+		(SELECT A.* FROM CDS_PRISON_ACTIVITY_RECORD_H A,(SELECT RELATION_ID,MIN(PAR_UPDT_TIME) PAR_UPDT_TIME FROM CDS_PRISON_ACTIVITY_RECORD_H  GROUP BY RELATION_ID) B 
+		WHERE A.PAR_UPDT_TIME = B.PAR_UPDT_TIME AND A.RELATION_ID = B.RELATION_ID AND TO_CHAR( PAR_START_TIME,'YYYY-MM-DD') = TO_CHAR (SYSDATE,'YYYY-MM-DD')
+ 	    <if test="parCusNumber != null and parCusNumber != ''">
+		 AND PAR_CUS_NUMBER = #{parCusNumber}
+		</if>
+		<if test="parOutCategory != null and parOutCategory != ''">
+		 AND PAR_OUT_CATEGORY = #{parOutCategory}
+		</if>
+		)GROUP BY ROLLUP(PAR_DPRTMNT_ID) ORDER BY PAR_DPRTMNT_ID ASC) 
+		UNION ALL 
+		SELECT* FROM( SELECT NVL(PAR_DPRTMNT_ID,'0') AS PAR_DPRTMNT_ID, 0 AS LB, SUM(PAR_PRISONER_COUNT) AS PAR_PRISONER_COUNT,
+		SUM(PAR_POLICE_COUNT) AS PAR_POLICE_COUNT FROM CDS_PRISON_ACTIVITY_RECORD  
+		WHERE PAR_BACK_TIME IS NULL AND PAR_OUT_CATEGORY != 'BJ' 
+		AND TO_CHAR( PAR_START_TIME,'YYYY-MM-DD') = TO_CHAR (SYSDATE,'YYYY-MM-DD')
+		<if test="parCusNumber != null and parCusNumber != ''">
+		 AND PAR_CUS_NUMBER = #{parCusNumber}
+		</if>
+		<if test="parOutCategory != null and parOutCategory != ''">
+		 AND PAR_OUT_CATEGORY = #{parOutCategory}
+		</if>
+		GROUP BY ROLLUP(PAR_DPRTMNT_ID) ORDER BY PAR_DPRTMNT_ID ASC)
+ 	</select>
+
+	<update id="completeJndtByIds" parameterType="arraylist">
+		UPDATE CDS_PRISON_ACTIVITY_RECORD A
+		SET PAR_BACK_TIME = sysdate, PAR_STATUS = '2'
+		WHERE A.ID IN
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		AND PAR_STATUS != '2'
+		AND PAR_BACK_TIME IS NULL
+	</update>
+
+	<update id="completeJndtByRelationIds" parameterType="arraylist">
+		UPDATE CDS_PRISON_ACTIVITY_RECORD_H A
+		SET PAR_BACK_TIME = sysdate, PAR_STATUS = '2'
+		WHERE A.ID IN
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		AND PAR_STATUS != '2'
+		AND PAR_BACK_TIME IS NULL
+	</update>
+
+
+</mapper>
