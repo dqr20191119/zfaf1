@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 外来人员信息数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.foreign.dao.ForeignPeopleDtlsMapper">
+	<!-- 外来人员信息表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.foreign.entity.ForeignPeopleDtls">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="FPD_ID_CARD_TYPE_INDC" jdbcType="CHAR" property="fpdIdCardTypeIndc" />
+		<result column="FPD_ID_CARD_CODE" jdbcType="CHAR" property="fpdIdCardCode" />
+		<result column="FPD_PEOPLE_NAME" jdbcType="CHAR" property="fpdPeopleName" />
+		<result column="FPD_SEX_INDC" jdbcType="CHAR" property="fpdSexIndc" />
+		<result column="FPD_AGE" jdbcType="CHAR" property="fpdAge" />
+		<result column="FPD_PHONE" jdbcType="CHAR" property="fpdPhone" />
+		<result column="FPD_FAMILY_ADDRS" jdbcType="CHAR" property="fpdFamilyAddrs" />
+		<result column="FPD_REGISTER_ID" jdbcType="CHAR" property="fpdRegisterId" />
+	</resultMap>
+	<!-- 外来人员信息表-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, FPD_ID_CARD_TYPE_INDC, FPD_ID_CARD_CODE, FPD_PEOPLE_NAME, FPD_SEX_INDC, FPD_AGE, 
+		FPD_PHONE, FPD_FAMILY_ADDRS, FPD_REGISTER_ID
+	</sql>
+	
+    <select id="listPeople" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select
+        ID as id,
+        FPD_ID_CARD_TYPE_INDC as "fpdIdCardTypeIndc",
+        FPD_ID_CARD_CODE as "fpdIdCardCode",
+        FPD_PEOPLE_NAME as "fpdPeopleName",
+        FPD_SEX_INDC as "fpdSexIndc",
+        FPD_AGE as "fpdAge",
+        FPD_PHONE as "fpdPhone",
+        FPD_FAMILY_ADDRS as "fpdFamilyAddrs",
+        FPD_REGISTER_ID as "fpdRegisterId"
+        from CDS_FOREIGN_PEOPLE_DTLS
+        <where>
+            <if test="id!=null and id!=''">
+                and FPD_REGISTER_ID = #{id}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByFpdRegisterId" parameterType="java.lang.String">
+        delete from CDS_FOREIGN_PEOPLE_DTLS
+        where FPD_REGISTER_ID = #{id}
+    </delete>
+
+
+    <delete id="deleteByIds" parameterType="List">
+        delete from CDS_FOREIGN_PEOPLE_DTLS
+        where FPD_REGISTER_ID in
+        <foreach collection="list" item="id" index="index" separator=","
+                 open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <insert id="insertPeopleInfo" parameterType="com.cesgroup.prison.foreign.entity.ForeignPeopleDtls" >
+        insert into CDS_FOREIGN_PEOPLE_DTLS
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="fpdIdCardTypeIndc != null" >
+                FPD_ID_CARD_TYPE_INDC,
+            </if>
+            <if test="fpdIdCardCode != null" >
+                FPD_ID_CARD_CODE,
+            </if>
+            <if test="fpdPeopleName != null" >
+                FPD_PEOPLE_NAME,
+            </if>
+            <if test="fpdSexIndc != null" >
+                FPD_SEX_INDC,
+            </if>
+            <if test="fpdAge != null" >
+                FPD_AGE,
+            </if>
+            <if test="fpdPhone != null" >
+                FPD_PHONE,
+            </if>
+            <if test="fpdFamilyAddrs != null" >
+                FPD_FAMILY_ADDRS,
+            </if>
+            <if test="fpdRegisterId != null" >
+                FPD_REGISTER_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=CHAR},
+            </if>
+            <if test="fpdIdCardTypeIndc != null" >
+                #{fpdIdCardTypeIndc,jdbcType=CHAR},
+            </if>
+            <if test="fpdIdCardCode != null" >
+                #{fpdIdCardCode,jdbcType=CHAR},
+            </if>
+            <if test="fpdPeopleName != null" >
+                #{fpdPeopleName,jdbcType=CHAR},
+            </if>
+            <if test="fpdSexIndc != null" >
+                #{fpdSexIndc,jdbcType=CHAR},
+            </if>
+            <if test="fpdAge != null" >
+                #{fpdAge,jdbcType=CHAR},
+            </if>
+            <if test="fpdPhone != null" >
+                #{fpdPhone,jdbcType=CHAR},
+            </if>
+            <if test="fpdFamilyAddrs != null" >
+                #{fpdFamilyAddrs,jdbcType=CHAR},
+            </if>
+            <if test="fpdRegisterId != null" >
+                #{fpdRegisterId,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="findPeopleByCardCode" parameterType="hashmap" resultType="hashmap">
+        SELECT TOP 1 * FROM CDS_FOREIGN_PEOPLE_DTLS
+        <where>
+            <if test="fpdIdCardCode != null ">
+                FPD_ID_CARD_CODE = #{fpdIdCardCode, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="getPeopleList" parameterType="hashmap" resultType="hashmap">
+        select
+        ID,FPD_ID_CARD_TYPE_INDC,FPD_ID_CARD_CODE,FPD_PEOPLE_NAME,FPD_SEX_INDC,FPD_AGE,FPD_PHONE,FPD_FAMILY_ADDRS
+        FR_CUS_NUMBER,TO_CHAR(FR_TIME,'yyyy-mm-dd hh24:mi:ss') FR_TIME,FR_TYPE
+        from V_CDS_FOREIGN_PEOPLE_DTLS
+        <where>
+            <if test="cusNumber!=null and cusNumber != ''">
+                AND FR_CUS_NUMBER = #{cusNumber, jdbcType=VARCHAR}
+            </if>
+            <if test="beginTime != null">
+                AND FR_TIME &gt;= #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                AND FR_TIME &lt;= #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            AND FR_TYPE != 0
+        </where>
+        order by FR_TIME desc
+    </select>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.door.dao.PoliceInoutHisMapper">
+	<!-- 民警进出历史记录-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.door.entity.PoliceInoutHisEntity">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="PIR_CUS_NUMBER" jdbcType="CHAR" property="pirCusNumber" />
+		<result column="PIR_BRUSH_DATE" jdbcType="TIMESTAMP" property="pirBrushDate" />
+		<result column="PIR_POLICE_IDNTY" jdbcType="CHAR" property="pirPoliceIdnty" />
+		<result column="PIR_POLICE_NAME" jdbcType="CHAR" property="pirPoliceName" />
+		<result column="PIR_ENTER_TIME" jdbcType="TIMESTAMP" property="pirEnterTime" />
+		<result column="PIR_LEAVE_TIME" jdbcType="TIMESTAMP" property="pirLeaveTime" />
+		<result column="PIR_DPRTMNT_ID" jdbcType="CHAR" property="pirDprtmntId" />
+		<result column="PIR_DPRTMNT_NAME" jdbcType="CHAR" property="pirDprtmntName" />
+		<result column="PIR_DOOR_CARD_IDNTY" jdbcType="CHAR" property="pirDoorCardIdnty" />
+		<result column="PIR_PEOPLE_TYPE_INDC" jdbcType="CHAR" property="pirPeopleTypeIndc" />
+		<result column="PIR_REMARK" jdbcType="CHAR" property="pirRemark" />
+		<result column="PIR_CRTE_TIME" jdbcType="TIMESTAMP" property="pirCrteTime" />
+		<result column="PIR_CRTE_USER_ID" jdbcType="CHAR" property="pirCrteUserId" />
+		<result column="PIR_UPDT_TIME" jdbcType="TIMESTAMP" property="pirUpdtTime" />
+		<result column="PIR_UPDT_USER_ID" jdbcType="CHAR" property="pirUpdtUserId" />
+		<result column="PIR_DOOR_IDNTY" jdbcType="CHAR" property="pirDoorIdnty" />
+		<result column="PIR_DOOR_NAME" jdbcType="CHAR" property="pirDoorName" />
+		<result column="PIR_DOOR_CARD_TYPE_IDNTY" jdbcType="CHAR" property="pirDoorCardTypeIdnty" />
+		<result column="PIR_PARENT_DPRTMNT_ID" jdbcType="CHAR" property="pirParentDprtmntId" />
+		<result column="PIR_PARENT_DPRTMNT_NAME" jdbcType="CHAR" property="pirParentDprtmntName" />
+		<result column="PIR_AB_FLAG" jdbcType="CHAR" property="pirAbFlag" />
+		<result column="PIR_IN_OUT_INDC" jdbcType="CHAR" property="pirInOutIndc" />
+	</resultMap>
+	
+	<!-- 民警进出历史记录-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, PIR_CUS_NUMBER, PIR_BRUSH_DATE, PIR_POLICE_IDNTY, PIR_POLICE_NAME, PIR_ENTER_TIME, 
+		PIR_LEAVE_TIME, PIR_DPRTMNT_ID, PIR_DPRTMNT_NAME, PIR_DOOR_CARD_IDNTY, PIR_PEOPLE_TYPE_INDC, 
+		PIR_REMARK, PIR_CRTE_TIME, PIR_CRTE_USER_ID, PIR_UPDT_TIME, PIR_UPDT_USER_ID, PIR_DOOR_IDNTY, 
+		PIR_DOOR_NAME, PIR_DOOR_CARD_TYPE_IDNTY, PIR_PARENT_DPRTMNT_ID, PIR_PARENT_DPRTMNT_NAME, 
+		PIR_AB_FLAG, PIR_IN_OUT_INDC
+	</sql>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.door.entity.PoliceInoutHisEntity" resultType="com.cesgroup.prison.door.entity.PoliceInoutHisEntity">		
+		SELECT A.* FROM CDS_POLICE_INOUT_RECORD_H A 
+		<where>
+			<if test="pirCusNumber != null and pirCusNumber != ''">
+				AND A.PIR_CUS_NUMBER = #{pirCusNumber} 
+			</if>
+			<if test="pirPoliceIdnty != null and pirPoliceIdnty != ''">
+				AND A.PIR_POLICE_IDNTY = #{pirPoliceIdnty} 
+			</if>
+			<if test='notNullLeaveTime == "0"'>
+				AND A.PIR_LEAVE_TIME IS NULL 
+			</if>
+		</where>
+	</select>
+	
+	<select id="updateByCondition" parameterType="com.cesgroup.prison.door.entity.PoliceInoutHisEntity" resultType="com.cesgroup.prison.door.entity.PoliceInoutHisEntity">		
+		UPDATE CDS_POLICE_INOUT_RECORD_H A SET A.PIR_LEAVE_TIME = #{pirLeaveTime}, A.PIR_UPDT_TIME = SYSDATE 
+		<where>
+			<if test="pirCusNumber != null and pirCusNumber != ''">
+				AND A.PIR_CUS_NUMBER = #{pirCusNumber} 
+			</if>
+			<if test="pirPoliceIdnty != null and pirPoliceIdnty != ''">
+				AND A.PIR_POLICE_IDNTY = #{pirPoliceIdnty} 
+			</if>
+			<if test='notNullLeaveTime == "0"'>
+				AND A.PIR_LEAVE_TIME IS NULL 
+			</if>
+		</where>
+	</select>
+	
+	<select id="saveBySelect" parameterType="com.cesgroup.prison.door.entity.PoliceInoutEntity" resultType="com.cesgroup.prison.door.entity.PoliceInoutEntity">		
+		INSERT INTO CDS_POLICE_INOUT_RECORD_H 	
+		SELECT A.* FROM CDS_POLICE_INOUT_RECORD A 
+		<where>
+			<if test="pirCusNumber != null and pirCusNumber != ''">
+				AND A.PIR_CUS_NUMBER = #{pirCusNumber}
+			</if>
+			<if test="pirPoliceIdnty != null and pirPoliceIdnty != ''">
+				AND A.PIR_POLICE_IDNTY = #{pirPoliceIdnty}
+			</if>
+		</where>
+	</select>
+</mapper>

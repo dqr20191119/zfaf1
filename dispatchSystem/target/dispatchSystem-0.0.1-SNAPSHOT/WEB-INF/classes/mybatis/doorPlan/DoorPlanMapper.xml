@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.doorPlan.dao.DoorPlanMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select ID,
+		PDO_CUS_NUMBER,
+		PDO_PLAN_NAME,
+		PDO_REMARK,
+		PDO_STTS_INDC,
+		PDO_TIME_LIMIT,
+		PDO_OFF_TIME
+		from CDS_PLAN_DOOR
+		<where>
+			<if test="doorPlanEntity.pdoCusNumber != null and doorPlanEntity.pdoCusNumber!='' ">
+				AND pdo_cus_number = #{doorPlanEntity.pdoCusNumber}
+			</if>
+			<if test="doorPlanEntity.pdoPlanName != null and doorPlanEntity.pdoPlanName!='' ">
+				AND pdo_plan_name like concat('%', #{doorPlanEntity.pdoPlanName}, '%')
+			</if>
+			<if test="doorPlanEntity.pdoSttsIndc != null and doorPlanEntity.pdoSttsIndc!='' ">
+				AND pdo_stts_indc = #{doorPlanEntity.pdoSttsIndc}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_PLAN_DOOR WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+
+		DELETE FROM CDS_PLAN_DOOR_RLTN WHERE dor_plan_id in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+
+	</delete>
+	
+	<update id="updateSttsByIds" parameterType="java.util.HashMap">
+		UPDATE CDS_PLAN_DOOR set PDO_STTS_INDC = #{stts}  WHERE ID in
+		<foreach collection="ids" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_PLAN_DOOR
+		<set>
+			<if test="doorPlanEntity.pdoPlanName != null and doorPlanEntity.pdoPlanName!='' ">
+				pdo_plan_name = #{doorPlanEntity.pdoPlanName},
+			</if>
+
+			<if test="doorPlanEntity.pdoRemark != null and doorPlanEntity.pdoRemark!='' ">
+				pdo_remark = #{doorPlanEntity.pdoRemark},
+			</if>
+
+			<if test="doorPlanEntity.pdoUpdtTime != null and doorPlanEntity.pdoUpdtTime!='' ">
+				pdo_updt_time = #{doorPlanEntity.pdoUpdtTime},
+			</if>
+
+			<if test="doorPlanEntity.pdoUpdtUserId != null and doorPlanEntity.pdoUpdtUserId!='' ">
+				pdo_updt_user_id = #{doorPlanEntity.pdoUpdtUserId},
+			</if>
+
+			<if test="doorPlanEntity.pdoSttsIndc != null and doorPlanEntity.pdoSttsIndc!='' ">
+				pdo_stts_indc = #{doorPlanEntity.pdoSttsIndc},
+			</if>
+
+			<if test="doorPlanEntity.pdoTimeLimit != null and doorPlanEntity.pdoTimeLimit!='' ">
+				pdo_time_limit = #{doorPlanEntity.pdoTimeLimit},
+			</if>
+
+			<if test="doorPlanEntity.pdoOffTime != null and doorPlanEntity.pdoOffTime!='' ">
+				pdo_off_time = #{doorPlanEntity.pdoOffTime},
+			</if>
+		</set>
+		<where>
+			<if test="doorPlanEntity.id !=null and doorPlanEntity.id !=''">
+				AND (TRIM(#{doorPlanEntity.id}) is null or id = #{doorPlanEntity.id})
+			</if>
+		</where>
+	</update>
+
+
+	<select id="findAllPlan" parameterType="hashmap" resultType="hashmap">
+		SELECT A.id "id", A.pdo_plan_name "name",
+		(SELECT COUNT(1) || '' FROM CDS_PLAN_DOOR_RLTN B WHERE B.DOR_PLAN_ID = A.id AND B.dor_cus_number = A.pdo_cus_number) "childrenNum"
+		FROM CDS_PLAN_DOOR A
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND A.pdo_cus_number = #{cusNumber}
+			</if>
+			<if test="stts != null and stts != ''">
+				AND A.pdo_stts_indc = #{stts}
+			</if>
+		</where>
+		ORDER BY A.PDO_CRTE_TIME asc
+	</select>
+	
+	<select id="findAllDoorRltn" parameterType="hashmap" resultType="hashmap">
+		SELECT A.DOR_DOOR_ID "id", A.DOR_DOOR_NAME "name", B.DCB_CAMERA_ID "cameraId", B.DCB_STTS_INDC "sttsIndc", 0 "isParent", 1 "open" 
+		FROM CDS_PLAN_DOOR_RLTN A 
+		LEFT JOIN DVC_DOOR_CONTROL_BASE_DTLS B ON (A.DOR_CUS_NUMBER = B.DCB_CUS_NUMBER AND A.DOR_DOOR_ID = B.ID)
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.DOR_CUS_NUMBER = #{cusNumber} 
+			</if>
+			<if test="id != null and id != ''"> 
+				AND A.DOR_PLAN_ID = #{id} 
+			</if>
+		</where>
+		ORDER BY A.DOR_EXEC_ORDER asc
+	</select>
+</mapper>

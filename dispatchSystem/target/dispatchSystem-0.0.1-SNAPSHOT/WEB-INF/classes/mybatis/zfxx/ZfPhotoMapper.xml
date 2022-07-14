@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 罪犯照片数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.zfxx.zfphoto.dao.ZfPhotoDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zfphoto.entity.ZfPhoto">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="C_ZFBH" jdbcType="CHAR" property="cZfbh" />
+		<result column="C_ID" jdbcType="CHAR" property="cId" />
+		<result column="C_XM" jdbcType="CHAR" property="cXm" />
+		<result column="C_ZPLB" jdbcType="CHAR" property="cZplb" />
+		<result column="C_STORAGEID" jdbcType="CHAR" property="cStorageid" />
+		<result column="D_CJSJ" jdbcType="DATE" property="dCjsj" />
+		<result column="C_FILE_NAME" jdbcType="CHAR" property="cFileName" />
+		<result column="C_FILE_PATH" jdbcType="CHAR" property="cFilePath" />
+		<result column="D_URL_TIME" jdbcType="DATE" property="dUrlTime" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, C_ZFBH, C_ID, C_XM, C_ZPLB, C_STORAGEID, D_CJSJ, C_FILE_NAME, C_FILE_PATH, D_URL_TIME
+	</sql>
+	
+	<!-- 根据罪犯标识、照片类别，查询罪犯照片信息 -->
+	<select id="findByCIdAndCStorageid" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_PHOTO T1 
+		WHERE T1.C_ID = '${cId}' AND T1.C_STORAGEID = '${cStorageid}'
+	</select>
+	
+	<!-- 根据同步日期，查询罪犯照片信息 -->
+	<select id="findExistsZfDqztByDUrlTime" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_PHOTO T1 
+		WHERE EXISTS (
+			SELECT * FROM ZFINFO.T_ZF_DQZT T2 WHERE T1.C_ID = T2.C_ID 
+			<if test="dUrlTime != null and dUrlTime != ''" >
+				AND TO_CHAR(T2.D_URL_TIME, 'yyyy-MM-dd') = '${dUrlTime}'
+			</if>
+		)
+	</select>
+	
+	<!-- 根据罪犯标识、照片类别，查询罪犯照片信息 -->
+	<select id="findExistsZfDqztByCSzjyAndCSzjqAndDUrlTime" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_PHOTO T1 
+		WHERE EXISTS (
+			SELECT * FROM ZFINFO.T_ZF_DQZT T2 WHERE T1.C_ID = T2.C_ID 
+			<if test="cSzjy != null and cSzjy != ''" >
+				AND T2.C_SZJY = '${cSzjy}'
+			</if>
+			<if test="cSzjq != null and cSzjq != ''" >
+				AND T2.C_SZJQ = '${cSzjq}'
+			</if>
+			<if test="dUrlTime != null and dUrlTime != ''" >
+				AND TO_CHAR(T2.D_URL_TIME, 'yyyy-MM-dd') = '${dUrlTime}'
+			</if>
+		)
+	</select>
+
+	<!-- 查询指定监狱所有罪犯照片 -->
+	<select id="selectByJy" resultMap="BaseResultMap">
+		select a.ID, a.C_ZFBH, a.C_ID, a.C_XM, a.C_ZPLB, a.C_STORAGEID, a.D_CJSJ, a.C_FILE_NAME, a.C_FILE_PATH, a.D_URL_TIME 
+		from ZFINFO.T_ZF_PHOTO a, ZFINFO.T_ZF_JBXX b where a.c_zfbh=b.c_zfbh and b.c_jy_id='1149'
+	</select>
+	
+  <insert id="insertHisBySource">
+    insert into ZFINFO.T_ZF_PHOTO_HIS select * from ZFINFO.T_ZF_PHOTO
+  </insert>
+  
+  <delete id="deleteAll">
+    delete from ZFINFO.T_ZF_PHOTO
+  </delete>
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+	insert into ZFINFO.T_ZF_PHOTO (ID, C_ZFBH, C_ID, 
+      C_XM, C_ZPLB, C_STORAGEID, D_CJSJ, C_FILE_NAME, C_FILE_PATH, D_URL_TIME, D_CJRQ, C_CJPC) values
+	<foreach collection="list" item="item" index="index" separator=",">
+	(#{item.id,jdbcType=VARCHAR}, #{item.cZfbh,jdbcType=VARCHAR}, #{item.cId,jdbcType=VARCHAR}, 
+      #{item.cXm,jdbcType=VARCHAR}, #{item.cZplb,jdbcType=VARCHAR}, #{item.cStorageid,jdbcType=VARCHAR}, 
+      #{item.dCjsj,jdbcType=DATE}, #{item.cFileName,jdbcType=VARCHAR}, #{item.cFilePath,jdbcType=VARCHAR}, 
+      #{item.dUrlTime,jdbcType=DATE}, #{item.dCjrq,jdbcType=TIMESTAMP}, #{item.cCjpc,jdbcType=VARCHAR})
+	</foreach>
+  </insert>
+  
+</mapper>

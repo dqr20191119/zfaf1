@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cesgroup.prison.aqfxyp.wxpg.dao.WxpgMapper">
+	 
+	<select id="getWxpg" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select decode(wx_dj,'1','gd','2','zd','3','dd',wx_dj) as wxdj, count(wx_dj) as rs 
+		from yzgl.t_yzgl_yqfx_jbxx where wx_dj is not null 
+		<if test="cusNumber != null and cusNumber != ''">
+			and jy_id = #{cusNumber}
+		</if>
+		<if test="deptCode != null and deptCode != ''">
+			and jq_id = #{deptCode}
+		</if>
+		group by wx_dj
+	</select>
+	
+	<select id="findJd" parameterType="java.util.HashMap" resultType="com.cesgroup.prison.aqfxyp.wxpg.entity.WxpgEntity">
+		SELECT 
+			T1.*
+		FROM ZFINFO.T_HY_WXPG T1
+		INNER JOIN ZFINFO.T_ZF_DQZT T2 ON T1.ZFBH = T2.C_ZFBH AND T1.DQGYDW = T2.C_SZJY
+		WHERE 1 = 1
+		AND (T1.blwxpgjl = '极高' OR T1.zswxpgjl = '极高' OR T1.ttwxpgjl = '极高')
+		<if test="orgName != null and orgName != ''">
+			AND T1.DQGYDW = #{orgName}
+		</if>
+		<if test="deptName != null and deptName != ''">
+			AND T2.C_SZJQ = #{deptName}
+		</if>
+	</select>
+	
+	<select id="findGd" parameterType="java.util.HashMap" resultType="com.cesgroup.prison.aqfxyp.wxpg.entity.WxpgEntity">
+		SELECT 
+			T1.*
+		FROM ZFINFO.T_HY_WXPG T1
+		INNER JOIN ZFINFO.T_ZF_DQZT T2 ON T1.ZFBH = T2.C_ZFBH AND T1.DQGYDW = T2.C_SZJY
+		WHERE 1 = 1
+		AND (T1.blwxpgjl = '高度' or T1.zswxpgjl = '高度' or T1.ttwxpgjl = '高度')
+		AND (T1.blwxpgjl != '极高' and T1.zswxpgjl != '极高' and T1.ttwxpgjl != '极高')
+		<if test="orgName != null and orgName != ''">
+			AND T1.DQGYDW = #{orgName}
+		</if>
+		<if test="deptName != null and deptName != ''">
+			AND T2.C_SZJQ = #{deptName}
+		</if>
+	</select>
+	
+	<select id="findZd" parameterType="java.util.HashMap" resultType="com.cesgroup.prison.aqfxyp.wxpg.entity.WxpgEntity">
+		SELECT 
+			T1.*
+		FROM ZFINFO.T_HY_WXPG T1
+		INNER JOIN ZFINFO.T_ZF_DQZT T2 ON T1.ZFBH = T2.C_ZFBH AND T1.DQGYDW = T2.C_SZJY
+		WHERE 1 = 1
+		and (T1.blwxpgjl != '高度' and T1.zswxpgjl != '高度' and T1.ttwxpgjl != '高度')
+		and (T1.blwxpgjl != '极高' and T1.zswxpgjl != '极高' and T1.ttwxpgjl != '极高')
+		and (T1.blwxpgjl = '中度' or T1.zswxpgjl = '中度' or T1.ttwxpgjl = '中度')
+		<if test="orgName != null and orgName != ''">
+			AND T1.DQGYDW = #{orgName}
+		</if>
+		<if test="deptName != null and deptName != ''">
+			AND T2.C_SZJQ = #{deptName}
+		</if>
+	</select>
+	
+	<select id="findDd" parameterType="java.util.HashMap" resultType="com.cesgroup.prison.aqfxyp.wxpg.entity.WxpgEntity">
+		SELECT 
+			T1.*
+		FROM ZFINFO.T_HY_WXPG T1
+		INNER JOIN ZFINFO.T_ZF_DQZT T2 ON T1.ZFBH = T2.C_ZFBH AND T1.DQGYDW = T2.C_SZJY
+		WHERE 1 = 1
+		and (T1.blwxpgjl = '低度' and T1.zswxpgjl = '低度' and T1.ttwxpgjl = '低度')
+		<if test="orgName != null and orgName != ''">
+			AND T1.DQGYDW = #{orgName}
+		</if>
+		<if test="deptName != null and deptName != ''">
+			AND T2.C_SZJQ = #{deptName}
+		</if>
+	</select>
+	
+	<select id="findAllFx" parameterType="java.util.HashMap" resultType="com.cesgroup.prison.aqfxyp.wxpg.entity.WxpgEntity">
+		select id as id, xm as zfxm, zf_bh as zfbh, zs_qxx as zswxpgdf, blgj_qxx as blwxpgdf, tt_qxx as ttwxpgdf, 
+		decode(wx_dj,'1','高度危险','2','中度危险','3','低度危险','低度危险') as pgdw 
+		from yzgl.t_yzgl_yqfx_jbxx where wx_dj is not null
+		<if test="cusNumber != null and cusNumber != ''">
+			and jy_id = #{cusNumber}
+		</if>
+		<if test="deptCode != null and deptCode != ''">
+			and jq_id = #{deptCode}
+		</if>
+		<if test="wxdj != null and wxdj != ''">
+			and wx_dj = #{wxdj}
+		</if>
+		order by wx_dj asc
+	</select>
+	
+</mapper>

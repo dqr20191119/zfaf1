@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.wwjg.fxdgl.dao.FxdglMapper">
+	<!-- 风险点实体类基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="CODE" jdbcType="CHAR" property="code" />
+		<result column="NAME" jdbcType="CHAR" property="name" />
+		<result column="C_CJR_ID" jdbcType="CHAR" property="cCjrId" />
+		<result column="C_CJR" jdbcType="CHAR" property="cCjr" />
+		<result column="C_CJ_RQ" jdbcType="TIMESTAMP" property="cCjRq" />
+		<result column="C_GXR_ID" jdbcType="CHAR" property="cGxrId" />
+		<result column="C_GXR" jdbcType="CHAR" property="cGxr" />
+		<result column="C_GX_RQ" jdbcType="TIMESTAMP" property="cGxRq" />
+		<result column="SCFLG" jdbcType="CHAR" property="scflg" />
+		<result column="BZ" jdbcType="CHAR" property="bz" />
+		<result column="SJFW_ID" jdbcType="CHAR" property="sjfwId" />
+		<result column="SJFW_NAME" jdbcType="CHAR" property="sjfwName" />
+		<result column="WWJG_ID" jdbcType="CHAR" property="wwjgId" />
+		<result column="WWJG_NAME" jdbcType="CHAR" property="wwjgName" />
+		<result column="QZDJ_ID" jdbcType="CHAR" property="qzdjId" />
+		<result column="QZDJ_NAME" jdbcType="CHAR" property="qzdjName" />
+		<result column="SXSM" jdbcType="CHAR" property="sxsm" />
+		<result column="SJLY_ID" jdbcType="CHAR" property="sjlyId" />
+		<result column="SJLY_NAME" jdbcType="CHAR" property="sjlyName" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, CODE, NAME, C_CJR_ID, C_CJR, C_CJ_RQ, C_GXR_ID, C_GXR, C_GX_RQ, SCFLG, BZ, SJFW_ID, SJFW_NAME, WWJG_ID, WWJG_NAME, 
+		QZDJ_ID, QZDJ_NAME, SXSM, SJLY_ID, SJLY_NAME
+	</sql>
+	
+	<!-- 根据删除标志状态位，查询风险点数据list -->
+	<select id="findByScflg" resultMap="BaseResultMap" useCache="true">
+		select 
+			<include refid="Base_Column_List"></include>
+		from 
+			T_AQFX_FXD T1 
+		where T1.SCFLG = '${scflg}'
+	</select>
+	
+	<!-- 根据数据范围ID、删除标志状态位，查询风险点数据list -->
+	<select id="findBySjfwIdAndScflg" resultMap="BaseResultMap" useCache="true">
+		select 
+			<include refid="Base_Column_List"></include>
+		from 
+			T_AQFX_FXD T1 
+		where T1.SJFW_ID = '${sjfwId}' and T1.SCFLG = '${scflg}'
+	</select>
+	
+	<select id="getById" resultType="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity"> 
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,SJFW_ID,
+				SJFW_NAME,WWJG_ID,WWJG_NAME,QZDJ_ID,QZDJ_NAME,SXSM,SJLY_ID,SJLY_NAME
+		from T_AQFX_FXD
+		where SCFLG='1' and id=#{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity" resultType="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity">
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,SJFW_ID,
+				SJFW_NAME,WWJG_ID,WWJG_NAME,QZDJ_ID,QZDJ_NAME,SXSM,SJLY_ID,SJLY_NAME
+		from T_AQFX_FXD
+		WHERE  SCFLG = '1' 
+		<if test="code != null and code != ''">
+			AND CODE = #{code}
+		</if>
+		<if test="name != null and name != ''">
+			AND NAME = #{name}
+		</if>
+		<if test="sjfwName != null and sjfwName != ''">
+			AND SJFW_ID IN (select ID from PRISON.T_AQFX_SJFW WHERE CODE=#{sjfwName} )
+		</if>
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity" resultType="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity">
+		SELECT A.* FROM T_AQFX_FXD A WHERE  A.SCFLG = '1' 
+	  <if test="wwjgId != null and wwjgId != ''">
+			AND WWJG_ID = #{wwjgId}
+		</if>
+		<if test="sjfwId != null and sjfwId != ''">
+			AND SJFW_ID = #{sjfwId}
+		</if>
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE T_AQFX_FXD A SET A.SCFLG = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	
+	<select id="getByCode" resultType="com.cesgroup.prison.wwjg.fxdgl.entity.FxdglEntity"> 
+		select ID,CODE,NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,SJFW_ID,
+				SJFW_NAME,WWJG_ID,WWJG_NAME,QZDJ_ID,QZDJ_NAME,SXSM,SJLY_ID,SJLY_NAME
+		from T_AQFX_FXD
+		where SCFLG='1' and CODE=#{code}
+	</select>
+</mapper>

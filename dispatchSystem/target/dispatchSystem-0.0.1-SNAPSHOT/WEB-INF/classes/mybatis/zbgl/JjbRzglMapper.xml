@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.jjb.dao.JjbRzglMapper">
+
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.jjb.entity.JjbRzglEntity" resultType="com.cesgroup.prison.zbgl.jjb.entity.JjbRzglEntity">
+		SELECT * FROM CDS_DUTY_JJB_ZBRZ 
+	   <where>
+	   	<if test="cusNumber !=null and cusNumber !=''">
+	   	 and CUS_NUMBER = #{cusNumber}
+	   	</if>
+	   	<if test="ywId !=null and ywId !=''">
+	   	 and  YW_ID  = #{ywId}
+	   	 </if>
+	   	 <if test=" time !=null and time !=''">
+	   	 	and  TIME = #{time}
+	   	 </if>
+	   </where>
+	</select> 
+	<update id="updateById" parameterType="com.cesgroup.prison.zbgl.jjb.entity.JjbRzglEntity">
+		update CDS_DUTY_JJB_ZBRZ 
+			<set>
+				<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+				<if test="deptNumber !=null and deptNumber !=''">
+					DEPT_NUMBER= #{deptNumber},
+				</if>
+				<if test="time !=null and time !=''">
+					TIME  = #{time},
+				</if>
+				<if test="location !=null and location !=''">
+					LOCATION  = #{location},
+				</if>
+				<if test="zbDetial !=null and zbDetial !=''">
+					ZB_DETIAL  = #{zbDetial},
+				</if>
+				<if test="ylWt !=null and ylWt !=''">
+					YL_WT  = #{ylWt},
+				</if>
+				<if test="gxrId !=null and gxrId !=''">
+					GXR_ID  = #{gxrId},
+				</if>
+				<if test="gxrName !=null and gxrName !=''">
+					GXR_NAME  = #{gxrName},
+				</if>
+			</set>
+			where id = #{id}
+	</update>
+	
+	
+</mapper>

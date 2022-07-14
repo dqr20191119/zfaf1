@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.screen.dao.ScreenPlanWindowNewMapper">
+
+
+
+    <delete id="deleteByCusNumberAndScreenPlan">
+        delete from CDS_SCREEN_PLAN_WINDOW  where  CUS_NUMBER =#{cusNumber} and SCREEN_PLAN_ID =#{screenPlanId}
+    </delete>
+
+
+    <select id="selectByScreenPlanWindowNewEntity" parameterType="com.cesgroup.prison.screen.entity.ScreenPlanWindowNewEntity" resultType="com.cesgroup.prison.screen.entity.ScreenPlanWindowNewEntity">
+        select *  from  CDS_SCREEN_PLAN_WINDOW
+        <where>
+            <if test="screenPlanId !=null and screenPlanId !='' ">
+               and  SCREEN_PLAN_ID = #{screenPlanId}
+            </if>
+            <if test="cusNumber !=null and cusNumber !='' ">
+               and  CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="windowId !=null and windowId !='' ">
+               and  WINDOW_ID = #{windowId}
+            </if>
+        </where>
+        order by cast(WINDOW_ID as INT) asc
+    </select>
+</mapper>

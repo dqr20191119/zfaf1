@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.xtgl.dao.PlaneLayerPointMapper" >
+  
+  <select id="searchPlaneLayerPoint" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+	select ID as "id",
+	PLP_CUS_NUMBER as "plpCusNumber",
+	PLP_POINT_NAME as "plpPointName",
+	PLP_DEVICE_TYPE as "plpDeviceType",
+	PLP_DEVICE_MODEL as "plpDeviceModel",
+	PLP_DEVICE_IDNTY as "plpDeviceIdnty",
+	PLP_POINT_X as "plpPointX",
+	PLP_POINT_Y as "plpPointY",
+	PLP_LAYER_IDNTY as "plpLayerIdnty",
+	PLP_POINT_ANGLE as "plpPointAngle",
+	case CDS_PLANE_LAYER_POINTS.PLP_DEVICE_TYPE
+	when 1 then (select dvc_camera_base_dtls.cbd_stts_indc 
+	FROM dvc_camera_base_dtls where dvc_camera_base_dtls.id=CDS_PLANE_LAYER_POINTS.PLP_DEVICE_IDNTY)
+	end as "status"
+	from CDS_PLANE_LAYER_POINTS
+	where PLP_LAYER_IDNTY = #{plpLayerIdnty,jdbcType=VARCHAR} 
+  </select>
+  
+  <delete id="deleteByPlpLayerIdnty" parameterType="java.lang.String" >
+    delete from CDS_PLANE_LAYER_POINTS
+    where PLP_LAYER_IDNTY = #{plpLayerIdnty,jdbcType=VARCHAR}
+  </delete>
+  
+  <update id="updatePart" parameterType="com.cesgroup.prison.xtgl.entity.PlaneLayerPoint" >
+    update CDS_PLANE_LAYER_POINTS
+    <set >
+      <if test="plpCusNumber != null" >
+        PLP_CUS_NUMBER = #{plpCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="plpPointName != null" >
+        PLP_POINT_NAME = #{plpPointName,jdbcType=VARCHAR},
+      </if>
+      <if test="plpDeviceType != null" >
+        PLP_DEVICE_TYPE = #{plpDeviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="plpDeviceModel != null" >
+        PLP_DEVICE_MODEL = #{plpDeviceModel,jdbcType=VARCHAR},
+      </if>
+      <if test="plpDeviceIdnty != null" >
+        PLP_DEVICE_IDNTY = #{plpDeviceIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="plpPointX != null" >
+        PLP_POINT_X = #{plpPointX,jdbcType=VARCHAR},
+      </if>
+      <if test="plpPointY != null" >
+        PLP_POINT_Y = #{plpPointY,jdbcType=VARCHAR},
+      </if>
+      <if test="plpLayerIdnty != null" >
+        PLP_LAYER_IDNTY = #{plpLayerIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="plpPointAngle != null" >
+        PLP_POINT_ANGLE = #{plpPointAngle},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

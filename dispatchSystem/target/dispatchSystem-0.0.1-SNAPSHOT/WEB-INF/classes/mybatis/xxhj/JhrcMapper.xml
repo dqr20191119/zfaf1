@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.jhrc.dao.JhrcMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.xxhj.jhrc.entity.JhrcEntity">
+		SELECT ID,CPS_CUS_NUMBER,CPS_DRPMNT_ID,CPS_DRPMNT_NAME,CPS_SCHEDULE_TIME,CPS_PLAN_DETAIL,
+		TO_CHAR(CPS_START_DATE, 'YYYY-MM-DD') AS CPS_START_DATE,
+		TO_CHAR(CPS_END_DATE, 'YYYY-MM-DD') AS CPS_END_DATE,
+		CPS_CRTE_TIME,CPS_CRTE_USER_ID,CPS_UPDT_TIME,CPS_UPDT_USER_ID,CPS_LX,CPS_SCHEDULE_END_TIME,
+		TZSJ,TZNR,TZSB
+		FROM CDS_PLAN_SCHEDULE
+		WHERE ID = #{id}
+	</select>
+
+	<select id="findList" parameterType="com.cesgroup.prison.xxhj.jhrc.entity.JhrcEntity"
+		resultType="com.cesgroup.prison.xxhj.jhrc.entity.JhrcEntity">
+		SELECT
+		ID,CPS_CUS_NUMBER,CPS_DRPMNT_ID,CPS_DRPMNT_NAME,CPS_SCHEDULE_TIME,CPS_PLAN_DETAIL,
+		TO_CHAR(CPS_START_DATE, 'YYYY-MM-DD') AS CPS_START_DATE,
+		TO_CHAR(CPS_END_DATE, 'YYYY-MM-DD') AS CPS_END_DATE,
+		CPS_CRTE_TIME,CPS_CRTE_USER_ID,CPS_UPDT_TIME,CPS_UPDT_USER_ID,CPS_LX,CPS_SCHEDULE_END_TIME
+		FROM CDS_PLAN_SCHEDULE
+		<where>
+			<if test="cpsCusNumber != null and cpsCusNumber != ''">
+				AND CPS_CUS_NUMBER = #{cpsCusNumber}
+			</if>
+			<if test="cpsDrpmntId != null and cpsDrpmntId != ''">
+				AND CPS_DRPMNT_ID = #{cpsDrpmntId}
+			</if>
+			<if test="cpsPlanDetail != null and cpsPlanDetail != ''">
+				AND CPS_PLAN_DETAIL = #{cpsPlanDetail}
+			</if>
+			<if test="cpsStartDate != null and cpsStartDate != ''">
+				AND CPS_START_DATE &gt;= #{cpsStartDate}
+			</if>
+			<if test="cpsEndDate != null and cpsEndDate != ''">
+				AND #{cpsEndDate} &gt;= CPS_END_DATE
+			</if>
+		</where>
+		ORDER BY CPS_DRPMNT_ID,CPS_UPDT_TIME DESC
+	</select>
+
+	<select id="deleteByIds" parameterType="arraylist">
+		DELETE FROM CDS_PLAN_SCHEDULE A
+		WHERE A.ID IN
+		<foreach collection="list" item="item" open="(" close=")"
+			separator=",">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="searchRcByDay" parameterType="java.util.HashMap"
+		resultType="java.util.HashMap">
+		SELECT
+		ID,CPS_DRPMNT_NAME,CPS_SCHEDULE_TIME,
+		(case CPS_PLAN_DETAIL when '1' then '早点名'
+		when '2' then '晚点名'
+		when '3' then '放饭、发药'
+		when '4' then '清监'
+		when '5' then '封门'
+		else '其他' end) "CPS_PLAN_DETAIL",
+        CPS_LX "LX"
+		FROM CDS_PLAN_SCHEDULE
+		<where>
+			<if test="cpsCusNumber != null and cpsCusNumber != ''">
+				AND CPS_CUS_NUMBER = #{cpsCusNumber}
+			</if>
+			<if test="cpsDrpmntId != null and cpsDrpmntId != ''">
+				AND CPS_DRPMNT_ID = #{cpsDrpmntId}
+			</if>
+			<if test="day != null and day != ''">
+				AND  to_date(#{day},'YYYY-MM-DD') &gt;= CPS_START_DATE
+				AND  CPS_END_DATE &gt;= to_date(#{day},'YYYY-MM-DD')
+			</if>
+		</where>
+		ORDER BY CPS_SCHEDULE_TIME
+	</select>
+
+	<select id="searchJndtByDay" parameterType="java.util.HashMap"
+			resultType="java.util.HashMap">
+		SELECT
+		ID,(SELECT ORGANIZE_NAME FROM "AUTH"."T_ORG" WHERE ORGANIZE_CODE = PAR_DPRTMNT_ID) "CPS_DRPMNT_NAME",
+		to_char(PAR_START_TIME,'HH24:mi:ss') "CPS_SCHEDULE_TIME",
+		(case PAR_OUT_CATEGORY when 'JJ' then '接见'
+		when 'CFCG' then '厂房出工'
+		when 'LSCG' then '临时出工'
+		when 'FF' then '放风'
+		when 'JNJY' then '监内就医'
+		when 'WC' then '外出'
+		when 'SY' then '收押'
+		when 'SF' then '释放'
+		else '其他' end) "CPS_PLAN_DETAIL",
+		PAR_LX "LX"
+		FROM CDS_PRISON_ACTIVITY_RECORD
+		<where>
+			<if test="cpsCusNumber != null and cpsCusNumber != ''">
+				AND PAR_CUS_NUMBER = #{cpsCusNumber}
+			</if>
+			<if test="cpsDrpmntId != null and cpsDrpmntId != ''">
+				AND PAR_DRPMNT_ID = #{cpsDrpmntId}
+			</if>
+			<if test="day != null and day != ''">
+				AND to_date(PAR_START_TIME,'YYYY-MM-DD') = to_date(#{day},'YYYY-MM-DD')
+			</if>
+			AND PAR_OUT_CATEGORY != 'BJ'
+			AND PAR_STATUS = '1'
+		</where>
+		ORDER BY PAR_START_TIME
+	</select>
+	
+	<select id="searchJhrc" resultType="com.cesgroup.prison.xxhj.jhrc.entity.JhrcEntity">
+		SELECT A.* FROM CDS_PLAN_SCHEDULE A where cps_drpmnt_id = #{departId}
+	</select>
+	<select id="getZbr" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select LISTAGG(a.dbd_staff_name,',') within group(order by a.dbd_staff_id) as ZBR,
+	   		   LISTAGG(a.dbd_staff_id,',') within group(order by a.dbd_staff_id) as ZBRID
+		from prison.CDS_DUTY_BASE_DTLS a
+		left join PRISON.CDS_DUTY_MODE_DEPARTMENT c
+		on a.DBD_DUTY_MODE_DEPARTMENT_ID = c.id
+		where dbd_cus_number = #{cpsCusNumber}
+		and to_char(dbd_duty_date,'YYYY-MM-DD') = to_char(SYSDATE(),'YYYY-MM-DD')
+		and c.DMD_DPRTMNT_ID  = #{cpsDrpmntId}
+	</select>
+	<select id="deleteDsq" parameterType="java.util.HashMap">
+	delete from QRTZ_FRAMEWORK_JOBS where name = '一日执勤'
+	</select>
+	
+</mapper>

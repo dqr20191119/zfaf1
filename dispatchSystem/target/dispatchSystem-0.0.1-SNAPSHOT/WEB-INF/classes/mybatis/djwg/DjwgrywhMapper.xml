@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.djwg.dao.DjwgrywhMapper">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.djwg.entity.DjwgrywhEntity">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="USER_NAME" jdbcType="CHAR" property="userName" />
+		<result column="USER_ID" jdbcType="CHAR" property="userId" />
+		<result column="ZW" jdbcType="CHAR" property="zw" />
+		<result column="PX" jdbcType="CHAR" property="px" />
+		<result column="ZZ_CODE" jdbcType="CHAR" property="zzCode" />
+		<result column="ZZ_NAME" jdbcType="CHAR" property="zzName" />
+		<result column="C_CJR_ID" jdbcType="CHAR" property="cCjrId" />
+		<result column="C_CJR" jdbcType="CHAR" property="cCjr" />
+		<result column="C_CJ_RQ" jdbcType="TIMESTAMP" property="cCjRq" />
+		<result column="C_GXR_ID" jdbcType="CHAR" property="cGxrId" />
+		<result column="C_GXR" jdbcType="CHAR" property="cGxr" />
+		<result column="C_GX_RQ" jdbcType="TIMESTAMP" property="cGxRq" />
+		<result column="SCFLG" jdbcType="CHAR" property="scflg" />
+		<result column="BZ" jdbcType="CHAR" property="bz" />
+		<result column="CODE" jdbcType="CHAR" property="code" />
+		<result column="PARENT_CODE" jdbcType="CHAR" property="parentCode" />
+		<result column="JY_ID" jdbcType="CHAR" property="jyId" />
+		<result column="JY_NAME" jdbcType="CHAR" property="jyName" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, USER_NAME, USER_ID, ZW, PX, ZZ_CODE,ZZ_NAME,C_CJR_ID, C_CJR, C_CJ_RQ, C_GXR_ID, C_GXR, CODE,PARENT_CODE,JY_ID,JY_NAME,
+		C_GX_RQ, SCFLG, BZ
+	</sql>
+	
+	<!-- 根据删除标志状态位，查询五维架构数据list -->
+	<select id="findByScflg" resultMap="BaseResultMap" useCache="true">
+		select 
+			<include refid="Base_Column_List"></include>
+		from 
+			T_DJWG_RYWH T1 
+		where T1.SCFLG = '${scflg}'
+	</select>
+	
+	<select id="getById" resultType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity"> 
+		select ID, USER_NAME, USER_ID, ZW, PX, ZZ_CODE,ZZ_NAME,C_CJR_ID, C_CJR, C_CJ_RQ, C_GXR_ID, C_GXR, CODE,PARENT_CODE,JY_ID,JY_NAME,
+		C_GX_RQ, SCFLG, BZ
+		from T_DJWG_RYWH
+		where SCFLG='1' and id=#{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity">
+		select ID, USER_NAME, USER_ID, ZW, PX, ZZ_CODE,ZZ_NAME,C_CJR_ID, C_CJR, C_CJ_RQ, C_GXR_ID, C_GXR, CODE,PARENT_CODE,JY_ID,JY_NAME,
+		C_GX_RQ, SCFLG, BZ
+		from T_DJWG_RYWH
+		WHERE  SCFLG = '1' 
+		<if test="zzName != null and zzName != ''">
+			AND ZZ_NAME = #{zzName}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND USER_NAME = #{USER_NAME}
+		</if>
+		<if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity">
+		SELECT * FROM T_DJWG_RYWH  WHERE  SCFLG = '1' and code is not null and code != ''
+		 <if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE T_DJWG_RYWH A SET A.SCFLG = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="findRywh" parameterType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity">
+		SELECT * FROM prison.T_DJWG_RYWH  WHERE  SCFLG = '1' 
+		<if test="parentCode != null and parentCode != ''">
+		and parent_code = #{parentCode} 
+		</if>
+		<if test="px != null and px != ''">
+		and px = #{px} 
+		</if>
+		<if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+		order by px
+	</select>
+	
+	<select id="findMax" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT px FROM prison.T_DJWG_RYWH  WHERE  SCFLG = '1' 
+		<if test="parentCode != null and parentCode != ''">
+		and parent_code = #{parentCode} 
+		</if>
+		<if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+		group by px
+	</select>
+	
+	
+	<select id="findfej" parameterType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgrywhEntity">
+		
+		SELECT * FROM prison.T_DJWG_RYWH  WHERE  SCFLG = '1' and code is  null or code = ''
+		 <if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxhj.zfsjsb.sjsb.dao.SjsbMapper">
+
+    <sql id="Base_Column_List" >
+        ID as "id",
+        CPR_DPRTMNT_ID as "cprDprtmntId",
+        CPR_TYPE_CODE as "cprTypeCode",
+        CPR_NUMBER as "cprNumber",
+        CPR_TIME as "cprTime",
+        CPR_REMARK as "cprRemark",
+        TO_CHAR(CPR_CRTE_TIME,'yyyy-mm-dd hh24:mi:ss') as "cprCrteTime",
+        CPR_CRTE_USER_NAME as "cprCrteUserName",
+        TO_CHAR(CPR_UPDT_TIME,'yyyy-mm-dd hh24:mi:ss') as "cprUpdtTime",
+        CPR_UPDT_USER_NAME as "cprUpdtUserName"
+    </sql>
+
+    <select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+            CPR_TIME as "cprTime",
+            CPR_REMARK as "cprRemark",
+            CPR_DPRTMNT_ID as "cprDprtmntId",
+            CPR_CUS_NUMBER as "cprCusNumber"
+        from CDS_PRISON_REPORT
+        <where>
+            CPR_STATUS = '1'
+            <if test="cprCusNumber != null" >
+                AND CPR_CUS_NUMBER = #{cprCusNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="cprDprtmntId != null and cprDprtmntId != ''" >
+                AND CPR_DPRTMNT_ID = #{cprDprtmntId,jdbcType=VARCHAR}
+            </if>
+            <if test="cprTime != null and cprTime != ''" >
+                AND CPR_TIME = #{cprTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+        GROUP by CPR_TIME,CPR_DPRTMNT_ID,CPR_REMARK,CPR_CUS_NUMBER
+        order by CPR_TIME desc
+    </select>
+
+    <select id="findByTimeAndDprtmntId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select
+            c.PRTD_TYPE_CODE as "cprTypeCode",
+            e.PRT_TYPE_NAME  as "cprTypeName",
+            nvl(d.CPR_NUMBER, '0') as "cprNumber"
+        from  CDS_PRISON_REPORT_TYPE_DEPARTMENT c left join CDS_PRISON_REPORT d
+        on
+                c.PRTD_TYPE_CODE  = d.CPR_TYPE_CODE
+            and d.CPR_STATUS      = '1'
+            and d.CPR_TIME        = #{cprTime,jdbcType=VARCHAR}
+            and d.CPR_DPRTMNT_ID  =  #{cprDprtmntId,jdbcType=VARCHAR}
+        inner join CDS_PRISON_REPORT_TYPE e on e.PRT_TYPE_CODE = c.PRTD_TYPE_CODE
+        where     c.prtd_status     = '1'
+            and c.PRTD_DPRTMNT_ID =  #{cprDprtmntId,jdbcType=VARCHAR}
+        order by e.PRT_TYPE_NAME ASC
+    </select>
+
+    <select id="getAllReportDprt" parameterType="java.util.HashMap" resultType="java.lang.String">
+        select  distinct  o.organize_name
+        from "PRISON"."CDS_PRISON_REPORT_TYPE_DEPARTMENT" p, auth.t_org o , "PRISON"."CDS_PRISON_REPORT_TYPE" d
+        where p.prtd_status = '1'
+        and p.prtd_dprtmnt_id = o.organize_code
+        and d.prt_status = '1'
+        and d.prt_type_code = p.prtd_type_code
+        and d.prt_cus_number = #{cprCusNumber,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getAllReportDprtByCprTime" parameterType="java.util.HashMap" resultType="java.lang.String">
+        select distinct o.organize_name
+        from "PRISON"."CDS_PRISON_REPORT" p , auth.t_org o
+        where p.cpr_time = #{cprTime,jdbcType=VARCHAR}
+        and p.cpr_status = '1'
+        and p.cpr_dprtmnt_id = o.organize_code
+        and p.cpr_cus_number = #{cprCusNumber,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getReportSjhz" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select d.prt_type_name as "prtTypeName" , sum(nvl(c.cpr_number,'0')) as "cprNumber"
+        from "PRISON"."CDS_PRISON_REPORT_TYPE_DEPARTMENT" p left join "PRISON"."CDS_PRISON_REPORT"  c
+        on c.cpr_status = '1'
+        and c.cpr_time = #{cprTime,jdbcType=VARCHAR}
+        and c.cpr_cus_number = #{cprCusNumber,jdbcType=VARCHAR}
+        and c.cpr_type_code = p.prtd_type_code
+        and c.cpr_dprtmnt_id = p.prtd_dprtmnt_id
+        inner join "PRISON"."CDS_PRISON_REPORT_TYPE" d
+        on d.prt_status = '1'
+        and d.prt_type_code = p.prtd_type_code
+        and d.prt_cus_number = #{cprCusNumber,jdbcType=VARCHAR}
+        where p.prtd_status = '1'
+        and p.prtd_is_calc = '1'
+        group by d.prt_type_name
+        order by d.prt_type_name asc
+    </select>
+
+    <delete id="deleteReportData" parameterType="java.util.HashMap" >
+        delete from CDS_PRISON_REPORT
+        where
+               CPR_CUS_NUMBER = #{cprCusNumber,jdbcType=VARCHAR}
+        and    CPR_DPRTMNT_ID = #{cprDprtmntId,jdbcType=VARCHAR}
+        and    CPR_TIME = #{cprTime,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteReportDataByEntity" parameterType="com.cesgroup.prison.xxhj.zfsjsb.sjsb.entity.SjsbEntity" >
+        delete from CDS_PRISON_REPORT
+        where
+               CPR_CUS_NUMBER = #{cprCusNumber,jdbcType=VARCHAR}
+        and    CPR_DPRTMNT_ID = #{cprDprtmntId,jdbcType=VARCHAR}
+        and    CPR_TIME = #{cprTime,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertInfo" parameterType="com.cesgroup.prison.xxhj.zfsjsb.sjsb.entity.SjsbEntity" >
+        insert into CDS_PRISON_REPORT
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="cprCusNumber != null" >
+                CPR_CUS_NUMBER,
+            </if>
+            <if test="cprDprtmntId != null" >
+                CPR_DPRTMNT_ID,
+            </if>
+            <if test="cprTypeCode != null" >
+                CPR_TYPE_CODE,
+            </if>
+            <if test="cprNumber != null" >
+                CPR_NUMBER,
+            </if>
+            <if test="cprTime != null" >
+                CPR_TIME,
+            </if>
+            <if test="cprRemark != null" >
+                CPR_REMARK,
+            </if>
+            <if test="cprCrteTime != null" >
+                CPR_CRTE_TIME,
+            </if>
+            <if test="cprCrteUserId != null" >
+                CPR_CRTE_USER_ID,
+            </if>
+            <if test="cprCrteUserName != null" >
+                CPR_CRTE_USER_NAME,
+            </if>
+            <if test="cprUpdtTime != null" >
+                CPR_UPDT_TIME,
+            </if>
+            <if test="cprUpdtUserId != null" >
+                CPR_UPDT_USER_ID,
+            </if>
+            <if test="cprUpdtUserName != null" >
+                CPR_UPDT_USER_NAME,
+            </if>
+            <if test="cprStatus != null" >
+                CPR_STATUS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="cprCusNumber != null" >
+                #{cprCusNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="cprDprtmntId != null" >
+                #{cprDprtmntId,jdbcType=VARCHAR},
+            </if>
+            <if test="cprTypeCode != null" >
+                #{cprTypeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="cprNumber != null" >
+                #{cprNumber,jdbcType=NUMERIC},
+            </if>
+            <if test="cprTime != null" >
+                #{cprTime,jdbcType=VARCHAR},
+            </if>
+            <if test="cprRemark != null" >
+                #{cprRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="cprCrteTime != null" >
+                #{cprCrteTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cprCrteUserId != null" >
+                #{cprCrteUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="cprCrteUserName != null" >
+                #{cprCrteUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="cprUpdtTime != null" >
+                #{cprUpdtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cprUpdtUserId != null" >
+                #{cprUpdtUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="cprUpdtUserName != null" >
+                #{cprUpdtUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="cprStatus != null" >
+                #{cprStatus,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

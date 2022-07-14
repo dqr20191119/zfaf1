@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.camera.dao.CameraMsgMapper">
+
+	<select id="updateCameraStatus" parameterType="com.cesgroup.prison.camera.entity.CameraMsgEntity">		
+		UPDATE DVC_CAMERA_BASE_DTLS SET CBD_STTS_INDC = #{cbdSttsIndc}
+		WHERE ID = #{id}
+	</select>
+</mapper>

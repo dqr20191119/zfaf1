@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Desc: 图表展示数据访问类映射文件ChartDataMapper.xml -->
+<mapper namespace="com.cesgroup.prison.riskassess.chart.dao.ChartDataDao">
+	<!-- Desc: 图表展示基础结果集BaseResultMap -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.riskassess.chart.entity.ChartData" >
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="NAMES" property="names" jdbcType="VARCHAR" />
+		<result column="COUNTS" property="counts" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- Desc: 图表展示基础字段Base_Column_List -->
+	<sql id="Base_Column_List" >
+		ID, NAMES, COUNTS
+	</sql>
+	
+	<!-- Desc: 根据用户角色查询风险分布数据findFxfbByUserRole -->
+	<select id="findFxfbByUserRole" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			NAMES, COUNTS
+		FROM 
+			TEST_AQFX_CHART_FXFB T1
+		WHERE 
+			T1.USER_ROLE = '${userRole}'
+	</select>
+	
+	<!-- Desc: 根据用户角色查询风险趋势数据findFxqsByUserRole -->
+	<select id="findFxqsByUserRole" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			NAMES, COUNTS
+		FROM 
+			TEST_AQFX_CHART_FXQS T1
+		WHERE 
+			T1.USER_ROLE = '${userRole}'
+	</select>
+	
+	<!-- Desc: 根据风险评估种类与用户角色查询风险评估数据findFxpgByCategoryAndUserRole -->
+	<select id="findFxpgByCategoryAndUserRole" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			NAMES, COUNTS
+		FROM 
+			TEST_AQFX_CHART_FXPG T1
+		WHERE 
+			T1.CATEGORY = '${category}'
+			AND T1.USER_ROLE = '${userRole}'
+	</select>
+	
+	<!-- Desc: 根据风险评估种类与用户角色查询风险指向数据findFxzxByCategoryAndUserRole -->
+	<select id="findFxzxByCategoryAndUserRole" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			NAMES, COUNTS
+		FROM 
+			TEST_AQFX_CHART_FXZX T1
+		WHERE 
+			T1.CATEGORY = '${category}'
+			AND T1.USER_ROLE = '${userRole}'
+	</select>
+	
+	<!-- Desc: 根据用户角色查询风险概况数据findFxgkByUserRole -->
+	<select id="findFxgkByUserRole" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			NAMES, COUNTS
+		FROM 
+			TEST_AQFX_CHART_FXGK T1
+		WHERE 
+			T1.USER_ROLE = '${userRole}'
+	</select>
+	
+</mapper>

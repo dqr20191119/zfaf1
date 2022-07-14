@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.DoorOpenMapper">
+	<!-- 修改门开启密码 -->
+	<update id="updateInfo" parameterType="com.cesgroup.prison.jfsb.entity.DoorOpenEntity">
+		UPDATE  DVC_DOOR_OPEN 
+		<set>
+			OPEN_PASSWORD =#{openPassword}
+		</set>
+		<where>
+			id =#{id}
+		</where>
+	</update>
+	<select id="listAll" resultType="java.util.HashMap" parameterType="com.cesgroup.prison.jfsb.entity.DoorOpenEntity">
+		select  id,OPEN_PASSWORD,JYID from DVC_DOOR_OPEN 
+		<where>
+			<if test="jyid !=null and  jyid !=''">
+				JYID = #{jyid}
+			</if>
+		</where>
+	</select>
+
+    <select id="getByjyid" resultType="com.cesgroup.prison.jfsb.entity.DoorOpenEntity">
+        SELECT * FROM DVC_DOOR_OPEN where JYID = #{jyid}
+
+    </select>
+
+</mapper>

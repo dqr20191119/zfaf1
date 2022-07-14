@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.MessageMapper">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.common.entity.MessageEntity">
+		<id column="ID" jdbcType="CHAR" property="id"/>
+		<result column="NOTICE_USER_ID" jdbcType="CHAR" property="noticeUserId"/>
+		<result column="CONTENT" jdbcType="CHAR" property="content"/>
+		<result column="START_DATE" jdbcType="TIMESTAMP" property="startDate"/>
+		<result column="END_DATE" jdbcType="TIMESTAMP" property="endDate"/>
+		<result column="IS_READ" jdbcType="CHAR" property="isRead"/>
+		<result column="READ_DATE" jdbcType="TIMESTAMP" property="readDate"/>
+		<result column="URL" jdbcType="CHAR" property="url"/>
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+		<result column="NOTICE_USER_NAME" jdbcType="CHAR" property="noticeUserName"/>
+		<result column="MSG_TYPE" jdbcType="CHAR" property="msgType"/>
+		<result column="JY_ID" jdbcType="CHAR" property="jyId"/>
+		<result column="YW_ID" jdbcType="CHAR" property="ywId"/>
+	</resultMap>
+
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+        ID, NOTICE_USER_ID, CONTENT, START_DATE, END_DATE, IS_READ, READ_DATE, URL, CREATE_DATE, NOTICE_USER_NAME, MSG_TYPE, JY_ID, YW_ID
+    </sql>
+
+	<!-- 根据主键ID，查询消息记录 -->
+	<select id="findById" resultMap="BaseResultMap" useCache="true">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM T_C_MESSAGE T1
+		WHERE T1.ID = #{id, jdbcType=CHAR}
+	</select>
+
+	<!-- 根据主键ID列表，查询消息记录列表 -->
+	<select id="findByIdList" resultMap="BaseResultMap" useCache="true">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM
+		T_C_MESSAGE T1
+		<where>
+			<if test="idList != null">
+				T1.ID IN
+				<foreach collection="idList" item="id" index="index" separator="," open="(" close=")">
+					'${id}'
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<!-- 分页查询消息数据 -->
+	<select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM T_C_MESSAGE T1
+		<where>
+			<choose>
+				<when test="isRead != null and isRead != '0'">
+					AND T1.IS_READ = #{isRead}
+				</when>
+				<otherwise>
+					AND T1.IS_READ = '0'
+				</otherwise>
+			</choose>
+			<if test="noticeUserId != null and noticeUserId != ''">
+				AND T1.NOTICE_USER_ID = #{noticeUserId}
+			</if>
+			<if test="jyId != null and jyId != ''">
+				AND T1.JY_ID = #{jyId}
+			</if>
+		</where>
+		ORDER BY T1.CREATE_DATE DESC
+	</select>
+
+	<select id="updateReadById">
+		UPDATE T_C_MESSAGE SET IS_READ = #{isRead}, READ_DATE = #{readDate} 
+		WHERE ID IN 
+		<foreach collection="idList" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach> 
+	</select>
+	
+	<select id="updateReadByYwId" parameterType="com.cesgroup.prison.common.entity.MessageEntity">
+		UPDATE T_C_MESSAGE A SET A.IS_READ = '1', A.READ_DATE = SYSDATE 
+		<where>
+			<if test="ywId != null and ywId != ''"> 
+				AND A.YW_ID = #{ywId} 		
+			</if>
+			<if test="jyId != null and jyId != ''"> 
+				AND A.JY_ID = #{jyId} 		
+			</if>
+			<if test="noticeUserId != null and noticeUserId != ''"> 
+				AND A.NOTICE_USER_ID = #{noticeUserId} 		
+			</if> 
+			<if test="msgType != null and msgType != ''"> 
+				AND A.MSG_TYPE = #{msgType} 		
+			</if>
+		</where> 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.common.entity.MessageEntity" resultType="com.cesgroup.prison.common.entity.MessageEntity">
+		SELECT A.* FROM T_C_MESSAGE A 
+		WHERE A.IS_READ = '0'
+		AND A.START_DATE &lt;= SYSDATE
+		AND (A.END_DATE &gt;= SYSDATE OR A.END_DATE IS NULL)  
+		<if test="noticeUserId != null and noticeUserId != ''"> 
+			AND A.NOTICE_USER_ID = #{noticeUserId} 		
+		</if>
+		<if test="content != null and content != ''"> 
+			AND A.CONTENT like '%${content}%' 		
+		</if>
+		ORDER BY A.CREATE_DATE DESC 
+	</select>
+	
+	<select id="findFirstMessage" parameterType="com.cesgroup.prison.common.entity.MessageEntity" resultType="com.cesgroup.prison.common.entity.MessageEntity">
+		SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY T.CREATE_DATE DESC), T.* FROM T_C_MESSAGE T
+		WHERE T.NOTICE_USER_ID = #{noticeUserId} 
+		AND T.IS_READ = '0'
+		AND T.ID NOT IN 
+		<foreach collection="idList" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach>
+		) WHERE ROWNUM = 1
+	</select>
+	
+	<select id="findByMsgType" parameterType="com.cesgroup.prison.common.entity.MessageEntity" resultType="hashmap">
+		SELECT A.MSG_TYPE, A.URL, COUNT(1)||'' ZS FROM T_C_MESSAGE A 
+		WHERE A.IS_READ = '0'
+ 		<if test="noticeUserId != null and noticeUserId != ''"> 
+			AND A.NOTICE_USER_ID = #{noticeUserId} 		
+		</if>
+		GROUP BY A.MSG_TYPE, A.URL
+	</select>
+</mapper>

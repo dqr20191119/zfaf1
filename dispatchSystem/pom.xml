@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+						http://maven.apache.org/maven-v4_0_0.xsd">
+						
+	<modelVersion>4.0.0</modelVersion>	
+	<parent>
+	    <groupId>com.cesgroup.prison</groupId>
+	    <artifactId>parent</artifactId>
+	    <version>0.0.1-SNAPSHOT</version>
+	    <relativePath>../parent/pom.xml</relativePath>  
+	</parent>
+	<artifactId>dispatchSystem</artifactId>
+	<packaging>war</packaging>
+	
+	<dependencies>	
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>user</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>db</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>message</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>socket</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>commandSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>commandSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		    <type>jar</type>
+		    <classifier>classes</classifier>
+		    <scope>provided</scope> 
+		</dependency>
+	
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>alarmSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>alarmSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		    <type>jar</type>
+		    <classifier>classes</classifier>
+		    <scope>provided</scope> 
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>baseframework</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>baseframework</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		    <type>jar</type>
+		    <classifier>classes</classifier>
+		    <scope>provided</scope> 
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>smnSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>smnSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		    <type>jar</type>
+		    <classifier>classes</classifier>
+		    <scope>provided</scope> 
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>xxhjSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>xxhjSystem</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		    <type>jar</type>
+		    <classifier>classes</classifier>
+		    <scope>provided</scope> 
+		</dependency>
+		
+		<!-- Spring jms -->		
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-j2ee-management_1.1_spec</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-jms_1.1_spec</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>4.1.9.RELEASE</version>
+		</dependency>
+		
+		<!--  Spring Integration -->
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-core</artifactId>
+			<version>2.1.0.RELEASE</version>
+		</dependency>
+		 
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-jms</artifactId>
+			<version>2.1.0.RELEASE</version>
+		</dependency>	
+		<!-- 新增结束  -->
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>	
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- 编译版本 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			
+			<!-- test插件, 仅测试名称为*Test的类,使用支持分组测试的surefire-junit47 driver -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<argLine>-Dfile.encoding=UTF-8 -Xmx256M</argLine>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.16</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			
+			<!-- source插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- war打包插件, 设定war包名称不带版本号 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<warName>${project.artifactId}</warName>				
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<overlays>						
+						<overlay>
+							<groupId>com.cesgroup.prison</groupId>
+							<artifactId>commandSystem</artifactId>
+						</overlay> 
+						<overlay>
+							<groupId>com.cesgroup.prison</groupId>
+							<artifactId>alarmSystem</artifactId>
+						</overlay> 				
+					</overlays>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!-- 脚手架插件 -->
+		<!-- <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-archetype-plugin</artifactId>
+            <version>2.2</version>
+        </plugin> -->
+	</build>
+</project>

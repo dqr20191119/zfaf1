@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.mjkq.dao.MjkqMapper">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.xxhj.mjkq.entity.MjkqEntity">
+		<result column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="SBGH" jdbcType="VARCHAR" property="sbgh" />
+		<result column="YGGH" jdbcType="VARCHAR" property="yggh" />
+		<result column="XM" jdbcType="VARCHAR" property="xm" />
+		<result column="BM" jdbcType="VARCHAR" property="bm" />
+		<result column="KQRQ" jdbcType="VARCHAR" property="kqrq" />
+		<result column="KSSJ" jdbcType="VARCHAR" property="kssj" />
+		<result column="JY_ID" property="jyId" jdbcType="VARCHAR" />
+    	<result column="JQ_ID" property="jqId" jdbcType="VARCHAR" />
+   		<result column="CJ_RQ" property="cjRq" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		ID, SBGH, YGGH, XM, BM, KQRQ, KSSJ, JY_ID, JQ_ID, CJ_RQ
+	</sql>
+	
+	<!-- 民警考勤查询列表 -->
+	<select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+		SELECT  BM,XM,KQRQ,KSSJ 
+		FROM PRISON.T_LZJY_KQJL T1 where T1.JY_ID = #{jyId}
+		<if test="xm != null and xm != ''">
+			AND T1.XM LIKE '%${xm}%'
+		</if>
+		<if test="kqrq != null and kqrq != ''">
+			AND TO_CHAR(T1.KQRQ, 'yyyy-MM-dd') = '${kqrq}'
+		</if>
+		ORDER BY KQRQ DESC
+	</select>
+
+	<delete id="deleteYyjyZzjgtb">
+    	delete from PRISON.T_LZJY_KQJL_YYJY_ZZJGTB
+ 	</delete>
+ 		
+	<insert id="insertYyjyZzjgtb" parameterType="java.util.List" >
+    	insert into PRISON.T_LZJY_KQJL_YYJY_ZZJGTB (ID, BRCH_NAME, BRCH_ID) values 
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id,jdbcType=VARCHAR}, #{item.bm,jdbcType=VARCHAR}, #{item.jqId,jdbcType=VARCHAR})
+		</foreach>
+  	</insert>
+  	
+	<select id="selectYyjyZzjg" resultType="string">
+		SELECT BRCH_ID from PRISON.T_LZJY_KQJL_YYJY_ZZJGTB
+	</select>
+	
+	<delete id="deleteByKqrqAndJyIdAndJqId" parameterType="java.util.Map" >
+    	delete from PRISON.T_LZJY_KQJL where KQRQ = #{kqrq} and JY_ID = #{jyId} and JQ_ID = #{jqId}
+ 	</delete>
+  
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into PRISON.T_LZJY_KQJL (ID, SBGH, YGGH, 
+      	XM, BM, KQRQ, KSSJ, JY_ID, JQ_ID, CJ_RQ)  values 
+		<foreach collection="list" item="item" index="index" separator=",">
+		(#{item.id,jdbcType=VARCHAR}, #{item.sbgh,jdbcType=VARCHAR}, #{item.yggh,jdbcType=VARCHAR}, 
+      		#{item.xm,jdbcType=VARCHAR}, #{item.bm,jdbcType=VARCHAR}, #{item.kqrq,jdbcType=VARCHAR}, #{item.kssj,jdbcType=VARCHAR}, 
+      		#{item.jyId,jdbcType=VARCHAR}, #{item.jqId,jdbcType=VARCHAR}, #{item.cjRq,jdbcType=TIMESTAMP})
+		</foreach>
+  	</insert>
+  
+</mapper>

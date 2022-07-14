@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.djwg.dao.DjwgzzwhMapper">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="ZZ_CODE" jdbcType="CHAR" property="zzCode" />
+		<result column="JY_ID" jdbcType="CHAR" property="jyId" />
+		<result column="JY_NAME" jdbcType="CHAR" property="jyName" />
+		<result column="ZZ_NAME" jdbcType="CHAR" property="zzName" />
+		<result column="ZZ_JB" jdbcType="CHAR" property="zzJb" />
+		<result column="C_CJR_ID" jdbcType="CHAR" property="cCjrId" />
+		<result column="C_CJR" jdbcType="CHAR" property="cCjr" />
+		<result column="C_CJ_RQ" jdbcType="TIMESTAMP" property="cCjRq" />
+		<result column="C_GXR_ID" jdbcType="CHAR" property="cGxrId" />
+		<result column="C_GXR" jdbcType="CHAR" property="cGxr" />
+		<result column="C_GX_RQ" jdbcType="TIMESTAMP" property="cGxRq" />
+		<result column="SCFLG" jdbcType="CHAR" property="scflg" />
+		<result column="BZ" jdbcType="CHAR" property="bz" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, JY_ID,ZZ_CODE, ZZ_NAME, C_CJR_ID, C_CJR, C_CJ_RQ, C_GXR_ID, C_GXR, JY_NAME,
+		C_GX_RQ, SCFLG, BZ,ZZ_JB
+	</sql>
+	
+	<!-- 根据删除标志状态位， -->
+	<select id="findByScflg" resultMap="BaseResultMap" useCache="true">
+		select 
+			<include refid="Base_Column_List"></include>
+		from 
+			T_DJWG_ZZWH T1 
+		where T1.SCFLG = '${scflg}'
+	</select>
+	
+	<select id="getById" resultType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity"> 
+		select ID,JY_ID,ZZ_CODE, ZZ_NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,ZZ_JB,JY_NAME
+		from T_DJWG_ZZWH
+		where SCFLG='1' and id=#{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity">
+		select ID, JY_ID,ZZ_CODE, ZZ_NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,ZZ_JB,JY_NAME
+		from T_DJWG_ZZWH
+		WHERE  SCFLG = '1' 
+		<if test="zzCode != null and zzCode != ''">
+			AND ZZ_CODE = #{zzCode}
+		</if>
+		<if test="zzName != null and zzName != ''">
+			AND ZZ_NAME = #{zzName}
+		</if>
+		<if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity">
+		SELECT * FROM T_DJWG_ZZWH  WHERE  SCFLG = '1' 
+		 <if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE T_DJWG_ZZWH A SET A.SCFLG = '0'  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="getByCode" resultType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity"> 
+		select ID, JY_ID,ZZ_CODE, ZZ_NAME,C_CJR_ID,C_CJR,C_CJ_RQ,C_GXR_ID,C_GXR,C_GX_RQ,SCFLG,BZ,ZZ_JB,JY_NAME
+		from T_DJWG_ZZWH
+		where SCFLG='1' and ZZ_CODE =#{zzCode} and JY_ID = #{jyId}
+	</select>
+	
+	<select id="findZzwh" parameterType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity" resultType="com.cesgroup.prison.djwg.entity.DjwgzzwhEntity">
+		SELECT * FROM T_DJWG_ZZWH  WHERE  SCFLG = '1' 
+		<if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+		order by ZZ_JB
+	</select>
+</mapper>

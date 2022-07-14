@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.door.dao.DoorCardHisMapper">
+
+	<select id="saveBySelect" parameterType="com.cesgroup.prison.door.entity.DoorCardEntity" resultType="com.cesgroup.prison.door.entity.DoorCardEntity">		
+		INSERT INTO CDS_DOOR_RECORD_DTLS_H 	
+		SELECT A.* FROM CDS_DOOR_RECORD_DTLS A 
+		<where>
+			<if test="drdCusNumber != null and drdCusNumber != ''">
+				AND A.DRD_CUS_NUMBER = #{drdCusNumber}
+			</if>
+			<if test="drdPeopleTypeIndc != null and drdPeopleTypeIndc != ''">
+				AND A.DRD_PEOPLE_TYPE_INDC = #{drdPeopleTypeIndc}
+			</if>
+			<if test="drdPeopleIdnty != null and drdPeopleIdnty != ''">
+				AND A.DRD_PEOPLE_IDNTY = #{drdPeopleIdnty}
+			</if>
+		</where>
+	</select>
+</mapper>

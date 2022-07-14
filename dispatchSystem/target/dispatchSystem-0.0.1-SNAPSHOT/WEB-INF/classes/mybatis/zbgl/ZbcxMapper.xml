@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.zbcx.dao.ZbcxMapper">
+
+	<select id="findList" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT A.DBD_CUS_NUMBER,E.CDJ_JOB_NAME,D.DOR_DUTY_ORDER_NAME, D.DOR_START_TIME, D.DOR_END_TIME, (D.DOR_START_TIME ||'~'|| D.DOR_END_TIME) AS DUTY_DATE,
+		A.DBD_DUTY_MODE_DEPARTMENT_ID, B.DMD_DPRTMNT_ID, A.DBD_DUTY_MODE_ORDER_JOB_ID, TO_CHAR(A.DBD_DUTY_DATE,'yyyy-mm-dd') AS DBD_DUTY_DATE,
+		A.DBD_STAFF_ID,
+		A.DBD_STAFF_NAME, A.DBD_STTS_INDC, A.DBD_DUTY_STTS_INDC, A.DBD_REMARK, A.DBD_CRTE_TIME, A.DBD_CRTE_USER_ID, A.DBD_UPDT_TIME, A.DBD_UPDT_USER_ID
+		FROM CDS_DUTY_BASE_DTLS A
+		LEFT JOIN CDS_DUTY_MODE_DEPARTMENT B ON B.ID = A.DBD_DUTY_MODE_DEPARTMENT_ID
+		LEFT JOIN CDS_DUTY_MODE_ORDER_JOB C ON
+		C.ID = A.DBD_DUTY_MODE_ORDER_JOB_ID
+		LEFT JOIN CDS_DUTY_ORDER D ON D.ID = C.MOJ_ORDER_ID
+		LEFT JOIN CDS_DUTY_JOB E ON E.ID = C.MOJ_JOB_ID
+		<where>
+			<if test="dbdCusNumber != null and dbdCusNumber != ''">
+				AND A.DBD_CUS_NUMBER = #{dbdCusNumber}
+			</if>
+			<if test="dmdDprtmntId != null and dmdDprtmntId != ''">
+				AND B.DMD_DPRTMNT_ID = #{dmdDprtmntId}
+			</if>
+			<if test="dmdCategoryId != null and dmdCategoryId != ''">
+				AND B.DMD_CATEGORY_ID = #{dmdCategoryId}
+			</if>
+			<if test="mojOrderId != null and mojOrderId != ''">
+				AND C.MOJ_ORDER_ID = #{mojOrderId}
+			</if>
+			<if test="mojJobId != null and mojJobId != ''">
+				AND C.MOJ_JOB_ID = #{mojJobId}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND A.DBD_DUTY_DATE &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND #{endDate} &gt;= A.DBD_DUTY_DATE
+			</if>
+			<if test="dbdStaffId != null and dbdStaffId != ''">
+				AND DBD_STAFF_ID = #{dbdStaffId}
+			</if>
+			 AND  TO_CHAR(A.DBD_DUTY_DATE, 'yyyy-mm-dd') &lt;= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+		</where>
+		ORDER BY A.DBD_DUTY_DATE DESC
+	</select>
+
+	<!-- 值班分析调用 -->
+	<select id="findAllList" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT TRIM(DBD_STAFF_ID) AS DBD_STAFF_ID, TRIM(DBD_STAFF_NAME) AS DBD_STAFF_NAME, COUNT(DBD_DUTY_DATE) AS DUTYNUM
+		FROM CDS_DUTY_BASE_DTLS A LEFT JOIN CDS_DUTY_MODE_DEPARTMENT B
+		ON A.DBD_DUTY_MODE_DEPARTMENT_ID = B.ID
+		<where>
+			<if test="dbdCusNumber != null and dbdCusNumber != ''">
+				AND A.DBD_CUS_NUMBER = #{dbdCusNumber}
+			</if>
+			<if test="dmdCategoryId != null and dmdCategoryId != ''">
+				AND B.DMD_CATEGORY_ID = #{dmdCategoryId}
+			</if>
+			<if test="dmdDprtmntId != null and dmdDprtmntId != ''">
+				AND B.DMD_DPRTMNT_ID = #{dmdDprtmntId}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND A.DBD_DUTY_DATE &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND #{endDate} &gt;= A.DBD_DUTY_DATE
+			</if>
+			AND TO_CHAR(A.DBD_DUTY_DATE, 'yyyy-mm-dd') &lt;= TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+		</where>
+		GROUP BY TRIM(DBD_STAFF_ID), TRIM(DBD_STAFF_NAME)
+		ORDER BY TRIM(DBD_STAFF_ID), DUTYNUM DESC
+	</select>
+	<!-- 查询进出记录 -->
+	<select id="cds_dutyControl_inout_record" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT MIN(PIR_ENTER_TIME) AS PIR_ENTER_TIME, MAX(PIR_LEAVE_TIME) AS PIR_LEAVE_TIME,
+		TO_CHAR(PIR_BRUSH_DATE,'YYYY-MM-DD') AS PIR_BRUSH_DATE, PIR_POLICE_IDNTY
+		FROM V_POLICE_INOUT_RECORD
+		<where>
+			<if test="dbdCusNumber != null and dbdCusNumber != ''">
+				AND PIR_CUS_NUMBER = #{dbdCusNumber}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND PIR_BRUSH_DATE &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND #{endDate} &gt;= PIR_BRUSH_DATE
+			</if>
+			<if test="dbdStaffId != null and dbdStaffId != ''">
+				AND PIR_POLICE_IDNTY = #{dbdStaffId}
+			</if>
+		</where>
+		GROUP BY PIR_BRUSH_DATE,PIR_POLICE_IDNTY
+	</select>
+
+	<select id="findTodayDutyPolice" resultType="java.util.Map" parameterType="java.util.HashMap">
+		SELECT C.ID,DBD_CUS_NUMBER, DBD_DUTY_MODE_DEPARTMENT_ID, DBD_DUTY_MODE_ORDER_JOB_ID, DBD_DUTY_DATE,DBD_STAFF_ID,DBD_STAFF_NAME,DBD_STTS_INDC,DBD_DUTY_STTS_INDC,DBD_REMARK,DBD_CRTE_TIME,DBD_CRTE_USER_ID,DBD_UPDT_TIME,DBD_UPDT_USER_ID
+		FROM CDS_DUTY_BASE_DTLS C LEFT JOIN CDS_DUTY_MODE_ORDER_JOB B ON
+		C.DBD_DUTY_MODE_ORDER_JOB_ID = B.ID
+		LEFT JOIN CDS_DUTY_JOB A ON A.ID = B.MOJ_JOB_ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND CDJ_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="cdjJobCode != null and cdjJobCode != ''">
+				AND CDJ_JOB_CODE = #{cdjJobCode}
+			</if>
+			AND DBD_DUTY_DATE = TO_CHAR (SYSDATE,'YYYY-MM-DD')
+		</where>
+
+	</select>
+
+	<select id="queryStaffByDeapmntAndDate" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select
+		f.id as category_id,
+		dca_category_name as category_name,
+		to_char (dbd_duty_date,'yyyy-mm-dd') as duty_date,
+		dbd_staff_id as staff_id,
+		dbd_staff_name as staff_name,
+		cdj_job_name as job_name,
+		dor_statistics_type as statistics_type,
+		dor_duty_order_name as duty_order_name,
+		dmd_dprtmnt_id as dprtmnt_id,
+		(select YZGL.GETDB(dmd_dprtmnt_id) from dual) as dprtmnt_name,
+		dor_start_time as start_time,
+		dor_end_time as end_time
+		from cds_duty_base_dtls a
+		left join cds_duty_mode_department e on e.id = a.dbd_duty_mode_department_id
+		left join cds_duty_category f on f.id = e.dmd_category_id
+		left join cds_duty_mode_order_job c on c.id = a.dbd_duty_mode_order_job_id
+		left join cds_duty_job b on
+		c.moj_job_id = b.id
+		right join cds_duty_order d on d.id = c.moj_order_id and dor_status != '0'
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				and dbd_cus_number = #{cusNumber}
+			</if>
+			<if test="date != null and date != ''">
+				and to_char (dbd_duty_date,'yyyy-mm-dd') = #{date}
+			</if>
+			<if test="dprtmntId != null and dprtmntId != ''">
+				and dmd_dprtmnt_id = #{dprtmntId}
+			</if>
+			<if test="type != null and type != ''">
+				and DOR_STATISTICS_TYPE = #{type}
+			</if>
+			
+		</where>
+		order by trim(dbd_staff_id)
+	</select>
+
+
+	<select id="queryDutyCountByDeapmntAndDate" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select
+		dbd_cus_number as cus_number,
+		count(1) as all_Count,
+		e.dmd_dprtmnt_id as dprtmnt_id ,
+		(select YZGL.GETDB(e.dmd_dprtmnt_id) from dual) as dprtmnt_name,
+		SUM(DECODE(DOR_STATISTICS_TYPE,1,1,0))AS day_Count,
+		SUM(DECODE(DOR_STATISTICS_TYPE,2,1,0))AS night_Count,
+		SUM(DECODE(DOR_STATISTICS_TYPE,3,1,0))AS allDay_Count
+		from cds_duty_base_dtls a
+		left join cds_duty_mode_department e on e.id = a.dbd_duty_mode_department_id
+		left join CDS_DUTY_MODE_ORDER_JOB c on c.id = a.DBD_DUTY_MODE_ORDER_JOB_ID
+		right join CDS_DUTY_ORDER d on d.id = c.MOJ_ORDER_ID and DOR_STATUS != '0'
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				and dbd_cus_number = #{cusNumber}
+			</if>
+			<if test="date != null and date != ''">
+				and to_char (dbd_duty_date,'yyyy-mm-dd') = #{date}
+			</if>
+			<if test="dprtmntId != null and dprtmntId != ''">
+				and dmd_dprtmnt_id = #{dprtmntId}
+			</if>
+		</where>
+		group by dbd_cus_number, dmd_dprtmnt_id
+		order by dmd_dprtmnt_id
+	</select>
+
+</mapper>

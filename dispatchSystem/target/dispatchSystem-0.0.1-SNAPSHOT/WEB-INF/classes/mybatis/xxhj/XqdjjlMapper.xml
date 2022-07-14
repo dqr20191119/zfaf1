@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.xqdjjl.dao.XqdjjlMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.xxhj.xqdjjl.entity.XqdjjlEntity">
+    <result column="ID" jdbcType="CHAR" property="id" />
+    <result column="NAME" jdbcType="CHAR" property="name" />
+    <result column="PEO_NUM" jdbcType="CHAR" property="peoNum" />
+    <result column="PRISON_NUM" jdbcType="CHAR" property="prisonNum" />
+    <result column="ST_TIME" jdbcType="TIMESTAMP" property="stTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+	  
+	  
+	  <select id="findList" parameterType="com.cesgroup.prison.xxhj.xqdjjl.entity.XqdjjlEntity"
+		resultType="com.cesgroup.prison.xxhj.xqdjjl.entity.XqdjjlEntity">
+		SELECT ID, NAME, PEO_NUM, PRISON_NUM, 
+      ST_TIME, END_TIME FROM
+		"PRISON"."CDS_MOOD_RECORD" ORDER BY ST_TIME DESC
+	</select>
+  <select id="searchSwdbPage" parameterType="com.cesgroup.prison.xxhj.xqdjjl.entity.XqdjjlEntity"
+		resultType="com.cesgroup.prison.xxhj.xqdjjl.entity.XqdjjlEntity">
+		SELECT ID, NAME, PEO_NUM, PRISON_NUM, 
+      ST_TIME, END_TIME FROM
+		"PRISON"."CDS_MOOD_RECORD" A
+		 <where>
+			<if test="name != null and name != ''">
+				AND A.NAME = #{name}
+			</if>
+			
+			<if test="stTime != null and stTime != ''">
+				AND to_char(A.ST_TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{stTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND to_char(A.END_TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{endTime}
+			</if>
+			<if test="prisonNum != null and prisonNum != ''">
+				AND A.PRISON_NUM = #{prisonNum}
+			</if>
+		 </where>
+		ORDER BY ST_TIME DESC
+	</select>
+</mapper>

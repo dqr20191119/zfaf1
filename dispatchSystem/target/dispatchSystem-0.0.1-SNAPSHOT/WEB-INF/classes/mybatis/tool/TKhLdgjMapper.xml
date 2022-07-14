@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.tool.dao.TKhLdgjMapper" >
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.tool.entity.TKhLdgj" >
+    <result column="ID" property="id" jdbcType="CHAR" />
+    <result column="CODE" property="code" jdbcType="CHAR" />
+    <result column="NAME" property="name" jdbcType="CHAR" />
+    <result column="ITEM_UNIT" property="itemUnit" jdbcType="CHAR" />
+    <result column="QUANTITY" property="quantity" jdbcType="CHAR" />
+    <result column="PRISON_CODE" property="prisonCode" jdbcType="CHAR" />
+    <result column="PRISON_NAME" property="prisonName" jdbcType="CHAR" />
+    <result column="SEC_CODE" property="secCode" jdbcType="CHAR" />
+    <result column="DEPART_NAME" property="departName" jdbcType="CHAR" />
+    <result column="TYPE" property="type" jdbcType="CHAR" />
+    <result column="TYPE_NAME" property="typeName" jdbcType="CHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="STATUS_NAME" property="statusName" jdbcType="CHAR" />
+    <result column="SYCS" property="sycs" jdbcType="DECIMAL" />
+  </resultMap>
+  <!-- 统计劳动工具数量-->
+
+  <select id="getToolNum" parameterType="java.lang.String"  resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM  LDGZ.T_LDGZ_LDGJGL_XXGL WHERE C_SCBZ = '0' AND JY_ID = #{prisonCode,jdbcType=CHAR}
+  </select>
+
+  <!-- 分页面查询-->
+
+  <select id="listAll" resultMap="BaseResultMap" useCache="true">
+    SELECT
+    ID,bm as CODE ,mc as NAME, c_cjr as TYPE ,to_char(c_cj_rq, 'YYYY-MM-DD') as TYPE_NAME 
+   FROM LDGZ.T_LDGZ_LDGJGL_XXGL T1
+   where   C_SCBZ = '0'
+    
+      <if test="name != null and name != ''">
+        AND T1.MC  LIKE concat('%',#{name},'%' )
+      </if>
+
+      <if test="prisonCode != null and prisonCode != ''">
+        AND T1.JY_ID = #{prisonCode,jdbcType=CHAR}
+      </if>
+
+  </select>
+
+
+
+
+  <!--<insert id="insert" parameterType="com.cesgroup.prison.tool.entity.TKhLdgj" >-->
+    <!--insert into T_KH_LDGJ (ID, CODE, NAME, ITEM_UNIT, -->
+      <!--QUANTITY, PRISON_CODE, PRISON_NAME, -->
+      <!--SEC_CODE, DEPART_NAME, TYPE, TYPE_NAME, -->
+      <!--STATUS, STATUS_NAME, SYCS)-->
+    <!--values (#{id,jdbcType=CHAR}, #{code,jdbcType=CHAR}, #{name,jdbcType=CHAR}, #{itemUnit,jdbcType=CHAR}, -->
+      <!--#{quantity,jdbcType=CHAR}, #{prisonCode,jdbcType=CHAR}, #{prisonName,jdbcType=CHAR}, -->
+      <!--#{secCode,jdbcType=CHAR}, #{departName,jdbcType=CHAR}, #{type,jdbcType=CHAR}, #{typeName,jdbcType=CHAR}, -->
+      <!--#{status,jdbcType=CHAR}, #{statusName,jdbcType=CHAR}, #{sycs,jdbcType=DECIMAL})-->
+  <!--</insert>-->
+  <!--<insert id="insertSelective" parameterType="com.cesgroup.prison.tool.entity.TKhLdgj" >-->
+    <!--insert into T_KH_LDGJ-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides="," >-->
+      <!--<if test="id != null" >-->
+        <!--ID,-->
+      <!--</if>-->
+      <!--<if test="code != null" >-->
+        <!--CODE,-->
+      <!--</if>-->
+      <!--<if test="name != null" >-->
+        <!--NAME,-->
+      <!--</if>-->
+      <!--<if test="itemUnit != null" >-->
+        <!--ITEM_UNIT,-->
+      <!--</if>-->
+      <!--<if test="quantity != null" >-->
+        <!--QUANTITY,-->
+      <!--</if>-->
+      <!--<if test="prisonCode != null" >-->
+        <!--PRISON_CODE,-->
+      <!--</if>-->
+      <!--<if test="prisonName != null" >-->
+        <!--PRISON_NAME,-->
+      <!--</if>-->
+      <!--<if test="secCode != null" >-->
+        <!--SEC_CODE,-->
+      <!--</if>-->
+      <!--<if test="departName != null" >-->
+        <!--DEPART_NAME,-->
+      <!--</if>-->
+      <!--<if test="type != null" >-->
+        <!--TYPE,-->
+      <!--</if>-->
+      <!--<if test="typeName != null" >-->
+        <!--TYPE_NAME,-->
+      <!--</if>-->
+      <!--<if test="status != null" >-->
+        <!--STATUS,-->
+      <!--</if>-->
+      <!--<if test="statusName != null" >-->
+        <!--STATUS_NAME,-->
+      <!--</if>-->
+      <!--<if test="sycs != null" >-->
+        <!--SYCS,-->
+      <!--</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides="," >-->
+      <!--<if test="id != null" >-->
+        <!--#{id,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="code != null" >-->
+        <!--#{code,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="name != null" >-->
+        <!--#{name,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="itemUnit != null" >-->
+        <!--#{itemUnit,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="quantity != null" >-->
+        <!--#{quantity,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="prisonCode != null" >-->
+        <!--#{prisonCode,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="prisonName != null" >-->
+        <!--#{prisonName,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="secCode != null" >-->
+        <!--#{secCode,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="departName != null" >-->
+        <!--#{departName,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="type != null" >-->
+        <!--#{type,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="typeName != null" >-->
+        <!--#{typeName,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="status != null" >-->
+        <!--#{status,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="statusName != null" >-->
+        <!--#{statusName,jdbcType=CHAR},-->
+      <!--</if>-->
+      <!--<if test="sycs != null" >-->
+        <!--#{sycs,jdbcType=DECIMAL},-->
+      <!--</if>-->
+    <!--</trim>-->
+  <!--</insert>-->
+</mapper>

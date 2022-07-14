@@ -1,0 +1,278 @@
+
+/* 左边导航固定样式
+=================================================================== */
+
+.leftnavBg { background:none !important;}
+.top1-a { background:url(../images/m_l2.png) 44px 0 no-repeat; height:170px;}
+.top1-b { background:url(../images/m_l3.png) 44px 0 no-repeat; height:189px;}
+
+.leftnavBg .subNavBox {
+	position:relative;
+	z-index:1;
+	background:url(../images/m_l1.png) 74px 0 repeat-y;
+	padding:22px 0 1px 0;
+	height:399px;
+}
+.leftnavBg .subNavBox li{
+	position:relative;
+	zoom:1; 
+	width:106px; 
+	height:55px;	
+	text-align:center;	
+	font-size:18px;
+	background:#102287;
+	border:2px #21cadc solid;
+	border-radius:40px;
+	margin:0 0 30px 14px;
+	padding:13px 0 0 20px;
+}
+.leftnavBg .subNavBox li a{
+	color:#24d7e7;
+	cursor:pointer;
+}
+.leftnavBg .subNavBox li i{
+	display:block;
+	float:left;
+}
+.leftnavBg .subNavBox li span {
+    width:50px;
+	display:block;
+	float:left;
+}
+.leftnavBg .subNavBox li.hover{ 
+    color:#24d7e7;	
+	cursor:pointer;
+	border-radius:40px;
+}
+.leftnavBg .subNavBox li.hover a{
+	color:#fff;
+	outline:none;
+	text-decoration:none;
+}
+.subNavBox .img01 {
+	width:38px;
+	height:36px;
+	background:url(../images/navicon.png) -12px -10px no-repeat;	
+}
+.subNavBox li:hover .img01 {
+	background:url(../images/navicon.png) -12px -74px no-repeat;	
+}
+.subNavBox .img02 {
+	width:38px;
+	height:40px;
+	background:url(../images/navicon.png) -83px -9px no-repeat;
+	margin:auto;
+	margin-bottom:12px;
+}
+.subNavBox li:hover .img02 {
+	background:url(../images/navicon.png) -83px -73px no-repeat;	
+}
+.subNavBox .img03 {
+	width:38px;
+	height:38px;
+	background:url(../images/navicon.png) -153px -10px no-repeat;
+	margin:auto;
+	margin-bottom:12px;
+}
+.subNavBox li:hover .img03 {
+	background:url(../images/navicon.png) -153px -74px no-repeat;
+}
+.subNavBox .img04 {
+	width:38px;
+	height:38px;
+	background:url(../images/navicon.png) -224px -7px no-repeat;
+	margin:auto;
+	margin-bottom:12px;
+}
+.subNavBox li:hover .img04 {
+	background:url(../images/navicon.png) -224px -71px no-repeat;	
+}
+
+/* 左固定右自适应
+=================================================================== */
+.leftNav li{ float:left}
+.leftNav li a{box-shadow:0px 0px 5px rgba(31,214,229,.7);
+	border:2px #1ebbd0 solid;
+	height:35px;
+
+	border-radius:5px;
+	margin-left:12px;
+	text-align:center;
+	line-height:33px;
+	color:#36fefe;
+	padding:0 32px; font-size:18px; float:left}
+.leftNav li a:hover{box-shadow:0px 0px 5px rgba(31,214,229,.7);
+	border:2px #45fefe solid;
+	height:35px;
+border-radius:5px;
+	margin-left:12px;
+	text-align:center;
+	line-height:33px;
+	color:#fff;
+	padding:0 32px; font-size:18px; font-weight:bold; display:block;float:left; text-decoration:none;}
+.leftNav li a.hover{box-shadow:0px 0px 5px rgba(31,214,229,.7);
+	border:2px #45fefe solid;
+	height:35px;
+border-radius:5px;
+	margin-left:12px;
+	text-align:center;
+	line-height:33px;
+	color:#fff;
+	padding:0 32px; font-size:18px; font-weight:bold; display:block;float:left; text-decoration:none;}
+
+
+.leftNav {
+    position: absolute;
+
+	left:0; top:36px;
+}
+.two-right {
+    position: absolute;
+    width: 86px;
+	right:44px;
+	top:0;
+}
+.three-middle {
+	margin:auto; text-align:center;
+
+}
+.two-right .rig-a {
+	height:170px;
+	background:url(../images/m_r2.png) right no-repeat;
+}
+.two-right .rig-b{
+	background:url(../images/m_l1.png) right repeat-y;
+    height:424px;
+	margin-right:30px;
+}
+.two-right .rig-c{
+	background:url(../images/m_r3.png) right no-repeat;
+    height:189px;
+}
+
+/* 左右固定中间自适应
+=================================================================== */
+
+.topl-width {
+	position: absolute; 
+	height:55px;
+	background:url(../images/m-z1.png) left no-repeat;
+	left:48px;
+	top:79px;
+	font-size:18px;
+	color:#27d4e2;
+}
+.topl-width ul {
+	padding-left:73px;
+	margin-top:-18px;
+}
+.topl-width ul li {
+	float:left;
+	margin-left:8px;
+}
+.topl-width ul li div {
+	width:33px;
+	height:33px;
+	border:2px #27d4e2 solid;
+	border-radius:100%;
+	float:left;
+	padding:6px;
+	display:block;
+}
+.topl-width ul li div a {
+	color:#27d4e2;
+}
+.topl-width ul li div i {
+	width:33px;
+	height:33px;
+	background:#fff;
+	border-radius:100%;
+	color:#1bbfcd;
+	font-size:20px;
+	text-align:center;
+	display:block;
+	font-family: "Microsoft YaHei";
+	line-height:30px;
+}
+.topl-width ul li span {
+	float:left;
+	padding:15px 0 0 7px;
+}
+.topr-width {
+	position: absolute;
+	background:url(../images/m-z2.png) top right no-repeat;
+	height:55px;
+	right:48px;
+	top:79px;
+}
+.topr-width ul {
+	padding-right:70px;
+}
+.topr-width li {
+	float:left;
+	border:2px #27d4e2 solid;
+	height:27px;
+	border-radius:20px;
+	text-align:center;
+	width:68px;
+	margin-right:3px;
+	background:#092f67;
+	margin-top:-8px;
+	line-height:25px;
+}
+.topr-width li a {
+	color:#fff;
+}
+.topm-width {
+
+	height:120px;
+	width:769px;
+	margin:auto;
+	text-align:center;
+}
+.topm-width .logo {
+	padding-top:32px;
+}
+
+
+.bottom-content {
+    position:relative;
+}
+.left-bar-width {
+	width:217px; 
+	position: absolute; 
+	height:37px;
+	background:url(../images/m-b1.png) top no-repeat;
+	left:48px;
+}
+.right-bar-width {
+	width:217px; 
+	position: absolute;
+	background:url(../images/m-b3.png) top no-repeat;
+	height:37px;
+	right:47px;
+	top:0;
+}
+.middle-width {
+	margin-left:265px;
+	margin-right:264px;
+	background:url(../images/m_t1.png) repeat-x;
+	height:48px;
+	padding-top:20px;
+	text-align:center;
+}
+.middle-width li {
+	box-shadow:0px 0px 5px rgba(31,214,229,.7);
+	border:2px #1ebbd0 solid;
+	height:31px;
+	display:inline-block;
+	border-radius:20px;
+	margin-left:25px;
+	text-align:center;
+	line-height:33px;
+	color:#fff;
+	padding:0 10px;
+}
+.middle-width li span {
+    margin:0 15px;
+}

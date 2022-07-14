@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.mbsz.dao.MbszMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.zbgl.mbsz.entity.MbszEntity"> 
+		SELECT A.* FROM CDS_DUTY_MODE A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.mbsz.entity.MbszEntity" resultType="com.cesgroup.prison.zbgl.mbsz.entity.MbszEntity">
+		SELECT A.*,B.DCA_CATEGORY_NAME FROM CDS_DUTY_MODE A LEFT JOIN CDS_DUTY_CATEGORY B ON A.CDM_CATEGORY_ID = B.ID
+	    <where> 
+			<if test="cdmCusNumber != null and cdmCusNumber != ''">
+				AND CDM_CUS_NUMBER = #{cdmCusNumber}
+		    </if>
+			<if test="cdmCategoryId != null and cdmCategoryId != ''">
+		 		AND CDM_CATEGORY_ID = #{cdmCategoryId}
+			</if> 
+			<if test="cdmModeName != null and cdmModeName != ''">
+		 		AND CDM_MODE_NAME LIKE '%'|| #{cdmModeName} || '%'
+			</if>
+		</where>
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.mbsz.entity.MbszEntity" resultType="com.cesgroup.prison.zbgl.mbsz.entity.MbszEntity">
+		SELECT A.* FROM CDS_DUTY_MODE A
+		<where>
+			<if test="cdmCusNumber != null and cdmCusNumber != ''">
+				AND CDM_CUS_NUMBER = #{cdmCusNumber}
+		    </if>
+			<if test="cdmCategoryId != null and cdmCategoryId != ''">
+		 		AND CDM_CATEGORY_ID = #{cdmCategoryId}
+			</if>
+			<if test="cdmSfqy != null and cdmSfqy != ''">
+		 		AND CDM_SFQY = #{cdmSfqy}
+			</if>  
+		</where> 
+	</select>
+	
+	<select id="deleteById" parameterType="arraylist"> 
+		DELETE FROM CDS_DUTY_MODE A 
+		<where>
+			<if test="id != null and id != ''">
+				AND ID = #{id}
+		    </if>
+		</where> 
+	</select>
+	
+	
+	<update id="updateSfqyById" parameterType="com.cesgroup.prison.zbgl.mbsz.entity.MbszEntity">
+		update prison.cds_duty_mode set CDM_SFQY =#{cdmSfqy} where id=#{id}
+	</update>
+</mapper>

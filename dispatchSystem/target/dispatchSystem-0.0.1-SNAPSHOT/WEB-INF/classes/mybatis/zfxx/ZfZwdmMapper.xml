@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.zfxx.zfdm.dao.ZfZwdmDao">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zfdm.entity.ZfZwdm">
+		<result column="DMLX" jdbcType="VARCHAR" property="dmlx" />
+		<result column="DTDMSJ" jdbcType="TIMESTAMP" property="dtdmsj" />
+		<result column="ZRS" jdbcType="INTEGER" property="zrs" />
+		<result column="QQRS" jdbcType="INTEGER" property="qqrs" />
+		<result column="SDRS" jdbcType="INTEGER" property="sdrs" />
+		<result column="CORPID" jdbcType="VARCHAR" property="corpid" />
+		<result column="CORPNAME" jdbcType="VARCHAR" property="corpname" />
+		<result column="DEPTID" jdbcType="VARCHAR" property="deptid" />
+		<result column="DEPTNAME" jdbcType="VARCHAR" property="deptname" />
+		<result column="CORPNORDER" jdbcType="INTEGER" property="corpnorder" />
+		<result column="DEPTNORDER" jdbcType="INTEGER" property="deptnorder" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		DMLX, DTDMSJ, ZRS, QQRS, SDRS, CORPID, CORPNAME, DEPTID, DEPTNAME, CORPNORDER, DEPTNORDER
+	</sql>
+	
+	<!-- 查询罪犯早晚点名记录列表 -->
+	<select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM ZFINFO.T_ZX_ZWDM T1
+		<where>
+			<if test="corpname != null and corpname != ''">
+				AND T1.CORPNAME = '${corpname}'
+			</if>
+			<if test="deptname != null and deptname != ''">
+				AND T1.DEPTNAME LIKE '%${deptname}%'
+			</if>
+			<if test="dtdmsj != null and dtdmsj != ''">
+				AND TO_CHAR(T1.DTDMSJ, 'yyyy-MM-dd') = '${dtdmsj}'
+			</if>
+		</where>
+		ORDER BY DTDMSJ DESC
+	</select>
+	
+	<!-- 根据点名类型、监狱名称、监区名称，查询罪犯早晚点名记录，并按照点名时间倒序排列 -->
+	<select id="findByDmlxAndCorpnameAndDeptnameOrderByDtdmsjDesc" resultMap="BaseResultMap" useCache="true">
+		select a.jsh as deptname, count(a.jsh) as zrs from YZGL.T_YZGL_JSXZ_XZXX a, YZGL.T_YZGL_JSXZ_XZCY b 
+		where a.id=b.xz_id 
+		<if test="corpname != null and corpname != ''">
+			and a.jy_id = #{corpname}
+		</if>
+		<if test="deptname != null and deptname != ''">
+			and a.jq_id = #{deptname}
+		</if>
+		group by a.jsh order by a.jsh
+	</select>
+	
+	<select id="selectDmpc" resultType="string" parameterType="java.util.Map" useCache="true">
+		select cell_no from PRISON.T_ZFDM_DTLS where call_time = (
+		select max(c.call_time) from PRISON.T_ZFDM_DTLS c where to_char(sysdate,'yyyy-MM-dd')=to_char(c.call_time,'yyyy-MM-dd') 
+		and c.cus_number=#{cusNumber} and exists (select b.zf_bh from YZGL.T_YZGL_JSXZ_XZXX a, YZGL.T_YZGL_JSXZ_XZCY b where a.id=b.xz_id 
+		and a.jy_id=#{cusNumber} and a.jq_id=#{dprtmntCode} and b.zf_bh=c.prisoner_b_h)) limit 0,1
+	</select>
+	
+	<select id="selectDmqk" resultMap="BaseResultMap" parameterType="java.util.Map" useCache="true">
+		select x.deptname as deptname, x.zrs as zrs, decode(y.sdrs, null, 0, y.sdrs) as sdrs from (
+		select a.jsh as deptname, count(a.jsh) as zrs from YZGL.T_YZGL_JSXZ_XZXX a, YZGL.T_YZGL_JSXZ_XZCY b 
+				where a.id=b.xz_id 
+					and a.jy_id = #{cusNumber}
+					and a.jq_id = #{dprtmntCode}
+				group by a.jsh order by a.jsh) x left join 
+		(select count(distinct(c.prisoner_b_h)) as sdrs, a.jsh as deptname from YZGL.T_YZGL_JSXZ_XZXX a, YZGL.T_YZGL_JSXZ_XZCY b, PRISON.T_ZFDM_DTLS c
+				where a.id=b.xz_id 
+					and a.jy_id = #{cusNumber}
+					and a.jq_id = #{dprtmntCode}
+					and b.zf_bh=c.prisoner_b_h 
+					and cell_no=#{dmpc}
+				group by a.jsh order by a.jsh) y on x.deptname=y.deptname
+	</select>
+	
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xtcs.dao.XtcsMapper">
+    <!-- 基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.xtcs.entity.XtcsEntity">
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="CSBM" jdbcType="CHAR" property="csbm"/>
+        <result column="CSMC" jdbcType="CHAR" property="csmc"/>
+        <result column="CSZ" jdbcType="CHAR" property="csz"/>
+        <result column="BZ" jdbcType="CHAR" property="bz"/>
+        <result column="SJZT" jdbcType="CHAR" property="sjzt"/>
+        <result column="SJPX" jdbcType="DECIMAL" property="sjpx"/>
+        <result column="CJRID" jdbcType="CHAR" property="cjrid"/>
+        <result column="CJR" jdbcType="CHAR" property="cjr"/>
+        <result column="CJRQ" jdbcType="TIMESTAMP" property="cjrq"/>
+        <result column="GXRID" jdbcType="CHAR" property="gxrid"/>
+        <result column="GXR" jdbcType="CHAR" property="gxr"/>
+        <result column="GXRQ" jdbcType="TIMESTAMP" property="gxrq"/>
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+		ID, CSBM, CSMC, CSZ, BZ, SJZT, SJPX, CJRID, CJR, CJRQ, GXRID, GXR, GXRQ
+	</sql>
+
+    <!-- 分页查询 -->
+    <select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_XTCS T1
+        <where>
+            <if test="csbm != null and csbm != ''">
+                AND T1.CSBM LIKE concat('%', #{csbm, jdbcType=CHAR}, '%')
+            </if>
+            <if test="csmc != null and csmc != ''">
+                AND T1.CSMC LIKE concat('%', #{csmc, jdbcType=CHAR}, '%')
+            </if>
+            AND T1.SJZT = '0'
+        </where>
+        ORDER BY T1.SJPX
+    </select>
+
+    <!-- 根据主键ID查询 -->
+    <select id="findById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from T_XTCS
+        where ID = #{id,jdbcType=CHAR}
+    </select>
+
+    <!-- 根据实时警情ID数组查询 -->
+    <select id="findByIdArray" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM T_XTCS T1
+        <where>
+            <if test="idArray != null">
+                AND T1.ID IN
+                <foreach collection="idArray" item="id" open="(" close=")" separator=",">
+                    #{id, jdbcType=CHAR}
+                </foreach>
+            </if>
+            AND T1.SJZT = '0'
+        </where>
+    </select>
+
+    <!-- 查询最大排序号（返回整数） -->
+    <select id="findMaxSjpx" resultType="java.lang.Integer" useCache="true">
+        SELECT
+          max(T1.SJPX)
+        FROM T_XTCS T1
+        WHERE T1.SJZT = '0'
+    </select>
+
+    <!-- 根据参数编码查询 -->
+    <select id="findByCsbm" resultMap="BaseResultMap" useCache="true">
+        select
+        <include refid="Base_Column_List"/>
+        from T_XTCS T1
+        <where>
+            <if test="csbm != null and csbm != ''">
+                AND T1.CSBM = #{csbm, jdbcType=CHAR}
+            </if>
+            AND T1.SJZT = '0'
+        </where>
+        ORDER BY T1.SJPX
+    </select>
+</mapper>

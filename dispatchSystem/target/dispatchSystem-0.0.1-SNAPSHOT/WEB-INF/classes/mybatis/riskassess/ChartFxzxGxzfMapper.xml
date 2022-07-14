@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.riskassess.fxzx.dao.ChartFxzxGxzfDao">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.riskassess.fxzx.entity.ChartFxzxGxzf">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="NAME" jdbcType="CHAR" property="name" />
+		<result column="CATEGORY" jdbcType="CHAR" property="category" />
+		<result column="SCORE" jdbcType="DECIMAL" property="score" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, NAME, CATEGORY, SCORE
+	</sql>
+	
+	<!-- Desc: 根据风险评估种类查询风险评估总分数据findByCategory -->
+	<select id="findByNameAndCategory" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			TEST_AQFX_CHART_FXZX_GXZF T1
+		WHERE 
+			T1.NAME = '${name}'
+			AND T1.CATEGORY = '${category}'
+	</select>
+</mapper>

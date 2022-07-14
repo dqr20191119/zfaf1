@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.wfsb.dao.PhysicalDeviceMapper">
+  <select id="searchPhysicalDevice" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT id, pde_cus_number,
+		  		   pde_device_idnty,
+		  		   pde_device_name,
+		  		   pde_type_indc,
+		  		   pde_location,
+		  		   pde_normal_count,                     
+   				   pde_abnormal_count,
+		  		   pde_crte_user_id,
+		  		   TO_CHAR(pde_crte_time,'YYYY/MM/DD HH24:MI:SS') as pde_crte_time,
+		  		   pde_updt_user_id,
+		  		   TO_CHAR(pde_updt_time,'YYYY/MM/DD HH24:MI:SS') as pde_updt_time,
+		  		   pde_unit
+		   	 FROM cds_physical_device
+			 <where>
+			 	<if test="physicalDevice.pdeDeviceName!=null and physicalDevice.pdeDeviceName!=''">
+			 		and pde_device_name like concat('%',#{physicalDevice.pdeDeviceName},'%' )
+			 	</if>
+			 	<if test="physicalDevice.pdeTypeIndc!=null and physicalDevice.pdeTypeIndc!=''">
+			 		and pde_type_indc =#{physicalDevice.pdeTypeIndc}
+			 	</if>
+			 	<if test="physicalDevice.pdeCusNumber!=null and physicalDevice.pdeCusNumber!=''">
+			 		AND pde_cus_number=#{physicalDevice.pdeCusNumber}
+			 	</if>
+			 </where>
+	</select>
+  <update id="updatePart" parameterType="map">
+    update CDS_PHYSICAL_DEVICE
+    <set>
+      <if test="physicalDevice.pdeCusNumber != null">
+        PDE_CUS_NUMBER = #{physicalDevice.pdeCusNumber},
+      </if> 
+      <if test="physicalDevice.pdeDeviceName != null">
+        PDE_DEVICE_NAME = #{physicalDevice.pdeDeviceName},
+      </if>
+      <if test="physicalDevice.pdeDeviceIdnty != null">
+        PDE_DEVICE_IDNTY = #{physicalDevice.pdeDeviceIdnty},
+      </if>
+      <if test="physicalDevice.pdeTypeIndc != null">
+        PDE_TYPE_INDC = #{physicalDevice.pdeTypeIndc},
+      </if>
+      <if test="physicalDevice.pdeLocation != null">
+        PDE_LOCATION = #{physicalDevice.pdeLocation},
+      </if>
+      <if test="physicalDevice.pdeNormalCount != null">
+        PDE_NORMAL_COUNT = #{physicalDevice.pdeNormalCount},
+      </if>
+      <if test="physicalDevice.pdeAbnormalCount != null">
+        PDE_ABNORMAL_COUNT = #{physicalDevice.pdeAbnormalCount},
+      </if>
+      <if test="physicalDevice.pdeRemark != null">
+        PDE_REMARK = #{physicalDevice.pdeRemark},
+      </if>
+      <if test="physicalDevice.pdeCrteUserId != null">
+        PDE_CRTE_USER_ID = #{physicalDevice.pdeCrteUserId},
+      </if>
+      <if test="physicalDevice.pdeCrteTime != null">
+        PDE_CRTE_TIME = TO_CHAR(#{physicalDevice.pdeCrteTime},'YYYY/MM/DD HH24:MI:SS'),
+      </if>
+      <if test="physicalDevice.pdeUpdtUserId != null">
+        PDE_UPDT_USER_ID = #{physicalDevice.pdeUpdtUserId},
+      </if>
+      <if test="physicalDevice.pdeUpdtTime != null">
+        PDE_UPDT_TIME = TO_CHAR(#{physicalDevice.pdeUpdtTime},'YYYY/MM/DD HH24:MI:SS'),
+      </if>
+      <if test="physicalDevice.pdeUnit != null">
+        PDE_UNIT = #{physicalDevice.pdeUnit},
+      </if>
+    </set>
+    where ID = #{physicalDevice.id}
+  </update>
+</mapper>

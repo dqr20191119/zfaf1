@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.rzcx.dao.RzcxMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="TIME" jdbcType="TIMESTAMP" property="time" />
+    <result column="MODEL" jdbcType="VARCHAR" property="model" />
+    <result column="ACTION" jdbcType="VARCHAR" property="action" />
+    <result column="OP_TARGET" jdbcType="VARCHAR" property="opTarget" />
+    <result column="RESULT" jdbcType="VARCHAR" property="result" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <select id="findList" parameterType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity" resultType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity">
+   SELECT ID, USER_ID, TIME, 
+      MODEL, ACTION, OP_TARGET, 
+      RESULT, IP, URL
+      FROM "PRISONEXT"."T_FW_LOGS"
+  </select>
+    <select id="searchSwdbPage" parameterType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity" resultType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity">
+   SELECT ID, USER_ID, TIME, 
+      MODEL, ACTION, OP_TARGET, 
+      RESULT, IP, URL
+      FROM "PRISONEXT"."T_FW_LOGS" A
+      <where>
+			
+			<if test="startTime != null and startTime != ''">
+				AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{endTime}
+			</if>
+			<if test="SearchDate != null and SearchDate != ''">
+				AND A.OP_TARGET like concat('%', #{SearchDate}, '%') or
+				A.IP like concat('%', #{SearchDate}, '%') OR
+				A.URL like concat('%', #{SearchDate}, '%')
+			</if>
+		 </where>
+  </select>
+  
+  	<!-- 时间按天的图表 -->
+	<select id="sjChart" parameterType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity" resultType="java.util.HashMap">
+		SELECT to_char(time, 'yyyy-mm-dd') as rq, to_char(count(1)) as cnt  FROM "PRISONEXT"."T_FW_LOGS" A 
+		where  1= 1
+		<if test="startTime != null and startTime != ''">
+			AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{endTime}
+		</if>
+		<if test="SearchDate != null and SearchDate != ''">
+				AND A.OP_TARGET like concat('%', #{SearchDate}, '%') or
+				A.IP like concat('%', #{SearchDate}, '%') OR
+				A.URL like concat('%', #{SearchDate}, '%')
+		</if>
+		group by to_char(time, 'yyyy-mm-dd') order by  to_char(time, 'yyyy-mm-dd') 
+	</select>
+	<!-- 操作的图表 -->
+	<select id="czChart" parameterType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity" resultType="java.util.HashMap">
+		select * from (
+			select rownum as rn, op_target, cnt from (
+				select op_target,  to_char(count(1)) as cnt    
+				FROM "PRISONEXT"."T_FW_LOGS" a  where 1 = 1
+				<if test="startTime != null and startTime != ''">
+					AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{startTime}
+				</if>
+				<if test="endTime != null and endTime != ''">
+					AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{endTime}
+				</if>
+				<if test="SearchDate != null and SearchDate != ''">
+						AND A.OP_TARGET like concat('%', #{SearchDate}, '%') or
+						A.IP like concat('%', #{SearchDate}, '%') OR
+						A.URL like concat('%', #{SearchDate}, '%')
+				</if> 
+				group by  op_target  
+				order by count(1) desc 
+			)  
+		) where rn &lt;= 10
+	</select>
+	
+	<!-- 日志操作列表统计 -->
+	 <select id="searchSwdbPage1" parameterType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity" resultType="com.cesgroup.prison.xxhj.rzcx.entity.RzcxEntity">
+	   select OP_TARGET,OP_TARGET as ID, count(1) as RESULT 
+	   FROM "PRISONEXT"."T_FW_LOGS" A 
+      <where>
+			<if test="startTime != null and startTime != ''">
+				AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND to_char(A.TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{endTime}
+			</if>
+			<if test="SearchDate != null and SearchDate != ''">
+				AND A.OP_TARGET like concat('%', #{SearchDate}, '%') or
+				A.IP like concat('%', #{SearchDate}, '%') OR
+				A.URL like concat('%', #{SearchDate}, '%')
+			</if>
+		 </where>
+		  group by op_target order by count(1) desc 
+  	</select>
+	
+	
+  
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.zfxx.zfdm.dao.ZfdmMapper">
+
+	<select id="searchZfdm" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		<!-- SELECT * 
+		FROM T_ZFDM_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				AND CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="deptname != null and deptname !='' ">
+				AND DEPT_NAME like CONCAT('%',#{deptname},'%')
+			</if>
+			<if test="dmsj != null and dmsj !='' ">
+				AND CALL_TIME = #{dmsj}
+			</if>
+		</where> -->
+		
+		select * from (
+		select * from 
+		(	select jbxx.bh,jbxx.xm,jbxx.jy_id,jbxx.jq_id,'已点名' as dmzt from YZGL.T_YZGL_DK_JBXX jbxx
+			where jbxx.bh in(
+					select distinct prisoner_b_h from PRISON.T_ZFDM_DTLS where cell_no = ( 
+						select distinct cell_no from PRISON.T_ZFDM_DTLS where call_time = (
+							select max(call_time) FROM  PRISON.T_ZFDM_DTLS where 
+							1=1  
+							<if test="cusNumber != null and cusNumber !='' ">
+								AND cus_number = #{cusNumber}
+							 </if>
+							 
+						)
+					)
+				) 
+			 <if test="cusNumber != null and cusNumber !='' ">
+				AND jy_id = #{cusNumber}
+			 </if>
+			  <if test="deptId != null and deptId !='' ">
+				AND jq_id = #{deptId}
+			 </if>
+				and  zf_zt1='1' and zf_zt2='11'
+		) e
+		left join (
+		select a.jsh,b.zf_bh from YZGL.T_YZGL_JSXZ_XZXX a, YZGL.T_YZGL_JSXZ_XZCY b where a.id=b.xz_id
+		)xz  on xz.zf_bh = e.bh  
+			
+			) 
+			union 
+			(
+			select * from 
+		(	
+		select jbxx.bh,jbxx.xm,jbxx.jy_id,jbxx.jq_id,'未点名' as dmzt from YZGL.T_YZGL_DK_JBXX jbxx
+			where jbxx.bh not in(
+					select distinct prisoner_b_h from PRISON.T_ZFDM_DTLS where cell_no = ( 
+						select distinct cell_no from PRISON.T_ZFDM_DTLS where call_time = (
+							select max(call_time) FROM  PRISON.T_ZFDM_DTLS where 
+							1=1   
+							 <if test="cusNumber != null and cusNumber !='' ">
+								AND cus_number = #{cusNumber}
+							 </if>
+						)
+					)
+				) 
+			 <if test="cusNumber != null and cusNumber !='' ">
+				AND jy_id = #{cusNumber}
+			 </if>
+			   <if test="deptId != null and deptId !='' ">
+				AND jq_id = #{deptId}
+			 </if>
+			  and  zf_zt1='1' and zf_zt2='11'
+		) e
+		left join (
+		select a.jsh,b.zf_bh from YZGL.T_YZGL_JSXZ_XZXX a, YZGL.T_YZGL_JSXZ_XZCY b where a.id=b.xz_id
+		)xz  on xz.zf_bh = e.bh 
+		)
+		
+	</select>
+
+</mapper>

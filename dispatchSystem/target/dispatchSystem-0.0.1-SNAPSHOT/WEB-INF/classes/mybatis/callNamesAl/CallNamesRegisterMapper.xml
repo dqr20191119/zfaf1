@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.callNamesAl.dao.CallNamesRegisterMapper">
+
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+		a.ID ,
+		CNR_CUS_NUMBER ,
+		CNR_PRISONER_INDC,
+		PBD_PRISONER,
+		CNR_IMG_ID ,
+		CNR_IMG_URL ,
+		CNR_IMG_SIZE ,
+		CNR_IMG_NAME ,
+		PDB_DEMPT_ID ,
+		PBD_AREA_ID ,
+		ABD_AREA_NAME ,
+		PBD_CELL_INDC
+		from
+		CDS_CALL_NAMES_REGISTER_PRISONER a
+		left join V_PRISONER_BASE_DTLS b on CNR_CUS_NUMBER = PBD_CUS_NUMBER and CNR_PRISONER_INDC = PBD_PRISONER_INDC
+		left join CDS_AREA_BASE_DTLS c on ABD_CUS_NUMBER = CNR_CUS_NUMBER and PBD_AREA_ID =
+		ABD_AREA_ID
+		<where>
+			<if test="callNamesRegisterEntity.cnrCusNumber != null and callNamesRegisterEntity.cnrCusNumber!='' ">
+				AND cnr_cus_number = #{callNamesRegisterEntity.cnrCusNumber}
+			</if>
+
+			<if test="callNamesRegisterEntity.prisonerName != null and callNamesRegisterEntity.prisonerName!='' ">
+				AND PBD_PRISONER like concat('%', #{callNamesRegisterEntity.prisonerName},'%')
+			</if>
+
+			<if test="callNamesRegisterEntity.demptId != null and callNamesRegisterEntity.demptId!='' ">
+				AND PDB_DEMPT_ID = #{callNamesRegisterEntity.demptId}
+			</if>
+
+			<if test="callNamesRegisterEntity.lch != null and callNamesRegisterEntity.lch!='' ">
+				AND PBD_AREA_ID = #{callNamesRegisterEntity.lch}
+			</if>
+
+			<if test="callNamesRegisterEntity.jsh != null and callNamesRegisterEntity.jsh!='' ">
+				AND PBD_CELL_INDC = #{callNamesRegisterEntity.jsh}
+			</if>
+		</where>
+		ORDER BY CNR_PRISONER_INDC desc
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_CALL_NAMES_REGISTER_PRISONER
+		<set>
+			<if test="callNamesRegisterEntity.cnrPrisonerIndc != null and callNamesRegisterEntity.cnrPrisonerIndc!='' ">
+				cnr_prisoner_indc = #{callNamesRegisterEntity.cnrPrisonerIndc},
+			</if>
+
+			<if test="callNamesRegisterEntity.cnrImgId!='' ">
+				cnr_img_id = #{callNamesRegisterEntity.cnrImgId},
+			</if>
+
+			<if test="callNamesRegisterEntity.cnrImgUrl!='' ">
+				cnr_img_url = #{callNamesRegisterEntity.cnrImgUrl},
+			</if>
+
+			<if test="callNamesRegisterEntity.cnrImgName!='' ">
+				cnr_img_name = #{callNamesRegisterEntity.cnrImgName},
+			</if>
+
+			<if test="callNamesRegisterEntity.cnrImgSize!='' ">
+				cnr_img_size = #{callNamesRegisterEntity.cnrImgSize},
+			</if>
+
+			<if test="callNamesRegisterEntity.cnrUpdtTime != null and callNamesRegisterEntity.cnrUpdtTime!='' ">
+				cnr_updt_time = #{callNamesRegisterEntity.cnrUpdtTime},
+			</if>
+
+			<if test="callNamesRegisterEntity.cnrUpdtUserId != null and callNamesRegisterEntity.cnrUpdtUserId!='' ">
+				cnr_updt_user_id = #{callNamesRegisterEntity.cnrUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="callNamesRegisterEntity.id !=null and callNamesRegisterEntity.id !=''">
+				AND (TRIM(#{callNamesRegisterEntity.id}) is null or id = #{callNamesRegisterEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_CALL_NAMES_REGISTER_PRISONER WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="findZfPicInfo" parameterType="List" resultType="java.util.HashMap">
+		select
+	    V.PBD_CUS_NUMBER  as jyh,
+		V.PBD_PRISONER_INDC as zfbh,
+		V.PBD_PRISONER as zfmc,
+		B.LINK_URL as img_url,
+		B.FILE_NAME as img_name,
+		B.FILE_SIZE || '' as img_size
+		from
+		PRISON.V_PRISONER_BASE_DTLS V
+		left join YZGL.T_YZGL_DK_ZRXX_MTXX A on A.ZF_BH = v.PBD_PRISONER_INDC AND A.MT_NR_FL = '3'
+		left join PORTAL.T_C_AFFIX B on A.ID = B.YW_ID
+		where V.PBD_PRISONER_INDC in
+		<foreach collection="list" item="zfbh" index="index" separator="," open="(" close=")">
+			#{zfbh}
+		</foreach>
+	</select>
+
+	<select id="findJsForTree" parameterType="hashmap" resultType="hashmap">
+		select JY_ID "jyh",JQ_ID "jqh", LH_ID "lch", JSH "id" , JSH "name" ,0 "isParent", 1 "open"
+		from V_AREA_BASE_JSH
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND JY_ID = #{cusNumber}
+			</if>
+			<if test="id != null and id != ''">
+				AND LH_ID = #{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="findPrisonerByJs" parameterType="hashmap" resultType="hashmap">
+		select
+		ID ,
+		PBD_CUS_NUMBER ,
+		PBD_AREA_ID ,
+		PBD_CELL_INDC ,
+		PBD_PRISONER_INDC,
+		PBD_PRISONER ,
+		PBD_BED_INDC
+		from
+		V_PRISONER_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="lch != null and lch != ''">
+				AND PBD_AREA_ID = #{lch}
+			</if>
+			<if test="jsh != null and jsh != ''">
+				AND PBD_CELL_INDC = #{jsh}
+			</if>
+			and not exists
+			(select 1 from CDS_CALL_NAMES_REGISTER_PRISONER where CNR_CUS_NUMBER = PBD_CUS_NUMBER and PBD_PRISONER_INDC = CNR_PRISONER_INDC)
+		</where>
+	</select>
+
+	<select id="findRegisterPrisonerByJs" parameterType="hashmap" resultType="hashmap">
+		select
+		a.ID ,
+		CNR_CUS_NUMBER ,
+		PBD_PRISONER_INDC,
+		PBD_PRISONER,
+		PBD_AREA_ID ,
+		PBD_CELL_INDC
+		from
+		CDS_CALL_NAMES_REGISTER_PRISONER a
+		left join V_PRISONER_BASE_DTLS b on CNR_CUS_NUMBER = PBD_CUS_NUMBER and CNR_PRISONER_INDC = PBD_PRISONER_INDC
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND CNR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="lch != null and lch != ''">
+				AND PBD_AREA_ID = #{lch}
+			</if>
+			<if test="jsh != null and jsh != ''">
+				AND PBD_CELL_INDC = #{jsh}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

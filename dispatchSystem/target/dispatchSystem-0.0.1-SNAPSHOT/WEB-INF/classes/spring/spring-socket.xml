@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:int-jmx="http://www.springframework.org/schema/integration/jmx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/aop
+			http://www.springframework.org/schema/aop/spring-aop.xsd
+			http://www.springframework.org/schema/tx
+			http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/integration
+            http://www.springframework.org/schema/integration/spring-integration.xsd
+            http://www.springframework.org/schema/integration/jms
+            http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.1.xsd
+            http://www.springframework.org/schema/integration/jmx
+            http://www.springframework.org/schema/integration/jmx/spring-integration-jmx-2.1.xsd">
+	<!-- 引入项目配置文件
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:socket-config.properties</value>
+			</list>
+		</property>
+	</bean> -->
+    <bean id="nettySocketServer" class="com.cesgroup.frm.net.netty.NettySocketServer" init-method='start'>
+		<property name="nettyConfig" ref="nettyConfig" />
+	</bean>
+	
+    <bean id="nettyConfig" class="com.cesgroup.frm.net.netty.bean.NettyConfig">
+		<property name="ssl" value="false" />
+		<property name="sslPort" value="8447" />
+		<property name="port" value="8087" />
+		<property name="communicationMode" value="websocket" />
+		<property name="netWorkerNum" value="2" />
+		<property name="msgComsumerPool" value="false" />
+		<property name="msgComsumerNum" value="1" />
+		<property name="msgServicePackage" value="com.cesgroup.frm.net.service.BusinessService" />
+	</bean>
+	
+	<context:component-scan base-package="com.hz" />
+	 <!--
+	<bean id="applicationContextUtil" class="com.hz.frm.util.ApplicationContextUtil"></bean>
+	 -->
+</beans>

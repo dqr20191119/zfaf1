@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="fm_door_info">
+		<desc>获取门禁基础信息</desc>
+		<sql>
+	      SELECT dcb_cus_number,
+	             dcb_idnty,	             
+	             dcb_ctrl_idnty,
+	             dcb_door_idnty,
+	             dcb_channel_idnty,	
+	             dcb_brand_indc,          	           
+                 dcb_port,
+                 dcb_type_indc,
+                 dcb_name,	
+	             dcb_addrs,	             	           	            	                     
+	             dcb_chnnl_addrs,
+	             dcb_area_id,
+	             dcb_dprtmnt,	           
+	             dcb_stts_indc,
+	             dcb_remark
+	        FROM dvc_door_control_base_dtls
+	        LEFT JOIN dvc_door_control_device
+	          ON (dcb_cus_number = dcd_cus_number AND
+	             dcb_ctrl_idnty = dcd_idnty)
+		</sql>
+		<where wid="0">
+		   WHERE dcb_cus_number=?
+		   AND dcb_action_indc #$ 3
+		</where>
+		<where wid="1">
+		   WHERE dcb_cus_number=?
+		   AND dcb_action_indc #$ 3
+		   AND dcb_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+		</where>
+		<order oid="0">
+		   ORDER BY dcb_idnty
+		</order>
+	</item>
+	<item id="fm_doorControl_info">
+	  <desc>获取门禁控制器基础信息</desc>
+	  <sql>
+	     SELECT  dcd_cus_number,
+	             dcd_idnty,
+	             dcd_name,
+	             dcd_sn,
+	             dcd_ip_addrs,
+	             dcd_port,
+	             dcd_user_name,
+	             dcd_user_password,	            
+	             dcd_remark
+	     FROM    dvc_door_control_device
+	  </sql>
+	  <where wid="0">
+	     WHERE   dcd_cus_number = ?
+	       AND   dcd_action_indc  #$ 3
+	  </where>
+	  <where wid="1">
+		 WHERE  dcd_cus_number=?
+		   AND  dcd_action_indc #$ 3
+		   AND  dcd_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+		</where>
+		<order oid="0">
+		   ORDER BY dcd_idnty
+		</order>
+	</item>
+	<item id="fm_alertor_info">
+		<desc>获取报警器基础信息</desc>
+		<sql>
+			select abd_cus_number,
+			       abd_idnty,
+			       abd_name,
+			       abd_type_indc,
+			       abd_addrs,
+			       abd_area_id,
+			       abd_action_indc,
+			       abd_ip
+			  from dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+		   WHERE abd_cus_number=?
+		     AND abd_action_indc #$ 3
+		</where>
+		<where wid="1">
+		   WHERE abd_cus_number=?
+		     AND abd_action_indc #$ 3
+		     AND abd_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+		</where>
+		<order oid="0">
+		   ORDER BY abd_idnty
+		</order>
+	</item>
+	
+	<item id="fm_snake_info">
+	   <desc>获取蛇腹网信息</desc>
+	   <sql>
+	     SELECT   swi_cus_number,
+	              swi_detector_idnty,
+	              swi_defense_idnty,
+	              swi_defense_name,
+	              swi_detector_host_idnty,
+	              swi_addrs,
+	              swi_stts_indc,
+	              swi_pos_x,
+	              swi_pos_y,
+	              swi_pos_z,
+	              swi_pos_pitch,
+	              swi_pos_rotate
+	     FROM     dvc_snake_wire_info
+	   </sql>
+	   <where wid="0">
+	     WHERE    swi_cus_number = ?
+	   </where>
+	   <where wid="1">
+	     WHERE    swi_cus_number = ?
+	       AND    swi_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+	   </where>
+	</item>
+	
+	<item id="fm_prisoner_info">
+		<desc>获取犯人信息</desc>
+		<sql>
+			SELECT pbd_cus_number,
+				   pbd_prsnr_idnty,
+			       pbd_prsnr_name,
+			       pbd_prsn_area_idnty,
+			       pbd_prsn_area,
+			       pbd_sex_indc,
+			       to_char(pbd_birth_date,'YYYY-MM-DD') pbd_birth_date,
+			       pbd_native_addrs,
+			       pbd_sprt_mnge,
+			       '' AS pbd_release_date
+			  FROM v_prisoner_master
+		</sql>
+		<where wid="0">
+		   WHERE pbd_cus_number=?
+		     AND pbd_stts_indc = 1
+		</where>
+		<where wid="1">
+		   WHERE pbd_cus_number=?
+		   AND pbd_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+		   AND pbd_stts_indc = 1
+		</where>
+		<where wid="2">
+		   WHERE pbd_cus_number=?
+		</where>
+		<where wid="3">
+		   WHERE pbd_cus_number=?
+		   AND pbd_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+		</where>
+	</item>
+	
+	<item id="fm_prisoner_img_info">
+		<desc>获取犯人图片</desc>
+		<sql>
+			SELECT pbd_cus_number,
+				   pbd_prsnr_idnty,
+			       pbd_front_img
+			  FROM cds_prisoner_master
+		</sql>
+		<where wid="0">
+		   WHERE pbd_cus_number=?
+		   AND pbd_prsnr_idnty = ?
+		</where>
+	</item>
+	
+	<item id="fm_police_info">
+		<desc>获取民警信息</desc>
+		<sql>
+			SELECT pbd_cus_number,
+				   pbd_police_idnty,
+			       pbd_police_name,
+			       pbd_drptmnt_id,
+			       pbd_drptmnt,
+			       pbd_sex,
+			       to_char(pbd_birth_date,'YYYY-MM-DD') pbd_birth_date
+			  FROM v_police_base_dtls
+		</sql>
+		<where wid="0">
+		   WHERE pbd_cus_number=?
+		</where>
+		<where wid="1">
+		   WHERE pbd_cus_number=?
+		   AND pbd_updt_time$=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS')
+		</where>
+	</item>
+	
+	
+	<item id="fm_police_img">
+		<desc>获取民警图片</desc>
+		<sql>
+			SELECT pbd_cus_number,
+				   pbd_police_idnty,	     
+			       pbd_img 
+			  FROM cds_police_base_dtls
+		</sql>
+		<where wid="0">
+		   WHERE pbd_cus_number=?
+		   AND   pbd_police_idnty = ?
+		</where>
+	</item>
+	
+	<item id="fm_prisoner_flow_query">
+		<desc>查询犯人流动信息</desc>
+		<sql>
+			SELECT pfd_record_id			 
+			  FROM cds_prisoner_flow_dtls
+		</sql>
+		<where wid="0">
+		   WHERE	pfd_cus_number = ?   
+		   AND      pfd_prisoner_idnty = ?
+		</where>
+	</item>
+	
+	<item id="fm_working_record_query">
+		<desc>查询犯人上工信息</desc>
+		<sql>
+			SELECT wre_cus_number,
+				   wre_record_id,
+				   wre_dprtmnt_id,
+				   wre_start_time,
+				   wre_end_time,
+				   wre_work_indc,
+				   wre_people_idnty,
+				   wre_people_indc,
+				   wre_regist_idnty,
+				   wre_crte_time,
+				   wre_crte_user_id			 
+			  FROM cds_working_record
+		</sql>
+		<where wid="0">
+		   WHERE   wre_cus_number = ?
+		   AND     wre_dprtmnt_id = ?
+		   AND     wre_work_indc = ?
+		   AND     wre_people_idnty = ?
+		   AND     wre_people_indc  = ?
+		</where>
+	</item>
+	
+	<item id="fm_police_base_no_query">
+		<desc>查询民警编号</desc>
+		<sql>
+			SELECT pbd_police_idnty		  		 
+			  FROM v_police_base_dtls
+		</sql>
+		<where wid="0">
+		   WHERE   pbd_cus_number = ?
+		</where>
+	</item>
+	
+	<item id="fm_police_base_userid_query">
+		<desc>查询民警用户ID查询</desc>
+		<sql>
+			SELECT user_id,urlpath
+			  FROM auth.t_user
+			 WHERE urlpath is not null
+		</sql>
+	</item>
+	
+	<item id="fm_call_master_query">
+		<desc>查询点名信息</desc>
+		<sql>
+			SELECT cma_cus_number,
+				   cma_call_idnty,
+				   cma_dprtmnt_id,
+				   cma_dprtmnt_name,
+				   cma_start_time,
+				   cma_end_time,
+				   cma_call_num,
+				   cma_end_indc,
+				   cma_crte_time,
+				   cma_crte_user_id,
+				   cma_updt_time,
+				   cma_updt_user_id		  		 
+			  FROM cds_call_master
+		</sql>
+		<where wid="0">
+		   WHERE   cma_cus_number = ?
+		   AND	   cma_dprtmnt_id = ?
+		</where>
+	</item>
+
+	<item id="fm_power_network_query">
+		<desc>查询高压电网信息</desc>
+		<sql>
+			SELECT pnb_idnty 		 
+			  FROM dvc_power_network_base_dtls
+		</sql>
+		<where wid="0">
+		   WHERE   pnb_cus_number = ?
+		   AND	   pnb_idnty = ?
+		</where>
+	</item>	
+	
+	<item id="alarm_level_query">
+		<desc>查询报警等级</desc>
+		<sql>
+			SELECT alt_level FROM cds_alarm_type WHERE alt_cus_number = ? AND alt_type_id = ?
+		</sql>
+	</item>	
+
+	<item id="fm_police_drptInfo_query">
+		<desc>查询警员部门信息</desc>
+		<sql>
+			SELECT pbd_drptmnt_id,
+			       pbd_drptmnt
+			 FROM v_police_base_dtls       
+		</sql>
+		<where wid="0">
+		   WHERE   pbd_cus_number = ?
+		   AND	   pbd_police_idnty = ?
+		</where>			   
+	</item>
+	
+	<item id="cds_door_record_query">
+		<desc>查询门禁刷卡信息</desc>
+		<sql>
+			SELECT  drd_cus_number,       
+   					drd_bsns_date,       
+   					drd_record_id,       
+   					drd_door_ctrl_idnty,  
+   					drd_door_idnty,       
+   					drd_addrs,           
+   					drd_card_idnty,     
+   					drd_in_out_indc,      
+   					drd_brush_card_time,  
+   					drd_status_indc,     
+   					drd_people_type_indc, 
+   					drd_remark,           
+   					drd_crte_time,       
+   					drd_crte_user_id
+			 FROM  cds_door_record_dtls       
+		</sql>
+		<where wid="0">
+		   WHERE   drd_cus_number = ?
+		   AND	   drd_door_idnty = ?
+		   AND     drd_card_idnty = ?
+		   AND	   drd_people_type_indc = ?
+		</where>			   
+	</item>	
+	
+	<item id="cds_foreign_car_dtls_querybyid">
+		<desc>查询外来车辆信息是否存在</desc>
+		<sql>
+			SELECT  COUNT(FCD_RGSTR_IDNTY) AS count
+			 FROM   v_foreign_car_dtls  
+			WHERE   fcd_cus_number = ?
+		   AND	   fcd_rgstr_idnty = ?     
+		</sql>
+	</item>
+	
+	<item id="query_foreign_people_localImg">
+		<desc>查询外来人员现场照片</desc>
+		<sql>
+			SELECT  ima_img_url
+			 FROM   cds_image  
+		</sql>
+		<where wid="0">
+			WHERE ima_cus_number = ?
+			  AND ima_idnty1 = ?
+			  AND ima_type_indc = 2
+			  AND ima_sub_type_indc = 2
+		</where>
+	</item>	
+
+	<item id="query_foreign_people_outImg">
+		<desc>查询外来人员现场照片</desc>
+		<sql>
+			SELECT  ima_img_url
+			 FROM   cds_image 
+		</sql>
+		<!-- AND ima_idnty2 = ? -->
+		<where wid="0">
+			WHERE ima_cus_number = ?
+			  AND ima_idnty1 = ?
+			  AND ima_type_indc = 2
+			  AND ima_sub_type_indc = 1  
+		</where>
+	</item>	
+	
+	<item id="query_foreign_car_regImg">
+		<desc>查询外来车辆驾驶员登记照片</desc>
+		<sql>
+			SELECT  ima_img_url
+			 FROM   cds_image  
+		</sql>
+		<where wid="0">
+		    WHERE ima_cus_number=?
+			  AND ima_idnty1=?
+			  AND ima_type_indc=3
+			  AND ima_sub_type_indc=5 
+		</where>
+	</item>
+	
+	<item id="query_foreign_car_inImg">
+		<desc>查询外来车辆进照片</desc>
+		<sql>
+			SELECT ima_img_url FROM cds_image  
+		</sql>
+		<where wid="0">
+			WHERE ima_cus_number=?
+			  AND ima_idnty1=?
+			  AND ima_idnty2=?
+			  AND ima_type_indc=3
+			  AND ima_sub_type_indc=1 
+		</where>
+	</item>
+		
+	<item id="query_foreign_car_outImg">
+		<desc>查询外来车辆出照片</desc>
+		<sql>
+		    SELECT ima_img_url FROM cds_image  
+		</sql>
+		<where wid="0">
+			WHERE ima_cus_number=?
+			  AND ima_idnty1=?
+			  AND ima_idnty2=?
+			  AND ima_type_indc=3
+			  AND ima_sub_type_indc=2 
+		</where>
+	</item>	
+	
+	<item id="query_foreign_car_chassisInImg">
+		<desc>查询外来车辆底盘进照片</desc>
+		<sql>
+		    SELECT ima_img_url FROM cds_image 
+		</sql>
+		<where wid="0">
+			WHERE ima_cus_number=?
+			  AND ima_idnty1=?
+			  AND ima_idnty2=?
+			  AND ima_type_indc=3
+			  AND ima_sub_type_indc=3  
+		</where>
+	</item>
+
+	<item id="query_foreign_car_chassisOutImg">
+		<desc>查询外来车辆底盘出照片</desc>
+		<sql>
+		    SELECT ima_img_url FROM cds_image 
+		</sql>
+		<where wid="0">
+			WHERE ima_cus_number=?
+			  AND ima_idnty1=?
+			  AND ima_idnty2=?
+			  AND ima_type_indc=3
+			  AND ima_sub_type_indc=4  
+		</where>
+	</item>	
+	
+	<item id="cds_police_inout_enterTimeQuery">
+		<desc>查询警员当日进入监区时间</desc>
+		<sql>
+			SELECT  pir_enter_time
+			 FROM   cds_police_inout_record  
+		</sql>
+		<where wid="0">
+			WHERE pir_cus_number = ?
+			  AND pir_police_idnty = ? 
+			  AND pir_enter_time IS NOT NULL
+			  <!-- AND TRUNC(pir_enter_time) = TRUNC(sysdate)   -->
+		</where>
+	</item>	
+	
+	<item id="cds_foreign_people_inout_enterTimeQuery">
+		<desc>查询外来人员当日进入监区时间</desc>
+		<sql>
+			SELECT  fpi_inout_idnty,
+					fpi_enter_time
+			 FROM   cds_foreign_people_inout  
+		</sql>
+		<where wid="0">
+			WHERE fpi_cus_number = ?
+			  AND fpi_rgstr_idnty = ? 
+			  AND TRUNC(fpi_enter_time) = TRUNC(sysdate)
+		</where>
+		<order oid="0">
+			ORDER BY fpi_enter_time  DESC    
+		</order>
+	</item>	
+
+	<item id="cds_foreign_car_inout_enterTimeQuery">
+		<desc>查询外来车辆当日进入监区时间</desc>
+		<sql>
+			SELECT  fci_enter_time,
+					fci_inout_idnty
+			 FROM   cds_foreign_car_inout  
+		</sql>
+		<where wid="0">
+			WHERE fci_cus_number = ?
+			  AND fci_rgstr_idnty = ? 
+			  AND TRUNC(fci_enter_time) = TRUNC(sysdate) 
+			  AND fci_leave_time is null 
+		</where>
+	</item>		
+	<item id="cds_call_realtime_master_queryAll">
+		<desc>查询所有监区在线和不在线罪犯</desc>
+		<sql>
+			SELECT  crm_call_num,
+					crm_uncall_num,
+					crm_prisoner_ids
+			 FROM   cds_call_realtime_master  
+		</sql>
+		<where wid="0">
+			WHERE crm_cus_number = ? AND
+				  TRUNC(crm_call_time) = TRUNC(SYSDATE)
+		</where>
+	</item>	
+	
+	<item id="fm_foreign_people_query_by_regstr">
+		<desc>查询外来人员登记表中是否存在该条记录(根据登记单号)</desc>
+		<sql>
+		   SELECT  fpd_rgstr_idnty
+			 FROM  cds_foreign_people_dtls
+		</sql>
+		<where wid="0">
+			WHERE fpd_cus_number  =  ?
+			  AND fpd_rgstr_idnty =  ?
+		</where>
+	</item>	
+
+	<item id="fm_foreign_car_query_by_regstr">
+		<desc>查询外来车辆登记表中是否存在该条记录(根据登记单号)</desc>
+		<sql>
+		   SELECT  fcd_rgstr_idnty
+			 FROM  cds_foreign_car_dtls
+		</sql>
+		<where wid="0">
+			WHERE fcd_cus_number  =  ?
+			  AND fcd_rgstr_idnty =  ?
+		</where>
+	</item>			
+	
+	<item id="query_cur_inprsn_police_record">
+		<desc>查询当前在监民警纪录</desc>
+		<sql>
+		    SELECT cip_police_idnty
+			  FROM cds_cur_inprsn_police_record
+		</sql>
+		<where wid="0">
+			 WHERE cip_cus_number = ?
+		</where>
+	</item>	
+											
+</sqlItem>

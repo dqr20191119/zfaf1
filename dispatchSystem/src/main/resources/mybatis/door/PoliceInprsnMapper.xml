@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.door.dao.PoliceInprsnMapper">
+	<!-- 在监民警数据记录表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.door.entity.PoliceInprsnEntity">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CIP_CUS_NUMBER" jdbcType="CHAR" property="cipCusNumber" />
+		<result column="CIP_POLICE_IDNTY" jdbcType="CHAR" property="cipPoliceIdnty" />
+		<result column="CIP_POLICE_NAME" jdbcType="CHAR" property="cipPoliceName" />
+		<result column="CIP_DOOR_CARD_IDNTY" jdbcType="CHAR" property="cipDoorCardIdnty" />
+		<result column="CIP_DOOR_IDNTY" jdbcType="CHAR" property="cipDoorIdnty" />
+		<result column="CIP_ENTER_TIME" jdbcType="TIMESTAMP" property="cipEnterTime" />
+		<result column="CIP_CRTE_TIME" jdbcType="TIMESTAMP" property="cipCrteTime" />
+		<result column="CIP_CRTE_USER_ID" jdbcType="CHAR" property="cipCrteUserId" />
+		<result column="CIP_UPDT_TIME" jdbcType="TIMESTAMP" property="cipUpdtTime" />
+		<result column="CIP_UPDT_USER_ID" jdbcType="CHAR" property="cipUpdtUserId" />
+		<result column="CIP_DATA_SOURCE" jdbcType="CHAR" property="cipDataSource" />
+		<result column="CIP_PEOPLE_TYPE_INDC" jdbcType="CHAR" property="cipPeopleTypeIndc" />
+	</resultMap>
+	<!-- 在监民警数据记录表-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, CIP_CUS_NUMBER, CIP_POLICE_IDNTY, CIP_POLICE_NAME, CIP_DOOR_CARD_IDNTY, CIP_DOOR_IDNTY, 
+		CIP_ENTER_TIME, CIP_CRTE_TIME, CIP_CRTE_USER_ID, CIP_UPDT_TIME, CIP_UPDT_USER_ID, 
+		CIP_DATA_SOURCE, CIP_PEOPLE_TYPE_INDC
+	</sql>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.door.entity.PoliceInprsnEntity" resultType="com.cesgroup.prison.door.entity.PoliceInprsnEntity">		
+		SELECT A.* FROM CDS_CUR_INPRSN_POLICE_RECORD A 
+		<where>
+			<if test="cipCusNumber != null and cipCusNumber != ''">
+				AND A.CIP_CUS_NUMBER = #{cipCusNumber}
+			</if>
+			<if test="cipPoliceIdnty != null and cipPoliceIdnty != ''">
+				AND A.CIP_POLICE_IDNTY = #{cipPoliceIdnty}
+			</if>
+		</where>
+	</select>
+	
+	<select id="countPoliceInprsn" parameterType="com.cesgroup.prison.door.entity.PoliceInprsnEntity" resultType="hashmap">		
+		SELECT COUNT(1) INSIDE_POLICE_COUNT 
+		FROM CDS_CUR_INPRSN_POLICE_RECORD A 
+		<where>
+			<if test='cipCusNumber != "1105"'>
+				AND A.CIP_CUS_NUMBER = #{cipCusNumber}
+			</if>			 
+		</where>
+	</select>
+	
+	<select id="deleteByCondition" parameterType="com.cesgroup.prison.door.entity.PoliceInprsnEntity" resultType="com.cesgroup.prison.door.entity.PoliceInprsnEntity">		
+		DELETE FROM CDS_CUR_INPRSN_POLICE_RECORD A 
+		<where>
+			<if test="cipCusNumber != null and cipCusNumber != ''">
+				AND A.CIP_CUS_NUMBER = #{cipCusNumber}
+			</if>
+			<if test="cipPoliceIdnty != null and cipPoliceIdnty != ''">
+				AND A.CIP_POLICE_IDNTY = #{cipPoliceIdnty}
+			</if>
+			<if test="cipPoliceName != null and cipPoliceName != ''">
+				AND A.CIP_POLICE_NAME = #{cipPoliceName}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据监狱编号、民警编号，查询在监民警列表 -->
+	<select id="findByCipCusNumberAndCipPoliceIdnty" resultMap="BaseResultMap" useCache="true">
+		SELECT A.* FROM CDS_CUR_INPRSN_POLICE_RECORD A 
+		<where>
+			<if test="cipCusNumber != null and cipCusNumber != ''">
+				AND A.CIP_CUS_NUMBER = #{cipCusNumber}
+			</if>
+			<if test="cipPoliceIdnty != null and cipPoliceIdnty != ''">
+				AND A.CIP_POLICE_IDNTY = #{cipPoliceIdnty}
+			</if>
+		</where>
+	</select>
+</mapper>

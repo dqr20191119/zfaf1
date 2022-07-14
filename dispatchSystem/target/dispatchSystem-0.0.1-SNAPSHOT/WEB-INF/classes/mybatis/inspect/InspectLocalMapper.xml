@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.inspect.dao.InspectLocalMapper">
+ 	<!-- 待审批列表 -->
+  <select id="inspectlocallistPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		  select 	N.ID as id,
+		  			inl_cus_number,
+		  			TO_CHAR(INL_INSPECT_TIME,'YYYY-MM-DD HH24:MI:SS') as INL_INSPECT_TIME,
+		  			INL_APPROVAL_STTS_INDC,
+		  			INL_APPROVAL_USER_ID,
+		  			TO_CHAR(INL_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as INL_CRTE_TIME,
+		  			INL_CRTE_USER_NAME,
+		  			INL_INSPECT_NAME,
+		  			P.ICP_POLICE_NAME as ICP_POLICE_NAME
+		  			
+			  from cds_inspect_notice_local N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC='1'
+			 where INL_APPROVAL_STTS_INDC='0'
+			 <if test="checkPoliceIdnty != null  and checkPoliceIdnty!=''">
+			 	  and  P.ICP_POLICE_IDNTY = #{checkPoliceIdnty,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="startTime != null  and startTime!=''">
+			 	  and  N.inl_inspect_time  &gt;  #{startTime,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="endTime != null  and endTime!=''">
+			 	  and N.inl_inspect_time &lt; #{endTime ,jdbcType=VARCHAR}
+      		 </if>
+      		 ORDER BY inl_approval_stts_indc,inl_inspect_time DESC
+  </select>
+ 
+ <!-- 汇总列表 -->
+  <select id="inspectlocalHzListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		  select 	N.ID as id,
+		  			INL_CUS_NUMBER,
+		  			TO_CHAR(INL_INSPECT_TIME,'YYYY-MM-DD HH24:MI:SS') as INL_INSPECT_TIME,
+		  			INL_APPROVAL_STTS_INDC,
+		  			INL_APPROVAL_USER_ID,
+		  			TO_CHAR(INL_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as INL_CRTE_TIME,
+		  			INL_CRTE_USER_NAME,
+		  			INL_INSPECT_NAME,
+		  			P.ICP_POLICE_NAME as ICP_POLICE_NAME
+		  			
+			  from CDS_INSPECT_NOTICE_LOCAL N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC='1'
+			 where 1=1
+      		 <if test="startTime != null  and startTime!=''">
+			 	  and  N.INL_INSPECT_TIME  &gt;  #{startTime,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="endTime != null  and endTime!=''">
+			 	  and N.INL_INSPECT_TIME &lt; #{endTime ,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="inlCrteUserId!=null and inlCrteUserId!='' and inlCusNumber!=null  and inlCusNumber!=''">
+      		 	  and (N.INL_CRTE_USER_ID=#{inlCrteUserId,jdbcType=VARCHAR} or (N.INL_CUS_NUMBER=#{inlCusNumber,jdbcType=VARCHAR} and INL_APPROVAL_STTS_INDC= '2')) 
+      		 </if>
+      		 ORDER BY inl_approval_stts_indc,inl_crte_time DESC
+  </select>
+ 
+   <select id="inspectlocallist" resultType="com.cesgroup.prison.inspect.entity.InspectLocal" parameterType="com.cesgroup.prison.inspect.entity.InspectLocal">
+		  select N.ID as id, 
+		  			INL_CUS_NUMBER as inlCusNumber, 
+			       INL_DUTY_LOG_ID as inlDutyLogId, INL_INSPECT_TIME as inlInspectTime, 
+			       INL_SUPERVISION_DEVICE as inlSupervisionDevice, INL_PRISON_CASE as inlPrisonCase, 
+			       INL_RULE_EXECUTE as inlRuleExecute,INL_SUGGESITION as inlSuggesition, 
+			       INL_PROBLEM as inlProblem, INL_DOCUMENT_ID as inlDocumentId,INL_APPROVAL_STTS_INDC as inlApprovalSttsIndc, 
+			       INL_APPROVAL_TIME as inlApprovalTime,INL_APPROVAL_USER_ID as inlApprrovalUserId, INL_REMARK as inlRemark, 
+			       INL_CRTE_TIME as inlCrteTime, INL_CRTE_USER_ID as inlCrteUserId, INL_UPDT_TIME as inlUpdtTime, 
+			       INL_UPDT_USER_ID as inlUpdtUserId, INL_INSPECT_NAME as inlInspectName, 
+			       INL_UPDT_USER_NAME as inlUpdtUserName, INL_CRTE_USER_NAME as inlCrteUserName,
+			       P.ICP_POLICE_IDNTY AS checkPoliceIdnty,P.ICP_POLICE_NAME as checkPoliceName,
+			       (select listagg(IPR_POLICE_IDNTY,',') within GROUP (order by IPR_CRTE_TIME)  from CDS_INSPECT_POLICE_RELATION where IPR_INSPECT_ID=N.ID and IPR_TYPE_INDC='1') as iprPoliceIdntys,
+			       (select listagg(IPR_POLICE_NAME,',') within GROUP (order by IPR_CRTE_TIME)  from CDS_INSPECT_POLICE_RELATION where IPR_INSPECT_ID=N.ID and IPR_TYPE_INDC='1') as iprPoliceNames
+			  from CDS_INSPECT_NOTICE_LOCAL N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC='1'
+			 where 0=0
+			 <if test="inlApprovalSttsIndc != null and inlApprovalSttsIndc!=''">
+			 	  and INL_APPROVAL_STTS_INDC= #{inlApprovalSttsIndc,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="id!=null and id!=''">
+      		 	  and N.ID=#{id,jdbcType=VARCHAR}
+      		 </if>
+      		 order by INL_CRTE_TIME desc
+  </select>
+ 
+  <update id="updateInspectLocal" parameterType="com.cesgroup.prison.inspect.entity.InspectLocal">
+    update CDS_INSPECT_NOTICE_LOCAL
+    <set>
+      <if test="inlCusNumber != null">
+        INL_CUS_NUMBER = #{inlCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="inlDutyLogId != null">
+        INL_DUTY_LOG_ID = #{inlDutyLogId,jdbcType=VARCHAR},
+      </if>
+      <if test="inlInspectTime != null">
+        INL_INSPECT_TIME = #{inlInspectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inlSupervisionDevice != null">
+        INL_SUPERVISION_DEVICE = #{inlSupervisionDevice,jdbcType=VARCHAR},
+      </if>
+      <if test="inlPrisonCase != null">
+        INL_PRISON_CASE = #{inlPrisonCase,jdbcType=VARCHAR},
+      </if>
+      <if test="inlRuleExecute != null">
+        INL_RULE_EXECUTE = #{inlRuleExecute,jdbcType=VARCHAR},
+      </if>
+      <if test="inlSuggesition != null">
+        INL_SUGGESITION = #{inlSuggesition,jdbcType=VARCHAR},
+      </if>
+      <if test="inlProblem != null">
+        INL_PROBLEM = #{inlProblem,jdbcType=VARCHAR},
+      </if>
+      <if test="inlDocumentId != null">
+        INL_DOCUMENT_ID = #{inlDocumentId,jdbcType=VARCHAR},
+      </if>
+      <if test="inlApprovalSttsIndc != null">
+        INL_APPROVAL_STTS_INDC = #{inlApprovalSttsIndc,jdbcType=VARCHAR},
+      </if>
+      <if test="inlApprovalTime != null">
+        INL_APPROVAL_TIME = #{inlApprovalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inlApprovalUserId != null">
+        INL_APPROVAL_USER_ID = #{inlApprovalUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="inlRemark != null">
+        INL_REMARK = #{inlRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="inlCrteTime != null">
+        INL_CRTE_TIME = #{inlCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inlCrteUserId != null">
+        INL_CRTE_USER_ID = #{inlCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="inlUpdtTime != null">
+        INL_UPDT_TIME = #{inlUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inlUpdtUserId != null">
+        INL_UPDT_USER_ID = #{inlUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="inlCrteUserName != null">
+        INL_CRTE_USER_NAME = #{inlCrteUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="inlUpdtUserName != null">
+        INL_UPDT_USER_NAME = #{inlUpdtUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="inlInspectName != null">
+        INL_INSPECT_NAME = #{inlInspectName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xtgl.dao.DeviceDprtmntMapper">
+	<!-- 查询已关联设备的部门 -->
+	<select id="searchExistDprtmnt" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT ddr_dprtmnt_idnty AS "id",
+				ddr_dprtmnt_name AS "name",
+				   ddr_stts_indc AS "stts"
+			  FROM cds_device_dprtmnt_relation
+			 where ddr_cus_number =#{ddrCusNumber} and ddr_dvc_type_indc =#{ddrDvcTypeIndc}
+			 GROUP BY ddr_dprtmnt_idnty,ddr_dprtmnt_name,ddr_stts_indc
+	</select>
+	<!-- 查询区域树结构数据 -->
+	<select id="simpleAreaTreeByXML" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT abd_cus_number AS org_id,
+			       abd_parent_area_id AS "pId",
+			       abd_area_id AS "id",
+			       abd_area_name AS "name",
+			       'area' AS "node_type"
+			  FROM cds_area_base_dtls
+			   WHERE (TRIM(#{abdCusNumber}) IS NULL OR abd_cus_number = #{abdCusNumber}) 
+			   AND abd_parent_area_id IS NOT NULL 
+			   <!-- 监区 -->
+			  <if test="wid == 0">
+			  	<!-- AND abd_jq_id= #{dprtmntIdnty} -->
+			  	AND abd_area_id IN (SELECT ADR_AREA_ID
+			                        FROM CDS_AREA_DEPARTMENT_RELATION
+			                       WHERE adr_cus_number = abd_cus_number
+			                         AND ADR_DPRTMNT_ID = #{dprtmntIdnty})
+			  </if>
+			  ORDER BY abd_order
+	</select>
+	<!-- 查询摄像机树结构数据 -->
+	<select id="simpleCameraTreeByXML" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT cbd_cus_number AS org_id,
+		       cbd_area_id AS "pId",
+		       id AS "id",
+		       cbd_name AS "name",
+		       'camera' AS "node_type",
+		       cbd_stts_indc,
+		       cbd_type_indc
+		  FROM dvc_camera_base_dtls
+		  <!-- 查询已关联的设备 -->
+		  <if test="wid == -1">
+	         WHERE cbd_cus_number = #{cbdCusNumber}
+			   AND  dvc_camera_base_dtls.id IN (SELECT ddr_dvc_idnty
+			                        FROM cds_device_dprtmnt_relation
+			                       WHERE ddr_cus_number = cbd_cus_number
+			                         AND ddr_dvc_idnty = dvc_camera_base_dtls.id
+			                         AND ddr_dvc_type_indc = #{ddrDvcTypeIndc}
+			                         AND ddr_dprtmnt_idnty = #{ddrDprtmntIdnty})
+	      </if>
+	      <!-- 监区 -->
+	      <if test="wid == 0">
+	        WHERE cbd_cus_number = #{cbdCusNumber}
+			   AND (
+				   		(
+			 					dvc_camera_base_dtls.id IN (SELECT ddr_dvc_idnty
+			                        FROM cds_device_dprtmnt_relation
+			                       WHERE ddr_cus_number = cbd_cus_number
+			                         AND ddr_dvc_idnty = dvc_camera_base_dtls.id
+			                         AND ddr_dvc_type_indc = #{ddrDvcTypeIndc}
+			                         AND ddr_stts_indc = 1
+			                         AND ddr_dprtmnt_idnty = #{ddrDprtmntIdnty})
+			                OR	dvc_camera_base_dtls.id IN (
+							            SELECT  a.id
+							  			FROM dvc_camera_base_dtls a
+							            INNER JOIN cds_area_base_dtls b
+							    	ON a.cbd_cus_number = b.abd_cus_number
+							   		AND a.cbd_area_id = b.abd_area_id
+								 	WHERE a.cbd_action_indc != 3
+								 	AND abd_area_id IN (SELECT ADR_AREA_ID
+			                        					FROM CDS_AREA_DEPARTMENT_RELATION
+			                       						WHERE adr_cus_number = abd_cus_number
+			                         					AND ADR_DPRTMNT_ID = #{ddrDprtmntIdnty})
+								 	)
+			 			
+			 				)
+			   )
+			   AND cbd_action_indc != 3
+	      </if>
+	      <!-- 科室 -->
+	      <if test="wid == 1" >
+	      	WHERE cbd_cus_number = #{cbdCusNumber}
+			   AND cbd_action_indc != 3   
+	      </if>
+	      <!-- 省局 -->
+	      <if test="wid == '2'" >
+	        WHERE cbd_action_indc != 3
+			  AND (TRIM(#{cbdUseLimit}) IS NULL OR cbd_use_limit != #{cbdUseLimit})
+	      </if>	  
+	      <if test="cbdSttsIndc_except!=null and cbdSttsIndc_except!=''">
+	 		 and cbd_stts_indc !=#{cbdSttsIndc_except}
+	 	  </if>
+		  ORDER BY cbd_cus_number, cbd_area_id, cbd_order, cbd_name
+	</select>
+
+	<!-- 批量新增 -->
+	<!-- <insert id="batchInsert" parameterType="java.util.List">  
+	    INSERT INTO cds_device_dprtmnt_relation
+			  (ddr_cus_number,
+			   ddr_dvc_type_indc,
+			   ddr_dvc_idnty,
+			   ddr_dprtmnt_idnty,
+			   ddr_dprtmnt_name,
+			   ddr_stts_indc,
+			   ddr_crte_user_id,
+			   ddr_crte_time,
+			   ddr_updt_user_id,
+			   ddr_updt_time)  
+	    <foreach collection="list" item="o" index="index" separator="union all" >  
+	         select #{o.ddrCusNumber}, #{o.ddrDvcTypeIndc},#{o.ddrDvcIdnty},
+	          #{o.ddrDprtmntIdnty},#{o.ddrDprtmntName}, #{o.ddrSttsIndc},#{o.ddrCrteUserId},
+	           SYSDATE,#{o.ddrUpdtUserId},SYSDATE from dual
+	    </foreach>  
+	  </insert> -->
+	  <insert id="batchInsert" parameterType="java.util.List">  
+	    INSERT INTO cds_device_dprtmnt_relation
+			  (ddr_cus_number,
+			   ddr_dvc_type_indc,
+			   ddr_dvc_idnty,
+			   ddr_dprtmnt_idnty,
+			   ddr_dprtmnt_name,
+			   ddr_stts_indc,
+			   ddr_crte_user_id,
+			   ddr_crte_time,
+			   ddr_updt_user_id,
+			   ddr_updt_time)  
+			   values
+	    <foreach collection="list" item="o" index="index" separator="," >  
+	         ( #{o.ddrCusNumber}, #{o.ddrDvcTypeIndc},#{o.ddrDvcIdnty},
+	          #{o.ddrDprtmntIdnty},#{o.ddrDprtmntName}, #{o.ddrSttsIndc},#{o.ddrCrteUserId},
+	           SYSDATE,#{o.ddrUpdtUserId},SYSDATE )
+	    </foreach>  
+	  </insert>
+	  	<!-- 批量删除 -->
+	  <delete id="batchDelete" parameterType="java.util.List">  
+		   DELETE FROM cds_device_dprtmnt_relation where ddr_dprtmnt_idnty  in
+		   <foreach collection="list" item="dprt_id" index="index" separator="," open="(" close=")">  
+	         #{dprt_id}
+	    	</foreach>
+	    	and ddr_dvc_type_indc =1 
+	  </delete>
+	
+</mapper>
