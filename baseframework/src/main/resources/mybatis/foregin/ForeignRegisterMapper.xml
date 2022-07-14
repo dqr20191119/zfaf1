@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 外来人车登记数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.foreign.dao.ForeignRegisterMapper" >
+	<!-- 外来人车登记表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.foreign.entity.ForeignRegister">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="FR_CUS_NUMBER" jdbcType="CHAR" property="frCusNumber" />
+		<result column="FR_REASON" jdbcType="CHAR" property="frReason" />
+		<result column="FR_TYPE" jdbcType="CHAR" property="frType" />
+		<result column="FR_DIRECTION" jdbcType="CHAR" property="frDirection" />
+		<result column="FR_TIME" jdbcType="TIMESTAMP" property="frTime" />
+		<result column="FR_REPORT_PEOPLE" jdbcType="CHAR" property="frReportPeople" />
+		<result column="FR_OPRTN_POLICE" jdbcType="CHAR" property="frOprtnPolice" />
+		<result column="FR_RECORD_PEOPLE" jdbcType="CHAR" property="frRecordPeople" />
+		<result column="FR_REMARK" jdbcType="CHAR" property="frRemark" />
+		<result column="FR_CRTE_TIME" jdbcType="TIMESTAMP" property="frCrteTime" />
+		<result column="FR_CRTE_USER_ID" jdbcType="CHAR" property="frCrteUserId" />
+		<result column="FR_UPDT_TIME" jdbcType="TIMESTAMP" property="frUpdtTime" />
+		<result column="FR_UPDT_USER_ID" jdbcType="CHAR" property="frUpdtUserId" />
+		<result column="FR_CHECK_PEOPLE_ID" jdbcType="CHAR" property="frCheckPeopleId" />
+		<result column="FR_CHECK_PEOPLE" jdbcType="CHAR" property="frCheckPeople" />
+		<result column="FR_CHECK_STTS_INDC" jdbcType="CHAR" property="frCheckSttsIndc" />
+		<result column="FR_CHECK_REMARK" jdbcType="CHAR" property="frCheckRemark" />
+		<result column="FR_CHECK_TIME" jdbcType="TIMESTAMP" property="frCheckTime" />
+		<result column="FR_CARS_INFO" jdbcType="CHAR" property="frCarsInfo" />
+		<result column="FR_PEOPLES_INFO" jdbcType="CHAR" property="frPeoplesInfo" />
+		<result column="FR_OUT_TIME" jdbcType="TIMESTAMP" property="frOutTime" />
+		<result column="FR_OUT_PEOPLE" jdbcType="CHAR" property="frOutPeople" />
+		<result column="FR_OUT_PEOPLE_ID" jdbcType="CHAR" property="frOutPeopleId" />
+		<result column="FR_PATH_ID" jdbcType="CHAR" property="frPathId" />
+		<result column="FR_LOCATION" jdbcType="CHAR" property="frLocation" />
+		<result column="FR_PHOTO1" jdbcType="CHAR" property="frPhoto1" />
+		<result column="FR_PHOTO2" jdbcType="CHAR" property="frPhoto2" />
+	</resultMap>
+	
+	<!-- ForeignCarDtlsDto结果集 -->
+	<resultMap id="ForeignCarDtlsDtoResultMap" type="com.cesgroup.prison.foreign.dto.ForeignCarDtlsDto">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="FCD_CAR_LCNS_IDNTY" jdbcType="CHAR" property="fcdCarLcnsIdnty" />
+		<result column="FCD_CAR_CMPNY" jdbcType="CHAR" property="fcdCarCmpny" />
+		<result column="FCD_CAR_TYPE_INDC" jdbcType="CHAR" property="fcdCarTypeIndc" />
+		<result column="FCD_CAR_COLOR" jdbcType="CHAR" property="fcdCarColor" />
+		<result column="FCD_PEOPLE_COUNT" jdbcType="NUMERIC" property="fcdPeopleCount" />
+		<result column="FCD_CARGO" jdbcType="CHAR" property="fcdCargo" />
+		<result column="FR_CUS_NUMBER" jdbcType="CHAR" property="fcdRegisterId" />
+		<result column="FR_TYPE" jdbcType="CHAR" property="frType" />
+		<result column="FR_TIME" jdbcType="TIMESTAMP" property="frTime" />
+		<result column="FR_LOCATION" jdbcType="CHAR" property="frLocation" />
+		<result column="FR_PHOTO1" jdbcType="CHAR" property="frPhoto1" />
+		<result column="FR_PHOTO2" jdbcType="CHAR" property="frPhoto2" />
+	</resultMap>
+	
+	<!-- 外来人车登记表-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, FR_CUS_NUMBER, FR_REASON, FR_TYPE, FR_DIRECTION, FR_TIME, FR_REPORT_PEOPLE, FR_OPRTN_POLICE, 
+		FR_RECORD_PEOPLE, FR_REMARK, FR_CRTE_TIME, FR_CRTE_USER_ID, FR_UPDT_TIME, FR_UPDT_USER_ID, 
+		FR_CHECK_PEOPLE_ID, FR_CHECK_PEOPLE, FR_CHECK_STTS_INDC, FR_CHECK_REMARK, FR_CHECK_TIME, 
+		FR_CARS_INFO, FR_PEOPLES_INFO, FR_OUT_TIME, FR_OUT_PEOPLE, FR_OUT_PEOPLE_ID, FR_PATH_ID, FR_LOCATION, 
+		FR_PHOTO1, FR_PHOTO2
+	</sql>
+	
+	<!-- ForeignCarDtlsDto字段 -->
+	<sql id="ForeignCarDtlsDto_Column_List">
+		ID, FCD_CAR_LCNS_IDNTY, FCD_CAR_CMPNY, FCD_CAR_TYPE_INDC, FCD_CAR_COLOR, FCD_PEOPLE_COUNT, FCD_CARGO, 
+		FCD_REGISTER_ID, FR_CUS_NUMBER, FR_TYPE, FR_TIME, FR_LOCATION, FR_PHOTO1, FR_PHOTO2
+	</sql>
+	
+  <select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_FOREIGN_REGISTER
+    <where>
+      <if test="frCusNumber != null" >
+        AND FR_CUS_NUMBER = #{frCusNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="frType != null and frType !=''">
+        AND FR_TYPE = #{frType,jdbcType=VARCHAR}
+      </if>
+      <if test="frOprtnPolice != null and frOprtnPolice != ''" >
+        AND FR_OPRTN_POLICE like concat('%', #{frOprtnPolice,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="frTimeStart != null and frTimeStart != ''" >
+        AND FR_TIME &gt;= #{frTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="frTimeEnd != null and frTimeEnd != ''" >
+        AND FR_TIME &lt;= #{frTimeEnd,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+      order by FR_TIME desc
+  </select>
+
+  <select id="findPoliceNameById" parameterType="java.lang.String" resultType="java.lang.String">
+    select PBD_POLICE_NAME from V_POLICE_BASE_DTLS
+    where PBD_USER_ID = #{policeId,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 查询单条登记记录 -->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM CDS_FOREIGN_REGISTER
+    <where>
+      <if test="id !=null and id !=''">
+        AND id = #{id, jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+  <select id="findLastRow" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    SELECT TOP 1
+    <include refid="Base_Column_List" />
+    FROM CDS_FOREIGN_REGISTER
+    <where>
+      <if test="frCusNumber !=null and frCusNumber !=''">
+        AND FR_CUS_NUMBER = #{frCusNumber, jdbcType=VARCHAR}
+      </if>
+    </where>
+    ORDER BY FR_CRTE_TIME DESC
+  </select>
+
+  <insert id="insertInfo" parameterType="com.cesgroup.prison.foreign.entity.ForeignRegister" >
+    insert into CDS_FOREIGN_REGISTER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="frCusNumber != null" >
+        FR_CUS_NUMBER,
+      </if>
+      <if test="frReason != null" >
+        FR_REASON,
+      </if>
+      <if test="frType != null" >
+        FR_TYPE,
+      </if>
+      <if test="frDirection != null" >
+        FR_DIRECTION,
+      </if>
+      <if test="frTime != null" >
+        FR_TIME,
+      </if>
+      <if test="frReportPeople != null" >
+        FR_REPORT_PEOPLE,
+      </if>
+      <if test="frOprtnPolice != null" >
+        FR_OPRTN_POLICE,
+      </if>
+      <if test="frRecordPeople != null" >
+        FR_RECORD_PEOPLE,
+      </if>
+      <if test="frRemark != null" >
+        FR_REMARK,
+      </if>
+      <if test="frCrteTime != null" >
+        FR_CRTE_TIME,
+      </if>
+      <if test="frCrteUserId != null" >
+        FR_CRTE_USER_ID,
+      </if>
+      <if test="frUpdtTime != null" >
+        FR_UPDT_TIME,
+      </if>
+      <if test="frUpdtUserId != null" >
+        FR_UPDT_USER_ID,
+      </if>
+      <if test="frCheckPeopleId != null" >
+        FR_CHECK_PEOPLE_ID,
+      </if>
+      <if test="frCheckPeople != null" >
+        FR_CHECK_PEOPLE,
+      </if>
+      <if test="frCheckSttsIndc != null" >
+        FR_CHECK_STTS_INDC,
+      </if>
+      <if test="frCheckRemark != null" >
+        FR_CHECK_REMARK,
+      </if>
+      <if test="frCheckTime != null" >
+        FR_CHECK_TIME,
+      </if>
+      <if test="frOutTime != null" >
+        FR_OUT_TIME,
+      </if>
+      <if test="frCarsInfo != null" >
+        FR_CARS_INFO,
+      </if>
+      <if test="frPeoplesInfo != null" >
+        FR_PEOPLES_INFO,
+      </if>
+      <if test="frOutPeopleId != null" >
+        FR_OUT_PEOPLE_ID,
+      </if>
+      <if test="frOutPeople != null" >
+        FR_OUT_PEOPLE,
+      </if>
+      <if test="frPathId != null" >
+        FR_PATH_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="frCusNumber != null" >
+        #{frCusNumber,jdbcType=CHAR},
+      </if>
+      <if test="frReason != null" >
+        #{frReason,jdbcType=CHAR},
+      </if>
+      <if test="frType != null" >
+        #{frType,jdbcType=CHAR},
+      </if>
+      <if test="frDirection != null" >
+        #{frDirection,jdbcType=CHAR},
+      </if>
+      <if test="frTime != null" >
+        #{frTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frReportPeople != null" >
+        #{frReportPeople,jdbcType=CHAR},
+      </if>
+      <if test="frOprtnPolice != null" >
+        #{frOprtnPolice,jdbcType=CHAR},
+      </if>
+      <if test="frRecordPeople != null" >
+        #{frRecordPeople,jdbcType=CHAR},
+      </if>
+      <if test="frRemark != null" >
+        #{frRemark,jdbcType=CHAR},
+      </if>
+      <if test="frCrteTime != null" >
+        #{frCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frCrteUserId != null" >
+        #{frCrteUserId,jdbcType=CHAR},
+      </if>
+      <if test="frUpdtTime != null" >
+        #{frUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frUpdtUserId != null" >
+        #{frUpdtUserId,jdbcType=CHAR},
+      </if>
+      <if test="frCheckPeopleId != null" >
+        #{frCheckPeopleId,jdbcType=CHAR},
+      </if>
+      <if test="frCheckPeople != null" >
+        #{frCheckPeople,jdbcType=CHAR},
+      </if>
+      <if test="frCheckSttsIndc != null" >
+        #{frCheckSttsIndc,jdbcType=CHAR},
+      </if>
+      <if test="frCheckRemark != null" >
+        #{frCheckRemark,jdbcType=CHAR},
+      </if>
+      <if test="frCheckTime != null" >
+        #{frCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frOutTime != null" >
+        #{frOutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frCarsInfo != null" >
+        #{frCarsInfo,jdbcType=CHAR},
+      </if>
+      <if test="frPeoplesInfo != null" >
+        #{frPeoplesInfo,jdbcType=CHAR},
+      </if>
+      <if test="frOutPeopleId != null" >
+        #{frOutPeopleId,jdbcType=CHAR},
+      </if>
+      <if test="frOutPeople != null" >
+        #{frOutPeople,jdbcType=CHAR},
+      </if>
+      <if test="frPathId != null" >
+        #{frPathId,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <update id="updateInfo" parameterType="com.cesgroup.prison.foreign.entity.ForeignRegister" >
+    update CDS_FOREIGN_REGISTER
+    <set >
+      <if test="frCusNumber != null" >
+        FR_CUS_NUMBER = #{frCusNumber,jdbcType=CHAR},
+      </if>
+      <if test="frReason != null" >
+        FR_REASON = #{frReason,jdbcType=CHAR},
+      </if>
+      <if test="frType != null" >
+        FR_TYPE = #{frType,jdbcType=CHAR},
+      </if>
+      <if test="frDirection != null" >
+        FR_DIRECTION = #{frDirection,jdbcType=CHAR},
+      </if>
+      <if test="frTime != null" >
+        FR_TIME = #{frTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frReportPeople != null" >
+        FR_REPORT_PEOPLE = #{frReportPeople,jdbcType=CHAR},
+      </if>
+      <if test="frOprtnPolice != null" >
+        FR_OPRTN_POLICE = #{frOprtnPolice,jdbcType=CHAR},
+      </if>
+      <if test="frRecordPeople != null" >
+        FR_RECORD_PEOPLE = #{frRecordPeople,jdbcType=CHAR},
+      </if>
+      <if test="frRemark != null" >
+        FR_REMARK = #{frRemark,jdbcType=CHAR},
+      </if>
+      <if test="frCrteTime != null" >
+        FR_CRTE_TIME = #{frCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frCrteUserId != null" >
+        FR_CRTE_USER_ID = #{frCrteUserId,jdbcType=CHAR},
+      </if>
+      <if test="frUpdtTime != null" >
+        FR_UPDT_TIME = #{frUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frUpdtUserId != null" >
+        FR_UPDT_USER_ID = #{frUpdtUserId,jdbcType=CHAR},
+      </if>
+      <if test="frCheckPeopleId != null" >
+        FR_CHECK_PEOPLE_ID = #{frCheckPeopleId,jdbcType=CHAR},
+      </if>
+      <if test="frCheckPeople != null" >
+        FR_CHECK_PEOPLE = #{frCheckPeople,jdbcType=CHAR},
+      </if>
+      <if test="frCheckSttsIndc != null" >
+        FR_CHECK_STTS_INDC = #{frCheckSttsIndc,jdbcType=CHAR},
+      </if>
+      <if test="frCheckRemark != null" >
+        FR_CHECK_REMARK = #{frCheckRemark,jdbcType=CHAR},
+      </if>
+      <if test="frCheckTime != null" >
+        FR_CHECK_TIME = #{frCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frOutTime != null" >
+        FR_OUT_TIME = #{frOutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frCarsInfo != null" >
+        FR_CARS_INFO = #{frCarsInfo,jdbcType=CHAR},
+      </if>
+      <if test="frPeoplesInfo != null" >
+        FR_PEOPLES_INFO = #{frPeoplesInfo,jdbcType=CHAR},
+      </if>
+      <if test="frOutPeopleId != null" >
+        FR_OUT_PEOPLE_ID = #{frOutPeopleId,jdbcType=CHAR},
+      </if>
+      <if test="frOutPeople != null" >
+        FR_OUT_PEOPLE = #{frOutPeople,jdbcType=CHAR},
+      </if>
+      <if test="frPathId != null" >
+        FR_PATH_ID = #{frPathId,jdbcType=CHAR},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=CHAR} AND FR_CHECK_STTS_INDC != '1'
+  </update>
+
+  <update id="checkInfo" parameterType="com.cesgroup.prison.foreign.entity.ForeignRegister">
+    update CDS_FOREIGN_REGISTER
+    <set >
+      <if test="frCheckPeopleId != null" >
+        FR_CHECK_PEOPLE_ID = #{frCheckPeopleId,jdbcType=CHAR},
+      </if>
+      <if test="frCheckPeople != null" >
+        FR_CHECK_PEOPLE = #{frCheckPeople,jdbcType=CHAR},
+      </if>
+      <if test="frCheckSttsIndc != null" >
+        FR_CHECK_STTS_INDC = #{frCheckSttsIndc,jdbcType=CHAR},
+      </if>
+      <if test="frCheckRemark != null" >
+        FR_CHECK_REMARK = #{frCheckRemark,jdbcType=CHAR},
+      </if>
+      <if test="frCheckTime != null" >
+        FR_CHECK_TIME = #{frCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frCheckSttsIndc != null and frCheckSttsIndc='1'" >
+        FR_TYPE = '1',
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=CHAR}
+  </update>
+
+  <update id="outInfo" parameterType="com.cesgroup.prison.foreign.entity.ForeignRegister">
+    update CDS_FOREIGN_REGISTER
+    <set >
+      <if test="frOutPeopleId != null" >
+        FR_OUT_PEOPLE_ID = #{frOutPeopleId,jdbcType=CHAR},
+      </if>
+      <if test="frOutPeople != null" >
+        FR_OUT_PEOPLE = #{frOutPeople,jdbcType=CHAR},
+      </if>
+      <if test="frOutTime != null" >
+        FR_OUT_TIME = #{frOutTime,jdbcType=TIMESTAMP},
+      </if>
+      FR_TYPE = '2',
+    </set>
+    WHERE ID = #{id,jdbcType=CHAR}
+  </update>
+
+  <delete id="deleteByIds" parameterType="List">
+    DELETE FROM CDS_FOREIGN_REGISTER WHERE
+    ID in
+    <foreach collection="list" item="id" index="index" separator=","
+             open="(" close=")">
+      #{id}
+    </foreach>
+    AND (FR_CHECK_STTS_INDC != '1')
+  </delete>
+  
+  <select id="findHisRecord" parameterType="java.lang.String" resultType="com.cesgroup.prison.foreign.entity.ForeignRegister">
+		select * 
+		from CDS_FOREIGN_REGISTER  
+		where 1=1
+		<if test="cusNumber != null and cusNumber != ''">
+			and FR_CUS_NUMBER = #{cusNumber} 
+		</if>
+		<if test="cph != null and cph != ''">
+			and FR_CARS_INFO = #{cph}
+		</if>
+		<!--  -->
+		<if test="cljcsj != null and cljcsj != ''">
+			and to_char(FR_TIME, 'yyyy-mm-dd hh24:mi') =  to_char(to_date(#{cljcsj}, 'yyyy-mm-dd hh24:mi:ss'), 'yyyy-mm-dd hh24:mi')
+		</if>
+	
+	</select>
+</mapper>

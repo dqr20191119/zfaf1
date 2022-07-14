@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.sporadicFlow.dao.SporadicFlowMapper">
+    <!-- 查询登记记录列表 -->
+    <select id="listAll" resultType="java.util.HashMap"
+            parameterType="java.util.HashMap">
+        SELECT ID, SFL_CUS_NUMBER, SFL_DPRTMNT_ID , SFL_START_ADDRS ,
+        SFL_REASON , SFL_CRTE_USER_ID ,
+        SFL_UPDT_USER_ID , SFL_FLOW_TYPE ,
+        SFL_END_ADDRS , SFL_FLOW_STTS , SFL_FLOW_CHECK_STTS ,
+        TO_CHAR(sfl_end_time,'yyyy-mm-dd hh24:mi:ss') SFL_END_TIME,
+        TO_CHAR(sfl_start_time,'yyyy-mm-dd hh24:mi:ss') sfl_start_time,
+        TO_CHAR(sfl_crte_time,'yyyy-mm-dd hh24:mi:ss') sfl_crte_time,
+        TO_CHAR(sfl_updt_time,'yyyy-mm-dd hh24:mi:ss') sfl_updt_time,
+        SFL_PRISON_PATH_ID,SFL_CRTE_DPRTMNT_ID,SFL_CRTE_USER,SFL_UPDT_USER,SFL_CHECK_USER,
+        TO_CHAR(SFL_CHECK_TIME,'yyyy-mm-dd hh24:mi:ss') SFL_CHECK_TIME,SFL_DPRTMNT,
+        (SELECT COUNT(ID) FROM CDS_SPORADIC_FLOW_PEOPLE_REGISTER WHERE SPR_REGISTER_ID=A.ID AND SPR_PEOPLE_TYPE='1') AS SFL_POLICE_NUM,
+        SFL_OFFENDER_NUM,TO_CHAR(SFL_BACK_TIME,'yyyy-mm-dd hh24:mi:ss') SFL_BACK_TIME
+        FROM
+        cds_sporadic_flow_register A
+        <where>
+            <if test="sporadicFlowRegisterEntity.sflCusNumber !=null and sporadicFlowRegisterEntity.sflCusNumber !=''">
+                AND (TRIM(#{sporadicFlowRegisterEntity.sflCusNumber}) is null
+                or
+                SFL_CUS_NUMBER =
+                #{sporadicFlowRegisterEntity.sflCusNumber})
+            </if>
+        </where>
+        order by sfl_crte_time DESC
+    </select>
+
+    <update id="updateSoradicFlowInfo" parameterType="java.util.HashMap">
+        update CDS_SPORADIC_FLOW_REGISTER
+        <set>
+            <if test="sporadicFlowRegisterEntity.sflCusNumber != null and sporadicFlowRegisterEntity.sflCusNumber!='' ">
+                SFL_CUS_NUMBER =
+                #{sporadicFlowRegisterEntity.sflCusNumber},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflDprtmntId != null and sporadicFlowRegisterEntity.sflDprtmntId!='' ">
+                SFL_DPRTMNT_ID =
+                #{sporadicFlowRegisterEntity.sflDprtmntId},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflDprtmnt != null and sporadicFlowRegisterEntity.sflDprtmnt!='' ">
+                SFL_DPRTMNT =
+                #{sporadicFlowRegisterEntity.sflDprtmnt},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflStartAddrs != null and sporadicFlowRegisterEntity.sflStartAddrs!='' ">
+                SFL_START_ADDRS =
+                #{sporadicFlowRegisterEntity.sflStartAddrs},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflReason != null and sporadicFlowRegisterEntity.sflReason!='' ">
+                SFL_REASON =
+                #{sporadicFlowRegisterEntity.sflReason},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflStartTime != null and sporadicFlowRegisterEntity.sflStartTime!='' ">
+                SFL_START_TIME =
+                #{sporadicFlowRegisterEntity.sflStartTime},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflFlowType != null and sporadicFlowRegisterEntity.sflFlowType!='' ">
+                SFL_FLOW_TYPE =
+                #{sporadicFlowRegisterEntity.sflFlowType},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflEndAddrs != null and sporadicFlowRegisterEntity.sflEndAddrs!='' ">
+                SFL_END_ADDRS =
+                #{sporadicFlowRegisterEntity.sflEndAddrs},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflEndTime != null and sporadicFlowRegisterEntity.sflEndTime!='' ">
+                SFL_END_TIME =
+                #{sporadicFlowRegisterEntity.sflEndTime},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflPrisonPathId != null and sporadicFlowRegisterEntity.sflPrisonPathId!='' ">
+                SFL_PRISON_PATH_ID =
+                #{sporadicFlowRegisterEntity.sflPrisonPathId},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflUpdtUser != null and sporadicFlowRegisterEntity.sflUpdtUser!='' ">
+                SFL_UPDT_USER =
+                #{sporadicFlowRegisterEntity.sflUpdtUser},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflOffenderNum != null and sporadicFlowRegisterEntity.sflOffenderNum!=0 ">
+                SFL_OFFENDER_NUM =
+                #{sporadicFlowRegisterEntity.sflOffenderNum},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflFlowBackRemark != null and sporadicFlowRegisterEntity.sflFlowBackRemark!='' ">
+                SFL_FLOW_BACK_REMARK =
+                #{sporadicFlowRegisterEntity.sflFlowBackRemark},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflCheckTime != null and sporadicFlowRegisterEntity.sflCheckTime!='' ">
+                SFL_CHECK_TIME =
+                #{sporadicFlowRegisterEntity.sflCheckTime},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflCheckUser != null and sporadicFlowRegisterEntity.sflCheckUser!='' ">
+                SFL_CHECK_USER =
+                #{sporadicFlowRegisterEntity.sflCheckUser},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflCheckUserId != null and sporadicFlowRegisterEntity.sflCheckUserId!='' ">
+                SFL_CHECK_USER_ID =
+                #{sporadicFlowRegisterEntity.sflCheckUserId},
+            </if>
+            <if
+                    test="sporadicFlowRegisterEntity.sflBackTime != null and sporadicFlowRegisterEntity.sflBackTime!='' ">
+                SFL_BACK_TIME =
+                #{sporadicFlowRegisterEntity.sflBackTime},
+            </if>
+            <!-- 审核状态 -->
+            <if
+                    test="sporadicFlowRegisterEntity.sflFlowCheckStts != null and sporadicFlowRegisterEntity.sflFlowCheckStts!='' ">
+                sfl_flow_check_stts =
+                #{sporadicFlowRegisterEntity.sflFlowCheckStts},
+            </if>
+            <!-- 流动状态 -->
+            <if
+                    test="sporadicFlowRegisterEntity.sflFlowStts != null and sporadicFlowRegisterEntity.sflFlowStts!='' ">
+                sfl_flow_stts = #{sporadicFlowRegisterEntity.sflFlowStts},
+            </if>
+            <!-- 更新时间 -->
+            <if
+                    test="sporadicFlowRegisterEntity.sflUpdtTime != null and sporadicFlowRegisterEntity.sflUpdtTime!='' ">
+                sfl_updt_time = #{sporadicFlowRegisterEntity.sflUpdtTime},
+            </if>
+            <!-- 更新人 -->
+            <if
+                    test="sporadicFlowRegisterEntity.sflUpdtUserId != null and sporadicFlowRegisterEntity.sflUpdtUserId!='' ">
+                sfl_updt_user_id = #{sporadicFlowRegisterEntity.sflUpdtUserId},
+            </if>
+        </set>
+        <where>
+            <if
+                    test="sporadicFlowRegisterEntity.id !=null and sporadicFlowRegisterEntity.id !=''">
+                AND (TRIM(#{sporadicFlowRegisterEntity.id}) is null or id =
+                #{sporadicFlowRegisterEntity.id})
+            </if>
+        </where>
+    </update>
+
+    <!-- 查询单条登记记录 -->
+    <select id="findById" resultType="java.util.HashMap"
+            parameterType="java.util.HashMap">
+        SELECT ID, SFL_DPRTMNT_ID , SFL_START_ADDRS ,SFL_DPRTMNT,
+        SFL_REASON , SFL_FLOW_TYPE ,
+        SFL_END_ADDRS ,
+        TO_CHAR(sfl_end_time,'yyyy-mm-dd hh24:mi:ss') SFL_END_TIME,
+        TO_CHAR(sfl_start_time,'yyyy-mm-dd hh24:mi:ss') sfl_start_time,SFL_CRTE_USER,SFL_FLOW_STTS,
+        SFL_PRISON_PATH_ID,SFL_OFFENDER_NUM,SFL_CHECK_USER_ID,SFL_CHECK_USER,SFL_FLOW_BACK_REMARK,SFL_CHECK_TIME,SFL_BACK_TIME FROM
+        cds_sporadic_flow_register
+        <where>
+            <if test="id !=null and id !=''">
+                AND (TRIM(#{id}) is null or id = #{id})
+            </if>
+        </where>
+    </select>
+
+
+    <delete id="deleteByIds" parameterType="List">
+        DELETE FROM cds_sporadic_flow_register WHERE ID in
+        <foreach collection="list" item="id" index="index" separator=","
+                 open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertSporadicFlowRegister" parameterType="com.cesgroup.prison.sporadicFlow.entity.SporadicFlowRegisterEntity">
+        <!--
+          WARNING - @mbggenerated
+          This element is automatically generated by MyBatis Generator, do not modify.
+          This element was generated on Fri Jun 01 16:33:48 CST 2018.
+        -->
+        insert into CDS_SPORADIC_FLOW_REGISTER
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="sflCusNumber != null">
+                SFL_CUS_NUMBER,
+            </if>
+            <if test="sflDprtmntId != null">
+                SFL_DPRTMNT_ID,
+            </if>
+            <if test="sflDprtmnt != null">
+                SFL_DPRTMNT,
+            </if>
+            <if test="sflStartTime != null">
+                SFL_START_TIME,
+            </if>
+            <if test="sflStartAddrs != null">
+                SFL_START_ADDRS,
+            </if>
+            <if test="sflReason != null">
+                SFL_REASON,
+            </if>
+            <if test="sflCrteTime != null">
+                SFL_CRTE_TIME,
+            </if>
+            <if test="sflCrteUserId != null">
+                SFL_CRTE_USER_ID,
+            </if>
+            <if test="sflUpdtTime != null">
+                SFL_UPDT_TIME,
+            </if>
+            <if test="sflUpdtUserId != null">
+                SFL_UPDT_USER_ID,
+            </if>
+            <if test="sflFlowType != null">
+                SFL_FLOW_TYPE,
+            </if>
+            <if test="sflEndAddrs != null">
+                SFL_END_ADDRS,
+            </if>
+            <if test="sflFlowStts != null">
+                SFL_FLOW_STTS,
+            </if>
+            <if test="sflFlowCheckStts != null">
+                SFL_FLOW_CHECK_STTS,
+            </if>
+            <if test="sflEndTime != null">
+                SFL_END_TIME,
+            </if>
+            <if test="sflPrisonPathId != null">
+                SFL_PRISON_PATH_ID,
+            </if>
+            <if test="sflCrteDprtmntId != null">
+                SFL_CRTE_DPRTMNT_ID,
+            </if>
+
+            <if test="sflCrteUser != null">
+                SFL_CRTE_USER,
+            </if>
+
+            <if test="sflUpdtUser != null">
+                SFL_UPDT_USER,
+            </if>
+
+            <if test="sflCheckUserId != null">
+                SFL_CHECK_USER_ID,
+            </if>
+            <if test="sflCheckUser != null">
+                SFL_CHECK_USER,
+            </if>
+            <if test="sflOffenderNum != null">
+                SFL_OFFENDER_NUM,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="sflCusNumber != null">
+                #{sflCusNumber,jdbcType=DECIMAL},
+            </if>
+            <if test="sflDprtmntId != null">
+                #{sflDprtmntId,jdbcType=DECIMAL},
+            </if>
+            <if test="sflDprtmnt != null">
+                #{sflDprtmnt,jdbcType=VARCHAR},
+            </if>
+            <if test="sflStartTime != null">
+                #{sflStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sflStartAddrs != null">
+                #{sflStartAddrs,jdbcType=VARCHAR},
+            </if>
+            <if test="sflReason != null">
+                #{sflReason,jdbcType=VARCHAR},
+            </if>
+            <if test="sflCrteTime != null">
+                #{sflCrteTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sflCrteUserId != null">
+                #{sflCrteUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="sflUpdtTime != null">
+                #{sflUpdtTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sflUpdtUserId != null">
+                #{sflUpdtUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="sflFlowType != null">
+                #{sflFlowType,jdbcType=VARCHAR},
+            </if>
+            <if test="sflEndAddrs != null">
+                #{sflEndAddrs,jdbcType=VARCHAR},
+            </if>
+            <if test="sflFlowStts != null">
+                #{sflFlowStts,jdbcType=VARCHAR},
+            </if>
+            <if test="sflFlowCheckStts != null">
+                #{sflFlowCheckStts,jdbcType=VARCHAR},
+            </if>
+            <if test="sflEndTime != null">
+                #{sflEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sflPrisonPathId != null">
+                #{sflPrisonPathId,jdbcType=CHAR},
+            </if>
+            <if test="sflCrteDprtmntId != null">
+                #{sflCrteDprtmntId,jdbcType=CHAR},
+            </if>
+
+            <if test="sflCrteUser != null">
+                #{sflCrteUser,jdbcType=CHAR},
+            </if>
+
+            <if test="sflUpdtUser != null">
+                #{sflUpdtUser,jdbcType=CHAR},
+            </if>
+
+            <if test="sflCheckUserId != null">
+                #{sflCheckUserId,jdbcType=CHAR},
+            </if>
+            <if test="sflCheckUser != null">
+                #{sflCheckUser,jdbcType=CHAR},
+            </if>
+            <if test="sflOffenderNum != null">
+                #{sflOffenderNum,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

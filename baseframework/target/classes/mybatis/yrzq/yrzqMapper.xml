@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yrzq.dao.YrzqMapper">
+	<select id="getById" resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity"> 
+		SELECT A.* FROM T_ZHAF_ONEDAY_DUTY A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT A.* FROM T_ZHAF_ONEDAY_DUTY A
+				  WHERE ((A.SXSJ = TO_CHAR(#{sxsj},'YYYY-MM-DD'))
+						OR (
+	 					   DATA_TYPE = 5 AND TO_DATE(START_TIME,'YYYY-MM-DD') &lt;= TO_DATE(SYSDATE(),'YYYY-MM-DD')
+	 					   AND (END_TIME IS NULL OR END_TIME = ''  
+	 					   OR (TO_DATE(END_TIME,'YYYY-MM-DD') &gt;= TO_DATE(SYSDATE(),'YYYY-MM-DD'  )))
+	 					   AND (FINISH_DATE IS NULL OR TO_CHAR(A.FINISH_DATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE(),'YYYY-MM-DD'))
+						   ) 
+						)
+				<if test="prisonId != null and prisonId != ''">
+					AND A.PRISON_ID = #{prisonId}
+				</if>
+				<if test="departId != null and departId != ''">
+					AND A.DEPART_ID = #{departId}
+				</if>
+				  
+		ORDER BY START_TIME,END_TIME ASC
+	</select>
+	
+	<select id="findListPage" parameterType="com.cesgroup.prison.yrzq.entity.YrzqEntity"
+		resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity">
+		SELECT A.* FROM T_ZHAF_ONEDAY_DUTY A
+				  WHERE ((A.SXSJ = TO_CHAR(#{sxsj},'YYYY-MM-DD'))
+						OR (
+	 					   DATA_TYPE = 5 AND TO_DATE(START_TIME,'YYYY-MM-DD') &lt;= TO_DATE(SYSDATE(),'YYYY-MM-DD')
+	 					   AND (END_TIME IS NULL OR END_TIME = ''  
+	 					   OR (TO_DATE(END_TIME,'YYYY-MM-DD') &gt;= TO_DATE(SYSDATE(),'YYYY-MM-DD'  )))
+	 					   AND (FINISH_DATE IS NULL OR TO_CHAR(A.FINISH_DATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE(),'YYYY-MM-DD'))
+						   ) 
+						)
+			<if test="prisonId != null and prisonId != ''">
+				AND A.PRISON_ID = #{prisonId}
+			</if>
+			<if test="departId != null and departId != ''">
+				AND A.DEPART_ID = #{departId}
+			</if>
+			
+			<if test="title != null and title != ''">
+				AND A.TITLE like  '%${title}%'
+			</if>
+			
+			<if test="startTime != null and startTime != ''">
+				AND to_char(A.START_TIME,'yyyy-MM-dd HH24:mm:ss') &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND to_char(A.END_TIME,'yyyy-MM-dd HH24:mm:ss') &lt;= #{endTime}
+			</if>
+			
+			<if test="state != null and state != ''">
+				AND A.STATE = #{state}
+			</if>
+			<if test="isTimeout != null and isTimeout != ''">
+				AND A.IS_TIMEOUT = #{isTimeout}
+			</if>
+			<if test="dataType != null and dataType != ''">
+				AND A.DATA_TYPE = #{dataType}
+			</if>
+		ORDER BY START_TIME DESC
+	</select>
+	
+	<select id="findAllListPage" parameterType="com.cesgroup.prison.yrzq.entity.YrzqEntity"
+		resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity">
+		SELECT A.* FROM T_ZHAF_ONEDAY_DUTY A
+		 <where>
+			<if test="prisonId != null and prisonId != ''">
+				AND A.PRISON_ID = #{prisonId}
+			</if>
+			<if test="departId != null and departId != ''">
+				AND A.DEPART_ID = #{departId}
+			</if>
+			
+			<if test="title != null and title != ''">
+				AND A.TITLE like  '%${title}%'
+			</if>
+			
+			<if test="startTime != null and startTime != ''">
+				AND to_char(A.START_TIME,'yyyy-MM-dd HH24:mm:ss') &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND to_char(A.END_TIME,'yyyy-MM-dd HH24:mm:ss') &lt;= #{endTime}
+			</if>
+			
+			<if test="state != null and state != ''">
+				AND A.STATE = #{state}
+			</if>
+			<if test="isTimeout != null and isTimeout != ''">
+				AND A.IS_TIMEOUT = #{isTimeout}
+			</if>
+			<if test="dataType != null and dataType != ''">
+				AND A.DATA_TYPE = #{dataType}
+			</if>
+		 </where>
+		ORDER BY START_TIME DESC
+	</select>
+	
+	
+	<select id="searchYrzq" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT A.*,A.start_time as sttime,A.finish_date as fhtime FROM T_ZHAF_ONEDAY_DUTY A
+				  WHERE ((A.SXSJ = TO_CHAR(#{sxsj},'YYYY-MM-DD'))
+						OR (
+	 					   DATA_TYPE = 5 AND TO_DATE(START_TIME,'YYYY-MM-DD') &lt;= TO_DATE(SYSDATE(),'YYYY-MM-DD')
+	 					   AND (END_TIME IS NULL OR END_TIME = ''  
+	 					   OR (TO_DATE(END_TIME,'YYYY-MM-DD') &gt;= TO_DATE(SYSDATE(),'YYYY-MM-DD'  )))
+	 					   AND (FINISH_DATE IS NULL OR TO_CHAR(A.FINISH_DATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE(),'YYYY-MM-DD'))
+						   ) 
+						)
+				    AND STATE = 2
+			<if test="prisonId != null and prisonId != ''">
+				AND A.PRISON_ID = #{prisonId}
+			</if>
+			<if test="departId != null and departId != ''">
+				AND A.DEPART_ID = #{departId}
+			</if>
+		ORDER BY START_TIME ASC
+	</select>
+	
+	<select id="findDataList" parameterType="com.cesgroup.prison.yrzq.entity.YrzqEntity" resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity">
+		SELECT A.* FROM T_ZHAF_ONEDAY_DUTY 
+		A WHERE TO_CHAR(A.START_TIME,'YYYY-MM-DD') = TO_CHAR (SYSDATE,'YYYY-MM-DD')
+		<if test="prisonId != null and prisonId != ''">
+				AND A.PRISON_ID = #{prisonId}
+		</if>
+		<if test="departId != null and departId != ''">
+			AND A.DEPART_ID = #{departId}
+		</if>
+
+		ORDER BY START_TIME ASC
+	</select> 
+	
+	<select id="deleteByIds" parameterType="arraylist"> 
+		DELETE FROM T_ZHAF_ONEDAY_DUTY A
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+	
+	<select id="updateIsTimeout" resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity"> 
+		UPDATE T_ZHAF_ONEDAY_DUTY A 
+		SET A.IS_TIMEOUT = 1
+		WHERE A.ID =  #{id}
+	</select>
+	
+	<select id="updateFxcj" parameterType="java.util.HashMap"> 
+		UPDATE T_AQFX_FXCJ 
+		SET STATUS = 0
+		WHERE ID = #{id}
+	</select>
+	<select id="updateRwjs" parameterType="java.util.HashMap"> 
+		UPDATE CDS_RWGL_RWJS
+		SET JS_STATUS = 2
+		WHERE FXCJ_ID = #{id}
+	</select>
+	<select id="updateRwxf" parameterType="java.util.HashMap"> 
+		UPDATE CDS_RWGL_RWXF
+		SET RW_STATUS = 3
+		WHERE FXCJ_ID = #{id}
+	</select>
+	<select id="openCamare" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select b.id,b.cbd_name from prison.CDS_PRISON_PATH_CAMERA_RLTN  a,prison.dvc_camera_base_dtls b
+		where pcr_path_id=#{lxId} and a.pcr_camera_id = b.id
+
+	</select>
+	<select id="searchSwdbPage" parameterType="com.cesgroup.prison.yrzq.entity.YrzqEntity" resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity">
+		SELECT COUNT(DEPART_ID) AS CS,DEPART_ID,#{state} as STATE,#{sxsj} as SXSJ FROM T_ZHAF_ONEDAY_DUTY A
+				  WHERE ((A.SXSJ = TO_CHAR(#{sxsj},'YYYY-MM-DD'))
+						OR (
+	 					   DATA_TYPE = '5' AND TO_DATE(START_TIME,'YYYY-MM-DD') &lt;= TO_DATE(#{sxsj},'YYYY-MM-DD')
+	 					   AND (END_TIME IS NULL OR END_TIME = ''  
+	 					   OR (TO_DATE(END_TIME,'YYYY-MM-DD') &gt;= TO_DATE(#{sxsj},'YYYY-MM-DD'  )))
+	 					   AND (FINISH_DATE IS NULL OR TO_CHAR(A.FINISH_DATE,'YYYY-MM-DD') = TO_CHAR(#{sxsj},'YYYY-MM-DD'))
+						   ) 
+						) and A.PRISON_ID = #{prisonId}
+				<if test="state != null and state != ''">
+						AND A.STATE = #{state}
+				</if>
+		GROUP BY DEPART_ID
+		ORDER BY CS DESC
+	</select>
+	
+	<select id="searchSwdbList" parameterType="java.util.HashMap" resultType="com.cesgroup.prison.yrzq.entity.YrzqEntity">
+		SELECT A.* FROM T_ZHAF_ONEDAY_DUTY A
+				  WHERE ((A.SXSJ = TO_CHAR(#{dateTime},'YYYY-MM-DD'))
+						OR (
+	 					   DATA_TYPE = '5' AND TO_DATE(START_TIME,'YYYY-MM-DD') &lt;= TO_DATE(#{dateTime},'YYYY-MM-DD')
+	 					   AND (END_TIME IS NULL OR END_TIME = ''  
+	 					   OR (TO_DATE(END_TIME,'YYYY-MM-DD') &gt;= TO_DATE(#{dateTime},'YYYY-MM-DD'  )))
+	 					   AND (FINISH_DATE IS NULL OR TO_CHAR(A.FINISH_DATE,'YYYY-MM-DD') = TO_CHAR(#{dateTime},'YYYY-MM-DD'))
+						   ) 
+						)
+						<if test="state != null and state != ''">
+						AND A.STATE = #{state}
+						</if>
+						AND DEPART_ID = #{departId}
+		ORDER BY START_TIME ASC
+	</select>
+	
+	<select id="getFxcj" resultType="java.util.HashMap"> 
+		SELECT A.* FROM T_AQFX_FXCJ A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="getMj" resultType="java.util.HashMap"> 
+		select a.user_id as userId,a.user_name as userName
+		from auth.t_user a
+		left join auth.t_org_user b
+		on a.user_id = b.user_id
+		left join auth.t_org c
+		on b.organize_id = c.organize_id
+		where c.organize_code = #{departId}
+	</select>
+	<select id="getJb" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT top 1 * 
+		  FROM PRISON.T_ZHAF_ONEDAY_DUTY
+		 WHERE DEPART_ID = #{departId} 
+		   AND TO_CHAR(sxsj,'yyyy-MM-dd') &lt;= TO_CHAR(SYSDATE()-1,'yyyy-MM-dd')
+		   AND STATE = 0 and TITLE = '交班'
+	</select>
+	
+	<!-- 根据部门编号、状态、标题查询一日执勤数据，并按照生效时间倒序排列 -->
+	<select id="findByDepartIdAndStateAndTitleOrderBySxsjDesc" resultType="java.util.HashMap">
+		SELECT 
+			* 
+		FROM PRISON.T_ZHAF_ONEDAY_DUTY
+		<where>
+			<if test="departId !=null and departId != ''">
+				AND DEPART_ID = #{departId}
+			</if>
+			<if test="state !=null and state != ''">
+				AND STATE = #{state}
+			</if>
+			<if test="title !=null and title != ''">
+				AND TITLE = #{title}
+			</if>
+		</where>
+		ORDER BY SXSJ DESC
+	</select>
+	<select id="searchZbrz" resultType="java.util.HashMap"> 
+		select sxsj,title,state,mark 
+		from prison.t_zhaf_oneday_duty 
+		where depart_id = #{departId} 
+		and sxsj = #{sxsj}
+	</select>
+	<select id="getJieb" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from PRISON.T_ZHAF_ONEDAY_DUTY 
+		where title = '接班' 
+		and state = '0' 
+		and sxsj = #{sxsj} 
+		and DEPART_ID = #{departId}
+	</select>
+	<select id="getZbrz" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select top 1 * from prison.t_zhaf_oneday_duty 
+		where title = '交班' 
+		and state = '2' 
+		and depart_id = #{departId}
+		order by finish_date desc
+	</select>
+	<select id="updateZbr" parameterType="com.cesgroup.prison.yrzq.entity.YrzqEntity" resultType="java.util.HashMap">
+		update prison.t_zhaf_oneday_duty 
+		set zbr = #{zbr},zbr_id = #{zbrId} 
+		where sxsj = #{sxsj} 
+		and depart_id = #{departId}
+	</select>
+</mapper>

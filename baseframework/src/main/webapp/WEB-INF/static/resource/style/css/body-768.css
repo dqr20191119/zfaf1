@@ -1,0 +1,208 @@
+/* CSS Document */
+#PanelHead{
+	background:url(../images/bg.png) repeat-x;
+	width:100%;
+	height:81px;	
+}
+.logoPic{
+	width:18%;
+	height:44px;
+	margin:15px 20px 0 20px;
+	float:left;
+}
+#PanelMenu{
+	background:url(../images/bg01.png) repeat-x;
+	width:53%;
+	padding-top:4px;
+	height:77px;
+}
+ul#PanelMenu li{
+	border:1px solid transparent;
+	background-color:transparent;
+	_border:none;
+	_background-color:inherit;
+	width:80px;
+	height:75px;
+	float:left;
+	margin-left:1%;
+	line-height:30px;
+	text-align:center;
+}
+ul#PanelMenu li a{ color:#FFF;}
+ul#PanelMenu li:hover{
+	border:1px solid #b7def0;
+	background-color:#fff;
+	cursor:pointer;
+}
+ul#PanelMenu li:hover a{ color:#2ca6e0;}
+#PanelInfo{
+	background:url(../images/rightBg.png) no-repeat;
+	width:24%;
+	height:72px;
+	padding-top:9px;
+	color:#FFF;
+	line-height:20px;
+}
+#PanelInfo a{ color:#FFF;}
+
+#PanelLeft{
+	background:url(../images/leftBg.jpg) repeat-y right top;
+	width:16%;
+	height:796px;
+}
+#BoxLeft{
+	width:100%;
+	text-align:center;
+	height:80px;
+	line-height:35px;
+	color:#2ca6e0;
+	padding-top:20px;
+}
+ul.leftMenu li.menu{
+	width:100%;
+	border-top:1px solid #96d3ef;
+	color:#2ca6e0;
+}
+li.button a{
+	/* The section titles */
+	display:block;
+	height:40px;
+	line-height:40px;
+	overflow:hidden;
+	position:relative;
+	width:61%;
+	padding:0 12% 0 25%;
+	background:url(../images/leftIcon.gif) no-repeat #f7f7f7 130px center;
+	color:#2ca6e0;
+	font-family:"微软雅黑";
+	font-size:16px;
+}
+li.button a:hover,li.button .select{
+	color:#2ca6e0;
+}
+
+.dropdown{
+	margin:10px 0;
+	display:none;
+	width:70%;
+	float:right;
+	margin-right:20px;
+}
+.dropdown li{
+	font-family:"微软雅黑";
+	font-size:13px;
+	width:85%;
+	padding-left:15%;
+	height:30px;
+	line-height:30px;
+	border-bottom:1px dashed #2ca6e0;
+}
+.dropdown li a{ color:#2ca6e0;}
+.dropdown li:hover{
+	background:#f29700;
+	color:#FFF;
+}
+.dropdown li:hover a{ color:#FFF;}
+
+#PanelRight{
+	width:84%;
+	height:796px;
+	_width:81.6%;
+}
+#PanelNav{
+	width:98%;
+	background:#fefbea;
+	height:45px;
+	padding-left:2%;
+}
+#BoxNav{
+	background:url(../images/navIcon.png) no-repeat left center;
+	width:83%;
+	height:45px;
+	line-height:45px;
+	padding-left:2%;
+	*width:82.9%;
+}
+#BoxNav a{ color:#a8a6a6;}
+.navBtn{
+	width:15%;
+	height:45px;
+	line-height:45px;
+	text-align:center;
+	background:#2ca6e0;
+}
+.navBtn a{ color:#FFF;}
+#PanelCon{
+	width:92%;
+	height:685px;
+	margin:15px auto;
+	margin-left:3%;
+	margin-right:8%;
+}
+#PanelSelect{
+	height:55px;
+	background:url(../images/lineBg.jpg) repeat-x center bottom;
+}
+#BoxSelect{
+	height:40px;
+	padding-bottom:15px;
+	background:url(../images/linePic.jpg) no-repeat center bottom;
+}
+
+.txtBg{
+	background:url(../images/txtBg.gif) repeat-x #fff;
+	height:20px;
+	line-height:20px;
+	border:1px solid #e6e6e6;
+	padding-left:8px;
+	margin-left:8px;
+	width:300px;
+}
+.btn,.btn01{
+	background:url(../images/btn01.png) no-repeat;
+	width:93px;
+	height:27px;
+	float:left;
+	margin:0 5px;
+	font-family:"微软雅黑";
+	font-size:14px;
+	font-weight:normal;
+	color:#707070;
+	text-align:center;
+	line-height:27px;
+}
+.btn01{background:url(../images/btn02.png) no-repeat;}
+
+#PanelList{
+	margin-top:20px;
+	border:5px solid #eeeef0;
+	padding-bottom:10px;
+}
+.TrBg{
+	height:36px;
+	line-height:36px;
+	background:#f7f7f7;
+	color:#9f9f9f;
+}
+.TrHeight{
+	height:33px;
+	line-height:33px;
+	padding:5px 0;
+}
+.TdLine{ border-bottom:2px solid #e6e6e6;}
+
+#PanelList tr:hover{
+	background:#f7f7f7;
+	cursor:pointer;
+	color:#50b7e4;
+}
+#PanelList tr:hover a{ color:#50b7e4;}
+
+
+#PanelFoot{
+	border-top:2px solid #96d3f0;
+	height:33px;
+	line-height:33px;
+	width:92%;
+	padding:0 5% 0 3%;
+}

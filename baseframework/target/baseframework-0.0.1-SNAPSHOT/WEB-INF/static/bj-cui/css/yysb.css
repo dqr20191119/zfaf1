@@ -1,0 +1,156 @@
+
+/* center */
+.container-box {
+  height: 100%;
+  padding-top: 70px;
+  background: url(../img/lishijilu/bg.jpg);
+  background-size: 100% 100%;
+}
+
+/* layout */
+.coral-layout .coral-layout-panel {
+  border: none;
+}
+/* center 样式*/
+.center{
+	height:90%;
+  padding: 14px 50px;
+  margin: 20px 25px;
+}
+
+/*right 样式*/
+.right {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	bottom: 0;
+	background: url(../img/rightBg.png) no-repeat 0 0;
+	padding: 25px 18px 0 30px;
+	background-size: 100% 100%;
+}
+.rightList{
+	height:85%;
+}
+.on-duty h2 {
+    color: #c9caca;
+    margin: 25px 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+.wordList{
+	margin-bottom: 25px;
+}
+.wordListTop{
+	width:206px;
+	height:120px;
+	background: url(../img/rightLighBg.png) no-repeat;
+	padding: 12px 0px 0px 25px;
+}
+.wordListTop p{
+	margin:0;
+}
+.wordListTop span{
+	vertical-align: middle;
+}
+.wordListTop .eventIcon{
+	  width:25px;
+	  height:25px;
+	  display: inline-block;
+	  background: url(../img/eventIcon.png) no-repeat;
+}
+.wordListTop .eventName{
+	color:#f08300;
+	font-size: 24px;
+}
+.wordListTop .quName{
+	color: #00fff6;
+	font-size: 20px;
+	
+}
+.wordListBtm span{
+	font-size: 16px;
+	color:#e1e3e9;
+	vertical-align: middle;
+}
+.wordListBtm .iconfont{
+	font-size: 25px;
+}
+
+.middle-box ul li{
+	float: left;
+	padding: 0;
+	position: relative;
+	width:12.5%;
+  height: 153px;
+  margin-bottom: 17px;
+}
+.middle-box ul{
+  height: 705px;
+  overflow: hidden;
+	padding-top: 25px
+}
+.center h3{
+  color: #c9caca;
+    font-size: 22px;
+}
+.middle-box ul li>div{
+  height: 100%;
+  padding-top: 25px;
+  width: 86%;
+  border: 1px solid #fff;
+  border-radius: 6px;
+}
+.middle-box ul li>div.empty{
+	border-color:#000;
+
+}
+.middle-box ul li>div.empty .iconfont{
+	display:none;
+}
+
+.middle-box ul li>div.empty img{
+  margin-top: 43px;
+  margin-bottom: 8px;
+}
+.middle-box ul li>div.empty .voice-num{
+	border-left: 62px solid #747677;
+}
+.middle-box ul li>div.empty i{
+	color: #fff;
+}
+.middle-box ul li .voice-num{
+	width: 0;
+	height: 0;
+	position: absolute;
+  border-left: 62px solid #fff;
+  border-bottom: 62px solid transparent;
+	top: 0;
+}
+.middle-box ul li i{
+	position: absolute;
+	top: 0px;
+	left: 5px;
+  font-size: 24px;
+  font-style: normal;
+  color: #000;
+}
+.middle-box ul li img{
+  display: block;
+  width: 85px;
+  margin: 0 auto;
+}
+.middle-box ul li p{
+	text-align: center;
+	font-size: 20px;
+	color: #fff;
+}
+.middle-box ul li .iconfont{
+  font-size: 25px;
+  position: absolute;
+  color: #03d5d1;
+  top: 7px;
+  right: 35px;
+}

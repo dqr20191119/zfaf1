@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.screen.dao.ScreenPlanNewMapper">
+
+    <select id="pageSelectAll" parameterType="com.cesgroup.prison.screen.entity.ScreenPlanNewEntity" resultType="com.cesgroup.prison.screen.entity.ScreenPlanNewEntity">
+        select * from CDS_SCREEN_PLAN_NEW
+        <where>
+            <if test="screenPlanName !=null and screenPlanName !=''">
+              and  SCREEN_PLAN_NAME like '%' ||#{screenPlanName} || '%'
+            </if>
+            <if test="cusNumber !=null and cusNumber !=''">
+               and CUS_NUMBER =#{cusNumber}
+            </if>
+            <if test="status !=null and status !=''">
+              and  STATUS =#{status}
+            </if>
+        </where>
+        order by STATUS desc
+    </select>
+
+    <delete id="deleteAll">
+        delete from CDS_SCREEN_PLAN_NEW  where  CUS_NUMBER =#{cusNumber}
+    </delete>
+
+    <update id="updateInfo" parameterType="com.cesgroup.prison.screen.entity.ScreenPlanNewEntity">
+       update CDS_SCREEN_PLAN_NEW
+       <set>
+           <if test="status !=null and status !='' ">
+               STATUS =#{status}
+           </if>
+       </set>
+        <where>
+            CUS_NUMBER =#{cusNumber}
+            and
+            id != #{id}
+        </where>
+    </update>
+
+    <update id="updateById" parameterType="com.cesgroup.prison.screen.entity.ScreenPlanNewEntity">
+        update CDS_SCREEN_PLAN_NEW
+        <set>
+            <if test="status !=null and status !='' ">
+                STATUS =#{status}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+</mapper>

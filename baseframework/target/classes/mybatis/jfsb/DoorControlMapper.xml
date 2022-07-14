@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.DoorControlMapper">
+
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		dcd_idnty,
+		dcd_cus_number,
+		dcd_name,
+		dcd_ip_addrs,
+		dcd_port,
+		dcd_sn,
+		dcd_user_name,
+		dcd_user_password,
+		dcd_action_indc,
+		dcd_remark,
+		to_char(dcd_crte_time,'YYYY-MM-DD HH24:mi:ss') as dcd_crte_time,
+		dcd_crte_user_id,
+		to_char(dcd_updt_time,'YYYY-MM-DD HH24:mi:ss') as dcd_updt_time,
+		dcd_updt_user_id
+		FROM
+		dvc_door_control_device
+		<where>
+			<if test="doorControlEntity.dcdCusNumber != null and doorControlEntity.dcdCusNumber!='' ">
+				AND dcd_cus_number = #{doorControlEntity.dcdCusNumber}
+			</if>
+			<if test="doorControlEntity.dcdName != null and doorControlEntity.dcdName!='' ">
+				AND dcd_name like CONCAT('%',#{doorControlEntity.dcdName},'%')
+			</if>
+			AND dcd_action_indc != '3'
+		</where>
+	</select>
+
+	<!-- 下拉控件数据 根据监狱号获取门禁控制器信息 -->
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "value" ,
+		dcd_name As "text"
+		FROM
+		dvc_door_control_device
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND dcd_cus_number = #{cusNumber} AND dcd_action_indc != '3'
+			</if>
+		</where>
+	</select>
+
+
+
+	<!-- 根据id批量删除 -->
+	<!-- <delete id="deleteByIds" parameterType="List"> DELETE FROM dvc_door_control_device WHERE ID in <foreach collection="list" item="id" index="index" separator="," open="(" close=")"> #{id} </foreach> </delete> -->
+	<!-- 根据id逻辑删除 -->
+	<update id="deleteByIds" parameterType="List">
+		UPDATE dvc_door_control_device set dcd_action_indc = '3' WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</update>
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE dvc_door_control_device
+		<set>
+			<if test="doorControlEntity.dcdIdnty != null and doorControlEntity.dcdIdnty!='' ">
+				dcd_idnty = #{doorControlEntity.dcdIdnty},
+			</if>
+
+			<if test="doorControlEntity.dcdName != null and doorControlEntity.dcdName!='' ">
+				dcd_name = #{doorControlEntity.dcdName},
+			</if>
+
+			<if test="doorControlEntity.dcdSn != null and doorControlEntity.dcdSn!='' ">
+				dcd_sn = #{doorControlEntity.dcdSn},
+			</if>
+
+			<if test="doorControlEntity.dcdIpAddrs != null and doorControlEntity.dcdIpAddrs!='' ">
+				dcd_ip_addrs = #{doorControlEntity.dcdIpAddrs},
+			</if>
+
+			<if test="doorControlEntity.dcdPort != null and doorControlEntity.dcdPort!='' ">
+				dcd_port = #{doorControlEntity.dcdPort},
+			</if>
+
+			<if test="doorControlEntity.dcdUserName != null and doorControlEntity.dcdUserName!='' ">
+				dcd_user_name = #{doorControlEntity.dcdUserName},
+			</if>
+
+			<if test="doorControlEntity.dcdUserPassword != null and doorControlEntity.dcdUserPassword!='' ">
+				dcd_user_password = #{doorControlEntity.dcdUserPassword},
+			</if>
+
+			<if test="doorControlEntity.dcdActionIndc != null and doorControlEntity.dcdActionIndc!='' ">
+				dcd_action_indc = #{doorControlEntity.dcdActionIndc},
+			</if>
+
+			<if test="doorControlEntity.dcdRemark != null and doorControlEntity.dcdRemark!='' ">
+				dcd_remark = #{doorControlEntity.dcdRemark},
+			</if>
+
+			<if test="doorControlEntity.dcdUpdtTime != null and doorControlEntity.dcdUpdtTime!='' ">
+				dcd_updt_time = #{doorControlEntity.dcdUpdtTime},
+			</if>
+
+			<if test="doorControlEntity.dcdUpdtUserId != null and doorControlEntity.dcdUpdtUserId!='' ">
+				dcd_updt_user_id = #{doorControlEntity.dcdUpdtUserId},
+			</if>
+
+		</set>
+
+		<where>
+			<if test="doorControlEntity.id !=null and doorControlEntity.id !=''">
+				AND (TRIM(#{doorControlEntity.id}) is null or id = #{doorControlEntity.id})
+			</if>
+		</where>
+	</update>
+
+</mapper>

@@ -1,0 +1,117 @@
+@charset "utf-8";
+/* CSS Document */
+.hide{display:none;}
+body, html, div, blockquote, img, label, p, h1, h2, h3, h4, h5, h6, pre, ul, ol,li, dl, dt, dd, form, a, fieldset, input, th, td, select{margin: 0; padding: 0; border: 0; outline: none;}
+a{text-decoration: none;}
+a:hover{text-decoration:none;}
+ul, ol{list-style: none;}
+img{
+	display:inline-block;
+	border:0;
+	vertical-align:middle;
+}
+span{vertical-align:middle;}
+*{font-family:'微软雅黑';}
+.clearfix:after, .clearfix:before {
+	content:"."; 
+	display:block;
+	 height:0; 
+	line-height: 0; 
+	font-size:0; 
+	visibility:hidden; 
+	clear:both; 
+	}
+.clearfix { *zoom:1; }
+table{
+	border-collapse:collapse;
+}
+.space{
+	visibility:hidden;	
+}
+
+
+
+/*组件样式更改*/
+/*弹出框的颜色样式更改------------------------------------------------------------------------------------------*/
+.coral-dialog .coral-dialog-titlebar {
+    background: none repeat scroll 0 0 #f1f1f1 !important;
+    border-bottom: none !important;
+}
+.coral-dialog .coral-dialog-title {
+    color: #666666 !important;
+}
+.coral-dialog .icon-close2:before {
+    color:#666666;
+}
+.coral-dialog .coral-dialog-buttonpane .coral-dialog-buttonset {
+    background-color:#f1f1f1;
+}
+/*改变底下按钮的颜色*/
+.coral-dialog-buttonset .coral-button {
+    border: 1px solid #019b45 !important;
+    color: #019b45;
+}
+.coral-dialog-buttonset .coral-button[disabled] {
+    border: 1px solid #c8c8c8 !important;
+    color: #c8c8c8;
+}
+.coral-dialog-buttonset .coral-button.coral-state-hover {
+   background:#019b45 !important;
+   color:#fff !important;
+}
+.coral-dialog-buttonset .coral-btn-primary {
+    background: none repeat scroll 0 0 #019b45 !important;
+	font-size:13px;
+}
+
+
+
+
+
+
+
+
+/*下拉框箭头位置和日期组件小日历位置------------------------------------------------*/
+.coral-combo-arrow {top: 3px !important;}
+.coral-icon-calendar {top: 7px !important;}
+
+/*单选框和复选框----------------------------------------------------------------*/
+.coral-radio-icon {vertical-align: baseline;}
+.coral-checkbox-icon{vertical-align: baseline;}
+
+
+/*表格样式----------------------------------------------------------------------*/
+
+/*翻页*/
+.content .coral-paginator {
+    margin-top: 5px;
+}
+.coral-grid-pager {
+	padding-bottom:38px;
+    background-color: #fff;
+    width: 100%;
+}
+.coral-paginator .paginator-right {
+    right: 10px;
+}
+.coral-paginator .paginator-center {
+    position: absolute;
+    right: 180px;
+    top: 2px;
+}
+.content .coral-grid-pager .icon {
+    color:#089543;
+}
+.content .coral-paginator-pages .coral-state-active, .coral-paginator-pages .coral-state-hover {
+    color: #089543;
+}
+.content .coral-pager-flex .coral-pg-input {
+    padding:0;
+    text-align: center;
+}
+.content .coral-paginator .coral-pg-input {
+    padding:0;
+}
+.coral-paginator .coral-combo-arrow.icon {
+    padding: 1px !important;
+}

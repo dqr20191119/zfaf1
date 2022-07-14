@@ -1,0 +1,41 @@
+.cloud{
+	width:217px;
+	height:117px;
+	background:url(../images/login/yunsingle.png) no-repeat 0 0;
+	position:absolute;
+	z-index:10;
+}
+.cloud1{
+	width:244px;
+	height:105px;
+	background:url(../images/login/cloud1.png) no-repeat 0 0;
+	position:absolute;
+	z-index:10;
+}
+.cloud2{
+		width:200px;
+		height:80px;
+		background:url(../images/login/cloud2.png) no-repeat 0 0;
+		position:absolute;
+		z-index:10;
+	}
+#cloud1{
+	top:50px;
+	left:15%;
+	z-index:30;
+}
+#cloud2{
+	top:60px;
+	left:40%;
+	z-index:30;
+}
+#cloud3{
+	top:60PX;
+	right:13%;
+	z-index:30;
+}
+#cloud4{
+	top:60%;
+	left:5%;
+	z-index:3;
+}

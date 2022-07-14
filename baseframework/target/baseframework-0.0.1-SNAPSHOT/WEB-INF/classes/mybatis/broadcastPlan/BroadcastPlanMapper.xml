@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.broadcastPlan.dao.BroadcastPlanDao">
+	<!-- 广播设备-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.broadcastPlan.entity.BroadcastPlan">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="DBP_CUS_NUMBER" jdbcType="CHAR" property="dbpCusNumber" />
+		<result column="DBP_BROADCAST_ID" jdbcType="CHAR" property="dbpBroadcastId" />
+		<result column="DBP_BROACAST_FILE_DTLS_ID" jdbcType="CHAR" property="dbpBroadcastFileDtlsId" />
+		<result column="DBP_CREATE_TIME" jdbcType="CHAR" property="dbpCreateTime" />
+		<result column="DBP_CREATE_USER_ID" jdbcType="CHAR" property="dbpCreateUserId" />
+		<result column="DBP_UPDATE_USER_ID" jdbcType="CHAR" property="dbpUpdateUserId" />
+		<result column="DBP_UPDATE_TIME" jdbcType="CHAR" property="dbpUpdateTime" />
+		<result column="DBP_BROADCAST_PLAN_NAME" jdbcType="CHAR" property="dbpBroadcastPlanName" />
+		<result column="DBP_BROADCAST_NAME" jdbcType="CHAR" property="dbpBroadcastName" />
+		<result column="DBP_BROACAST_FILE_DTLS_NAME" jdbcType="CHAR" property="dbpBroadcastFileDtlsName" />
+	</resultMap>
+	
+	<!-- 广播预案-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, DBP_CUS_NUMBER,DBP_BROADCAST_ID,DBP_BROACAST_FILE_DTLS_ID,DBP_CREATE_TIME,DBP_CREATE_USER_ID,DBP_UPDATE_USER_ID,
+		DBP_UPDATE_TIME,DBP_BROADCAST_PLAN_NAME,DBP_BROADCAST_NAME,DBP_BROACAST_FILE_DTLS_NAME
+	</sql>
+	
+	<select id="listAll"  resultType="com.cesgroup.prison.broadcastPlan.entity.BroadcastPlan" parameterType="com.cesgroup.prison.broadcastPlan.entity.BroadcastPlan">
+		select * from DVC_BROADCAST_PLAN
+		<where>
+			<if test="dbpCusNumber!=null and dbpCusNumber!=''">
+				DBP_CUS_NUMBER =#{dbpCusNumber}
+			</if>
+			<if test="id !=null and id !=''">
+				AND (TRIM(#{id}) IS NULL OR id = #{id})
+			</if>
+			<if test="dbpBroadcastPlanName !=null and dbpBroadcastPlanName !=''">
+				and	DBP_BROADCAST_PLAN_NAME like concat('%',#{dbpBroadcastPlanName},'%')
+			</if>
+			<if test="dbpBroadcastFileDtlsName !=null and dbpBroadcastFileDtlsName !=''">
+				and	DBP_BROADCAST_FILE_DTLS_NAME like concat('%',#{dbpBroadcastFileDtlsName},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM DVC_BROADCAST_PLAN WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+<!-- 批量删除关联广播预案关联信息  -->
+	<delete id="deletByBroadcastPlanId" parameterType="List">
+		DELETE FROM CDS_BROADCAST_PLAN_RLTN WHERE BPR_BROADCAST_PLAN_ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+</mapper>

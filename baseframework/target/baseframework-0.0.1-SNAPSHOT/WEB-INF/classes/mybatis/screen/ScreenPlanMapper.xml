@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.screen.dao.ScreenPlanMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		spl_cus_number,
+		spl_plan_name,
+		spl_status_indc,
+		spl_remark,
+		to_char(spl_crte_time,'YYYY-MM-DD HH24:mi:ss') as spl_crte_time,
+		spl_crte_user_id,
+		to_char(spl_updt_time,'YYYY-MM-DD HH24:mi:ss') as spl_updt_time,
+		spl_updt_user_id,
+		spl_plan_indc,
+		SPL_IS_DYNAMIC,
+		spl_manufacturers_id
+		FROM
+		cds_screen_plan
+		<where>
+			<if test="screenPlanEntity.splCusNumber != null and screenPlanEntity.splCusNumber!='' ">
+				AND spl_cus_number = #{screenPlanEntity.splCusNumber}
+			</if>
+
+			<if test="screenPlanEntity.splStatusIndc != null and screenPlanEntity.splStatusIndc!='' ">
+				AND spl_status_indc = #{screenPlanEntity.splStatusIndc}
+			</if>
+
+			<if test="screenPlanEntity.splPlanIndc != null and screenPlanEntity.splPlanIndc!='' ">
+				AND spl_plan_indc = #{screenPlanEntity.splPlanIndc}
+			</if>
+
+			<if test="screenPlanEntity.splManufacturersId != null and screenPlanEntity.splManufacturersId!='' ">
+				AND spl_manufacturers_id = #{screenPlanEntity.splManufacturersId}
+			</if>
+
+			<if test="screenPlanEntity.splIsDynamic != null and screenPlanEntity.splIsDynamic!='' ">
+				AND SPL_IS_DYNAMIC = #{screenPlanEntity.splIsDynamic}
+			</if>
+		</where>
+	</select>
+
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE cds_screen_plan
+		<set>
+
+			<if test="screenPlanEntity.splPlanName != null and screenPlanEntity.splPlanName!='' ">
+				spl_plan_name = #{screenPlanEntity.splPlanName},
+			</if>
+
+			<if test="screenPlanEntity.splStatusIndc != null and screenPlanEntity.splStatusIndc!='' ">
+				spl_status_indc = #{screenPlanEntity.splStatusIndc},
+			</if>
+
+			<if test="screenPlanEntity.splRemark != null and screenPlanEntity.splRemark!='' ">
+				spl_remark = #{screenPlanEntity.splRemark},
+			</if>
+
+			<if test="screenPlanEntity.splUpdtTime != null and screenPlanEntity.splUpdtTime!='' ">
+				spl_updt_time = #{screenPlanEntity.splUpdtTime},
+			</if>
+
+			<if test="screenPlanEntity.splUpdtUserId != null and screenPlanEntity.splUpdtUserId!='' ">
+				spl_updt_user_id = #{screenPlanEntity.splUpdtUserId},
+			</if>
+
+			<if test="screenPlanEntity.splPlanIndc != null and screenPlanEntity.splPlanIndc!='' ">
+				spl_plan_indc = #{screenPlanEntity.splPlanIndc},
+			</if>
+
+			<if test="screenPlanEntity.splIsDynamic != null and screenPlanEntity.splIsDynamic!='' ">
+				SPL_IS_DYNAMIC = #{screenPlanEntity.splIsDynamic},
+			</if>
+
+			<if test="screenPlanEntity.splManufacturersId != null and screenPlanEntity.splManufacturersId!='' ">
+				spl_manufacturers_id = #{screenPlanEntity.splManufacturersId},
+			</if>
+		</set>
+
+		<where>
+			<if test="screenPlanEntity.id !=null and screenPlanEntity.id !=''">
+				AND (TRIM(#{screenPlanEntity.id}) is null or id = #{screenPlanEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 1 "门禁"; 2 "摄像机"; 3 "广播"; 4 "大屏"; 5 "对讲"; -->
+	<delete id="deleteById" parameterType="java.util.HashMap">
+		<if test="id !=null and id !=''">
+			DELETE FROM CDS_SCREEN_PLAN WHERE ID = #{id};
+			DELETE FROM CDS_SCREEN_PLAN_AREA_RLTN WHERE SPR_SCREEN_PLAN_ID = #{id};
+			DELETE FROM CDS_SCREEN_AREA_CAMERA_RLTN WHERE SCR_SCREEN_PLAN_ID = #{id};
+			DELETE FROM CDS_SCREEN_AREA_WINDOW_RLTN WHERE SWR_SCREEN_PLAN_ID= #{id};
+			DELETE FROM CDS_PLAN_DEVICE_RLTN WHERE PDR_ITEM_ID = '4' and PDR_DVC_IDNTY = #{id};
+		</if>
+	</delete>
+
+
+	<!-- 下拉控件数据 根据监狱号获取大屏预案信息 -->
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "value" ,
+		spl_plan_name As "text"
+		FROM
+		cds_screen_plan
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND spl_cus_number = #{cusNumber}
+			</if>
+
+			<if test="isDynamic != null and isDynamic!='' ">
+				AND SPL_IS_DYNAMIC = #{isDynamic}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

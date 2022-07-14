@@ -1,0 +1,61 @@
+.tccBigWrap{background:#08315d; width:98%; margin:auto; text-align:center; padding-top:10px; padding-bottom:100px;}
+.tablistwrap th{ font-weight:bold; font-size:14px; font-weight:bold; font-size:16px; color:#fff; height:60px; line-height:70px; border-bottom:1px solid #31a8ba}
+.tablistwrap td{ height:40px; line-height:40px; color:#fff; text-align:center;}
+.page{ margin:auto; width:600px; margin-top:120px;}
+.page a{ color:#fff; text-decoration:none;padding:5px 15px; border:1px solid #2c7cd9; display:block; float:left; margin:0 4px 0 4px}
+.page a:hover{ color:#47e3ff; text-decoration:none;padding:5px 15px; border:1px solid #47e3ff; display:block; float:left; margin:0 4px 0 4px}
+.lineblue{ background:#063f7f}
+#main {
+color:#fff
+}
+#fullbg {
+	background-color:gray;
+	left:0;
+	opacity:0.75;
+	position:absolute;
+	top:0;
+	z-index:3;
+	filter:alpha(opacity=75);
+	-moz-opacity:0.75;
+	-khtml-opacity:0.75;
+}
+
+.close-title {
+	height:58px;
+	background:url(bg-button-green.gif) #175eaa repeat-x;
+	padding:0 10px 0 15px;
+}
+.close-title a {
+	color:#fff;
+	text-decoration:none;
+}
+.title-l-cont { float:left; color:#fff;font:normal 18px/220% "MicroSoft YaHei";}
+.gbfr-l { float:right; line-height:38px;}
+
+#dialog {
+	background:#fff; border:2px #44fdfd solid;
+margin:-200px 0 0 -200px;
+	position:fixed !important; /* 浮动对话框 */
+	position:absolute;
+display:none;
+text-align: center;
+	z-index:99999999999;
+width:90%; 
+    left:17%;
+	top:23%;
+padding:6px 0 13px 10px;
+background:#08315d;
+	margin-left:-195px!important;
+	margin-left:-190px;/*FF IE7 该值为本身宽的一半 */
+	margin-top:-80px!important;
+	margin-top:-122px;/*FF IE7 该值为本身高的一半*/
+	position:fixed!important;/*FF IE7*/
+	position:absolute;/*IE6*/
+_top:       expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+ document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);/*IE5 IE5.5*/
+}
+.closeImg {
+	text-align:right;
+	padding-right:8px;
+}
+

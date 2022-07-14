@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.rwgl.dao.RwjsMapper">
+
+
+    <select id="findList" parameterType="com.cesgroup.prison.rwgl.entity.RwjsEntity" resultType="com.cesgroup.prison.rwgl.entity.RwjsEntity">
+		SELECT A.* FROM CDS_RWGL_RWJS A 
+		WHERE 1 = 1  
+		<if test="jyId != null and jyId != ''"> 
+			AND A.JY_ID = #{jyId} 		
+		</if>
+		<if test="jqId != null and jqId != ''"> 
+			AND A.JQ_ID = #{jqId} 		
+		</if>
+		<if test="jsStatus != null and jsStatus != ''"> 
+			AND A.JS_STATUS = #{jsStatus}
+		</if>
+		<if test="id != null and id != ''"> 
+			AND A.ID = #{id}
+		</if>
+	</select>
+	
+	<select id="findDbList" parameterType="com.cesgroup.prison.rwgl.entity.RwjsEntity" resultType="com.cesgroup.prison.rwgl.entity.RwjsEntity">
+		SELECT A.* FROM CDS_RWGL_RWJS A 
+		WHERE A.JS_STATUS NOT IN (2,4)  
+		<if test="jyId != null and jyId != ''"> 
+			AND A.JY_ID = #{jyId} 		
+		</if>
+		<if test="jqId != null and jqId != ''"> 
+			AND A.JQ_ID = #{jqId} 		
+		</if>
+		ORDER BY A.XF_TIME ASC
+	</select>
+	
+	<select id="getById" resultType="com.cesgroup.prison.rwgl.entity.RwjsEntity"> 
+		SELECT A.* FROM CDS_RWGL_RWJS A 
+		WHERE A.ID = #{id} 
+	</select>
+
+	<select id="searchSwdb" parameterType="com.cesgroup.prison.common.bean.user.UserBean" resultType="java.util.HashMap">
+		SELECT ID,TO_CHAR(XF_TIME,'YYYY-MM-DD') AS XF_TIME,JS_STATUS,FXCJ_ID,RW_TITLE
+		FROM CDS_RWGL_RWJS
+		WHERE JS_STATUS NOT IN (2,4)
+		<if test="orgCode != null and orgCode != ''">
+			AND JY_ID = #{orgCode}
+		</if>
+		ORDER BY XF_TIME DESC
+	</select>
+	
+	<select id="searchJwqk" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select (case when wc_lx = '0' then '监外就诊' else '监外住院' end) as flag , xm , bq as sy, jy_id, jq_id, (select organize_name from auth.t_org where organize_code = jy_id) as jyname   from YZGL.T_YZGL_WCGL_JWJZJD 
+		where c_scbz = '0' 
+		<if test="jqId != null and jqId != ''">
+			AND JQ_ID = #{jqId}
+		</if>
+		<if test="jyId != null and jyId != ''">
+			AND JY_ID = #{jyId}
+		</if>
+	</select>
+	
+  
+</mapper>

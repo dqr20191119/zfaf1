@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="query_cds_camera_id_maping">
+		<desc>查询第三方摄像机ID映射表</desc>
+		<sql>
+			SELECT cim_cus_number,
+			cim_camera_idnty,
+			cim_third_camera_idnty
+			FROM cds_camera_id_maping
+		</sql>
+	</item>
+	<item id="query_dvc_camera_base_dtls">
+		<desc>查询摄像机基础信息表数据</desc>
+		<sql>
+			SELECT id,
+			cbd_cus_number,
+			cbd_name,
+			cbd_type_indc,
+			cbd_dvr_idnty,
+			cbd_ip_addrs,
+			cbd_dvr_chnnl_idnty,
+			cbd_stream_media_idnty,
+			cbd_stream_type,
+			cbd_platform,
+			cbd_platform_idnty,
+			cbd_video_play_indc,
+			cbd_video_playback_indc,
+			CBD_BRAND_NAME,
+			CBD_PORT,
+			CBD_USER_NAME,
+			CBD_USER_PASSWORD,
+			CBD_CHNNL_IDNTY
+			FROM dvc_camera_base_dtls
+			where CBD_ACTION_INDC != 3
+		</sql>
+	</item>
+	<item id="query_dvc_video_device_info">
+		<desc>查询摄像机设备基础信息表数据</desc>
+		<sql>
+			SELECT id,
+			vdi_cus_number,
+			vdi_device_name,
+			vdi_type_indc,
+			vdi_brand,
+			vdi_mode,
+			vdi_ip_addrs,
+			vdi_ip2_addrs,
+			vdi_port,
+			vdi_user_name,
+			vdi_user_password
+			FROM dvc_video_device_info
+		</sql>
+	</item>
+	<item id="query_dvc_video_client_config">
+		<desc>查询视频客户端配置数据</desc>
+		<sql>
+			SELECT vcc_cus_number,
+			vcc_app_ip,
+			vcc_client_ip,
+			vcc_width,
+			vcc_height,
+			vcc_x_crdnt,
+			vcc_y_crdnt,
+			vcc_img_path,
+			vcc_video_path
+			FROM dvc_video_client_config
+		</sql>
+	</item>
+
+	<item id="query_dvc_stream_server_info">
+		<desc>查询流媒体服务信息</desc>
+		<sql>
+			SELECT id,
+			ssi_cus_number,
+			ssi_server_name,
+			ssi_ip_addrs,
+			ssi_port,
+			ssi_ip2_addrs,
+			ssi_port2,
+			ssi_area_id
+			FROM dvc_stream_server_info
+		</sql>
+	</item>
+
+	<item id="query_dvc_controler_server">
+		<desc>查询控制服务信息</desc>
+		<sql>
+			SELECT dcs_cus_number,
+			dcs_type_indc,
+			dcs_server_addrs
+			FROM dvc_controler_server
+		</sql>
+	</item>
+
+	<item id="query_orgId_by_parentId">
+		<desc>查询机构号</desc>
+		<sql>
+			SELECT dbd_cus_number AS org_id
+			FROM cds_department_base_dtls
+			WHERE dbd_dprtmnt_code = ?
+			UNION ALL
+			SELECT TO_NUMBER(obd_orga_idnty) AS org_id
+			FROM com_organization_base_dtls
+			WHERE obd_orga_id = ?
+		</sql>
+	</item>
+
+	<item id="query_alertor_base_dtls">
+		<desc>查询报警器基础信息</desc>
+		<sql>
+			SELECT abd_name,
+			abd_type_indc,
+			abd_idnty,
+			abd_ip,
+			abd_port,
+			abd_stts_indc
+			FROM dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE abd_cus_number = ?
+			AND abd_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_child_orga_list">
+		<desc>查询子机构列表</desc>
+		<sql>
+			SELECT obd_orga_idnty AS id,
+			obd_orga_name AS name
+			FROM com_organization_base_dtls
+			WHERE obd_parent_id = (SELECT obd_orga_id
+			FROM com_organization_base_dtls
+			WHERE obd_orga_idnty = ?)
+			ORDER BY obd_seq
+		</sql>
+	</item>
+
+	<item id="query_area_parent_id">
+		<desc>查询区域父ID</desc>
+		<sql>
+			SELECT abd_parent_area_id AS parent_id
+			FROM cds_area_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE abd_cus_number = ?
+			AND abd_area_id = ?
+		</where>
+	</item>
+	<item id="query_com_system_switch">
+		<desc>查询系统开关设置</desc>
+		<sql>
+			SELECT css_module_name,
+			css_switch_name,
+			css_switch_stts,
+			css_crtd_user_id,
+			css_crtd_date,
+			css_updtd_user_id,
+			css_updtd_date
+			FROM com_system_switch
+		</sql>
+	</item>
+
+	<!-- add by zk -->
+	<item id="sys_query_group_cameras">
+		<desc>查询群组的摄像机</desc>
+		<sql>
+			SELECT grd_mmbr_idnty AS id,
+			grd_mmbr_name AS name
+			FROM cds_grp_rltn_dtls
+		</sql>
+		<where wid="0">
+			WHERE grd_cus_number = ?
+			AND grd_grp_id = ?
+			AND GRD_TYPE_INDC=1
+		</where>
+		<order oid="0">
+			ORDER BY grd_show_seq
+		</order>
+	</item>
+	<!-- add by zk start -->
+	<item id="sys_query_group_for_tree_2">
+		<desc>查询群组的树形结构数据</desc>
+		<sql>
+			SELECT gma_cus_number AS orgId,
+			gma_parent_id AS parent_tree_id,
+			id AS tree_id,
+			gma_grp_name AS text,
+			gma_show_seq AS seqNum,
+			gma_purpose AS purpose,
+			gma_use_range AS useRange
+			FROM cds_grp_master
+		</sql>
+		<where wid="0">
+			WHERE (TRIM(?) IS NULL OR gma_cus_number = ?)
+			AND (TRIM(?) IS NULL OR gma_use_range = ?)
+			AND (TRIM(?) IS NULL OR gma_crte_user_id = ?)
+			AND (TRIM(?) IS NULL OR gma_type_indc IN
+			(SELECT column_value
+			FROM TABLE(CDS_PKG_COMMON_FUNC.CDS_F_SPLIT_DATA(?, ','))))
+			AND (TRIM(?) IS NULL OR gma_sub_type_indc IN
+			(SELECT column_value
+			FROM TABLE(CDS_PKG_COMMON_FUNC.CDS_F_SPLIT_DATA(?, ','))))
+			AND (TRIM(?) IS NULL OR gma_purpose IN
+			(SELECT column_value
+			FROM TABLE(CDS_PKG_COMMON_FUNC.CDS_F_SPLIT_DATA(?, ','))))
+		</where>
+		<where wid="1">
+			WHERE gma_cus_number = ?
+			AND gma_use_range = 0
+			OR (gma_use_range = 1 AND gma_crte_user_id = ?)
+		</where>
+		<order oid="0">
+			ORDER BY gma_show_seq
+		</order>
+	</item>
+	<!-- add by zk -->
+	<item id="cds_grp_queryRltnDtlsList">
+		<desc>根据群组id查询对应的设备</desc>
+		<sql>
+			SELECT grd_cus_number,
+			grd_grp_id,
+			grd_grp_name,
+			grd_type_indc,
+			grd_mmbr_name,
+			grd_mmbr_idnty,
+			grd_remark
+			FROM cds_grp_rltn_dtls
+		</sql>
+		<where wid="0">
+			WHERE grd_cus_number = ?
+			AND grd_grp_id = ?
+		</where>
+		<where wid="1">
+			WHERE grd_cus_number = ?
+		</where>
+		<where wid="2">
+			WHERE grd_cus_number = ?
+			AND ((SELECT COUNT(0)
+			FROM cds_device_dprtmnt_relation
+			WHERE ddr_cus_number = grd_cus_number
+			AND ddr_dvc_type_indc = ?
+			AND ddr_stts_indc = 1
+			AND ddr_dprtmnt_idnty = ?) = 0 OR
+			grd_mmbr_idnty IN (SELECT ddr_dvc_idnty
+			FROM cds_device_dprtmnt_relation
+			WHERE ddr_cus_number = grd_cus_number
+			AND ddr_dvc_idnty = grd_mmbr_idnty
+			AND ddr_dvc_type_indc = ?
+			AND ddr_stts_indc = 1
+			AND ddr_dprtmnt_idnty = ?))
+			AND grd_mmbr_idnty NOT IN
+			(SELECT ddr_dvc_idnty
+			FROM CDS_DEVICE_DPRTMNT_RELATION
+			WHERE ddr_cus_number = grd_cus_number
+			AND ddr_dvc_idnty = grd_mmbr_idnty
+			AND ddr_dvc_type_indc = ?
+			AND ddr_stts_indc = 2
+			AND ddr_dprtmnt_idnty = ?)
+		</where>
+		<order oid="0">
+			ORDER BY grd_mmbr_idnty
+		</order>
+		<order oid="1">
+			ORDER BY grd_show_seq
+		</order>
+		<order oid="2">
+			ORDER BY grd_grp_id
+		</order>
+	</item>
+	<item id="cds_query_ftp_server_config">
+		<desc>查询FTP服务器配置</desc>
+		<sql>
+			SELECT fsc_cus_number,
+			fsc_server_ip,
+			fsc_user_name,
+			fsc_password,
+			fsc_download_addrs,
+			fsc_ftp_stts
+			FROM cds_ftp_server_config
+		</sql>
+	</item>
+	<item id="cds_ftp_server_config_query">
+		<desc>查询FTP服务器配置</desc>
+		<Const key="FSC_CRTE_USER_ID">user</Const>
+		<Const key="FSC_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT fsc_cus_number,
+			obd_orga_name,
+			fsc_server_ip,
+			fsc_user_name,
+			fsc_password,
+			fsc_download_addrs,
+			fsc_ftp_stts,
+			fsc_crte_time,
+			fsc_crte_user_id,
+			fsc_updt_time,
+			fsc_updt_user_id
+			FROM cds_ftp_server_config
+			LEFT JOIN com_organization_base_dtls ON(fsc_cus_number = obd_orga_idnty)
+		</sql>
+		<where wid="0">
+			WHERE (TRIM(?) is null OR fsc_cus_number=?)
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null OR fsc_cus_number = ?)
+			AND (TRIM(?) is null OR fsc_server_ip = ?)
+		</where>
+	</item>
+	<!-- <item id="cds_query_dvctype_by_ein_file_name_new"> <desc>根据证据信息表的视频名称获取摄像机的设备类型(用于录像播放时获取录像的设备类型)</desc> <sql> SELECT vdi_brand FROM cds_evidence_info INNER JOIN dvc_camera_base_dtls ON cbd_cus_number=ein_cus_number AND dvc_camera_base_dtls.id=ein_camera_id INNER JOIN dvc_video_device_info ON vdi_cus_number=cbd_cus_number 
+		AND dvc_video_device_info.id=cbd_dvr_idnty </sql> <where wid="0"> WHERE ein_cus_number=? and ein_file_name=? </where> </item> -->
+	<!-- update by zk 2018-04-24 -->
+	<item id="cds_query_dvctype_by_ein_file_name_new">
+		<desc>根据证据信息表的视频名称获取摄像机的设备类型(用于录像播放时获取录像的设备类型)</desc>
+		<sql>
+			SELECT vdi_brand
+			FROM cds_evidence_info
+			INNER JOIN dvc_camera_base_dtls ON dvc_camera_base_dtls.id=ein_camera_id
+			INNER JOIN dvc_video_device_info ON dvc_video_device_info.id=cbd_dvr_idnty
+		</sql>
+		<where wid="0">
+			WHERE ein_file_name=?
+		</where>
+	</item>
+	<!-- add by zk end -->
+
+	<item id="query_cds_call_names_register_prisoner_for_redis">
+		<desc>查询点名注册人员基础信息表数据</desc>
+		<sql>
+			select
+			a.id as id,
+			cnr_cus_number as jyh,
+			cnr_prisoner_indc as zfbh,
+			pbd_prisoner as zf,
+			cnr_img_id  as img_id,
+			cnr_img_url  as img_url,
+			cnr_img_size as img_size,
+			cnr_img_name as img_name,
+			pdb_dempt_id as dempt_id,
+			pbd_area_id as lch,
+			abd_area_name as lc,
+			pbd_cell_indc as jsh
+			from
+			cds_call_names_register_prisoner a
+			left join v_prisoner_base_dtls b on cnr_cus_number = pbd_cus_number and cnr_prisoner_indc = pbd_prisoner_indc
+			left join cds_area_base_dtls c on abd_cus_number = cnr_cus_number and pbd_area_id = abd_area_id
+		</sql>
+		<where wid="0">
+			WHERE (TRIM(?) is null OR cnr_cus_number=?)
+		</where>
+	</item>
+
+
+</sqlItem>

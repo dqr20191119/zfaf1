@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.deviceMaintain.dao.DeviceFaultTypeMapper">
+	<!-- 故障类型分页查询 -->
+	<select id="listAllForType" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		dft_fault_name,
+		dft_stts_indc
+		FROM cds_device_fault_type
+		<where>
+			<if test="deviceFaultTypeEntity.dftCusNumber!=null and deviceFaultTypeEntity.dftCusNumber!=''">
+				AND dft_cus_number = #{deviceFaultTypeEntity.dftCusNumber} AND dft_type_classify = '1'  AND dft_action_indc != '3'
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftSttsIndc!=null and deviceFaultTypeEntity.dftSttsIndc!=''">
+				AND dft_stts_indc = #{deviceFaultTypeEntity.dftSttsIndc}
+			</if>
+
+			<if test="deviceFaultTypeEntity.id!=null and deviceFaultTypeEntity.id!=''">
+				AND id = #{deviceFaultTypeEntity.id}
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftFaultName != null and deviceFaultTypeEntity.dftFaultName!='' ">
+				and dft_fault_name like concat('%', #{deviceFaultTypeEntity.dftFaultName},'%')
+			</if>
+
+		</where>
+	</select>
+
+	<!-- 故障内容分页查询 -->
+	<select id="listAllForContent" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		a.id as id,
+		dft_cus_number,
+		dft_fault_name,
+		dft_type_classify,
+		dft_parent_id,
+		(SELECT dft_fault_name FROM cds_device_fault_type t WHERE (t.dft_cus_number = a.dft_cus_number AND t.id = a.dft_parent_id)) AS dft_parent_name,
+		dft_stts_indc,
+		b.id as relation_id,
+		fdr_maintain_dprtmnt,
+		fdr_help_dprtmnt
+		FROM cds_device_fault_type a LEFT JOIN
+		cds_fault_department_relation b ON (a.dft_cus_number =
+		b.fdr_cus_number AND a.id = b.fdr_fault_id)
+		<where>
+			<if test="deviceFaultTypeEntity.dftCusNumber!=null and deviceFaultTypeEntity.dftCusNumber!=''">
+				AND dft_cus_number = #{deviceFaultTypeEntity.dftCusNumber} AND dft_type_classify = '2' AND dft_action_indc != '3'
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftSttsIndc!=null and deviceFaultTypeEntity.dftSttsIndc!=''">
+				AND dft_stts_indc = #{deviceFaultTypeEntity.dftSttsIndc}
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftParentId!=null and deviceFaultTypeEntity.dftParentId!=''">
+				AND dft_parent_id = #{deviceFaultTypeEntity.dftParentId}
+			</if>
+			
+			<if test="deviceFaultTypeEntity.id!=null and deviceFaultTypeEntity.id!=''">
+				AND id = #{deviceFaultTypeEntity.id}
+			</if>
+			
+			<if test="deviceFaultTypeEntity.dftFaultName != null and deviceFaultTypeEntity.dftFaultName!='' ">
+				AND dft_fault_name like concat('%', #{deviceFaultTypeEntity.dftFaultName},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id查内容 -->
+	<select id="findContentById" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		a.id as id,
+		dft_cus_number,
+		dft_fault_name "dftFaultName" ,
+		dft_type_classify "dftTypeClassify",
+		dft_parent_id "dftParentId",
+		dft_stts_indc "dftSttsIndc",
+		fdr_maintain_dprtmnt_id "fdrMaintainDprtmntId",
+		fdr_maintain_dprtmnt "fdrMaintainDprtmnt",
+		fdr_help_dprtmnt_id "fdrHelpDprtmntId",
+		fdr_help_dprtmnt "fdrHelpDprtmnt"
+		FROM cds_device_fault_type a LEFT JOIN
+		cds_fault_department_relation b ON (a.dft_cus_number = b.fdr_cus_number AND a.id = b.fdr_fault_id)
+		<where>
+			<if test="ID!=null and ID!=''">
+				AND a.id = #{ID} 
+			</if>
+		</where>
+	</select>
+
+
+	<!-- 下拉控件数据 -->
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "value" ,
+		dft_fault_name As "text"
+		FROM
+		cds_device_fault_type
+		<where>
+			<if test="cusNumber != null and cusNumber!=''">
+				AND dft_cus_number = #{cusNumber} AND dft_action_indc != '3'
+			</if>
+			<if test="sttsIndc!=null and sttsIndc !=''">
+				AND dft_stts_indc = #{sttsIndc}
+			</if>
+			<if test="typeClassify!=null and typeClassify!=''">
+				AND dft_type_classify = #{typeClassify}
+			</if>
+			<if test="faultId!=null and faultId!=''">
+				AND dft_parent_id = #{faultId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id 逻辑删除故障类型和内容 ,事务督办处用了这张表，只能逻辑删除 -->
+	<update id="deleteById" parameterType="java.util.HashMap">
+		UPDATE cds_device_fault_type
+		<set>
+			<if test="deviceFaultTypeEntity.dftActionIndc != null and deviceFaultTypeEntity.dftActionIndc!='' ">
+				dft_action_indc = #{deviceFaultTypeEntity.dftActionIndc},
+			</if>
+			<if test="deviceFaultTypeEntity.dftUpdtUserId != null and deviceFaultTypeEntity.dftUpdtUserId!='' ">
+				dft_updt_user_id = #{deviceFaultTypeEntity.dftUpdtUserId},
+			</if>
+			<if test="deviceFaultTypeEntity.dftUpdtTime != null and deviceFaultTypeEntity.dftUpdtTime!='' ">
+				dft_updt_time = #{deviceFaultTypeEntity.dftUpdtTime},
+			</if>
+		</set>
+
+		<where>
+			<if test="deviceFaultTypeEntity.id != null and deviceFaultTypeEntity.id!='' ">
+				AND id IN (SELECT id FROM cds_device_fault_type START WITH id = #{deviceFaultTypeEntity.id} CONNECT BY PRIOR id = dft_parent_id)
+			</if>
+		</where>
+	</update>
+
+	<!-- <delete id="deleteById" parameterType="java.util.HashMap"> DELETE cds_device_fault_type WHERE id IN (SELECT id FROM cds_device_fault_type START WITH id = #{deviceFaultTypeEntity.id} CONNECT BY PRIOR id = dft_parent_id) </delete> -->
+
+	<!-- 部门关联删除 -->
+	<delete id="deleRelationDepartment" parameterType="java.util.HashMap">
+		DELETE cds_fault_department_relation WHERE fdr_fault_id IN (SELECT id FROM cds_device_fault_type START WITH id = #{ID} CONNECT BY PRIOR id = dft_parent_id)
+	</delete>
+
+
+	<update id="updateDeviceFaultTypeInfo" parameterType="java.util.HashMap">
+		UPDATE cds_device_fault_type
+		<set>
+			<if test="deviceFaultTypeEntity.dftCusNumber != null and deviceFaultTypeEntity.dftCusNumber!='' ">
+				dft_cus_number = #{deviceFaultTypeEntity.dftCusNumber},
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftFaultName != null and deviceFaultTypeEntity.dftFaultName!='' ">
+				dft_fault_name = #{deviceFaultTypeEntity.dftFaultName},
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftTypeClassify != null and deviceFaultTypeEntity.dftTypeClassify!='' ">
+				dft_type_classify = #{deviceFaultTypeEntity.dftTypeClassify},
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftParentId != null and deviceFaultTypeEntity.dftParentId!='' ">
+				dft_parent_id = #{deviceFaultTypeEntity.dftParentId},
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftSttsIndc != null and deviceFaultTypeEntity.dftSttsIndc!='' ">
+				dft_stts_indc = #{deviceFaultTypeEntity.dftSttsIndc},
+			</if>
+			
+			<if test="deviceFaultTypeEntity.dftActionIndc != null and deviceFaultTypeEntity.dftActionIndc!='' ">
+				dft_action_indc = #{deviceFaultTypeEntity.dftActionIndc},
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftUpdtUserId != null and deviceFaultTypeEntity.dftUpdtUserId!='' ">
+				dft_updt_user_id = #{deviceFaultTypeEntity.dftUpdtUserId},
+			</if>
+
+			<if test="deviceFaultTypeEntity.dftUpdtTime != null and deviceFaultTypeEntity.dftUpdtTime!='' ">
+				dft_updt_time = #{deviceFaultTypeEntity.dftUpdtTime},
+			</if>
+		</set>
+		<where>
+			<if test="deviceFaultTypeEntity.id != null and deviceFaultTypeEntity.id!='' ">
+				AND id = #{deviceFaultTypeEntity.id}
+			</if>
+		</where>
+	</update>
+
+	<!-- 更新部门关联 -->
+	<update id="updateRelationInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_FAULT_DEPARTMENT_RELATION
+		<set>
+
+			<if test="faultDepmtReltEntity.fdrMaintainDprtmnt != null and faultDepmtReltEntity.fdrMaintainDprtmnt!='' ">
+				fdr_maintain_dprtmnt = #{faultDepmtReltEntity.fdrMaintainDprtmnt},
+			</if>
+
+			<if test="faultDepmtReltEntity.fdrHelpDprtmnt != null and faultDepmtReltEntity.fdrHelpDprtmnt!='' ">
+				fdr_help_dprtmnt = #{faultDepmtReltEntity.fdrHelpDprtmnt},
+			</if>
+
+			<if test="faultDepmtReltEntity.fdrMaintainDprtmntId != null and faultDepmtReltEntity.fdrMaintainDprtmntId!='' ">
+				fdr_maintain_dprtmnt_id = #{faultDepmtReltEntity.fdrMaintainDprtmntId},
+			</if>
+
+			<if test="faultDepmtReltEntity.fdrHelpDprtmntId != null and faultDepmtReltEntity.fdrHelpDprtmntId!='' ">
+				fdr_help_dprtmnt_id = #{faultDepmtReltEntity.fdrHelpDprtmntId},
+			</if>
+
+			<if test="faultDepmtReltEntity.fdrUpdtUserId != null and faultDepmtReltEntity.fdrUpdtUserId!='' ">
+				fdr_updt_user_id = #{faultDepmtReltEntity.fdrUpdtUserId},
+			</if>
+
+			<if test="faultDepmtReltEntity.fdrUpdtTime != null and faultDepmtReltEntity.fdrUpdtTime!='' ">
+				fdr_updt_time = #{faultDepmtReltEntity.fdrUpdtTime},
+			</if>
+		</set>
+
+		<where>
+			<if test="faultDepmtReltEntity.fdrFaultId != null and faultDepmtReltEntity.fdrFaultId!='' ">
+				AND fdr_fault_id = #{faultDepmtReltEntity.fdrFaultId}
+			</if>
+		</where>
+	</update>
+	
+	<!-- 根据监狱号和故障类型查询对应维修部门和协助部门 -->
+	<select id="findDprtmntByCusNumberAndFaultType" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		fdr_cus_number,
+		fdr_fault_id,
+		fdr_maintain_dprtmnt_id,
+		fdr_maintain_dprtmnt,
+		fdr_help_dprtmnt_id,
+		fdr_help_dprtmnt
+		FROM cds_fault_department_relation
+		<where>
+			<if test="cusNumber!=null and cusNumber!=''">
+				AND fdr_cus_number = #{cusNumber}
+			</if>
+
+			<if test="faultId!=null and faultId!=''">
+				AND fdr_fault_id = #{faultId}
+			</if>
+
+		</where>
+	</select>
+</mapper>

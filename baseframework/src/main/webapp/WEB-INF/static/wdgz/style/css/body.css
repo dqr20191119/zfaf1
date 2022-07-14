@@ -1,0 +1,366 @@
+#PanelAll{
+	width:98%;
+	height:100%;
+	margin:0 auto;
+	text-align:center;
+}
+
+.PanelHead{ 
+	background:url(../images/logoBg.png) no-repeat center top;
+	width:835px;
+	height:90px;
+	line-height:61px;
+	text-align:center;
+	    background-size: 100%;
+}
+ul.PanelMenu{
+	width:97%;
+	height:100%;
+	margin:0 auto;
+	text-align:center;
+}
+ul.PanelMenu li{
+	    margin-top: 10px;
+    margin-left: 12px;
+	float:left;
+	background:#0a3380;
+	background-color: rgba(10,51,128,0.7);/* IE9銆佹爣鍑嗘祻瑙堝櫒銆両E6鍜岄儴鍒咺E7鍐呮牳鐨勬祻瑙堝櫒(濡俀Q娴忚鍣�浼氳鎳�*/
+	border:4px solid #019cfe;
+	border-radius:10px;
+	padding:20px 60px;
+	font-size:30px;
+}
+ul.PanelMenu li:hover{ background:#019cfe; cursor:pointer;}
+
+
+.Paneltable{
+	width:97%;
+	/* height:95%; */
+	margin:0 auto;
+}
+
+.BoxTable{
+	padding:35px 20px;
+	background:#123d7d;
+	background-color: rgba(18,61,125,0.5);/* IE9銆佹爣鍑嗘祻瑙堝櫒銆両E6鍜岄儴鍒咺E7鍐呮牳鐨勬祻瑙堝櫒(濡俀Q娴忚鍣�浼氳鎳�*/
+	border:3px solid #008aff;
+	height:530px;
+}
+.BoxTable .title,.BoxTable .title01{
+	background:url(../images/titleLine.png) no-repeat left bottom;
+	background-size:100% 70%;
+	width:310px;
+	height:47px;
+	float:left;
+	padding-left:15px;
+	color:#00faff;
+	font-size:30px;
+	text-align:left;
+}
+.BoxTable .title01{ background:url(../images/titleLine01.png) no-repeat center bottom; width:416px;}
+
+ul.newsUL li{
+	width:305px;
+	height:55px;
+	line-height:55px;
+	border-bottom:1px solid #00bbf9;
+	padding:0 10px;
+	font-size:18px;
+}
+
+.DivTable{
+	margin:0 auto;
+	margin-top:45px;
+	width:90%;
+	line-height:30px;
+	font-size:18px;
+	color:#FFF;
+	text-align:left;
+}
+.DivTable p{ text-indent:2em;}
+
+input[type="button"]{ width:160px; height:55px; line-height:55px; text-align:center; background:#ff8400; border-radius:10px; color:#FFF; margin-top:20px;}
+.textarea{ background:#045fd6; border:2px solid #00ffff; padding:10px 10px; line-height:30px; font-size:18px; color:#FFF; margin-top:20px;}
+
+
+/*绯荤粺椤甸潰*/
+#PanelSystem{
+	width:100%;
+	height:100%;
+	margin:0 auto;
+}
+.SystemHead .headLogo,.SystemHead .headMenu{
+	float:left;
+	height:99px;
+}
+.SystemHead .headLogo .left{
+	padding-left:80px;
+	padding-right:30px;
+	background:url(../images/logoIcon.png) no-repeat #0d4a89 30px center;
+	float:left;
+	color:#FFF;
+	height:99px;
+	line-height:99px;
+	font-size:28px;
+}
+.SystemHead .headLogo .right{
+	background:url(../images/logoLeft.png) no-repeat;
+	float:left;
+	background-size:100% 100%;
+	width:32px;
+	height:99px;
+}
+
+.SystemHead .headMenu .left{
+	float:left;
+	background:url(../images/menuLeft.png) no-repeat;
+	width:31px;
+	height:99px;
+}
+.SystemHead .headMenu ul.mid{
+	float:left;
+	background:url(../images/menuMid.png) repeat-x;
+	padding:15px 40px 11px 20px;
+	height:77px;
+}
+.SystemHead .headMenu ul.mid li{
+	float:left;
+	height:77px;
+	width:70px;
+	text-align:center;
+	line-height:30px;
+	margin-left:58px;
+}
+.SystemHead .headMenu ul.mid li h4{font-size:16px; font-weight:normal;}
+.SystemHead .headMenu .right{
+	float:left;
+	background:url(../images/menuRight.png) no-repeat;
+	width:31px;
+	height:99px;
+}
+
+.SystemMenu{
+	background:#08539f;
+	background-color: rgba(8,83,159,0.4);/* IE9銆佹爣鍑嗘祻瑙堝櫒銆両E6鍜岄儴鍒咺E7鍐呮牳鐨勬祻瑙堝櫒(濡俀Q娴忚鍣�浼氳鎳�*/
+	width:90%;
+	padding-bottom:20%;
+}
+.systemUser{
+	width:100%;
+	background:#084bb5;
+	padding:40px 0 20px 0;
+	text-align:center;
+	font-size:16px;
+	color:#FFF;
+}
+
+.systemUser table tr td h3{ font-size:43px;}
+.systemUser table td{ padding-bottom:10px;}
+
+ul.systemLeftMenu li{
+	height:55px;
+	line-height:55px;
+	background-position:35px center;
+    background-repeat:no-repeat;
+	padding-left:77px;
+	text-align:left;
+}
+ul.systemLeftMenu li.icon{  background-image:url(../images/leftMenuIcon.png);}
+ul.systemLeftMenu li:hover.icon,ul.systemLeftMenu li.select{ background:url(../images/leftMenuIcon-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon01{  background-image:url(../images/leftMenuIcon01.png);}
+ul.systemLeftMenu li:hover.icon01,ul.systemLeftMenu li.select01{ background:url(../images/leftMenuIcon01-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon02{  background-image:url(../images/leftMenuIcon02.png);}
+ul.systemLeftMenu li:hover.icon02,ul.systemLeftMenu li.select02{ background:url(../images/leftMenuIcon02-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon03{  background-image:url(../images/leftMenuIcon03.png);}
+ul.systemLeftMenu li:hover.icon03,ul.systemLeftMenu li.select03{ background:url(../images/leftMenuIcon03-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon04{  background-image:url(../images/leftMenuIcon04.png);}
+ul.systemLeftMenu li:hover.icon04,ul.systemLeftMenu li.select04{ background:url(../images/leftMenuIcon04-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon05{  background-image:url(../images/leftMenuIcon05.png);}
+ul.systemLeftMenu li:hover.icon05,ul.systemLeftMenu li.select05{ background:url(../images/leftMenuIcon05-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon06{  background-image:url(../images/leftMenuIcon06.png);}
+ul.systemLeftMenu li:hover.icon06,ul.systemLeftMenu li.select06{ background:url(../images/leftMenuIcon06-hit.png) no-repeat #0098fd 35px center;}
+ul.systemLeftMenu li.icon07{  background-image:url(../images/leftMenuIcon07.png);}
+ul.systemLeftMenu li:hover.icon07,ul.systemLeftMenu li.select07{ background:url(../images/leftMenuIcon07-hit.png) no-repeat #0098fd 35px center;}
+
+
+.SystemNotice{
+	width:97.2%;
+	margin:0 auto;
+	border:1px solid #008aff;
+	background:#1c5fac;
+	background-color: rgba(28,95,172,0.7);/* IE9銆佹爣鍑嗘祻瑙堝櫒銆両E6鍜岄儴鍒咺E7鍐呮牳鐨勬祻瑙堝櫒(濡俀Q娴忚鍣�浼氳鎳�*/
+	margin-top:2%;
+	float:left;
+	position:relative;
+}
+.SystemNotice .arrow,.SystemNotice .arrow01,.SystemNotice .arrow02,.SystemNotice .arrow03{
+	background:url(../images/lineFrame.png) no-repeat;
+	width:43px;
+	height:24px;
+	position:relative;
+	top:-1px;
+	left:-1px;
+	float:left;
+}
+.SystemNotice .arrow01{
+	background:url(../images/lineFrame02.png) no-repeat;
+	position:relative;
+	bottom:0;
+	left:-1px;
+}
+.SystemNotice .arrow02{
+	background:url(../images/lineFrame01.png) no-repeat;
+	position:relative;
+	top:-1px;
+	right:0px;
+	float:right;
+}
+.SystemNotice .arrow03{
+	background:url(../images/lineFrame03.png) no-repeat;
+	position:relative;
+	bottom:0;
+	right:0px;
+	float:right;
+}
+.SystemNotice .noticeTable{
+	width:95%;
+	margin:0 auto;
+	margin-top:1%;
+	text-align:left;
+	font-size:14px;
+}
+.SystemNotice .noticeTable table tr td{ color:#d6d6d6; line-height:30px;}
+.SystemNotice .noticeTable td.white{ color:#fff;}
+
+
+.SystemTab{
+	width:98%;
+	margin-top:2.3%;
+}
+.tabLine{
+	width:100%;
+	background:#007bbf;
+	height:90px;
+	display:block;
+}
+#tags{
+	width:80%;
+	height:90px;
+	display:block;
+	position:relative;
+}
+#tags LI{
+	float:left;
+	padding:0 55px;
+	height:90px;
+	line-height:90px;
+	font-size:24px;
+}
+.refresh{ float:right; position:relative; right:20px; top:30px;}
+#tags LI.selectTag{
+	height:90px;
+	position:relative;
+	background:#00bbe5;
+}
+#tagContent{
+	background:#082850;
+	background-color: rgba(8,40,80,0.6);/* IE9銆佹爣鍑嗘祻瑙堝櫒銆両E6鍜岄儴鍒咺E7鍐呮牳鐨勬祻瑙堝櫒(濡俀Q娴忚鍣�浼氳鎳�*/
+	border:1px solid #008aff;
+	border-top:none;
+}
+.tagContent {
+	display:none;
+	height:425px;
+}
+#tagContent DIV.selectTag{
+	DISPLAY: block
+}
+
+
+.info_execl .title th{
+	color: #fff;
+	text-align: center;
+	height: 55px;
+	line-height: 55px;
+	background: #00bbe5;
+}
+
+.info_execl tr.white{
+	height: 50px;
+	line-height: 50px;
+	color:#FFF;
+}
+.info_execl tr.white td img{ position:relative; top:-12px;}
+.info_execl tr:hover{
+	background: #0098fd;
+	cursor:pointer;
+	border:1px solid #0cdaff;
+}
+
+.SystemBox{
+	width:90%;
+	margin:0 auto;
+	margin-top:6%;
+	padding:0;
+	height:200px;
+}
+.SystemBox h3{ font-size:22px; color:#FFF; font-weight:normal; text-align:left;}
+
+.SystemBox ul.systemUL{ margin-top:3%;}
+.SystemBox ul.systemUL li{
+	padding:10px 20px;
+	border:2px solid #0070ff;
+	border-radius:10px;
+	margin-right:15px;
+	background:#002163;
+	background-color: rgba(0,33,99,0.6);/* IE9銆佹爣鍑嗘祻瑙堝櫒銆両E6鍜岄儴鍒咺E7鍐呮牳鐨勬祻瑙堝櫒(濡俀Q娴忚鍣�浼氳鎳�*/
+	font-size:14px;
+	float:left;
+	margin-top:10px;
+}
+.SystemBox ul.systemUL li:hover{ background:#ff6c00; cursor:pointer; border:none;}
+
+/*绯荤粺椤甸潰*/
+
+
+
+@media \0screen\,screen\9 {/* 鍙敮鎸両E6銆�銆� */
+  ul.PanelMenu li,.BoxTable,.SystemMenu,.SystemNotice,.SystemBox ul.systemUL li{
+    	background-color:#0a3380;
+    	filter:Alpha(opacity=70);
+    	position:static; /* IE6銆�銆�鍙兘璁剧疆position:static(榛樿灞炴�) 锛屽惁鍒欎細瀵艰嚧瀛愬厓绱犵户鎵緼lpha鍊�*/
+    	*zoom:1; /* 婵�椿IE6銆�鐨刪aslayout灞炴�锛岃瀹冭鎳侫lpha */
+  }
+  .BoxTable{
+		background-color:#123d7d;
+    	filter:Alpha(opacity=50);
+   }
+   .SystemMenu{
+	   background:#08539f;
+	   filter:Alpha(opacity=40);
+   }
+    .SystemNotice{
+	   background:#1c5fac;
+   }
+   .SystemBox ul.systemUL li{
+	   background:#002163;
+	   filter:Alpha(opacity=60);
+	}
+  ul.PanelMenu li,.BoxTable,.SystemMen,.SystemNotice,.SystemBox ul.systemUL li{
+    position: relative;/* 璁剧疆瀛愬厓绱犱负鐩稿瀹氫綅锛屽彲璁╁瓙鍏冪礌涓嶇户鎵緼lpha鍊�*/
+  }  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

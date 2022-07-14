@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 外来车辆信息数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.foreign.dao.ForeignCarDtlsMapper">
+	<!-- 外来车辆信息表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.foreign.entity.ForeignCarDtls">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="FCD_CAR_LCNS_IDNTY" jdbcType="CHAR" property="fcdCarLcnsIdnty" />
+		<result column="FCD_CAR_CMPNY" jdbcType="CHAR" property="fcdCarCmpny" />
+		<result column="FCD_CAR_TYPE_INDC" jdbcType="CHAR" property="fcdCarTypeIndc" />
+		<result column="FCD_CAR_COLOR" jdbcType="CHAR" property="fcdCarColor" />
+		<result column="FCD_PEOPLE_COUNT" jdbcType="NUMERIC" property="fcdPeopleCount" />
+		<result column="FCD_CARGO" jdbcType="CHAR" property="fcdCargo" />
+		<result column="FCD_REGISTER_ID" jdbcType="CHAR" property="fcdRegisterId" />
+		<result column="FCD_CRTE_TIME" jdbcType="TIMESTAMP" property="fcdCrteTime" />
+		<result column="FCD_CRTE_USER_ID" jdbcType="CHAR" property="fcdCrteUserId" />
+		<result column="FCD_UPDT_TIME" jdbcType="TIMESTAMP" property="fcdUpdtTime" />
+		<result column="FCD_UPDT_USER_ID" jdbcType="CHAR" property="fcdUpdtUserId" />
+	</resultMap>
+	
+	<!-- ForeignCarDtlsDto结果集 -->
+	<resultMap id="ForeignCarDtlsDtoResultMap" type="com.cesgroup.prison.foreign.dto.ForeignCarDtlsDto">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="FCD_CAR_LCNS_IDNTY" jdbcType="CHAR" property="fcdCarLcnsIdnty" />
+		<result column="FCD_CAR_CMPNY" jdbcType="CHAR" property="fcdCarCmpny" />
+		<result column="FCD_CAR_TYPE_INDC" jdbcType="CHAR" property="fcdCarTypeIndc" />
+		<result column="FCD_CAR_COLOR" jdbcType="CHAR" property="fcdCarColor" />
+		<result column="FCD_PEOPLE_COUNT" jdbcType="NUMERIC" property="fcdPeopleCount" />
+		<result column="FCD_CARGO" jdbcType="CHAR" property="fcdCargo" />
+		<result column="FR_CUS_NUMBER" jdbcType="CHAR" property="frCusNumber" />
+		<result column="FCD_REGISTER_ID" jdbcType="CHAR" property="fcdRegisterId" />
+		<result column="FR_TYPE" jdbcType="CHAR" property="frType" />
+		<result column="FR_TIME" jdbcType="TIMESTAMP" property="frTime" />
+		<result column="FR_CHECK_PEOPLE" jdbcType="CHAR" property="frCheckPeople" />
+		<result column="FR_LOCATION" jdbcType="CHAR" property="frLocation" />
+		<result column="FR_PHOTO1" jdbcType="CHAR" property="frPhoto1" />
+		<result column="FR_PHOTO2" jdbcType="CHAR" property="frPhoto2" />
+	</resultMap>
+	
+	<!-- 外来车辆信息表-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, FCD_CAR_LCNS_IDNTY, FCD_CAR_CMPNY, FCD_CAR_TYPE_INDC, FCD_CAR_COLOR, FCD_PEOPLE_COUNT, 
+		FCD_CARGO, FCD_REGISTER_ID, FCD_CRTE_TIME, FCD_CRTE_USER_ID, 
+		FCD_UPDT_TIME, FCD_UPDT_TIME
+	</sql>
+	
+	<!-- ForeignCarDtlsDto字段 -->
+	<sql id="ForeignCarDtlsDto_Column_List">
+		ID, FCD_CAR_LCNS_IDNTY, FCD_CAR_CMPNY, FCD_CAR_TYPE_INDC, FCD_CAR_COLOR, FCD_PEOPLE_COUNT, FCD_CARGO, 
+		FCD_REGISTER_ID, FR_CUS_NUMBER, FR_TYPE, FR_TIME, FR_CHECK_PEOPLE, FR_LOCATION, FR_PHOTO1, FR_PHOTO2
+	</sql>
+	
+    <!-- 根据查询条件，分页查询外来车辆进出记录信息 -->
+    <select id="findWithPageByCondition" parameterType="java.util.Map" resultMap="ForeignCarDtlsDtoResultMap" useCache="true">
+		SELECT
+		<include refid="ForeignCarDtlsDto_Column_List"></include>
+		FROM CDS_FOREIGN_CAR_DTLS T1
+		<where>
+			<if test="fcdCarLcnsIdnty != null and fcdCarLcnsIdnty != ''">
+				AND T1.FCD_CAR_LCNS_IDNTY LIKE '%${fcdCarLcnsIdnty}%'
+			</if>
+		</where>
+    </select>
+    
+	<select id="listCar" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+			ID as "ID",
+			FCD_CAR_LCNS_IDNTY as "fcdCarLcnsIdnty",
+			FCD_CAR_CMPNY as "fcdCarCmpny",
+			FCD_CAR_TYPE_INDC as "fcdCarTypeIndc",
+			FCD_CAR_COLOR as "fcdCarColor",
+			FCD_PEOPLE_COUNT as "fcdPeopleCount",
+			FCD_CARGO as "fcdCargo",
+			FCD_REGISTER_ID as "fcdRegisterId"
+		from CDS_FOREIGN_CAR_DTLS
+		<where>
+			<if test="id!=null and id!=''">
+				AND FCD_REGISTER_ID = #{id}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteByFpdRegisterId" parameterType="java.lang.String">
+		delete from CDS_FOREIGN_CAR_DTLS
+		where FCD_REGISTER_ID = #{id}
+	</delete>
+
+	<delete id="deleteByIds" parameterType="List">
+		delete from CDS_FOREIGN_CAR_DTLS
+		where FCD_REGISTER_ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<insert id="insertCarInfo" parameterType="com.cesgroup.prison.foreign.entity.ForeignCarDtls" >
+		insert into CDS_FOREIGN_CAR_DTLS
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				ID,
+			</if>
+			<if test="fcdCarLcnsIdnty != null" >
+				FCD_CAR_LCNS_IDNTY,
+			</if>
+			<if test="fcdCarCmpny != null" >
+				FCD_CAR_CMPNY,
+			</if>
+			<if test="fcdCarTypeIndc != null" >
+				FCD_CAR_TYPE_INDC,
+			</if>
+			<if test="fcdCarColor != null" >
+				FCD_CAR_COLOR,
+			</if>
+			<if test="fcdPeopleCount != null" >
+				FCD_PEOPLE_COUNT,
+			</if>
+			<if test="fcdCargo != null" >
+				FCD_CARGO,
+			</if>
+			<if test="fcdRegisterId != null" >
+				FCD_REGISTER_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				#{id,jdbcType=CHAR},
+			</if>
+			<if test="fcdCarLcnsIdnty != null" >
+				#{fcdCarLcnsIdnty,jdbcType=CHAR},
+			</if>
+			<if test="fcdCarCmpny != null" >
+				#{fcdCarCmpny,jdbcType=CHAR},
+			</if>
+			<if test="fcdCarTypeIndc != null" >
+				#{fcdCarTypeIndc,jdbcType=CHAR},
+			</if>
+			<if test="fcdCarColor != null" >
+				#{fcdCarColor,jdbcType=CHAR},
+			</if>
+			<if test="fcdPeopleCount != null" >
+				#{fcdPeopleCount,jdbcType=NUMERIC},
+			</if>
+			<if test="fcdCargo != null" >
+				#{fcdCargo,jdbcType=CHAR},
+			</if>
+			<if test="fcdRegisterId != null" >
+				#{fcdRegisterId,jdbcType=CHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="findCarByCarIdnty" parameterType="hashmap" resultType="hashmap">
+		SELECT TOP 1 * FROM CDS_FOREIGN_CAR_DTLS
+		<where>
+			<if test="fcdCarLcnsIdnty != null ">
+				FCD_CAR_LCNS_IDNTY = #{fcdCarLcnsIdnty, jdbcType=CHAR}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询外来车辆列表 -->
+	<select id="getCarList" resultMap="ForeignCarDtlsDtoResultMap" useCache="true">
+		SELECT
+			ID, FCD_CAR_LCNS_IDNTY, FCD_CAR_CMPNY, FCD_CAR_TYPE_INDC, FCD_CAR_COLOR, FCD_PEOPLE_COUNT, FCD_CARGO, 
+			FCD_REGISTER_ID, FR_CUS_NUMBER, FR_TYPE, FR_TIME, FR_CHECK_PEOPLE, FR_LOCATION, FR_PHOTO1, FR_PHOTO2
+		FROM V_CDS_FOREIGN_CAR_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND FR_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="fcdCarLcnsIdnty != null and fcdCarLcnsIdnty != ''">
+				AND FCD_CAR_LCNS_IDNTY LIKE '%${fcdCarLcnsIdnty}%'
+			</if>
+			<if test="frType != null and frType != ''">
+				AND FR_TYPE = '${frType}'
+			</if>
+			<if test="frTime != null and frTime != ''">
+				AND TO_CHAR(FR_TIME, 'yyyy-MM-dd') = '${frTime}'
+			</if>
+			<!-- 车牌号，前置机不推车牌号的话，这一块就展示不出数据 -->
+			<!-- AND FCD_CAR_LCNS_IDNTY IS NOT NULL AND FCD_CAR_LCNS_IDNTY &lt;&gt; '' -->
+		</where>
+		ORDER BY FR_TIME DESC
+	</select>
+</mapper>

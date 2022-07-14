@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.wfsb.dao.PoliceDeviceMapper">
+<select id="searchPoliceDevice" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT id, poe_cus_number,
+		  		   poe_device_name,
+		  		   poe_type_indc,
+		  		   poe_dprtmnt_id,
+		  		   poe_dprtmnt_name,
+		  		   poe_model,
+		  		   poe_unit,
+		  		   poe_count,
+		  		   poe_administrator,
+		  		   poe_function_desc,
+		  		   poe_stts_indc,
+		  		   poe_stts_desc,
+		  		   poe_save_mehtod,
+		  		   poe_crte_user_id,
+		  		   TO_CHAR(poe_crte_time,'YYYY/MM/DD HH24:MI:SS') as poe_crte_time,
+		  		   poe_updt_user_id,
+		  		   TO_CHAR(poe_updt_time,'YYYY/MM/DD HH24:MI:SS') as poe_updt_time
+		   	 FROM cds_police_device 
+			 <where>
+			 	<if test="policeDevice.poeDeviceName!=null and policeDevice.poeDeviceName!=''">
+			 		and poe_device_name like concat('%',#{policeDevice.poeDeviceName},'%' )
+			 	</if>
+			 	<if test="policeDevice.poeCusNumber!=null and policeDevice.poeCusNumber!=''">
+			 		AND poe_cus_number=#{policeDevice.poeCusNumber}
+			 	</if>
+			 </where>
+	</select>    
+  <update id="updatePart" parameterType="map">
+    update CDS_POLICE_DEVICE
+    <set>
+      <if test="policeDevice.poeCusNumber != null">
+        POE_CUS_NUMBER = #{policeDevice.poeCusNumber},
+      </if>
+      <if test="policeDevice.poeDeviceName != null">
+        POE_DEVICE_NAME = #{policeDevice.poeDeviceName},
+      </if>
+      <if test="policeDevice.poeTypeIndc != null">
+        POE_TYPE_INDC = #{policeDevice.poeTypeIndc},
+      </if>
+      <if test="policeDevice.poeDprtmntId != null">
+        POE_DPRTMNT_ID = #{policeDevice.poeDprtmntId},
+      </if>
+      <if test="policeDevice.poeDprtmntName != null">
+        POE_DPRTMNT_NAME = #{policeDevice.poeDprtmntName},
+      </if>
+      <if test="policeDevice.poeModel != null">
+        POE_MODEL = #{policeDevice.poeModel},
+      </if>
+      <if test="policeDevice.poeUnit != null">
+        POE_UNIT = #{policeDevice.poeUnit},
+      </if>
+      <if test="policeDevice.poeCount != null">
+        POE_COUNT = #{policeDevice.poeCount},
+      </if>
+      <if test="policeDevice.poeAdministrator != null">
+        POE_ADMINISTRATOR = #{policeDevice.poeAdministrator},
+      </if>
+      <if test="policeDevice.poeFunctionDesc != null">
+        POE_FUNCTION_DESC = #{policeDevice.poeFunctionDesc},
+      </if>
+      <if test="policeDevice.poeSttsIndc != null">
+        POE_STTS_INDC = #{policeDevice.poeSttsIndc},
+      </if>
+      <if test="policeDevice.poeSttsDesc != null">
+        POE_STTS_DESC = #{policeDevice.poeSttsDesc},
+      </if>
+      <if test="policeDevice.poeSaveMehtod != null">
+        POE_SAVE_MEHTOD = #{policeDevice.poeSaveMehtod},
+      </if>
+      <if test="policeDevice.poeCrteUserId != null">
+        POE_CRTE_USER_ID = #{policeDevice.poeCrteUserId},
+      </if>
+      <if test="policeDevice.poeCrteTime != null">
+        POE_CRTE_TIME = TO_CHAR(#{policeDevice.poeCrteTime},'YYYY/MM/DD HH24:MI:SS'),
+      </if>
+      <if test="policeDevice.poeUpdtUserId != null">
+        POE_UPDT_USER_ID = #{policeDevice.poeUpdtUserId},
+      </if>
+      <if test="policeDevice.poeUpdtTime != null">
+        POE_UPDT_TIME = TO_CHAR(#{policeDevice.poeUpdtTime},'YYYY/MM/DD HH24:MI:SS'),
+      </if>
+    </set>
+    where ID=#{policeDevice.id}
+  </update>
+</mapper>

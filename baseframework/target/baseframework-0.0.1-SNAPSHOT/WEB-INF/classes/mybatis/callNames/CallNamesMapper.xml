@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.callNames.dao.CallNamesMapper">
+
+	<select id="findPrisonerNumForCallNamesByCusNumber" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select DISTINCT a.pdb_dempt_id as demptId,
+		(select count(1) from V_PRISONER_BASE_DTLS b where a.PBD_CUS_NUMBER = b.PBD_CUS_NUMBER and a.pdb_dempt_id = b.pdb_dempt_id ) as prisonerNum
+		from V_PRISONER_BASE_DTLS a
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+		</where>
+		order by demptId asc
+	</select>
+
+	<select id="findPrisonerNumForCallNamesByDempt" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select count(1) as prisonerNum from V_PRISONER_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND PBD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="dempt != null and dempt!='' ">
+				AND pdb_dempt_id = #{dempt}
+			</if>
+		</where>
+	</select>
+
+	<select id="findPrisonerNumForCallNamesByArea" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select DISTINCT A.pbd_cell_indc as cellNo , pdb_dempt_id as demptId,PBD_AREA_ID as AREAID,
+		(select count(1) from V_PRISONER_BASE_DTLS b where a.PBD_CUS_NUMBER = b.PBD_CUS_NUMBER and a.PBD_AREA_ID = b.PBD_AREA_ID and a.PBD_CELL_INDC = b.PBD_CELL_INDC ) as prisonerNum
+		from V_PRISONER_BASE_DTLS a
+		<where>
+			<if test="dempt != null and dempt!='' ">
+				AND pdb_dempt_id = #{dempt}
+			</if>
+			<if test="area != null and area!='' ">
+				AND PBD_AREA_ID = #{area}
+			</if>
+		</where>
+		order by cellNo asc
+	</select>
+
+	<select id="findAreaDepartment" parameterType="hashmap" resultType="hashmap">
+		SELECT ADR_AREA_ID "id", ADR_AREA_NAME "name"
+		FROM CDS_AREA_DEPARTMENT_RELATION
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND ADR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="dprtmntId != null and dprtmntId != ''">
+				AND ADR_DPRTMNT_ID = #{dprtmntId}
+			</if>
+		</where>
+		ORDER BY ADR_CRTE_TIME asc
+	</select>
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select ID,
+		CNR_CUS_NUMBER,
+		to_char(CNR_START_TIME,'YYYY-MM-DD HH24:mi:ss') as CNR_START_TIME,
+		CNR_TIME_LAG,
+		to_char(CNR_END_TIME,'YYYY-MM-DD HH24:mi:ss') as CNR_END_TIME,
+		CNR_PRISONER_SUM,
+		CNR_CALL_SUM,
+		(CNR_PRISONER_SUM -CNR_CALL_SUM) as UNDONE_SUM
+		from CDS_CALL_NAMES_RECORD
+		<where>
+			<if test="callNamesRecordEntity.cnrCusNumber != null and callNamesRecordEntity.cnrCusNumber!='' ">
+				AND cnr_cus_number = #{callNamesRecordEntity.cnrCusNumber}
+			</if>
+
+			<if test="callNamesRecordEntity.cnrStartTime != null and callNamesRecordEntity.cnrStartTime!='' ">
+				AND cnr_start_time = #{callNamesRecordEntity.cnrStartTime}
+			</if>
+
+			<if test="callNamesRecordEntity.cnrTimeLag != null and callNamesRecordEntity.cnrTimeLag!='' ">
+				AND cnr_time_lag = #{callNamesRecordEntity.cnrTimeLag}
+			</if>
+
+			<if test="callNamesRecordEntity.cnrIsDone != null and callNamesRecordEntity.cnrIsDone!='' ">
+				AND CNR_IS_DONE = #{callNamesRecordEntity.cnrIsDone}
+			</if>
+		</where>
+		ORDER BY CNR_START_TIME desc
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_CALL_NAMES_RECORD
+		<set>
+			<if test="callNamesRecordEntity.cnrStartTime != null and callNamesRecordEntity.cnrStartTime!='' ">
+				cnr_start_time = #{callNamesRecordEntity.cnrStartTime},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrTimeLag != null and callNamesRecordEntity.cnrTimeLag!='' ">
+				cnr_time_lag = #{callNamesRecordEntity.cnrTimeLag},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrEndTime != null and callNamesRecordEntity.cnrEndTime!='' ">
+				cnr_end_time = #{callNamesRecordEntity.cnrEndTime},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrPrisonerSum != null and callNamesRecordEntity.cnrPrisonerSum!='' ">
+				cnr_prisoner_sum = #{callNamesRecordEntity.cnrPrisonerSum},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrCallSum != null and callNamesRecordEntity.cnrCallSum!='' ">
+				cnr_call_sum = #{callNamesRecordEntity.cnrCallSum},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrIsDone != null and callNamesRecordEntity.cnrIsDone!='' ">
+				CNR_IS_DONE = #{callNamesRecordEntity.cnrIsDone},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrUpdtTime != null and callNamesRecordEntity.cnrUpdtTime!='' ">
+				cnr_updt_time = #{callNamesRecordEntity.cnrUpdtTime},
+			</if>
+
+			<if test="callNamesRecordEntity.cnrUpdtUserId != null and callNamesRecordEntity.cnrUpdtUserId!='' ">
+				cnr_updt_user_id = #{callNamesRecordEntity.cnrUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="callNamesRecordEntity.id !=null and callNamesRecordEntity.id !=''">
+				AND (TRIM(#{callNamesRecordEntity.id}) is null or id = #{callNamesRecordEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<select id="getJSPrisonerInfo" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT B.ZF_BH AS PRSNR_IDNTY,
+		B.XM AS NAME,
+		B.CWH AS BED_NUMBER ,
+		B.FGDJ AS DANGER_LEVEL,
+		A.JSH
+		FROM V_AREA_BASE_JSH A LEFT JOIN V_AREA_BASE_JSCY B ON A.ID = B.ID
+		<where>
+			<if test="jsh != null and jsh != ''">
+				AND A.JSH = #{jsh}
+			</if>
+			<if test="lch != null and lch != ''">
+				AND A.LH = #{lch}
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND A.JY_ID = #{cusNumber}
+			</if>
+		</where>
+		order by B.ZF_BH asc
+	</select>
+</mapper>

@@ -1,0 +1,182 @@
+.PanelLeft .coral-accordion .coral-corner-all, .coral-corner-top, .coral-corner-left, .coral-corner-tl{
+	border-radius: 0;
+}
+
+.PanelLeft .coral-accordion .coral-accordion-header .coral-accordion-header-icon {
+	display: none;
+}
+
+.PanelLeft .coral-state-active,.coral-component-content .coral-state-active,.coral-component-header .coral-state-active
+	{
+	border: 0 none;
+}
+
+.PanelLeft .coral-accordion .coral-accordion-content {
+	border: 0 none;
+}
+
+.PanelLeft .coral-accordion .coral-accordion-header {
+	border: 0 none;
+	border-top: 1px solid #96d3ef;
+}
+
+.PanelLeft .coral-accordion-header.coral-accordion-header-active {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+
+
+.PanelLeft .coral-accordion .coral-accordion-header{text-align:center;padding:0px;font:bold 17px/35px "microsoft Yahei";}
+
+.PanelLeft .coral-accordion-header.coral-state-default {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+.PanelLeft .coral-accordion-header.coral-state-default
+	{
+	height: 40px;
+	line-height: 40px;
+	color: #2ca6e0;
+	font:bold 15px/40px "microsoft Yahei";
+}
+
+.PanelLeft .coral-accordion-header.coral-state-hover{
+	background:#2ca6e0 url(../../images/leftbgMenu.png) no-repeat left center;
+	color:#FFF;
+}
+.PanelLeft .coral-accordion-header.coral-accordion-header-active
+	{
+	background:#2ca6e0 url(../../images/leftbgMenu.png) no-repeat left center;
+	color:#FFF;
+}
+/***********************************************手风琴风格2*******************************************************/
+.voteItem .coral-accordion .coral-corner-all, .coral-corner-top, .coral-corner-left, .coral-corner-tl{
+	border-radius: 0;
+}
+
+.voteItem .coral-accordion .coral-accordion-header .coral-accordion-header-icon {
+	/* display: none; */
+}
+
+.voteItem .coral-state-active,.coral-component-content .coral-state-active,.coral-component-header .coral-state-active
+	{
+	border: 0 none;
+}
+
+.voteItem .coral-accordion .coral-accordion-content {
+	border: 0 none;
+}
+
+.voteItem .coral-accordion .coral-accordion-header {
+	border: 0 none;
+	border-top: 1px solid #96d3ef;
+}
+
+.voteItem .coral-accordion-header.coral-accordion-header-active {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+
+
+.voteItem .coral-accordion .coral-accordion-header{
+	padding:0px;font:bold 17px/35px "microsoft Yahei";
+}
+
+.voteItem .coral-accordion-header.coral-state-default {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+.voteItem .coral-accordion-header.coral-state-default
+	{
+	height: 40px;
+	line-height: 40px;
+	color: #2ca6e0;
+	font:bold 15px/40px "microsoft Yahei";
+}
+
+.voteItem .coral-accordion-header.coral-state-hover{
+	background:#2ca6e0 url(../../images/leftbgMenu.png) no-repeat left center;
+	color:#FFF;
+}
+.voteItem .coral-accordion-header.coral-accordion-header-active
+	{
+	background:#2ca6e0 url(../../images/leftbgMenu.png) no-repeat left center;
+	color:#FFF;
+}
+.coral-grid {
+	border-top: 2px solid #96d3f0;
+}
+
+.coral-grid-columns .coral-state-default {
+	line-height: 36px;
+	background: #f7f7f7;
+	color: #9f9f9f;
+}
+
+.coral-grid thead th {
+	height: 40px;
+	font-family: "微软雅黑";
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.coral-grid tbody td,.coral-grid tfoot td {
+	height: 35px;
+	border-bottom: 2px solid #e6e6e6;
+	font-size: 12px;
+}
+
+.coral-textbox-default {
+	height: 24px;
+	line-height: 24px;
+	padding-left: 5px;
+}
+
+.coral-tabs .coral-tabs-nav {
+	background: #fff;
+}
+
+.coral-state-default a,.coral-state-default a:link,.coral-state-default a:visited
+	{
+	color: #2AA6E1;
+}
+.coral-tabs > .coral-tabs-nav > .coral-state-hover{
+	background: #49B3E7;
+	color: #fff;
+}
+.coral-tabs>.coral-tabs-nav>li.coral-tabs-active>a,.coral-tabs>.coral-tabs-nav>li.coral-tabs-loading>a
+	{
+	background: #2AA6E1;
+	color: #fff;
+	border-color: #2AA6E1;
+	border-top-width: 1px;
+}
+
+.coral-tabs>.coral-tabs-nav>li {
+	margin: 0 10px -1px 0;
+	text-align: center;
+    width: 100px;
+}
+
+.coral-tabs>.coral-tabs-nav {
+	border-color: #2AA6E1;
+	border-bottom-width: 3px;
+}
+
+.coral-tabs > .coral-tabs-nav > li > a, .coral-tabs-left > .coral-tabs-nav > li > a, .coral-tabs-right > .coral-tabs-nav > li > a, .coral-tabs-bottom > .coral-tabs-nav > li > a{
+	border-color: #2AA6E1;
+	border-bottom-color: transparent;
+}
+
+.coral-tabs > .coral-tabs-nav > li > a{
+	padding: 0.8em 1.5em;
+}
+.coral-tree{margin:10px 0px;text-align:center;line-height:30px;}
+
+.voteItem .coral-panel-header {
+	background: #2ca6e0;
+	border:none;
+}
+.voteItem .coral-panel-body {
+	border:none;
+}
+.voteItem .coral-panel-tool{
+	height: 28px;
+	margin-top: -14px
+}

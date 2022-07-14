@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.screen.dao.ScreenAreaWindowMapper">
+
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_SCREEN_AREA_WINDOW_RLTN
+		<set>
+
+			<if test="screenAreaWindowEntity.swrScreenPlanId != null and screenAreaWindowEntity.swrScreenPlanId!='' ">
+				swr_screen_plan_id = #{screenAreaWindowEntity.swrScreenPlanId},
+			</if>
+
+			<if test="screenAreaWindowEntity.swrScreenAreaId != null and screenAreaWindowEntity.swrScreenAreaId!='' ">
+				swr_screen_area_id = #{screenAreaWindowEntity.swrScreenAreaId},
+			</if>
+
+			<if test="screenAreaWindowEntity.swrScreenWindowNum != null and screenAreaWindowEntity.swrScreenWindowNum!='' ">
+				swr_screen_window_num = #{screenAreaWindowEntity.swrScreenWindowNum},
+			</if>
+
+			<if test="screenAreaWindowEntity.swrCrteUserId != null and screenAreaWindowEntity.swrCrteUserId!='' ">
+				swr_crte_user_id = #{screenAreaWindowEntity.swrCrteUserId},
+			</if>
+
+			<if test="screenAreaWindowEntity.swrUpdtTime != null and screenAreaWindowEntity.swrUpdtTime!='' ">
+				swr_updt_time = #{screenAreaWindowEntity.swrUpdtTime},
+			</if>
+		</set>
+		<where>
+			<if test="screenAreaWindowEntity.id !=null and screenAreaWindowEntity.id !=''">
+				AND (TRIM(#{screenAreaWindowEntity.id}) is null or id = #{screenAreaWindowEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select ID,SWR_CUS_NUMBER,SWR_SCREEN_PLAN_ID,SWR_SCREEN_AREA_ID,SWR_SCREEN_WINDOW_NUM,SWR_SEQ_NUM
+		from CDS_SCREEN_AREA_WINDOW_RLTN
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND swr_cus_number = #{cusNumber}
+			</if>
+
+			<if test="screenPlanId != null and screenPlanId!='' ">
+				AND swr_screen_plan_id = #{screenPlanId}
+			</if>
+
+			<if test="screenAreaId != null and screenAreaId!='' ">
+				AND swr_screen_area_id = #{screenAreaId}
+			</if>
+		</where>
+		order by SWR_SEQ_NUM asc
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_SCREEN_AREA_WINDOW_RLTN WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="getScreenPlanWindowListByAreaId" parameterType="hashmap" resultType="hashmap">
+		select ID "screenPlanWindowId",
+		SWR_CUS_NUMBER "cusNumber",
+		SWR_SCREEN_PLAN_ID "screenPlanId",
+		SWR_SCREEN_AREA_ID "screenPlanAreaId",
+		SWR_SCREEN_WINDOW_NUM "screenPlanWindow"
+		from CDS_SCREEN_AREA_WINDOW_RLTN
+		<where>
+			<if test="cusNumber!=null and cusNumber!=''">
+				AND SWR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="screenPlanId!=null and screenPlanId!=''">
+				AND SWR_SCREEN_PLAN_ID = #{screenPlanId}
+			</if>
+			<if test="screenPlanAreaId!=null and screenPlanAreaId!=''">
+				AND SWR_SCREEN_AREA_ID = #{screenPlanAreaId}
+			</if>
+		</where>
+		order by SWR_SEQ_NUM asc
+	</select>
+</mapper>

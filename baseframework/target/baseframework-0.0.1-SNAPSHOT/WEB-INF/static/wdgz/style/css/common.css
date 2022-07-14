@@ -1,0 +1,148 @@
+﻿/* CSS Document */
+
+body{
+	background:url(../images/bg.png) repeat center top;
+	text-align:center;
+	font-size:14px;
+	background-size: 100%;
+	color:#000;
+	font-family:"微软雅黑";
+	width:100%;
+	height:100%;
+}
+
+body,div,dl,dt,dd,p,input,h1,h2,h3,h4,h5,h6,ul,li,form,p,table,td,tr,th{
+	margin: 0;
+	padding: 0;
+	
+}
+
+img{
+	border: 0;
+	vertical-align: bottom;
+}
+input,textarea {
+	border: 0;
+	vertical-align: middle;
+}
+
+label{
+	display: inline-block;
+	vertical-align: middle;
+}
+ul,ol,li {
+	list-style: none;
+}
+
+a{
+	color:#fff;
+	cursor:pointer;
+	text-decoration:none;
+	blr:expression_r(this.onFocus=this.blur());  
+    outline:none; 
+}
+
+a:hover{
+	cursor: pointer;
+	color: #fff;
+	text-decoration: none;
+	
+}
+
+
+a{ 
+	blr:expression(this.onFocus=this.blur())} /*去掉a标签的虚线框，避免出现奇怪的选中区域*/
+	:focus{outline:0;}
+
+.IE6png{
+	behavior: url("../js/iepngfix.htc");
+}
+
+.fl{
+	float:left;
+	display: inline;
+}
+
+.fr{
+	float:right;
+	display: inline;
+}
+
+.clearfix:after{
+	visibility:hidden;
+	display:block;
+	font-size:0;
+	content: " ";
+	clear:both;
+	height:0;
+}   
+.clearfix{
+	*zoom:1; /*这是针对于IE6的，因为IE6不支持:after伪类*/
+}  
+
+.clear{
+	clear:both;
+}
+
+select{
+	text-align: left;
+	padding-left: 8px;
+}
+
+input:focus,textarea:focus,button:focus,select:focus{
+	outline: none;
+}
+button,input,optgroup,select,textarea{
+	margin: 0;
+	font: inherit;
+}
+button,select{
+	text-transform: none;
+}
+
+
+
+.input{
+	text-align: left;
+	padding-left: 8px;
+	font-size: 14px;
+	height: 30px;
+	line-height: 30px;
+	border: solid 1px #ddd;
+	width: 100%;
+	display: block;
+	border-radius: 3px;
+	-webkit-appearance: none;
+}
+.input:focus{
+	border-color: #0ae;
+	transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1) 0s;
+}
+/*.label{
+	padding-bottom: 7px;
+	display: block;
+	line-height: 20px;
+	color: #202020;
+}
+.label label{
+	font-weight: bold;
+}
+input[type="file"]{
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 14px;
+	background-color: #fff;
+	transform: translate(-300px, 0px) scale(4);
+	height: 40px;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+input[disabled],input[readonly],textarea[disabled],textarea[readonly],select[disabled],select[readonly]{
+	cursor: not-allowed;
+	background: #eee;
+}
+.button{
+		width: auto;
+	}*/
+

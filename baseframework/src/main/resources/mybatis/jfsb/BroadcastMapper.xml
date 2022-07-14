@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.BroadcastMapper">
+	<!-- 广播设备-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.BroadcastEntity">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="BBD_CUS_NUMBER" jdbcType="CHAR" property="bbdCusNumber" />
+		<result column="BBD_IDNTY" jdbcType="CHAR" property="bbdIdnty" />
+		<result column="BBD_NAME" jdbcType="CHAR" property="bbdName" />
+		<result column="BBD_BRAND" jdbcType="CHAR" property="bbdBrand" />
+		<result column="BBD_MODEL" jdbcType="CHAR" property="bbdModel" />
+		<result column="BBD_IP_ADDRS" jdbcType="CHAR" property="bbdIpAddrs" />
+		<result column="BBD_PORT" jdbcType="CHAR" property="bbdPort" />
+		<result column="BBD_ADDRS" jdbcType="CHAR" property="bbdAddrs" />
+		<result column="BBD_DPRTMNT_ID" jdbcType="CHAR" property="bbdDprtmntId" />
+		<result column="BBD_DPRTMNT" jdbcType="CHAR" property="bbdDprtmnt" />
+		<result column="BBD_AREA_ID" jdbcType="CHAR" property="bbdAreaId" />
+		<result column="BBD_AREA" jdbcType="CHAR" property="bbdArea" />
+		<result column="BBD_STTS_INDC" jdbcType="CHAR" property="bbdSttsIndc" />
+		<result column="BBD_REMARK" jdbcType="CHAR" property="bbdRemark" />
+		<result column="BBD_CRTE_TIME" jdbcType="TIMESTAMP" property="bbdCrteTime" />
+		<result column="BBD_CRTE_USER_ID" jdbcType="CHAR" property="bbdCrteUserId" />
+		<result column="BBD_UPDT_TIME" jdbcType="TIMESTAMP" property="bbdUpdtTime" />
+		<result column="BBD_UPDT_USER_ID" jdbcType="CHAR" property="bbdUpdtUserId" />
+		<result column="BBD_CAMERA_ID" jdbcType="CHAR" property="bbdCameraId" />
+		<result column="BBD_CAMERA_NAME" jdbcType="CHAR" property="bbdCameraName" />
+		<result column="BBD_LATEST_RECORD_ID" jdbcType="CHAR" property="bbdLatestRecordId" />
+	</resultMap>
+	
+	<!-- 广播设备-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, BBD_CUS_NUMBER, BBD_IDNTY, BBD_NAME, BBD_BRAND, BBD_MODEL, BBD_IP_ADDRS, BBD_PORT, 
+		BBD_ADDRS, BBD_DPRTMNT_ID, BBD_DPRTMNT, BBD_AREA_ID, BBD_AREA, BBD_STTS_INDC, BBD_REMARK, 
+		BBD_CRTE_TIME, BBD_CRTE_USER_ID, BBD_UPDT_TIME, BBD_UPDT_USER_ID, BBD_CAMERA_ID, 
+		BBD_CAMERA_NAME, BBD_LATEST_RECORD_ID
+	</sql>
+	
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select ID,BBD_CUS_NUMBER,BBD_IDNTY,BBD_NAME,BBD_BRAND,BBD_MODEL,
+		BBD_IP_ADDRS,BBD_PORT,BBD_ADDRS,BBD_DPRTMNT_ID,BBD_DPRTMNT,BBD_AREA_ID,
+		BBD_AREA,BBD_STTS_INDC,BBD_REMARK
+		FROM dvc_broadcast_base_dtls
+		<where>
+			<if test="broadcastEntity.bbdCusNumber!=null and broadcastEntity.bbdCusNumber!=''">
+				AND (TRIM(#{broadcastEntity.bbdCusNumber}) IS NULL OR bbd_cus_number = #{broadcastEntity.bbdCusNumber})
+			</if>
+
+			<if test="broadcastEntity.id!=null and broadcastEntity.id!=''">
+				AND (TRIM(#{broadcastEntity.id}) IS NULL OR id = #{broadcastEntity.id})
+			</if>
+			
+			<if test="broadcastEntity.bbdSttsIndc!=null and broadcastEntity.bbdSttsIndc!=''">
+				AND (TRIM(#{broadcastEntity.bbdSttsIndc}) IS NULL OR BBD_STTS_INDC = #{broadcastEntity.bbdSttsIndc})
+			</if>
+			<if test="broadcastEntity.bbdAreaId != null and broadcastEntity.bbdAreaId !=''" >
+				AND BBD_AREA_ID LIKE '${broadcastEntity.bbdAreaId}%'
+			</if>
+			<if test="broadcastEntity.bbdName!=null and broadcastEntity.bbdName!=''">
+				AND bbd_name like concat('%', #{broadcastEntity.bbdName},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM dvc_broadcast_base_dtls WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE dvc_broadcast_base_dtls
+		<set>
+			<if test="broadcastEntity.bbdCusNumber != null and broadcastEntity.bbdCusNumber!='' ">
+				bbd_cus_number = #{broadcastEntity.bbdCusNumber},
+			</if>
+
+			<if test="broadcastEntity.bbdIdnty != null and broadcastEntity.bbdIdnty!='' ">
+				bbd_idnty = #{broadcastEntity.bbdIdnty},
+			</if>
+
+			<if test="broadcastEntity.bbdName != null and broadcastEntity.bbdName!='' ">
+				bbd_name = #{broadcastEntity.bbdName},
+			</if>
+
+			<if test="broadcastEntity.bbdBrand != null and broadcastEntity.bbdBrand!='' ">
+				bbd_brand = #{broadcastEntity.bbdBrand},
+			</if>
+
+			<if test="broadcastEntity.bbdModel != null and broadcastEntity.bbdModel!='' ">
+				bbd_model = #{broadcastEntity.bbdModel},
+			</if>
+
+			<if test="broadcastEntity.bbdIpAddrs != null and broadcastEntity.bbdIpAddrs!='' ">
+				bbd_ip_addrs = #{broadcastEntity.bbdIpAddrs},
+			</if>
+
+			<if test="broadcastEntity.bbdPort != null and broadcastEntity.bbdPort!='' ">
+				bbd_port = #{broadcastEntity.bbdPort},
+			</if>
+
+			<if test="broadcastEntity.bbdAddrs != null and broadcastEntity.bbdAddrs!='' ">
+				bbd_addrs = #{broadcastEntity.bbdAddrs},
+			</if>
+
+			<if test="broadcastEntity.bbdDprtmntId != null and broadcastEntity.bbdDprtmntId!='' ">
+				bbd_dprtmnt_id = #{broadcastEntity.bbdDprtmntId},
+			</if>
+
+			<if test="broadcastEntity.bbdDprtmnt != null and broadcastEntity.bbdDprtmnt!='' ">
+				bbd_dprtmnt = #{broadcastEntity.bbdDprtmnt},
+			</if>
+
+			<if test="broadcastEntity.bbdAreaId != null and broadcastEntity.bbdAreaId!='' ">
+				bbd_area_id = #{broadcastEntity.bbdAreaId},
+			</if>
+
+			<if test="broadcastEntity.bbdArea != null and broadcastEntity.bbdArea!='' ">
+				bbd_area = #{broadcastEntity.bbdArea},
+			</if>
+
+			<if test="broadcastEntity.bbdSttsIndc != null and broadcastEntity.bbdSttsIndc!='' ">
+				bbd_stts_indc = #{broadcastEntity.bbdSttsIndc},
+			</if>
+
+			<if test="broadcastEntity.bbdRemark != null and broadcastEntity.bbdRemark!='' ">
+				bbd_remark = #{broadcastEntity.bbdRemark},
+			</if>
+
+			<if test="broadcastEntity.bbdUpdtTime != null and broadcastEntity.bbdUpdtTime!='' ">
+				bbd_updt_time = #{broadcastEntity.bbdUpdtTime},
+			</if>
+
+			<if test="broadcastEntity.bbdUpdtUserId != null and broadcastEntity.bbdUpdtUserId!='' ">
+				bbd_updt_user_id = #{broadcastEntity.bbdUpdtUserId},
+			</if>
+			
+			<if test="broadcastEntity.bbdCameraId != null and broadcastEntity.bbdCameraId != ''">
+				bbd_camera_id = #{broadcastEntity.bbdCameraId},
+			</if>
+
+			<if test="broadcastEntity.bbdCameraName != null and broadcastEntity.bbdCameraName != ''">
+				bbd_camera_name = #{broadcastEntity.bbdCameraName},
+			</if>
+		</set>
+		<where>
+			<if test="broadcastEntity.id !=null and broadcastEntity.id !=''">
+				AND (TRIM(#{broadcastEntity.id}) is null or id = #{broadcastEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- findById 根据主键ID查询广播设备数据 -->
+	<select id="findById" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			DVC_BROADCAST_BASE_DTLS T1
+		WHERE T1.ID = '${id}'
+	</select>
+
+	<!-- findByIdList 根据主键ID列表查询广播设备数据 -->
+	<select id="findByIdList" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			DVC_BROADCAST_BASE_DTLS T1
+		<where>
+			<if test="idList != null">
+				T1.ID IN
+				<foreach collection="idList" item="id" index="index" separator="," open="(" close=")">
+					'${id}'
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

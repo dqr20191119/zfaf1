@@ -1,0 +1,1061 @@
+@charset "UTF-8";
+/**
+ * This CSS is to personalize Coral4.0
+ * theme for blue
+ */
+
+/*****tab******/
+.coral-tabs .coral-tabs-nav {
+	background: transparent;
+}
+
+.coral-tabs.coral-component-content {
+	background: transparent;
+}
+.coral-uploader .swfupload {
+	left: 0px;
+}
+.coral-tabs>.coral-tabs-nav>li {
+	background: #ececec;
+	border-radius: 3px 3px 0 0;
+	margin-left: 4px;
+	border: 1px solid #d3d3d3;
+	border-width: 1px 1px 0 1px;
+	font-size: 12px;
+	margin-bottom: -1px;
+	margin-top: 10px;
+}
+
+.coral-tabs>.coral-tabs-nav>li>a.coral-tabs-anchor {
+	padding: .5em 1.7em;
+	border: 0;
+	color: #949494;
+}
+
+.coral-tabs>.coral-tabs-nav>.coral-state-hover {
+	background: #ececec;
+}
+
+.coral-tabs>.coral-tabs-nav>.coral-state-hover>a {
+	color: #333;
+}
+
+.coral-tabs>.coral-tabs-nav>.coral-state-hover>.coral-tabs-anchor {
+	color: #333;
+	background: #ececec;
+}
+
+.coral-tabs>.coral-tabs-nav>.coral-tabs-active>.coral-tabs-anchor,
+	.coral-tabs>.coral-tabs-nav>.coral-tabs-loading>.coral-tabs-anchor {
+	border: 0;
+}
+
+.coral-tabs>.coral-tabs-nav>.coral-state-active>.coral-tabs-anchor {
+	color: #333;
+	background: #fff;
+}
+
+.coral-tabs>.coral-tabs-nav>li.coral-tabs-active>a, .coral-tabs>.coral-tabs-nav>li.coral-tabs-loading>a
+	{
+	background: #f7f9f8;
+	border-radius: 3px 3px 0 0;
+	border: 0;
+}
+
+.coral-tabs>.coral-tabs-nav.tabul>li {
+	margin-bottom: -2px;
+}
+
+.coral-tabs li .coral-icon-close {
+	margin: 0;
+}
+
+.coral-state-active .coral-icon {
+	width: 16px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.coral-state-default .coral-icon {
+	width: 16px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.coral-tabs>.coral-tabs-nav>.coral-state-hover .coral-icon {
+	width: 16px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.coral-tabs>.coral-tabs-nav>li.coral-tabs-newbtn {
+	width: 33px;
+	overflow: hidden;
+	margin-top: 14px;
+	border-bottom-width: 1px;
+	border-radius: 3px;
+	background: #fff;
+}
+
+.coral-tabs>.coral-tabs-nav>li.coral-tabs-newbtn>a {
+	height: 22px;
+	text-indent: 222px;
+	padding: 0;
+	margin: 0;
+}
+
+.coral-tabs>.coral-tabs-nav>li.coral-tabs-newbtn.coral-state-hover>a {
+	height: 22px;
+	text-indent: 222px;
+}
+
+/******combo-arrow********/
+.coral-combo-arrow {
+}
+
+.coral-textbox-border, .coral-combo-border, .coral-datepicker-border {
+	border: 1px solid #bdd0e6;
+}
+
+.coral-combo-filter-border {
+	margin-top: 3px;
+}
+
+.coral-combo-filterbox { /*padding: 0px 12px 0px 4px;*/
+	padding: 0;
+	width: 90%;
+}
+
+/****input*****/
+.coral-textbox-default {
+	height: auto;
+	padding: 5px 2px;
+}
+
+/**textbox***/
+.coral-textbox-default {
+	padding-left: 2px;
+}
+
+.coral-textbox .coral-textbox-btn-textico {
+	line-height: 20px;
+	font-size: 12px;
+}
+
+.coral-textbox-btn-ico {
+	border-left: 1px solid #bdd0e6;
+}
+
+
+/**error***/
+.coral-textbox-default-error .coral-textbox-btn-ico {
+	border-left: 1px solid #B94A48;
+}
+
+.error-content {
+	font-size: 12px;
+}
+
+/****table******/
+.coral-grid-columns .coral-state-default {
+	font-size: 12px;
+	background: #6ea8ef;
+	border-color: #6ea8ef;
+	font-weight: bold;
+	color: #fff;
+}
+
+.coral-grid thead th {
+	height: 30px;
+	font-weight: bold;
+}
+
+.coral-grid tbody td, .coral-grid tfoot td {
+	height: 30px;
+	font-size: 12px;
+}
+.coral-paginator .coral-combo-arrow.icon{
+	color:#fff;
+}
+/** for respond***/
+.col_right .coral-textbox {
+	width: 100%;
+}
+
+.dataspan .coral-textbox, .spanwidth .coral-textbox, .dataspan .coral-combo
+	{
+	width: 100%;
+}
+
+.coral-combo-wrapper .coral-combobox-item {
+	padding: 6px;
+}
+
+/** for border-radius***/
+.coral-corner-all {
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+/******table************/
+.coral-grid thead th, .coral-grid tbody td, .coral-grid tfoot td {
+	border-right: 1px solid #ededed;
+}
+
+.coral-grid-rows .coral-state-hover {
+	background: #F6F6F6;
+}
+.coral-grid-rows .coral-state-hover{
+	background:#E9F7FF;
+	cursor:pointer;
+}
+.coral-grid-rows .coral-state-highlight {
+	background: #FEFFE1;
+}
+
+/****dialog********/
+.coral-dialog {
+	overflow: visible;
+}
+
+.coral-dialog .coral-dialog-titlebar {
+	margin-top: -1px;
+}
+
+.coral-dialog .coral-button {
+	background: #4592f0;
+	border: 1px solid #3484e5;
+	color: #fff;
+	border-radius: 2px;
+}
+
+.coral-dialog .coral-btn-primary {
+	background: none repeat scroll 0 0 #4592f0;
+	color: #fff;
+}
+
+.coral-dialog .coral-dialog-title {
+	color: #fff;
+	width: 100%;
+}
+
+.coral-dialog .coral-dialog-titlebar .coral-dialog-titlebar-close {
+	top: 8px;
+	right: -1px;
+}
+
+.coral-dialog .coral-dialog-titlebar .coral-dialog-titlebar-close {
+	border: 0;
+	/* background: url(images/icon.png) no-repeat -282px -240px; */
+	width: 27px;
+	height: 27px;
+	cursor: pointer;
+	position: absolute;
+	background: none;
+	outline: 0;
+}
+
+.coral-dialog .coral-dialog-titlebar .coral-button.coral-dialog-titlebar-close.dialog-close-back
+	{
+	top: 12px;
+	right: 5px;
+}
+
+.coral-dialog .coral-state-default .coral-icon {
+	background: none;
+}
+
+
+.coral-dialog .coral-dialog-titlebar .coral-dialog-titlebar-close.coral-state-hover .icon
+	{
+	background-position: -140px -186px;
+}
+
+
+
+.coral-messager-question {
+	background-position: 0 3px;
+}
+
+.coral-dialog .coral-messager-content {
+	margin-top: 2px;
+}
+
+.coral-dialog-buttonset .coral-state-default .coral-button-text {
+	padding: .1em 1em;
+	font-size: 12px;
+}
+
+.coral-dialog .coral-dialog-buttonpane button {
+	border-radius: 2px;
+}
+
+.coral-dialog .coral-button {
+	background: #f7f7f7;
+	border: #c8c8c8 1px solid;
+	color: #646464;
+	border-radius: 2px;
+	font-weight: normal;
+}
+.coral-dialog .coral-button.inButtonColor{
+	border:0;
+}
+.coral-dialog .coral-button.inButtonColor {
+	background: url(../../images/add.png) no-repeat center;
+	width: 27px;
+	height: 27px;
+}
+
+/* .coral-dialog .coral-dialog-titlebar .coral-button.coral-dialog-titlebar-close{
+	top:0;
+	right:5px;
+	margin: 0;
+} */
+
+.coral-dialog .coral-btn-primary {
+	background: none repeat scroll 0 0 #4592f0;
+	color: #fff;
+	font-weight: normal;
+	border-color: #0069a2;
+}
+
+.coral-dialog .coral-messager-content {
+	margin-top: 2px;
+}
+
+.coral-dialog-buttonset .coral-state-default {
+	padding: .3em 0em;
+}
+
+.coral-dialog .coral-dialog-buttonpane .coral-dialog-buttonset {
+	text-align: right;
+	background: #F0F0F0;
+	border-top: 1px solid #ccc;
+}
+
+.coral-dialog-buttonset .coral-state-default.coral-state-hover {
+	background: #efefef;
+}
+
+.coral-dialog .coral-btn-primary.coral-state-default.coral-state-hover {
+	background: #69A8F4;
+}
+
+.coral-messager-box-content>.coral-control-question {
+	color: #ED9702;
+}
+
+.coral-messager-box-content>.icon-control {
+	padding: 0 5px 10px 5px;
+	vertical-align:middle;
+}
+
+.coral-messager-box-content>.coral-control-info {
+	color: #fbb041;
+}
+
+.coral-dialog .coral-messager-body {
+	text-align: left;
+}
+
+.coral-dialog .coral-dialog-titlebar .coral-button.coral-dialog-titlebar-maximum:hover
+	{
+	background-position: -136px -85px;
+}
+
+
+.coral-dialog .coral-dialog-titlebar .coral-button.coral-dialog-titlebar-maximum .icon-contract3:before,
+	.coral-dialog .coral-dialog-titlebar .coral-button.coral-dialog-titlebar-maximum .icon-expand3:before
+	{
+	content: "";
+}
+
+.coral-front {
+	z-index: 1000;
+}
+
+
+.icon {
+	vertical-align: middle;1
+}
+
+/******massage********/
+.coral-messager {
+	border-radius: 4px;
+}
+
+.coral-dialog .alert-box {
+	padding: 10px 15px;
+}
+
+.coral-dialog .coral-messager-box {
+	left: 0;
+	float: none;
+	text-align: left;
+}
+
+.coral-messager-box-content {
+	right: 0;
+	float: none;
+}
+
+.coral-dialog .coral-messager-content {
+	margin-left: 10px;
+	margin-top: 0;
+	font-size: 12px;
+	font-family: '微软雅黑';
+	width: 80%;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+
+/*********tree********/
+.coral-tree li {
+	line-height: 27px;
+}
+
+.coral-tree li a {
+	height: 32px;
+	padding-left: 5px;
+	border: 1px solid transparent;
+	vertical-align: middle;
+}
+
+.coral-tree li a>span {
+	line-height: 28px;
+}
+
+.coral-tree li span.button.ico_docu, .coral-tree li span.button.ico_open,
+	.coral-tree li span.button.ico_close {
+	vertical-align: middle;
+}
+
+.coral-tree li a:hover, .coral-tree li a.curSelectedNode {
+	text-decoration: none;
+	display: inline-block;
+	/* width: 94%; */
+	background: #E9EFFF;
+	border-color: #27aae1;
+	color: #333;
+}
+
+.coral-tree.forbiddenTree li a:hover, .coral-tree.forbiddenTree li a.curSelectedNode
+	{
+	cursor: default;
+	text-decoration: none;
+	display: inline-block;
+	width: 95%;
+	background: none;
+	border-color: transparent;
+	opacity: 1;
+	filter: alpha(opacity = 100);
+}
+/***********************************************手风琴风格1*******************************************************/
+.PanelLeft .coral-accordion .coral-corner-all, .coral-corner-top, .coral-corner-left, .coral-corner-tl{
+	border-radius: 0;
+}
+
+.PanelLeft .coral-accordion .coral-accordion-header .coral-accordion-header-icon {
+	display: none;
+}
+
+.PanelLeft .coral-state-active,.coral-component-content .coral-state-active,.coral-component-header .coral-state-active
+	{
+	border-width: 0;
+}
+
+.PanelLeft .coral-accordion .coral-accordion-content {
+	border-width: 0;
+}
+
+.PanelLeft .coral-accordion .coral-accordion-header {
+	border-width: 0;
+	border-top: 1px solid #96d3ef;
+}
+
+.PanelLeft .coral-accordion-header.coral-accordion-header-active {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+
+
+.PanelLeft .coral-accordion .coral-accordion-header{text-align:center;padding:0px;font:bold 17px/35px "microsoft Yahei";}
+
+.PanelLeft .coral-accordion-header.coral-state-default {
+	background: none repeat scroll 0 0 #f7f7f7;
+	margin: 0;
+}
+.PanelLeft .coral-accordion-header.coral-state-default
+	{
+	height: 40px;
+	line-height: 40px;
+	font: bold 15px/40px "microsoft Yahei";
+	margin: 0;
+	background: #f6fafd;
+	color: #6C6D6E;
+	border-color: #d3d3d3;
+	border-left-width: 3px;
+	border-left-color: transparent;
+	text-align: left;
+	padding: 0 20px;
+	border-style: solid;
+	border-top: 0;
+	border-bottom-width: 1px;
+}
+
+/***********************************************手风琴风格2*******************************************************/
+.voteItem .coral-accordion .coral-corner-all, .coral-corner-top, .coral-corner-left, .coral-corner-tl{
+	border-radius: 0;
+}
+
+.voteItem .coral-accordion .coral-accordion-header .coral-accordion-header-icon {
+	/* display: none; */
+}
+
+.voteItem .coral-state-active,.coral-component-content .coral-state-active,.coral-component-header .coral-state-active
+	{
+	border-width: 0;
+}
+.coral-component-content .coral-state-active{
+	border-width:1px;
+}
+
+.voteItem .coral-accordion .coral-accordion-content {
+	border-width: 0;
+}
+
+.voteItem .coral-accordion .coral-accordion-header {
+	border-width: 0;
+	border-top: 1px solid #96d3ef;
+}
+
+.voteItem .coral-accordion-header.coral-accordion-header-active {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+
+
+.voteItem .coral-accordion .coral-accordion-header{
+	padding:0px;font:bold 17px/35px "microsoft Yahei";
+}
+
+.voteItem .coral-accordion-header.coral-state-default {
+	background: none repeat scroll 0 0 #f7f7f7;
+}
+.voteItem .coral-accordion-header.coral-state-default
+	{
+	height: 40px;
+	line-height: 40px;
+	color: #2ca6e0;
+	font:bold 15px/40px "microsoft Yahei";
+}
+
+.voteItem .coral-accordion-header.coral-state-hover{
+	background:#2ca6e0 url(../../images/leftbgMenu.png) no-repeat left center;
+	color:#FFF;
+}
+.voteItem .coral-accordion-header.coral-accordion-header-active
+	{
+	background:#2ca6e0 url(../../images/leftbgMenu.png) no-repeat left center;
+	color:#FFF;
+}
+.voteItem .coral-panel-header {
+	background: #2ca6e0;
+	border:none;
+}
+.voteItem .coral-panel-body {
+	border:none;
+}
+.voteItem .coral-panel-tool{
+	height: 28px;
+	margin-top: -14px
+}
+
+/**第2种树样式**/
+.accordionBox .coral-tree li a:hover,.accordionBox .coral-tree li a.curSelectedNode,
+.PanelLeft .coral-tree li a:hover,.PanelLeft .coral-tree li a.curSelectedNode{
+	text-decoration: none;
+	display: inline-block;
+	background: #6ea8ef;
+	border-color: transparent;
+	opacity: .7;
+	filter: alpha(opacity = 70);
+	width: 100%;
+	color: #fff;
+	border-radius: 15px 0 0 15px;
+}
+.accordionBox .coral-tree li span.button.ico_open,
+.accordionBox .coral-tree li span.button.ico_close,
+.PanelLeft .coral-tree li span.button.ico_open,
+.PanelLeft .coral-tree li span.button.ico_close{
+	background-position: -65px -136px;
+}
+.accordionBox .coral-tree li a.curSelectedNode,
+.PanelLeft .coral-tree li a.curSelectedNode{
+	opacity: 1;
+	filter:alpha(opacity = 100);
+}
+
+.coral-datepicker-time input {
+	width: 18px;
+	height: 28px;
+}
+#dpTimeEnsure {
+	margin-right: 2px;
+}
+.coral-datepicker-current.coral-state-default {
+	margin-right: 3px;
+}
+.coral-toolbar-btn{
+	min-width:60px;
+}
+.coral-toolbar-btn-border {
+	width: 100%;
+	text-align: center;
+
+}
+.spencial .coral-toolbar-btn-border {
+	width:auto;
+}
+.coral-dialog-buttonset .coral-state-default.coral-state-active {
+	border: 1px solid #0069a2;
+}
+
+.coral-paginator .coral-paginator-page {
+	background: #fff;
+	border: 1px solid #cdcdcd;
+	color: #797979;
+	padding: 4px 9px;
+	border-radius: 3px;
+}
+.coral-paginator-pages .coral-state-active, .coral-paginator-pages .coral-state-hover {
+	background: #eee;
+	color: #000000;
+}
+.coral-paginator .coral-paginator-next,
+.coral-paginator .coral-paginator-prev{
+	padding: 4px;
+	border: 1px solid #cdcdcd;
+	border-radius: 3px;
+}
+.coral-paginator{
+	height:35px;
+	padding: 5px;
+	margin-top:0;
+}
+.coral-paginator .paginator-right {
+	top: 4px;
+}
+.coral-paginator .coral-paginator-next{
+	margin-right:10px;
+}
+.coral-state-disabled .coral-icon-seek-prev {
+	background-position: -2px -340px;
+}
+.coral-icon-seek-prev {
+	background-position: -2px -321px;
+}
+.coral-state-disabled .coral-icon-seek-next {
+	background-position: -3px -378px;
+}
+.coral-grid-pager .coral-corner-all {
+	height: 25px;
+	border-radius: 3px;
+}
+.coral-paginator .coral-textbox-default, .coral-paginator .coral-textbox-btn-textico {
+	height: 23px;
+	line-height: 23px;
+}
+.coral-pager-flex .coral-textbox .coral-textbox-btn-textico {
+	line-height: 18px;
+}
+.coral-grid-pager .icon-arrow-right2 {
+  line-height: 19px;
+}
+.coral-paginator .coral-combo-arrow.icon {
+	padding: 4px;
+}
+.coral-paginator .paginator-left {
+	margin-top: 7px;
+}
+.coral-paginator .paginator-center .coral-textbox {
+	margin-top: -2px;
+}
+.PanelList .coral-grid-view {
+	border: 1px solid #ddd;
+	border-top: 0;
+}
+.coral-radio{
+	font-size:14px;
+}
+.setSelf .coral-textbox-default {
+	height: 20px;
+	line-height: 20px;
+	padding-top:0px;
+	padding-bottom:0px;
+}
+.setSelf > span{
+	margin-top:1px;
+}
+.coral-toolbar-btn-border {
+	background: #CCE8FF;
+	color: #626262;
+	border: 1px solid #82C1F5
+}
+.coral-toolbar-child-btn{
+	border:0;
+	border-bottom:1px solid #d3d3d3;
+}
+.coral-toolbar-child-btn .coral-toolbar-btn-border{
+	background:#f4f4f4;
+	text-align:left;
+}
+.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border{
+	background: #A5D9FF;
+}
+.TabPaddingNew.coral-tabs>.coral-tabs-nav>li>a.coral-tabs-anchor {
+	padding: .5em 1em;
+}
+.TabPaddingNew.coral-tabs>.coral-tabs-nav{
+	border:0;
+	margin-left:20px;
+}
+.TabPaddingNew.coral-tabs>.coral-tabs-nav>li {
+	border-width: 1px;
+	border-radius: 0;
+	margin-left:-1px;
+}
+
+.TabPaddingNew.coral-tabs>.coral-tabs-nav>li.coral-state-active,
+.TabPaddingNew.coral-tabs>.coral-tabs-nav>li.coral-state-active>.coral-tabs-anchor{
+	background:#3686e8;
+	color:#fff;
+	border-color: #3686e8;
+}
+
+.newSkinAccordion .coral-accordion-header.coral-state-default {
+	background: #B7DBFF;
+	color: #222222;
+	padding: .3em;
+}
+.newSkinAccordion .coral-accordion-header.coral-state-hover {
+	background: #92C8FF;
+}
+.newSkinAccordion .coral-accordion-header.coral-accordion-header-active {
+	background: #65B1F0;
+	color: #fff;
+}
+.newSkinAccordion.coral-accordion .coral-accordion-header .coral-accordion-header-icon {
+	margin-top: 7px;
+	font-size: 12px;
+	margin-right: 5px;
+}
+
+
+/**预览按钮**/
+.previewLight{
+	background: #448DD5;
+	color: #fff;
+	border-color: #4283C3;
+}
+.previewLight.coral-button-text-icon-primary .coral-button-text{
+	padding-left:2.5em;
+}
+.previewLight.coral-button.coral-state-hover {
+	background: #3072B3;
+	border: 1px solid #4283C3;
+	color: #fff;
+}
+/**发布按钮**/
+.ReleaseLight{
+	background: #1fb5ad;
+	border-color: #1C9E97;
+	color: #fff;
+}
+.ReleaseLight.coral-button.coral-state-hover {
+	background: #21A8A1;
+	border: 1px solid #1C9E97;
+}
+/**取消**/
+.cancelLight{
+	background: #E27A7E;
+	border-color: #DA4E4E;
+	color: #fff;
+}
+.cancelLight.coral-button.coral-state-hover{
+	background: #D7767A;
+	border: 1px solid #DA4E4E;
+	color: #fff;
+}
+
+
+/**预览**/
+.previewBtn .coral-toolbar-btn-border{
+	background: #448DD5;
+	color: #fff;
+	border-color: #4283C3;
+}
+.previewBtn.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border {
+	background: #3072B3;
+	border: 1px solid #4283C3;
+}
+
+/**新增按钮 绿色按钮**/
+.addNew .coral-toolbar-btn-border,
+.greenbtn .coral-toolbar-btn-border,
+.greenbtn.coral-button{
+	color: #fff;
+	background: #8fc31f;
+	border: 1px solid #71a600;
+	border-radius: 3px;
+}
+.addNew.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border,
+.greenbtn.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border,
+.greenbtn.coral-button.coral-state-hover {
+	background: #499438;
+	border: 1px solid #71a600;
+}
+
+/**toolbar 发布**/
+.releaseBtn .coral-toolbar-btn-border{
+	background: #1fb5ad;
+	border-color: #1C9E97;
+	color: #fff;
+}
+.releaseBtn.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border {
+	background: #21A8A1;
+	border: 1px solid #1C9E97;
+}
+/**撤销/删除 按钮  青色按钮**/
+.deleteBtn .coral-toolbar-btn-border,
+.cyanbtn .coral-toolbar-btn-border,
+.cyanbtn.coral-button{
+	background: #31c3da;
+	border-color: #0fabc3;
+	color: #fff;
+	border-radius: 3px;
+}
+.deleteBtn.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border,
+.cyanbtn.coral-toolbar-btn.coral-toolbar-hover .coral-toolbar-btn-border,
+.cyanbtn.coral-button.coral-state-hover {
+	background: #34B4C8;
+	border: 1px solid #0fabc3;
+}
+.deleteBtn.coral-button{
+	background: #E87C73;
+	border-color: #D86555;
+	color: #fff;
+	border-radius: 3px;
+}
+.deleteBtn.coral-button.coral-state-hover{
+	background: #DA756D;
+	border: 1px solid #D86555;
+}
+
+/**保存按钮**/
+.saveLight,
+.greenlight,
+.coral-dialog .coral-button.greenlight{
+	color: #fff;
+	background: #50a93b;
+	border: 1px solid #469334;
+	border-radius: 3px;
+}
+.saveLight.coral-button-text-icon-primary .coral-button-text,
+.greenlight.coral-button-text-icon-primary .coral-button-text,
+.previewLight.coral-button-text-icon-primary .coral-button-text,
+.ReleaseLight.coral-button-text-icon-primary .coral-button-text,
+.cancelLight.coral-button-text-icon-primary .coral-button-text{
+	padding-left:2.5em;
+}
+.saveLight.coral-button.coral-state-hover,
+.greenlight.coral-button.coral-state-hover {
+	background: #499438;
+	border: 1px solid #469334;
+	color: #fff;
+}
+
+.bluelight{
+	color: #fff;
+	background: #3686e8;
+	border: 1px solid #2375da;
+	padding:2px;
+	border-radius: 3px;
+}
+.bluelight.coral-button-text-icon-primary .coral-button-text{
+	padding-left:2.5em;
+}
+.bluelight.coral-button.coral-state-hover {
+	background: #5296ea;
+	border: 1px solid #2375da;
+}
+
+.okbtn,
+.cancelbtn{
+	color: #fff;
+	border: 1px solid #6facf6;
+	background: #6facf6;
+	padding: 4px;
+	border-radius: 4px;
+}
+.cancelbtn{
+	color: #497CB5;
+	border: 1px solid #C5DFFF;
+	background: #C5DFFF;
+}
+.coral-button.coral-state-hover.okbtn {
+	background: #6199DD;
+	border-color: #6facf6;
+	color:#fff;
+}
+.coral-button.coral-state-hover.cancelbtn{
+	color: #497CB5;
+	background: #B8D8FF;
+	border-color: #C5DFFF;
+}
+.okbtn .coral-button-text,
+.cancelbtn .coral-button-text{
+	padding-left:2.4em;
+}
+
+.coral-accordion .coral-accordion-header {
+	padding: .2em .5em .2em .7em;
+	margin:0;
+	font-size:14px;
+}
+.coral-accordion-header.coral-accordion-header-active {
+	background: #6ea8ef;
+}
+.coral-accordion .coral-grid-columns .coral-state-default {
+	background: #f3f7ff;
+	border-color: #e5e5e5;
+	color: #666;
+}
+.votetablecls .coral-grid-columns .coral-grid-htable .coral-state-default{
+	background: #f3f7ff;
+	border-color: #e5e5e5;
+	color: #666;
+}
+.votetablecls .coral-grid-columns .coral-state-default .coral-grid-topRightCell{
+	background: #f3f7ff;
+	border-color: #e5e5e5;
+}
+.coral-accordion .coral-accordion-header .coral-accordion-header-icon {
+	margin-top: 12px;
+}
+
+.coral-sortable a.canlink,
+.canlink{
+	color:#4a8ee1;
+}
+
+.coral-component-content a.canlink {
+	color:#4a8ee1;
+}
+.coral-state-highlight a.canlink, .coral-component-content .coral-state-highlight a.canlink{
+	color:#4a8ee1;
+}
+
+.tableftnewskin.coral-tabs>.coral-tabs-nav>li{
+	background: transparent;
+	border-radius: 20px 0 0 20px;
+	border: 0;
+	margin: 10px 0 0 10px;
+}
+.tableftnewskin.coral-tabs>.coral-tabs-nav>li.coral-state-hover,
+.tableftnewskin.coral-tabs>.coral-tabs-nav>.coral-state-hover>.coral-tabs-anchor{
+	border-radius: 20px 0 0 20px;
+	border: 0;
+	background: #D0E5FF;
+}
+.tableftnewskin.coral-tabs>.coral-tabs-nav>li.coral-state-active,
+.tableftnewskin.coral-tabs>.coral-tabs-nav>.coral-state-active>.coral-tabs-anchor{
+	background: #6ea8ef;
+	color: #fff;
+	border-radius: 20px 0 0 20px;
+	border: 0;
+}
+.tableftnewskin.coral-tabs>.coral-tabs-nav>li>a.coral-tabs-anchor {
+	padding: .8em 1.7em;
+}
+
+.coral-pic .griditem {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.coral-pic .griditem>div{
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.newtabskinbig.coral-tabs>.coral-tabs-nav>li{
+	margin-top:0;
+	margin-left: -1px;
+	border-top-width: 3px;
+	border-top-color: transparent;
+	border-radius:0;
+}
+.newtabskinbig.coral-tabs>.coral-tabs-nav>li>a.coral-tabs-anchor {
+	padding: 0.7em 1.7em;
+	border-radius:0;
+}
+.newtabskinbig.coral-tabs>.coral-tabs-nav>li.coral-tabs-active{
+	border-top-color: #3686e8;
+}
+.newtabskinbig.coral-tabs>.coral-tabs-nav>li.coral-tabs-active>a{
+	border-radius:0;
+}
+.coral-grid-columns .coral-state-default .coral-grid-topRightCell {
+	border: 1px solid #6ea8ef;
+}
+
+.nobordertab{
+	border:0;
+}
+
+.selfBtnDatepicker .coral-icon-calendar{
+	top: 1px;
+}
+.coral-icon-calendar{
+	color: #407CD8;
+}
+
+.coral-radio-label,
+.coral-checkbox-label{
+	margin-bottom:0;
+	vertical-align: middle;
+}
+
+.coral-radiolist .coral-radio,
+.coral-radiolist .coral-checkbox{
+	font-size: 12px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+.coral-button-text-icon-primary .coral-button-icon-primary{
+	margin-top: -7px;
+}
+.coral-datepicker select.coral-datepicker-year{
+	width: 44%;
+}
+.editmachine .coral-radiolist .coral-radio,
+.editmachine .coral-radiolist .coral-checkbox{
+		color: #fff;
+}
+.coral-checkbox-text{
+	vertical-align:middle;
+	font-size: 14px;
+	font-family: 'microsoft yahei';
+}
+.coral-grid-pager{
+	height:35px;
+	padding-top:0;
+}
+.coral-grid-pager .icon-arrow-first, .coral-grid-pager .icon-arrow-right, .coral-grid-pager .icon-arrow-left, .coral-grid-pager .icon-arrow-right2 {
+  line-height: 18px;
+}
+.coral-toolbar .coral-button .coral-button-text {
+    font-weight: normal;
+}

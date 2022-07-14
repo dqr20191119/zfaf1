@@ -1,0 +1,96 @@
+body {
+	background-color: #000;
+	line-height: normal !important;
+}
+
+html,
+body,
+div,
+h4,
+h5,
+h6,
+p,
+ul,
+li,
+input,
+a,
+i,
+b,
+span {
+	box-sizing: border-box;
+	font-style: normal;
+	font-family: "Microsoft Yahei", Arial;
+	font-size: 14px;
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+	outline: 0px;
+	text-decoration: none;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.clearfix {
+	display: inline-block;
+}
+.custom.coral-dialog {
+  background: url(../img/moxing/dialog_bg.png) no-repeat;
+  background-size: 100% 100%;
+  font-size: 18px;
+  color: #c9caca;
+}
+.custom.coral-dialog .coral-dialog-titlebar {
+    background: transparent;
+    border-bottom: none;
+}
+.custom:focus,
+.custom .coral-dialog-content:focus {
+  outline: none;
+}
+.custom .coral-button.coral-button-icon-only .icon {
+  font-size: 40px;
+  color: #00fff6;
+}
+.custom .coral-button{
+  padding: 10px 15%;
+  font-size: 20px;
+  color: #008eff;
+  background: linear-gradient(#003265, #001426);
+  border-color: #004984;
+}
+.custom .coral-button.coral-state-hover {
+  color: #fff;
+  background: linear-gradient(#504821, #222215);
+  border-color: #8a7d40;
+}
+.custom .coral-dialog-toolbar .coral-dialog-toolbar-close.coral-state-hover {
+  background: transparent;
+}
+
+.dark.coral-dialog {
+  background-image: url(../img/dialog/dialog_bg1.png)
+}
+.dark.coral-dialog .coral-dialog-titlebar {
+  padding: 0;
+}
+.dark .coral-button.coral-button-icon-only .icon {
+  font-size: 24px;
+}
+.dark.coral-dialog .coral-dialog-toolbar .coral-button {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.dark.coral-dialog .coral-component-content {
+  padding: 0 20px;
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.prisonPath.dao.PrisonPathCameraRltnMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select PCR_CUS_NUMBER,
+		ID,
+		PCR_CAMERA_ID,
+		PCR_CAMERA,
+		PCR_PATH_ID,
+		PCR_REMARK
+		from CDS_PRISON_PATH_CAMERA_RLTN
+		<where>
+			<if test="prisonPathCameraRltnEntity.pcrCusNumber != null and prisonPathCameraRltnEntity.pcrCusNumber!='' ">
+				AND pcr_cus_number = #{prisonPathCameraRltnEntity.pcrCusNumber}
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrPathId != null and prisonPathCameraRltnEntity.pcrPathId!='' ">
+				AND pcr_path_id = #{prisonPathCameraRltnEntity.pcrPathId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据id批量逻辑删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_PRISON_PATH_CAMERA_RLTN WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_PRISON_PATH_CAMERA_RLTN
+		<set>
+			<if test="prisonPathCameraRltnEntity.pcrCusNumber != null and prisonPathCameraRltnEntity.pcrCusNumber!='' ">
+				pcr_cus_number = #{prisonPathCameraRltnEntity.pcrCusNumber},
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrCameraId != null and prisonPathCameraRltnEntity.pcrCameraId!='' ">
+				pcr_camera_id = #{prisonPathCameraRltnEntity.pcrCameraId},
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrCamera != null and prisonPathCameraRltnEntity.pcrCamera!='' ">
+				pcr_camera = #{prisonPathCameraRltnEntity.pcrCamera},
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrPathId != null and prisonPathCameraRltnEntity.pcrPathId!='' ">
+				pcr_path_id = #{prisonPathCameraRltnEntity.pcrPathId},
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrRemark != null and prisonPathCameraRltnEntity.pcrRemark!='' ">
+				pcr_remark = #{prisonPathCameraRltnEntity.pcrRemark},
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrUpdtTime != null and prisonPathCameraRltnEntity.pcrUpdtTime!='' ">
+				pcr_updt_time = #{prisonPathCameraRltnEntity.pcrUpdtTime},
+			</if>
+
+			<if test="prisonPathCameraRltnEntity.pcrUpdtUserId != null and prisonPathCameraRltnEntity.pcrUpdtUserId!='' ">
+				pcr_updt_user_id = #{prisonPathCameraRltnEntity.pcrUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="prisonPathCameraRltnEntity.id !=null and prisonPathCameraRltnEntity.id !=''">
+				AND (TRIM(#{prisonPathCameraRltnEntity.id}) is null or id = #{prisonPathCameraRltnEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<select id="listAllForSx" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id,
+		CBD_NAME as DVC_NAME
+		from DVC_CAMERA_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and CBD_CUS_NUMBER = #{cusNumber} and CBD_ACTION_INDC != '3'
+			</if>
+			<if test="cameraName!=null and cameraName!=''">
+				and cbd_name like concat('%',#{cameraName},'%' )
+			</if>
+			<if test="areaId != null and areaId !='' ">
+				and CBD_AREA_ID = #{areaId}
+			</if>
+			<if test="pathId != null and pathId !=''">
+				and id not in (select PCR_CAMERA_ID from CDS_PRISON_PATH_CAMERA_RLTN where PCR_PATH_ID = #{pathId} )
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

@@ -1,0 +1,255 @@
+/**
+ * <p>Copyright:Copyright(c) 2016</p>
+ * <p>Company:上海中信信息发展股份有限公司</p>
+ * <p>包名:com.cesgroup.demo.web.code</p>
+ * <p>文件名:CodeKeyController.java</p>
+ * <p>类更新历史信息</p>
+ * @author xiexiaqin 
+ * @date 2016-04-22 10:17
+ * @todo 
+ */
+package com.cesgroup.prison.users.web;
+
+import java.beans.PropertyEditorSupport;
+import java.sql.Date;
+import java.text.ParseException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.cesgroup.framework.base.annotation.Logger;
+import com.cesgroup.framework.base.security.entity.IUser;
+import com.cesgroup.framework.base.security.service.IAuthenticationService;
+import com.cesgroup.framework.commons.CesDateUtils;
+import com.cesgroup.framework.exception.WebUIException;
+import com.cesgroup.framework.shiro.session.LoginSecurityUtil;
+import com.cesgroup.framework.springmvc.web.BaseEntityDaoServiceCRUDController;
+import com.cesgroup.prison.department.entity.Department;
+import com.cesgroup.prison.department.service.DepartmentService;
+import com.cesgroup.prison.users.dao.UsersMapper;
+import com.cesgroup.prison.users.entity.UserDept;
+import com.cesgroup.prison.users.entity.Users;
+import com.cesgroup.prison.users.service.UsersService;
+import com.cesgroup.prison.utils.DataUtils;
+
+/**
+ * 用戶信息Controller
+ * 
+ * @author xiexiaqin
+ * @date 2016-04-22
+ *
+ */
+@Controller
+@RequestMapping(value = "/users")
+public class UsersController  extends BaseEntityDaoServiceCRUDController<Users, Long, UsersMapper, UsersService> {
+	@Autowired
+	private DepartmentService departmentSevice;
+	@Autowired
+    private IAuthenticationService authService;
+	/**
+	 * 参数类型绑定
+	 * @param request
+	 * @param binder
+	 * @throws Exception
+	 */
+	@InitBinder
+    protected void initBinder(HttpServletRequest request,
+                              ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(java.sql.Date.class, new PropertyEditorSupport(){
+        	/**
+        	 * 
+        	 * @return
+        	 * @see java.beans.PropertyEditorSupport#getAsText()
+        	 */
+        	@Override
+        	public String getAsText() {
+        		Date value = (Date) getValue();
+        		return (value != null ? CesDateUtils.toString(value, "yyyyMMdd") : "");
+        	}
+
+        	/**
+        	 * 
+        	 * @param text
+        	 * @throws IllegalArgumentException
+        	 * @see java.beans.PropertyEditorSupport#setAsText(java.lang.String)
+        	 */
+        	@Override
+        	public void setAsText(String text) throws IllegalArgumentException {
+        		Date date;
+        		try {
+        			date = new Date(DateUtils.parseDate(text, "yyyyMMdd").getTime());
+        			setValue(date);
+        		} catch (ParseException e) {
+        			throw new IllegalArgumentException("错误的日期字符串！", e);
+        		}
+        	}
+        });
+    }
+	
+	/**
+	 * 进入部门树页面
+	 * @return
+	 */
+	@RequestMapping("/treePage")
+	public ModelAndView treePage(){
+		ModelAndView mv = new ModelAndView("users/tree");
+		return mv;
+	}
+	/**
+	 * 进入列表页面
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/{id}/{isParent}/list")
+	public ModelAndView showList(@PathVariable("id") String id, @PathVariable("isParent") String isParent) {
+		ModelAndView mv = new ModelAndView("users/list");
+		mv.addObject("departmentId", id);
+		mv.addObject("isParent", isParent);
+		return mv;
+	}
+
+	/**
+	 * 列表显示
+	 * 
+	 * @param entp
+	 * @return
+	 */
+	@RequestMapping(value = "/searchdata")
+	@ResponseBody
+	@Logger(action = "查询方法", logger = "用户信息及对应的部门")
+	public Map<String, Object> searchData(Users user,String departmentIds,String ageBeg,String ageEnd,
+			@RequestParam("P_pagesize") Integer pageSize, @RequestParam("P_pageNumber") Integer pageNumber,
+			@RequestParam("sord") String sort) throws Exception {
+		PageRequest pageRequest = buildPageRequest();
+		Page<Map<String, String>> pageInfo = (Page<Map<String, String>>) service.listAll(user, ageBeg,ageEnd,departmentIds,pageRequest);
+		return DataUtils.pageToMap(pageInfo);
+	}
+
+	/**
+	 * 进入新增页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/{departmentId}/new")
+	public ModelAndView editNew(@PathVariable("departmentId") String departmentId) {
+		ModelAndView mv = new ModelAndView("users/new");
+		mv.addObject("departmentId", departmentId);
+		return mv;
+	}
+
+	/**
+	 * 进入查看页面
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/{id}/show")
+	@Logger(action = "查看", logger = "${id}")
+	public ModelAndView show(@PathVariable("id") Long id) {
+		Users user = getService().selectOne(id);
+		ModelAndView mav = new ModelAndView("users/show");
+		mav.addObject("model", user);
+		return mav;
+
+	}
+	/**
+	 *新增方法
+	 *使用JSR-303进行校验@valid
+	 *一个@valid的参数后必须紧跟BindingResult参数
+	 * @param model
+	 * @return
+	 * @throws WebUIException
+	 */
+	@Logger(action="添加",logger="${id}")
+	@RequestMapping(value="/createUser")
+	public ModelAndView create(@Valid Users user, BindingResult result) throws WebUIException {
+		if(result.hasErrors()) {
+            return new ModelAndView("error");
+        }
+		service.insert(user);
+		
+		Department department=departmentSevice.selectOne(Long.valueOf(user.getDepartmentId()));
+		department.setIsLeaf("1");
+		departmentSevice.update(department);
+		return successView();
+	}
+	/**
+	 * 多数据源事务控制
+	 * @param user
+	 * @param result
+	 * @return
+	 * @throws WebUIException
+	 */
+	@RequestMapping(value="/createUserT")
+	@ResponseBody
+	public ModelAndView createUser(@Valid Users user, BindingResult result) throws WebUIException {
+		if(result.hasErrors()) {
+            return new ModelAndView("error");
+        }
+		service.insertUser(user);
+		
+		Department department=departmentSevice.selectOne(Long.valueOf(user.getDepartmentId()));
+		department.setIsLeaf("1");
+		departmentSevice.update(department);
+		return successView();
+	}
+	/**
+	 * 删除方法
+	 * @param model
+	 * @return
+	 * @throws WebUIException
+	 */
+	@Logger(action="删除",logger="${id}")
+	@RequestMapping(value="/destoryUser/${id}")
+	public ModelAndView destroy(@PathVariable("id") Long id) throws WebUIException {
+		getService().delete(id);
+		Users user=service.selectOne(id);
+		Department department=departmentSevice.selectOne(Long.valueOf(user.getDepartmentId()));
+		department.setIsLeaf("0");
+		departmentSevice.update(department);
+		return successView();
+	}
+	/**
+	 * 进入修改用户密码页面
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/changePwdPage")
+	@Logger(action = "查看", logger = "changePwdPage")
+	public ModelAndView changePwdPage() {
+		ModelAndView mav = new ModelAndView("users/changePwdPage");
+		return mav;
+
+	}
+	@RequestMapping(value = "/updatePassword")
+	public Map<String,Object>updatePassword(String password,String oldpassword){
+		try {
+			IUser users =LoginSecurityUtil.getUser();
+			
+			authService.modifyPassword(users, oldpassword, password);
+			return DataUtils.success("修改成功");
+		} catch (Exception e) {
+			return DataUtils.success(e.getMessage());
+		}
+		
+	}
+	
+}

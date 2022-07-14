@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.shebeisyn.dao.CameraSynMapper">
+	<!-- 摄像机设备基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.Camera">
+		<id column="ID" jdbcType="CHAR" property="id" />
+	    <result column="CBD_CUS_NUMBER" jdbcType="CHAR" property="cbdCusNumber" />
+	    <result column="CBD_NAME" jdbcType="CHAR" property="cbdName" />
+	    <result column="CBD_TYPE_INDC" jdbcType="CHAR" property="cbdTypeIndc" />
+	    <result column="CBD_BRAND_NAME" jdbcType="CHAR" property="cbdBrandName" />
+	    <result column="CBD_DVR_IDNTY" jdbcType="CHAR" property="cbdDvrIdnty" />
+	    <result column="CBD_DVR_CHNNL_IDNTY" jdbcType="CHAR" property="cbdDvrChnnlIdnty" />
+	    <result column="CBD_MTRX_IDNTY" jdbcType="CHAR" property="cbdMtrxIdnty" />
+	    <result column="CBD_MTRX_CHNNL_IDNTY" jdbcType="CHAR" property="cbdMtrxChnnlIdnty" />
+	    <result column="CBD_STREAM_MEDIA_IDNTY" jdbcType="CHAR" property="cbdStreamMediaIdnty" />
+	    <result column="CBD_PRE_NEME" jdbcType="CHAR" property="cbdPreNeme" />
+	    <result column="CBD_ADDRS_CODE" jdbcType="CHAR" property="cbdAddrsCode" />
+	    <result column="CBD_IP_ADDRS" jdbcType="CHAR" property="cbdIpAddrs" />
+	    <result column="CBD_DPRTMNT" jdbcType="CHAR" property="cbdDprtmnt" />
+	    <result column="CBD_AREA_ID" jdbcType="CHAR" property="cbdAreaId" />
+	    <result column="CBD_AREA" jdbcType="CHAR" property="cbdArea" />
+	    <result column="CBD_DPRTMNT_SRNO" jdbcType="DECIMAL" property="cbdDprtmntSrno" />
+	    <result column="CBD_STTS_INDC" jdbcType="CHAR" property="cbdSttsIndc" />
+	    <result column="CBD_DVC_ADDRS" jdbcType="CHAR" property="cbdDvcAddrs" />
+	    <result column="CBD_ANALYSE_CHNNL_IDNTY" jdbcType="CHAR" property="cbdAnalyseChnnlIdnty" />
+	    <result column="CBD_ACTION_INDC" jdbcType="CHAR" property="cbdActionIndc" />
+	    <result column="CBD_CRTE_TIME" jdbcType="TIMESTAMP" property="cbdCrteTime" />
+	    <result column="CBD_CRTE_USER_ID" jdbcType="CHAR" property="cbdCrteUserId" />
+	    <result column="CBD_UPDT_TIME" jdbcType="TIMESTAMP" property="cbdUpdtTime" />
+	    <result column="CBD_UPDT_USER_ID" jdbcType="CHAR" property="cbdUpdtUserId" />
+	    <result column="CBD_STREAM_TYPE" jdbcType="CHAR" property="cbdStreamType" />
+	    <result column="CBD_USE_LIMIT" jdbcType="CHAR" property="cbdUseLimit" />
+	    <result column="CBD_PLATFORM_IDNTY" jdbcType="CHAR" property="cbdPlatformIdnty" />
+	    <result column="CBD_PLATFORM" jdbcType="CHAR" property="cbdPlatform" />
+	    <result column="CBD_VIDEO_PLAY_INDC" jdbcType="CHAR" property="cbdVideoPlayIndc" />
+	    <result column="CBD_VIDEO_PLAYBACK_INDC" jdbcType="CHAR" property="cbdVideoPlaybackIndc" />
+	    <result column="CBD_ORDER" jdbcType="DECIMAL" property="cbdOrder" />
+	    <result column="CBD_PORT" jdbcType="CHAR" property="cbdPort" />
+	    <result column="CBD_USER_NAME" jdbcType="CHAR" property="cbdUserName" />
+	    <result column="CBD_USER_PASSWORD" jdbcType="CHAR" property="cbdUserPassword" />
+	    <result column="CBD_CHNNL_IDNTY" jdbcType="CHAR" property="cbdChnnlIdnty" />
+	    <result column="CBD_OUT_SIDE" jdbcType="CHAR" property="cbdOutSide" />
+	    <result column="CBD_TALKBACK_ID" jdbcType="CHAR" property="cbdTalkbackId" />
+	    <result column="CBD_TALKBACK_NAME" jdbcType="CHAR" property="cbdTalkbackName" />
+	    <result column="CBD_TIME_VALID" jdbcType="CHAR" property="cbdTimeValid" />
+	    <result column="CBD_VALID_STARTTIME" jdbcType="CHAR" property="cbdValidStarttime" />
+	    <result column="CBD_VALID_ENDTIME" jdbcType="CHAR" property="cbdValidEndtime" />
+	    <result column="CBD_ADDRS" jdbcType="CHAR" property="cbdAddrs" />
+	</resultMap>
+	
+
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.rlsb.dao.RlsbNowMapper">
+    <delete id="deleteBeforNowTimeOfDay">
+        delete from T_RLSB_HMD_NOW
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND CUS_NUMBER = #{cusNumber}
+            </if>
+            <if test="st != null and st != ''">
+                AND to_char(ST,'yyyy-MM-dd HH24:mi:ss') &lt;= to_char(#{st},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+        </where>
+    </delete>
+
+
+	
+
+</mapper>

@@ -1,0 +1,127 @@
+/* CSS Document */
+
+
+body{
+	font-size:12px;
+	color:#000;
+}
+
+
+h1{
+	font-family:"微软雅黑";
+	font-size:22px;
+	font-weight:normal;
+}
+h3{
+	font-family:"微软雅黑";
+	font-size:14px;
+	font-weight:normal;
+}
+h4{font:18px/25px "microsoft Yahei";
+}
+
+h2{
+	font-family:"微软雅黑";
+	font-size:12px;
+}
+h5{
+	font-family:"微软雅黑";
+	font-size:15px;
+	font-weight:normal;
+}
+h6{
+	font-family:"微软雅黑";
+	font-size:12px;
+}
+
+h1,h2,h3,h4,h5,h6,ul,form,p,table,td,tr {
+	margin: 0;
+	padding: 0;
+}
+
+img { border: 0;}
+li { list-style: none;}
+a {
+	color:#434343;
+	cursor:pointer;
+	text-decoration:none;
+    outline:none; 
+}
+
+:focus{outline:0;}
+
+.F-left{ float:left;height:100%;}
+
+.F-right{ float:right;}
+
+.clear{ clear:both;}
+
+.map .title-position{
+	position: absolute;
+	width: 100%;
+	height: 35px;
+    /* top: 8px; */
+    /*left: 43px;*/
+    font-size: 23px;
+    color: #fff;
+    display: none;
+	/*border: 1px solid #00ff00;*/
+}
+.map .title-position .title-logo {
+	float: left;
+	height: 5px;
+    width: 24px;
+    background-color: #355fea;
+	top: 50%;
+	transform: translate(0, -50%);
+    position: absolute;
+    /*top: 13px;
+    left: -28px;*/
+}
+
+.map .title-position .title-content {
+	width: calc(100% - 24px);
+	float: left;
+	font-size: 22px;
+	font-family: "Microsoft Yahei", Arial;
+	margin: 1px 0px 1px 28px;
+	position: absolute;
+}
+
+.map .title-position span > a {
+	font-size: 22px;
+	/*font-weight: bold;*/
+	font-family: "Microsoft Yahei", Arial;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.map .title-position span > a:hover {
+	color: #00fff6;
+}
+
+.imageboxall_abs{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+}
+
+.imageboxall_abs img{
+	width:100%;
+	height:100%;
+}
+
+.imageboxall_abs .coral-dialog{
+	z-index: 200;
+}
+
+.map .map3d_container {
+	height: 100%;
+	width: 100%;
+}
+
+.map .video_container {
+	height: 100%;
+	width: 100%;
+}

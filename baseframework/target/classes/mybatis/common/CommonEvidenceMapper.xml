@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.CommonEvidenceMapper">
+
+	<select id="getById" resultType="com.cesgroup.prison.common.entity.CommonEvidenceEntity">		
+		SELECT A.* FROM CDS_EVIDENCE_INFO A WHERE A.ID = #{id}
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.common.entity.CommonEvidenceEntity" resultType="com.cesgroup.prison.common.entity.CommonEvidenceEntity">
+		SELECT A.* FROM CDS_EVIDENCE_INFO A 
+		<where>
+			<if test="einCusNumber != null and einCusNumber != ''">
+				A.EIN_CUS_NUMBER = #{einCusNumber}
+			</if>
+			<if test="einCrteStartTime != null and einCrteStartTime != ''">
+				A.EIN_CRTE_TIME &gt;= #{einCrteStartTime}
+			</if>
+			<if test="einCrteEndTime != null and einCrteEndTime != ''">
+				A.EIN_CRTE_TIME &lt;= #{einCrteEndTime}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.common.entity.CommonEvidenceEntity" resultType="com.cesgroup.prison.common.entity.CommonEvidenceEntity">		
+		SELECT A.* FROM CDS_EVIDENCE_INFO A 
+		<where>
+			<if test="einCusNumber != null and einCusNumber != ''">
+				A.EIN_CUS_NUMBER = #{einCusNumber}
+			</if>
+		</where>
+	</select>
+</mapper>
