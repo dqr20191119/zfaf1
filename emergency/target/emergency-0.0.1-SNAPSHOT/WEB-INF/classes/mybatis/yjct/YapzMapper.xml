@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YapzMapper">
+	 
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.YapzEntity" resultType="com.cesgroup.prison.yjct.entity.YapzEntity">
+		SELECT A.EPC_ORDER_SEQ 
+		<if test='epcConfigType == "1"'> 
+			, B.* 
+		</if>
+		<if test='epcConfigType == "2"'> 
+			, B.* 
+		</if>
+		FROM CDS_EMERGENCY_PLAN_CONFIG A 
+		<if test='epcConfigType == "1"'> 
+			LEFT JOIN CDS_DISPOSAL_METHOD_INFO B ON B.ID = A.EPC_CONFIG_ITEM_FID 
+		</if>
+		<if test='epcConfigType == "2"'> 
+			LEFT JOIN CDS_WORKGROUP_INFO B ON B.ID = A.EPC_CONFIG_ITEM_FID 
+		</if>
+		<where>			 
+			<if test="epcPlanFid != null and epcPlanFid != ''"> 
+				AND A.EPC_PLAN_FID = #{epcPlanFid} 		
+			</if>
+			<if test="epcConfigType != null and epcConfigType != ''"> 
+				AND A.EPC_CONFIG_TYPE = #{epcConfigType} 		
+			</if>
+			<if test="epcConfigItemFid != null and epcConfigItemFid != ''"> 
+				AND A.EPC_CONFIG_ITEM_FID = #{epcConfigItemFid} 		
+			</if>
+			<if test='actionExist == "0"'> 
+				AND NOT EXISTS(SELECT 1 FROM CDS_EMERGENCY_PLAN_ACTION C WHERE C.EPA_REL_ACTION_FID = A.EPC_CONFIG_ITEM_FID 
+						AND C.EPA_REL_ACTION_TYPE = #{epaRelActionType}
+						AND C.EPA_METHOD_FID = #{epaMethodFid} 
+						AND C.EPA_PLAN_FID = #{epcPlanFid}) 
+			</if>
+			<if test='actionExist == "1"'> 
+				AND EXISTS(SELECT 1 FROM CDS_EMERGENCY_PLAN_ACTION C WHERE C.EPA_REL_ACTION_FID = A.EPC_CONFIG_ITEM_FID 
+						AND C.EPA_REL_ACTION_TYPE = #{epaRelActionType}
+						AND C.EPA_METHOD_FID = #{epaMethodFid} 
+						AND C.EPA_PLAN_FID = #{epcPlanFid}) 
+			</if>
+		</where>
+		ORDER BY A.EPC_ORDER_SEQ 
+	</select>	
+		 
+	<select id="findAllList1" parameterType="com.cesgroup.prison.yjct.entity.YapzEntity" resultType="com.cesgroup.prison.yjct.entity.YapzEntity">
+		SELECT A.* 
+		FROM CDS_EMERGENCY_PLAN_CONFIG A 
+		<where>			 
+			<if test="epcPlanFid != null and epcPlanFid != ''"> 
+				AND A.EPC_PLAN_FID = #{epcPlanFid} 		
+			</if>
+		</where>
+	</select>
+	
+	<select id="deleteByCondition" parameterType="com.cesgroup.prison.yjct.entity.YapzEntity">
+		DELETE FROM CDS_EMERGENCY_PLAN_CONFIG A 
+		<where>
+			<if test="epcPlanFid != null and epcPlanFid != ''"> 
+				AND A.EPC_PLAN_FID = #{epcPlanFid} 		
+			</if>
+			<if test="epcConfigType != null and epcConfigType != ''"> 
+				AND A.EPC_CONFIG_TYPE = #{epcConfigType} 		
+			</if>
+		</where>
+	</select>
+	
+	<select id="batchDeleteByPlanid" parameterType="arraylist">
+		DELETE FROM CDS_EMERGENCY_PLAN_CONFIG A 
+		WHERE A.EPC_PLAN_FID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach>
+	</select>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.FgglMapper">
+	 
+	<select id="getById" resultType="com.cesgroup.prison.yjct.entity.FgglEntity"> 
+		SELECT A.* FROM CDS_LAWS_INFO A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.yjct.entity.FgglEntity" resultType="com.cesgroup.prison.yjct.entity.FgglEntity">
+		SELECT A.* FROM CDS_LAWS_INFO A 
+		WHERE A.LPI_STTS_INDC = 1  
+		<if test="lriCusNumber != null and lriCusNumber != ''"> 
+			AND A.LRI_CUS_NUMBER = #{lriCusNumber} 		
+		</if>
+		<if test="lriLawsName != null and lriLawsName != ''"> 
+			AND A.LRI_LAWS_NAME like '%' || #{lriLawsName} || '%' 		
+		</if>
+		<if test="lriLawsType != null and lriLawsType != ''"> 
+			AND A.LRI_LAWS_TYPE like '%' || #{lriLawsType} || '%' 		
+		</if>
+		<if test="lpiSttsIndc != null and lpiSttsIndc != ''"> 
+			AND A.LPI_STTS_INDC = #{lpiSttsIndc} 		
+		</if>
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.FgglEntity" resultType="com.cesgroup.prison.yjct.entity.FgglEntity">
+		SELECT A.* FROM CDS_LAWS_INFO A 
+		<where>
+			<if test="lriCusNumber != null and lriCusNumber != ''"> 
+				AND A.LRI_CUS_NUMBER = #{lriCusNumber} 		
+			</if>
+			<if test='lpiSttsIndc == "1"'> 
+				AND A.LPI_STTS_INDC = 1  	
+			</if>
+			<if test='actionExist == "0"'> 
+				AND NOT EXISTS(SELECT 1 FROM CDS_EMERGENCY_PLAN_ACTION B WHERE B.EPA_REL_ACTION_FID = A.ID 
+						AND B.EPA_REL_ACTION_TYPE = 5  
+						AND B.EPA_METHOD_FID = #{epaMethodFid} 
+						AND B.EPA_PLAN_FID = #{epaPlanFid}) 
+			</if>
+		</where> 	
+		ORDER BY A.LRI_CRTE_TIME DESC 	
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_LAWS_INFO A SET A.LPI_STTS_INDC = 0  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+</mapper>

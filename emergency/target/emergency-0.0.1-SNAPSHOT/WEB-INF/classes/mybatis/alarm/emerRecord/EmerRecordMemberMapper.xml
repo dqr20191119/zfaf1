@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.alarm.emerRecord.dao.EmerRecordMemberDao">
+    <!-- 应急处置记录的工作组成员基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.alarm.emerRecord.entity.EmerRecordMember">
+        <id column="ID" jdbcType="CHAR" property="id"/>
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="RECORD_ID" jdbcType="CHAR" property="recordId"/>
+        <result column="RECORD_GROUP_ID" jdbcType="CHAR" property="recordGroupId"/>
+        <result column="MEMBER_JOB_NO" jdbcType="CHAR" property="memberJobNo"/>
+        <result column="MEMBER_NAME" jdbcType="CHAR" property="memberName"/>
+        <result column="CALL_NO" jdbcType="CHAR" property="callNo"/>
+        <result column="UNIT_NAME" jdbcType="CHAR" property="unitName"/>
+        <result column="DEPT_NAME" jdbcType="CHAR" property="deptName"/>
+        <result column="CALL_STATUS" jdbcType="CHAR" property="callStatus"/>
+        <result column="CALL_TIME" jdbcType="TIMESTAMP" property="callTime"/>
+        <result column="CALL_RESULT" jdbcType="CHAR" property="callResult"/>
+        <result column="SOURCE" jdbcType="CHAR" property="source"/>
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder"/>
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+
+
+
+    <!-- 根据应急处置记录的处置记录ID、工作组ID、数据状态，查询应急处置记录的工作组成员列表 -->
+    <select id="findByRecordIdAndRecordGroupIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+</mapper>

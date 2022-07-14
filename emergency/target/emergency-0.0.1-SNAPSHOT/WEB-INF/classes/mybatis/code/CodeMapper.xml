@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.code.dao.CodeMapper">
+	
+	<select id="loadGroupCode" resultType="com.cesgroup.prison.code.entity.Code"
+		parameterType="java.lang.String">
+		 select id , PARENT_ID , NAME , CODE_KEY , ORDER_NUMBER , IS_VALID , IS_GROUP , TYPE , GROUP_KEY 
+		 from AUTH.T_C_CODE where CODE_KEY=#{groupKey}
+	</select> 
+	
+	<select id="loadCode" resultType="com.cesgroup.prison.code.entity.Code"
+		parameterType="java.util.HashMap">
+		 select id , PARENT_ID , NAME , CODE_KEY , ORDER_NUMBER , IS_VALID , IS_GROUP , TYPE , GROUP_KEY 
+		 from AUTH.T_C_CODE 
+		 <where>
+		 	<if test="showValid==true">
+		 			and IS_VALID='1'
+		 	</if>
+		 	<if test="codeKey==null or codeKey==''">
+		 		<if test="level==1">
+		 			and PARENT_ID =(select ID from AUTH.T_C_CODE
+						 where CODE_KEY=#{groupKey} )
+		 		</if>
+		 		<if test="level!=1">
+		 			and IS_GROUP=0 and  GROUP_KEY=#{groupKey}
+		 		</if>
+		 	</if>
+		 	<if test="codeKey!=null and codeKey!=''">
+		 		<if test="level==1">
+		 		and IS_GROUP=0 and PARENT_ID =(select id from  AUTH.T_C_CODE
+		 		 where CODE_KEY=#{codeKey} and group_Key=#{groupKey} )
+		 		</if>
+		 		<if test="level!=1">
+		 			 start with PARENT_ID = (select id from  AUTH.T_C_CODE 
+		 			 where CODE_KEY=#{codeKey} and group_Key=#{groupKey} )
+		 			   connect by prior id = parent_id 
+		 		</if>
+		 	</if>
+		 </where>
+		  order by ORDER_NUMBER
+	</select> 
+	
+	<select id="loadCodeSelf" resultType="com.cesgroup.prison.code.entity.Code"
+		parameterType="java.util.HashMap">
+		 select id , PARENT_ID , NAME , CODE_KEY , ORDER_NUMBER , IS_VALID , IS_GROUP , TYPE , GROUP_KEY 
+		 from AUTH.T_C_CODE 
+		where CODE_KEY=#{codeKey} and GROUP_KEY=#{groupKey}
+	</select> 
+</mapper>

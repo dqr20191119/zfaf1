@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YjjlgcMapper">
+	 	 
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.YjjlgcEntity" resultType="com.cesgroup.prison.yjct.entity.YjjlgcEntity">
+		SELECT A.*, B.DMI_METHOD_NAME FROM CDS_EMERGENCY_HANDLE_PROCESS A 
+		LEFT JOIN CDS_DISPOSAL_METHOD_INFO B ON B.ID = A.EHP_METHOD_FID 
+		<where>
+			<if test="ehpHandleFid != null and ehpHandleFid != ''"> 
+				AND A.EHP_HANDLE_FID = #{ehpHandleFid} 		
+			</if>
+			<if test="ehpMethodFid != null and ehpMethodFid != ''"> 
+				AND A.EHP_METHOD_FID = #{ehpMethodFid} 		
+			</if>			 
+		</where>
+		ORDER BY A.EHP_CRTE_TIME  
+	</select>
+	
+	<update id="updateAlarmRecord" parameterType="java.util.HashMap">
+		UPDATE cds_alert_record_dtls
+		   set Ard_Cus_Number = #{cusNumber}, Ard_Oprtr = #{userName}, Ard_Oprtr_Id = #{userId},
+		       Ard_Oprtn_Stts_Indc = 3, Ard_Finish_Sure_Police_Id = #{userId},Ard_Finish_Sure_Police = #{userName},
+		       Ard_Oprtn_Finish_Time = sysdate(), Ard_Oprtn_Time = sysdate(), Ard_Updt_Time = sysdate(),
+		       Ard_Updt_User_Id = #{userId}
+		 where id = #{id}
+	</update>
+		
+</mapper>

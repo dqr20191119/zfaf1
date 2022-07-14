@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.layer.dao.LayerPointsMapper" >
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.layer.entity.LayerPoints" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="LPO_LAYER_ID" property="lpoLayerId" jdbcType="VARCHAR" />
+    <result column="LPO_POINT_X" property="lpoPointX" jdbcType="VARCHAR" />
+    <result column="LPO_POINT_Y" property="lpoPointY" jdbcType="VARCHAR" />
+    <result column="LPO_POINT_Z" property="lpoPointZ" jdbcType="VARCHAR" />
+    <result column="LPO_ORDER" property="lpoOrder" jdbcType="INTEGER" />
+    <result column="LPO_CRTE_USER_ID" property="lpoCrteUserId" jdbcType="VARCHAR" />
+    <result column="LPO_CRTE_TIME" property="lpoCrteTime" jdbcType="TIMESTAMP" />
+    <result column="LPO_UPDT_USER_ID" property="lpoUpdtUserId" jdbcType="VARCHAR" />
+    <result column="LPO_UPDT_TIME" property="lpoUpdtTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByLayerId" parameterType="String">
+  	DELETE CDS_ALARM_LAYER_POINTS WHERE LPO_LAYER_ID = #{id}
+  </delete>
+  <select id="findByLayerId" parameterType="String" resultMap="BaseResultMap">
+  	SELECT * FROM CDS_ALARM_LAYER_POINTS WHERE LPO_LAYER_ID = #{id}
+  	ORDER BY LPO_ORDER ASC 
+  </select>
+</mapper>

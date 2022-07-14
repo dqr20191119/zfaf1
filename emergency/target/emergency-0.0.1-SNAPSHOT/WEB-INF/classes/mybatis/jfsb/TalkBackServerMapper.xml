@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.TalkBackServerMapper">
+
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT b.id as id,tse_cus_number,tse_idnty,tse_name,tse_brand,
+		tse_sn,tse_ip,tse_pc_ip,tse_user,tse_pwd,tse_area_id,
+		tse_area,tse_dprtmnt_id,tse_dprtmnt,tse_seq_num,
+		tse_action_indc,tse_stts_indc,tse_remark,tse_parent_id, 
+		(select tse_name from dvc_talkback_server a where a.id = b.tse_parent_id) as tse_parent_name 
+		FROM dvc_talkback_server b
+		<where>
+			<if test="talkBackServerEntity.tseCusNumber!=null and talkBackServerEntity.tseCusNumber!=''">
+				AND (TRIM(#{talkBackServerEntity.tseCusNumber}) is null or tse_cus_number = #{talkBackServerEntity.tseCusNumber})
+			</if>
+			<if test="talkBackServerEntity.id!=null and talkBackServerEntity.id!=''">
+				AND (TRIM(#{talkBackServerEntity.id}) is null or id = #{talkBackServerEntity.id})
+			</if>
+			<if test="talkBackServerEntity.tseName!=null and talkBackServerEntity.tseName!=''">
+				AND tse_name like concat('%', #{talkBackServerEntity.tseName},'%')
+			</if>
+			<if test="talkBackServerEntity.tseAreaId != null and talkBackServerEntity.tseAreaId!='' ">
+				AND tse_area_id = #{talkBackServerEntity.tseAreaId}
+			</if>
+			<if test="talkBackServerEntity.tseDprtmntId != null and talkBackServerEntity.tseDprtmntId!='' ">
+				AND tse_dprtmnt_id = #{talkBackServerEntity.tseDprtmntId}
+			</if>
+			<if test="talkBackServerEntity.tseSttsIndc != null and talkBackServerEntity.tseSttsIndc!='' ">
+				AND tse_stts_indc = #{talkBackServerEntity.tseSttsIndc}
+			</if>
+			<if test="talkBackServerEntity.tseParentId != null and talkBackServerEntity.tseParentId!='' ">
+				AND tse_parent_id = #{talkBackServerEntity.tseParentId}
+			</if>
+			AND tse_action_indc != '3'
+		</where>
+	</select>
+	
+	
+	<select id="findTalkbackServerSum" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT  
+		COUNT(1) || '' as sum
+		FROM
+		dvc_talkback_server
+		<where>
+			<if test="talkBackServerEntity.tseCusNumber!=null and talkBackServerEntity.tseCusNumber!=''">
+				AND (TRIM(#{talkBackServerEntity.tseCusNumber}) is null or tse_cus_number = #{talkBackServerEntity.tseCusNumber})
+			</if>
+			<if test="talkBackServerEntity.tseIdnty != null and talkBackServerEntity.tseIdnty!='' ">
+				AND tse_idnty = #{talkBackServerEntity.tseIdnty}
+			</if>
+			AND tse_action_indc != '3'
+		</where>
+	</select>
+
+	<!-- 逻辑删除对讲主机数据 -->
+	<update id="deleteById" parameterType="java.util.HashMap">
+		UPDATE dvc_talkback_server
+		<set>
+			<if test="talkBackServerEntity.tseActionIndc != null and talkBackServerEntity.tseActionIndc!='' ">
+				tse_action_indc = #{talkBackServerEntity.tseActionIndc},
+			</if>
+			<if test="talkBackServerEntity.tseUpdtTime != null and talkBackServerEntity.tseUpdtTime!='' ">
+				tse_updt_time = #{talkBackServerEntity.tseUpdtTime},
+			</if>
+			<if test="talkBackServerEntity.tseUpdtUserId != null and talkBackServerEntity.tseUpdtUserId!='' ">
+				tse_updt_user_id = #{talkBackServerEntity.tseUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="talkBackServerEntity.id!=null and talkBackServerEntity.id!=''">
+				AND (TRIM(#{talkBackServerEntity.id}) is null or id = #{talkBackServerEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据主机id tbd_main_idnty 逻辑删除对讲分机数据 -->
+	<update id="deleteByIdForBase" parameterType="java.util.HashMap">
+		UPDATE dvc_talkback_base_dtls
+		<set>
+			<if test="talkBackServerEntity.tseActionIndc != null and talkBackServerEntity.tseActionIndc!='' ">
+				tbd_action_indc = #{talkBackServerEntity.tseActionIndc},
+			</if>
+			<if test="talkBackServerEntity.tseUpdtTime != null and talkBackServerEntity.tseUpdtTime!='' ">
+				tbd_updt_time = #{talkBackServerEntity.tseUpdtTime},
+			</if>
+			<if test="talkBackServerEntity.tseUpdtUserId != null and talkBackServerEntity.tseUpdtUserId!='' ">
+				tbd_updt_user_id = #{talkBackServerEntity.tseUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="talkBackServerEntity.id!=null and talkBackServerEntity.id!=''">
+				AND (TRIM(#{talkBackServerEntity.id}) is null or TBD_MAIN_IDNTY = #{talkBackServerEntity.id})
+			</if>
+		</where>
+	</update>
+
+	 
+
+
+	<!-- 树数据 根据监狱号获取信息 -->
+	<select id="searchTreeData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "id" ,
+		tse_name As "name"
+		FROM
+		dvc_talkback_server
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND tse_cus_number = #{cusNumber} AND tse_action_indc != '3'
+			</if>
+		</where>
+	</select>
+
+
+
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE dvc_talkback_server
+		<set>
+			<if test="talkBackServerEntity.tseCusNumber != null and talkBackServerEntity.tseCusNumber!='' ">
+				tse_cus_number = #{talkBackServerEntity.tseCusNumber},
+			</if>
+
+			<if test="talkBackServerEntity.tseIdnty != null and talkBackServerEntity.tseIdnty!='' ">
+				tse_idnty = #{talkBackServerEntity.tseIdnty},
+			</if>
+
+			<if test="talkBackServerEntity.tseName != null and talkBackServerEntity.tseName!='' ">
+				tse_name = #{talkBackServerEntity.tseName},
+			</if>
+
+			<if test="talkBackServerEntity.tseBrand != null and talkBackServerEntity.tseBrand!='' ">
+				tse_brand = #{talkBackServerEntity.tseBrand},
+			</if>
+
+			<if test="talkBackServerEntity.tseSn != null and talkBackServerEntity.tseSn!='' ">
+				tse_sn = #{talkBackServerEntity.tseSn},
+			</if>
+
+			<if test="talkBackServerEntity.tseIp != null and talkBackServerEntity.tseIp!='' ">
+				tse_ip = #{talkBackServerEntity.tseIp},
+			</if>
+
+			<if test="talkBackServerEntity.tsePcIp != null  ">
+				tse_pc_ip = #{talkBackServerEntity.tsePcIp},
+			</if>
+
+			<if test="talkBackServerEntity.tseUser != null and talkBackServerEntity.tseUser!='' ">
+				tse_user = #{talkBackServerEntity.tseUser},
+			</if>
+
+			<if test="talkBackServerEntity.tsePwd != null and talkBackServerEntity.tsePwd!='' ">
+				tse_pwd = #{talkBackServerEntity.tsePwd},
+			</if>
+
+			<if test="talkBackServerEntity.tseAreaId != null and talkBackServerEntity.tseAreaId!='' ">
+				tse_area_id = #{talkBackServerEntity.tseAreaId},
+			</if>
+
+			<if test="talkBackServerEntity.tseArea != null and talkBackServerEntity.tseArea!='' ">
+				tse_area = #{talkBackServerEntity.tseArea},
+			</if>
+
+			<if test="talkBackServerEntity.tseDprtmntId != null and talkBackServerEntity.tseDprtmntId!='' ">
+				tse_dprtmnt_id = #{talkBackServerEntity.tseDprtmntId},
+			</if>
+
+			<if test="talkBackServerEntity.tseDprtmnt != null and talkBackServerEntity.tseDprtmnt!='' ">
+				tse_dprtmnt = #{talkBackServerEntity.tseDprtmnt},
+			</if>
+
+			<if test="talkBackServerEntity.tseSeqNum != null and talkBackServerEntity.tseSeqNum!='' ">
+				tse_seq_num = #{talkBackServerEntity.tseSeqNum},
+			</if>
+
+			<if test="talkBackServerEntity.tseActionIndc != null and talkBackServerEntity.tseActionIndc!='' ">
+				tse_action_indc = #{talkBackServerEntity.tseActionIndc},
+			</if>
+
+			<if test="talkBackServerEntity.tseSttsIndc != null and talkBackServerEntity.tseSttsIndc!='' ">
+				tse_stts_indc = #{talkBackServerEntity.tseSttsIndc},
+			</if>
+
+			<if test="talkBackServerEntity.tseRemark != null and talkBackServerEntity.tseRemark!='' ">
+				tse_remark = #{talkBackServerEntity.tseRemark},
+			</if>
+
+			<if test="talkBackServerEntity.tseUpdtTime != null and talkBackServerEntity.tseUpdtTime!='' ">
+				tse_updt_time = #{talkBackServerEntity.tseUpdtTime},
+			</if>
+
+			<if test="talkBackServerEntity.tseUpdtUserId != null and talkBackServerEntity.tseUpdtUserId!='' ">
+				tse_updt_user_id = #{talkBackServerEntity.tseUpdtUserId},
+			</if>
+			
+			<if test="talkBackServerEntity.tseParentId != null and talkBackServerEntity.tseParentId!='' ">
+				tse_parent_id = #{talkBackServerEntity.tseParentId}
+			</if>
+		</set>
+		<where>
+			<if test="talkBackServerEntity.id !=null and talkBackServerEntity.id !=''">
+				AND (TRIM(#{talkBackServerEntity.id}) is null or id = #{talkBackServerEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据监狱编号查询主机 -->
+	<select id="findByCusNumber" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "id" ,
+		tse_name As "name",
+		tse_idnty AS "number"
+		FROM
+		dvc_talkback_server
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND tse_cus_number = #{cusNumber} AND tse_action_indc != '3'
+			</if>
+		</where>
+	</select>
+
+	 
+	<select id="findInfoByCusNumberAndPcIpAndBaseIdnty" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT TSE_IDNTY, TSE_BRAND
+		FROM
+		dvc_talkback_server  
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND tse_cus_number = #{cusNumber}  AND tse_action_indc != '3'
+			</if>
+			<if test="ip != null and ip!='' ">
+				AND tse_pc_ip like concat('%,', #{ip}, ',%')
+			</if>
+		</where>
+	</select>
+
+	<select id="findRepeatIpsWhenAdd" resultType="java.lang.String" parameterType="java.lang.String">
+		<![CDATA[
+			select regexp_substr(#{value}, '[^,]+', 1, rownum) tse_pc_ip
+			from dual
+			connect by rownum <= length(regexp_replace(#{value}, '[^,]+')) +1
+			intersect
+			select regexp_substr(tse_pc_ip, '[^,]+', 1, rownum) tse_pc_ip
+			from (
+					select LISTAGG( tse_pc_ip, ',') WITHIN GROUP(ORDER BY id) as tse_pc_ip
+					from prison.DVC_TALKBACK_SERVER
+					where tse_pc_ip is not null
+				  )
+			connect by rownum <= length(regexp_replace(tse_pc_ip, '[^,]+')) + 1
+		]]>
+	</select>
+
+
+	<select id="findRepeatIpsWhenUpdate" resultType="java.lang.String" parameterType="java.util.HashMap">
+		<![CDATA[
+				select regexp_substr(#{tsePcIp}, '[^,]+', 1, rownum) tse_pc_ip
+				from dual
+				connect by rownum <= length(regexp_replace(#{tsePcIp}, '[^,]+')) +1
+				intersect
+				select regexp_substr(tse_pc_ip, '[^,]+', 1, rownum) tse_pc_ip
+				from (
+						select LISTAGG( tse_pc_ip, ',') WITHIN GROUP(ORDER BY id) as tse_pc_ip
+						from prison.DVC_TALKBACK_SERVER
+						where tse_pc_ip is not null and  id != #{id}
+					  )
+				connect by rownum <= length(regexp_replace(tse_pc_ip, '[^,]+')) + 1
+		]]>
+	</select>
+
+
+
+
+</mapper>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.route.dao.CdsRoamPointRltnMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.route.entity.CdsRoamPointRltn">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RPR_ROAM_IDNTY" jdbcType="CHAR" property="rprRoamIdnty" />
+    <result column="RPR_POINT_NAME" jdbcType="CHAR" property="rprPointName" />
+    <result column="RPR_CRTE_TIME" jdbcType="TIMESTAMP" property="rprCrteTime" />
+    <result column="RPR_CRTE_USER_ID" jdbcType="CHAR" property="rprCrteUserId" />
+    <result column="RPR_UPDT_TIME" jdbcType="TIMESTAMP" property="rprUpdtTime" />
+    <result column="RPR_UPDT_USER_ID" jdbcType="CHAR" property="rprUpdtUserId" />
+    <result column="RPR_CUS_NUMBER" jdbcType="VARCHAR" property="rprCusNumber" />
+    <result column="RPR_EQUIPMENT_ID" jdbcType="VARCHAR" property="rprEquipmentId" />
+    <result column="CBD_NAME" jdbcType="VARCHAR" property="rprEquipmentName" />
+    <result column="RPR_ROUTE_SPEED" jdbcType="DOUBLE" property="rprRouteSpeed" />
+    <result column="RPR_POSITION_X" jdbcType="DOUBLE" property="rprPositionX" />
+    <result column="RPR_POSITION_Y" jdbcType="DOUBLE" property="rprPositionY" />
+    <result column="RPR_POSITION_Z" jdbcType="DOUBLE" property="rprPositionZ" />
+    <result column="RPR_ANGLE_HEAD" jdbcType="DOUBLE" property="rprAngleHead" />
+    <result column="RPR_ANGLE_TILT" jdbcType="DOUBLE" property="rprAngleTilt" />
+    <result column="RPR_ORDER" jdbcType="INTEGER" property="rprOrder" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, RPR_ROAM_IDNTY, RPR_POINT_NAME, RPR_CRTE_TIME, RPR_CRTE_USER_ID, RPR_UPDT_TIME, 
+    RPR_UPDT_USER_ID,RPR_CUS_NUMBER, RPR_EQUIPMENT_ID, RPR_ROUTE_SPEED, RPR_POSITION_X, 
+    RPR_POSITION_Y, RPR_POSITION_Z, RPR_ANGLE_HEAD, RPR_ANGLE_TILT, RPR_ORDER
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_ROAM_POINT_RLTN
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CDS_ROAM_POINT_RLTN
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertPoint" parameterType="com.cesgroup.prison.route.entity.CdsRoamPointRltn">
+    insert into CDS_ROAM_POINT_RLTN (ID, RPR_ROAM_IDNTY, RPR_POINT_NAME, 
+      RPR_CRTE_TIME, RPR_CRTE_USER_ID, RPR_UPDT_TIME, 
+      RPR_UPDT_USER_ID, RPR_CUS_NUMBER, RPR_EQUIPMENT_ID, 
+      RPR_ROUTE_SPEED, RPR_POSITION_X, RPR_POSITION_Y, 
+      RPR_POSITION_Z, RPR_ANGLE_HEAD, RPR_ANGLE_TILT, 
+      RPR_ORDER)
+    values (#{id,jdbcType=VARCHAR}, #{rprRoamIdnty,jdbcType=CHAR}, #{rprPointName,jdbcType=CHAR}, 
+      #{rprCrteTime,jdbcType=TIMESTAMP}, #{rprCrteUserId,jdbcType=CHAR}, #{rprUpdtTime,jdbcType=TIMESTAMP}, 
+      #{rprUpdtUserId,jdbcType=CHAR}, #{rprCusNumber,jdbcType=VARCHAR}, #{rprEquipmentId,jdbcType=VARCHAR}, 
+      #{rprRouteSpeed,jdbcType=DOUBLE}, #{rprPositionX,jdbcType=DOUBLE}, #{rprPositionY,jdbcType=DOUBLE}, 
+      #{rprPositionZ,jdbcType=DOUBLE}, #{rprAngleHead,jdbcType=DOUBLE}, #{rprAngleTilt,jdbcType=DOUBLE}, 
+      #{rprOrder,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelectivePoint" parameterType="com.cesgroup.prison.route.entity.CdsRoamPointRltn">
+    insert into CDS_ROAM_POINT_RLTN
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="rprRoamIdnty != null">
+        RPR_ROAM_IDNTY,
+      </if>
+      <if test="rprPointName != null">
+        RPR_POINT_NAME,
+      </if>
+      <if test="rprCrteTime != null">
+        RPR_CRTE_TIME,
+      </if>
+      <if test="rprCrteUserId != null">
+        RPR_CRTE_USER_ID,
+      </if>
+      <if test="rprUpdtTime != null">
+        RPR_UPDT_TIME,
+      </if>
+      <if test="rprUpdtUserId != null">
+        RPR_UPDT_USER_ID,
+      </if>
+      <if test="rprCusNumber != null">
+        RPR_CUS_NUMBER,
+      </if>
+      <if test="rprEquipmentId != null">
+        RPR_EQUIPMENT_ID,
+      </if>
+      <if test="rprRouteSpeed != null">
+        RPR_ROUTE_SPEED,
+      </if>
+      <if test="rprPositionX != null">
+        RPR_POSITION_X,
+      </if>
+      <if test="rprPositionY != null">
+        RPR_POSITION_Y,
+      </if>
+      <if test="rprPositionZ != null">
+        RPR_POSITION_Z,
+      </if>
+      <if test="rprAngleHead != null">
+        RPR_ANGLE_HEAD,
+      </if>
+      <if test="rprAngleTilt != null">
+        RPR_ANGLE_TILT,
+      </if>
+      <if test="rprOrder != null">
+        RPR_ORDER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="rprRoamIdnty != null">
+        #{rprRoamIdnty,jdbcType=CHAR},
+      </if>
+      <if test="rprPointName != null">
+        #{rprPointName,jdbcType=CHAR},
+      </if>
+      <if test="rprCrteTime != null">
+        #{rprCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rprCrteUserId != null">
+        #{rprCrteUserId,jdbcType=CHAR},
+      </if>
+      <if test="rprUpdtTime != null">
+        #{rprUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rprUpdtUserId != null">
+        #{rprUpdtUserId,jdbcType=CHAR},
+      </if>
+      <if test="rprCusNumber != null">
+        #{rprCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="rprEquipmentId != null">
+        #{rprEquipmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="rprRouteSpeed != null">
+        #{rprRouteSpeed,jdbcType=DOUBLE},
+      </if>
+      <if test="rprPositionX != null">
+        #{rprPositionX,jdbcType=DOUBLE},
+      </if>
+      <if test="rprPositionY != null">
+        #{rprPositionY,jdbcType=DOUBLE},
+      </if>
+      <if test="rprPositionZ != null">
+        #{rprPositionZ,jdbcType=DOUBLE},
+      </if>
+      <if test="rprAngleHead != null">
+        #{rprAngleHead,jdbcType=DOUBLE},
+      </if>
+      <if test="rprAngleTilt != null">
+        #{rprAngleTilt,jdbcType=DOUBLE},
+      </if>
+      <if test="rprOrder != null">
+        #{rprOrder,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cesgroup.prison.route.entity.CdsRoamPointRltn">
+    update CDS_ROAM_POINT_RLTN
+    <set>
+      <if test="rprRoamIdnty != null">
+        RPR_ROAM_IDNTY = #{rprRoamIdnty,jdbcType=CHAR},
+      </if>
+      <if test="rprPointName != null">
+        RPR_POINT_NAME = #{rprPointName,jdbcType=CHAR},
+      </if>     
+        RPR_UPDT_TIME = now(),
+      <if test="rprUpdtUserId != null">
+        RPR_UPDT_USER_ID = #{rprUpdtUserId,jdbcType=CHAR},
+      </if>
+      <if test="rprCusNumber != null">
+       RPR_CUS_NUMBER = #{rprCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="rprEquipmentId != null">
+        RPR_EQUIPMENT_ID = #{rprEquipmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="rprRouteSpeed != null">
+        RPR_ROUTE_SPEED = #{rprRouteSpeed,jdbcType=DOUBLE},
+      </if>
+      <if test="rprPositionX != null">
+        RPR_POSITION_X = #{rprPositionX,jdbcType=DOUBLE},
+      </if>
+      <if test="rprPositionY != null">
+        RPR_POSITION_Y = #{rprPositionY,jdbcType=DOUBLE},
+      </if>
+      <if test="rprPositionZ != null">
+        RPR_POSITION_Z = #{rprPositionZ,jdbcType=DOUBLE},
+      </if>
+      <if test="rprAngleHead != null">
+        RPR_ANGLE_HEAD = #{rprAngleHead,jdbcType=DOUBLE},
+      </if>
+      <if test="rprAngleTilt != null">
+        RPR_ANGLE_TILT = #{rprAngleTilt,jdbcType=DOUBLE},
+      </if>
+      <if test="rprOrder != null">
+        RPR_ORDER = #{rprOrder,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cesgroup.prison.route.entity.CdsRoamPointRltn">
+    update CDS_ROAM_POINT_RLTN
+    set RPR_ROAM_IDNTY = #{rprRoamIdnty,jdbcType=CHAR},
+      RPR_POINT_NAME = #{rprPointName,jdbcType=CHAR},
+      RPR_CRTE_TIME = #{rprCrteTime,jdbcType=TIMESTAMP},
+      RPR_CRTE_USER_ID = #{rprCrteUserId,jdbcType=CHAR},
+      RPR_UPDT_TIME = #{rprUpdtTime,jdbcType=TIMESTAMP},
+      RPR_UPDT_USER_ID = #{rprUpdtUserId,jdbcType=CHAR},
+      RPR_CUS_NUMBER = #{rprCusNumber,jdbcType=VARCHAR},
+      RPR_EQUIPMENT_ID = #{rprEquipmentId,jdbcType=VARCHAR},
+      RPR_ROUTE_SPEED = #{rprRouteSpeed,jdbcType=DOUBLE},
+      RPR_POSITION_X = #{rprPositionX,jdbcType=DOUBLE},
+      RPR_POSITION_Y = #{rprPositionY,jdbcType=DOUBLE},
+      RPR_POSITION_Z = #{rprPositionZ,jdbcType=DOUBLE},
+      RPR_ANGLE_HEAD = #{rprAngleHead,jdbcType=DOUBLE},
+      RPR_ANGLE_TILT = #{rprAngleTilt,jdbcType=DOUBLE},
+      RPR_ORDER = #{rprOrder,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   
+    <!-- 分页查询 -->
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+  	 select CDS_ROAM_POINT_RLTN.* ,CBD_NAME from CDS_ROAM_POINT_RLTN  left join DVC_CAMERA_BASE_DTLS on RPR_EQUIPMENT_ID=DVC_CAMERA_BASE_DTLS.ID
+	<where>
+		 1=1 
+		 <if test="rprPointName!=null and rprPointName!=''">
+			and  RPR_POINT_NAME like concat('%', #{rprPointName}, '%')
+		 </if>
+		 <if test="rprRoamIdnty!=null and rprRoamIdnty!=''">
+		 	and RPR_ROAM_IDNTY = #{rprRoamIdnty,jdbcType=CHAR}
+		 </if>
+		 <if test="rprEquipmentId!=null and rprEquipmentId!=''">
+		 	and RPR_EQUIPMENT_ID = #{rprEquipmentId,jdbcType=CHAR}
+		 </if>
+		 <if test="rprCusNumber!=null and rprCusNumber!=''">
+		 	and RPR_CUS_NUMBER = #{rprCusNumber,jdbcType=CHAR}
+		 </if>
+	</where>
+	 order by RPR_ROAM_IDNTY desc ,RPR_ORDER asc
+  </select>
+  
+  <select id="selectByRouteId" parameterType="com.cesgroup.prison.route.entity.CdsRoamPointRltn" resultMap="BaseResultMap">
+   select * from CDS_ROAM_POINT_RLTN where RPR_ROAM_IDNTY = #{rprRoamIdnty,jdbcType=CHAR} order by RPR_ORDER;
+  </select>
+</mapper>

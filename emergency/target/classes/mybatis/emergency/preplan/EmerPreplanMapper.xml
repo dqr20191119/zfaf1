@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.preplan.dao.EmerPreplanDao">
+    <!-- 基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.preplan.entity.EmerPreplan">
+        <id column="ID" jdbcType="CHAR" property="id" />
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+        <result column="NAME" jdbcType="CHAR" property="name" />
+        <result column="SOURCE" jdbcType="CHAR" property="source" />
+        <result column="REMARKS" jdbcType="CHAR" property="remarks" />
+        <result column="STATUS" jdbcType="CHAR" property="status" />
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder" />
+        <result column="CREATE_USER_ID" jdbcType="CHAR" property="createUserId" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, NAME, SOURCE, REMARKS, STATUS, SHOW_ORDER, CREATE_USER_ID, CREATE_TIME, UPDATE_USER_ID,
+        UPDATE_TIME
+    </sql>
+
+    <!-- 根据主键ID，查询应急预案工作组 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_PREPLAN T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumber" resultType="java.lang.Integer" useCache="true">
+        SELECT
+          max(T1.SHOW_ORDER)
+        FROM T_EMER_PREPLAN T1
+        WHERE T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR} AND T1.STATUS = '0'
+    </select>
+
+    <!-- 分页查询应急预案工作组列表 -->
+    <select id="findWithPage" resultMap="BaseResultMap" parameterType="java.util.Map" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_PREPLAN T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="preplanName != null and preplanName != ''">
+                <bind name="bName" value="'%'+preplanName+'%'"/>
+                AND T1.NAME LIKE #{bName}
+            </if>
+            <if test="preplanSource != null and preplanSource != ''">
+                AND T1.SOURCE = #{preplanSource, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据监狱编号、应急预案名称、状态，查询应急预案数据 -->
+    <select id="findByCusNumberAndNameAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_PREPLAN T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="name != null">
+                AND T1.NAME = #{name, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据监狱编号、状态，查询应急预案数据 -->
+    <select id="findByCusNumberAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_PREPLAN T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据应急预案ID数组、数据状态，查询预案列表 -->
+    <select id="findByIdArrayAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_PREPLAN T1
+        <where>
+            <if test="idArray != null">
+                AND T1.ID IN
+                <foreach collection="idArray" item="id" open="(" close=")" separator=",">
+                    #{id, jdbcType=CHAR}
+                </foreach>
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据监狱编号、应急预案来源、状态，查询应急预案列表 -->
+    <select id="findByCusNumberAndSourceAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_PREPLAN T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="source != null">
+                AND T1.SOURCE = #{source, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据监狱编号、应急预案名称、应急预案来源、状态，查询应急预案列表 -->
+    <select id="findIdListByCusNumberAndSourceAndStatus" resultType="java.lang.String" useCache="true">
+        SELECT
+        T1.ID
+        FROM PRISON.T_EMER_PREPLAN T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="source != null">
+                AND T1.SOURCE = #{source, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.callNamesAl.dao.CallNamesAreaDtlsMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select
+		CDS_CALL_NAMES_AREA_DTLS.ID  as id,
+		NAD_CUS_NUMBER ,
+		NAD_MASTER_ID ,
+		NAD_LCH ,
+		ABD_AREA_NAME as LC ,
+		NAD_JSH ,
+		NAD_PRISONER_TOTAL ,
+		NAD_PRISONER_CALLED_TOTAL ,
+		(NAD_PRISONER_TOTAL - NAD_PRISONER_CALLED_TOTAL) as NO_CALLED_TOTAL
+		from
+		CDS_CALL_NAMES_AREA_DTLS
+		left join CDS_AREA_BASE_DTLS  on ABD_CUS_NUMBER = NAD_CUS_NUMBER and NAD_LCH = ABD_AREA_ID
+		<where>
+			<if test="callNamesAreaDtlsEntity.nadCusNumber != null and callNamesAreaDtlsEntity.nadCusNumber!='' ">
+				AND nad_cus_number = #{callNamesAreaDtlsEntity.nadCusNumber}
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadMasterId != null and callNamesAreaDtlsEntity.nadMasterId!='' ">
+				AND nad_master_id = #{callNamesAreaDtlsEntity.nadMasterId}
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadLch != null and callNamesAreaDtlsEntity.nadLch!='' ">
+				AND nad_lch = #{callNamesAreaDtlsEntity.nadLch}
+			</if>
+		</where>
+		ORDER BY NAD_CRTE_TIME desc
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_CALL_NAMES_AREA_DTLS
+		<set>
+			<if test="callNamesAreaDtlsEntity.nadMasterId != null and callNamesAreaDtlsEntity.nadMasterId!='' ">
+				nad_master_id = #{callNamesAreaDtlsEntity.nadMasterId},
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadLch != null and callNamesAreaDtlsEntity.nadLch!='' ">
+				nad_lch = #{callNamesAreaDtlsEntity.nadLch},
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadJsh != null and callNamesAreaDtlsEntity.nadJsh!='' ">
+				nad_jsh = #{callNamesAreaDtlsEntity.nadJsh},
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadPrisonerTotal != null and callNamesAreaDtlsEntity.nadPrisonerTotal!='' ">
+				nad_prisoner_total = #{callNamesAreaDtlsEntity.nadPrisonerTotal},
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadPrisonerCalledTotal != null and callNamesAreaDtlsEntity.nadPrisonerCalledTotal!='' ">
+				nad_prisoner_called_total = #{callNamesAreaDtlsEntity.nadPrisonerCalledTotal},
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadUpdtTime != null and callNamesAreaDtlsEntity.nadUpdtTime!='' ">
+				nad_updt_time = #{callNamesAreaDtlsEntity.nadUpdtTime},
+			</if>
+
+			<if test="callNamesAreaDtlsEntity.nadUpdtUserId != null and callNamesAreaDtlsEntity.nadUpdtUserId!='' ">
+				nad_updt_user_id = #{callNamesAreaDtlsEntity.nadUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="callNamesAreaDtlsEntity.id !=null and callNamesAreaDtlsEntity.id !=''">
+				AND (TRIM(#{callNamesAreaDtlsEntity.id}) is null or id = #{callNamesAreaDtlsEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_CALL_NAMES_AREA_DTLS WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+
+</mapper>

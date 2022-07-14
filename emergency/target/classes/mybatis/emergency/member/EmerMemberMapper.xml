@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.member.dao.EmerMemberDao">
+    <!-- 基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.member.entity.EmerMember">
+        <id column="ID" jdbcType="CHAR" property="id" />
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+        <result column="JOB_NO" jdbcType="CHAR" property="jobNo" />
+        <result column="NAME" jdbcType="CHAR" property="name" />
+        <result column="CALL_NO" jdbcType="CHAR" property="callNo" />
+        <result column="UNIT_NAME" jdbcType="CHAR" property="unitName" />
+        <result column="DEPT_NAME" jdbcType="CHAR" property="deptName" />
+        <result column="SOURCE" jdbcType="CHAR" property="source" />
+        <result column="STATUS" jdbcType="CHAR" property="status" />
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder" />
+        <result column="CREATE_USER_ID" jdbcType="CHAR" property="createUserId" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, JOB_NO, NAME, CALL_NO, UNIT_NAME, DEPT_NAME, SOURCE, STATUS, SHOW_ORDER,
+        CREATE_USER_ID, CREATE_TIME, UPDATE_USER_ID, UPDATE_TIME
+    </sql>
+
+    <!-- 根据主键ID，查询应急预案工作组 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_MEMBER T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumber" resultType="java.lang.Integer" useCache="true">
+        SELECT
+          max(T1.SHOW_ORDER)
+        FROM T_EMER_MEMBER T1
+        WHERE T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR} AND T1.STATUS = '0'
+    </select>
+
+    <!-- 分页查询应急预案工作组列表 -->
+    <select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_MEMBER T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="name != null and name != ''">
+                AND T1.NAME LIKE '%${name}%'
+            </if>
+            <if test="callNo != null and callNo != ''">
+                AND T1.CALL_NO LIKE '%${callNo}%'
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据单位编码、人员名称、呼叫号码，查询应急人员数据 -->
+    <select id="findByCusNumberAndNameAndCallNoAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_MEMBER T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="name != null and name != ''">
+                AND T1.NAME = #{name, jdbcType=CHAR}
+            </if>
+            <if test="callNo != null and callNo != ''">
+                AND T1.CALL_NO = #{callNo, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER DESC
+    </select>
+
+    <!-- 根据有工作组ID、数据状态，查询工作组关联的成员列表 -->
+    <select id="findExistsEmerGroupMemberByGroupIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        T1.ID, T1.CUS_NUMBER, T1.JOB_NO, T1.NAME, T1.CALL_NO, T1.UNIT_NAME, T1.DEPT_NAME,
+        T2.SOURCE,
+        T1.STATUS, T1.SHOW_ORDER, T1.CREATE_USER_ID, T1.CREATE_TIME, T1.UPDATE_USER_ID, T1.UPDATE_TIME
+        FROM T_EMER_MEMBER T1
+        INNER JOIN T_EMER_GROUP_MEMBER T2 ON T1.ID = T2.MEMBER_ID AND T2.STATUS = '0'
+        <where>
+            <if test="groupId != null and groupId != ''">
+                AND T2.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER DESC
+    </select>
+</mapper>

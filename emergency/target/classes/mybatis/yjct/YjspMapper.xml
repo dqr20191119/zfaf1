@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YjspMapper">
+	 	 
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.YjspEntity" resultType="com.cesgroup.prison.yjct.entity.YjspEntity">
+		SELECT A.* FROM CDS_EMERGENCY_HANDLE_APPROVE A 
+		<where>
+			<if test="ehaPhFid != null and ehaPhFid != ''"> 
+				AND A.EHA_PH_FID = #{ehaPhFid} 		
+			</if>
+		</where>
+	</select>
+</mapper>

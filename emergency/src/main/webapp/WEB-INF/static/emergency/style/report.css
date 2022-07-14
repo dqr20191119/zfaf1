@@ -1,0 +1,92 @@
+body {
+    margin: 0;
+}
+
+html, body, div, h4, h5, h6, p, ul, li, input, a, i, b, span {
+    box-sizing: border-box;
+    font-style: normal;
+    font-family: "Microsoft Yahei", Arial;
+    font-size: 14px;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    outline: 0px;
+    text-decoration: none;
+}
+
+div {
+    /*text-align: center;*/
+}
+
+/** 报表表格 */
+.table-report {
+    width: 80%;
+    text-align: center;
+    margin: 0 auto;
+    border: 1px solid rgb(128, 128, 128);
+    border-collapse: collapse;
+}
+/** 标题 */
+.table-report caption {
+    font-size: 26px;
+}
+
+.table-report tr td {
+    text-align: left;
+    border-bottom: 1px solid rgb(128, 128, 128);
+    border-right: 1px solid rgb(128, 128, 128);
+}
+
+.table-report tr td span {
+    margin-left: 4px;
+}
+
+.table-report tr td:last-child {
+    border-right: 0px;
+}
+
+.table-report tr:last-child td {
+    border-bottom: 0px;
+}
+
+/** 报表内嵌表格 */
+.table-report-nest {
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    border-collapse: collapse;
+}
+
+.table-report-nest tr td {
+    text-align: left;
+    border-bottom: 1px solid rgb(128, 128, 128);
+    border-right: 1px solid rgb(128, 128, 128);
+}
+
+.table-report-nest tr td span {
+    margin-left: 4px;
+}
+
+.table-report-nest tr td:last-child {
+    border-right: 0px;
+}
+
+.table-report-nest tr:last-child td {
+    border-bottom: 0px;
+}
+
+/** 背景色 */
+.bgcolor-red {
+    background-color: rgb(200, 200, 200);
+}
+
+/** span标题 */
+.span-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/** span内容 */
+.span-content {
+    font-size: 16px;
+}

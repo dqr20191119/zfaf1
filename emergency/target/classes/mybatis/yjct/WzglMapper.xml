@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.WzglMapper">
+	 
+	<select id="getById" resultType="com.cesgroup.prison.yjct.entity.WzglEntity"> 
+		SELECT A.* FROM CDS_MATERIAL_INFO A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.yjct.entity.WzglEntity" resultType="com.cesgroup.prison.yjct.entity.WzglEntity">
+		SELECT A.* FROM CDS_MATERIAL_INFO A 
+		WHERE A.MRI_STATUS = 1  
+		<if test="mriCusNumber != null and mriCusNumber != ''"> 
+			AND A.MRI_CUS_NUMBER = #{mriCusNumber} 		
+		</if>
+		<if test="mriMaterialName != null and mriMaterialName != ''"> 
+			AND A.MRI_MATERIAL_NAME like '%' || #{mriMaterialName} || '%' 		
+		</if>
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.WzglEntity" resultType="com.cesgroup.prison.yjct.entity.WzglEntity">
+		SELECT A.* FROM CDS_MATERIAL_INFO A 
+		<where>
+			<if test="mriCusNumber != null and mriCusNumber != ''"> 
+				AND A.MRI_CUS_NUMBER = #{mriCusNumber} 		
+			</if>
+			<if test='mriStatus == "1"'> 
+				AND A.MRI_STATUS = 1  		
+			</if>
+			<if test="mriMaterialName != null and mriMaterialName != ''"> 
+				AND A.MRI_MATERIAL_NAME = #{mriMaterialName} 		
+			</if>	
+			<if test='actionExist == "0"'> 
+				AND NOT EXISTS(SELECT 1 FROM CDS_EMERGENCY_PLAN_ACTION B WHERE B.EPA_REL_ACTION_FID = A.ID 
+						AND B.EPA_REL_ACTION_TYPE = 4  
+						AND B.EPA_METHOD_FID = #{epaMethodFid} 
+						AND B.EPA_PLAN_FID = #{epaPlanFid}) 
+			</if>		
+		</where> 
+		ORDER BY A.MRI_CRTE_TIME DESC 		
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_MATERIAL_INFO A SET A.MRI_STATUS = 0  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+</mapper>

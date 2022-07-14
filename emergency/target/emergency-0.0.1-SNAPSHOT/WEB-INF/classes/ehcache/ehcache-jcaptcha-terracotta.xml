@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache name="jcaptchaCache">
+
+    <!-- terracotta服务器 -->
+	<terracottaConfig url="127.0.0.1:9510"/>
+    
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            maxElementsOnDisk="10000000"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU">
+            <terracotta clustered="true"/>
+    </defaultCache>
+    
+    <cache name="jcaptchacaptchastore" 
+           maxElementsInMemory="100000"
+           eternal="false" 
+           overflowToDisk="false"
+           timeToIdleSeconds="180" 
+           timeToLiveSeconds="180"
+           memoryStoreEvictionPolicy="LFU">
+           <terracotta clustered="true"/>
+    </cache>
+</ehcache>

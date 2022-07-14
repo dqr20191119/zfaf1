@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.screen.dao.ScreenPlanAreaRltnMapper">
+
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "value" ,
+		SPR_SCREEN_AREA_NAME As "text"
+		FROM
+		CDS_SCREEN_PLAN_AREA_RLTN
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND SPR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="planId != null and planId!='' ">
+				AND SPR_SCREEN_PLAN_ID = #{planId}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_SCREEN_PLAN_AREA_RLTN
+		<set>
+
+			<if test="screenPlanAreaRltnEntity.sprScreenPlanId != null and screenPlanAreaRltnEntity.sprScreenPlanId!='' ">
+				spr_screen_plan_id = #{screenPlanAreaRltnEntity.sprScreenPlanId},
+			</if>
+
+			<if test="screenPlanAreaRltnEntity.sprScreenAreaName != null and screenPlanAreaRltnEntity.sprScreenAreaName!='' ">
+				spr_screen_area_name = #{screenPlanAreaRltnEntity.sprScreenAreaName},
+			</if>
+
+			<if test="screenPlanAreaRltnEntity.sprIsRound != null and screenPlanAreaRltnEntity.sprIsRound!='' ">
+				spr_is_round = #{screenPlanAreaRltnEntity.sprIsRound},
+			</if>
+
+			<if test="screenPlanAreaRltnEntity.sprTimeLag != null and screenPlanAreaRltnEntity.sprTimeLag!='' ">
+				spr_time_lag = #{screenPlanAreaRltnEntity.sprTimeLag},
+			</if>
+
+			<if test="screenPlanAreaRltnEntity.sprUpdtUserId != null and screenPlanAreaRltnEntity.sprUpdtUserId!='' ">
+				spr_updt_user_id = #{screenPlanAreaRltnEntity.sprUpdtUserId},
+			</if>
+
+			<if test="screenPlanAreaRltnEntity.sprUpdtTime != null and screenPlanAreaRltnEntity.sprUpdtTime!='' ">
+				spr_updt_time = #{screenPlanAreaRltnEntity.sprUpdtTime},
+			</if>
+		</set>
+
+		<where>
+			<if test="screenPlanAreaRltnEntity.id !=null and screenPlanAreaRltnEntity.id !=''">
+				AND (TRIM(#{screenPlanAreaRltnEntity.id}) is null or id = #{screenPlanAreaRltnEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<delete id="deleteById" parameterType="java.util.HashMap">
+		<if test="screenAreaId !=null and screenAreaId !=''">
+			DELETE FROM CDS_SCREEN_PLAN_AREA_RLTN WHERE ID = #{screenAreaId};
+			DELETE FROM CDS_SCREEN_AREA_CAMERA_RLTN WHERE SCR_SCREEN_AREA_ID = #{screenAreaId};
+			DELETE FROM CDS_SCREEN_AREA_WINDOW_RLTN WHERE SWR_SCREEN_AREA_ID= #{screenAreaId};
+		</if>
+	</delete>
+
+	<select id="getScreenPlanAreaListByPalnId" parameterType="hashmap" resultType="hashmap">
+		select ID "screenPlanAreaId",
+		SPR_CUS_NUMBER "cusNumber",
+		SPR_SCREEN_PLAN_ID "screenPlanId",
+		SPR_SCREEN_AREA_NAME "screenPlanAreaName",
+		SPR_IS_ROUND "isRound",
+		SPR_TIME_LAG "timeLag"
+		from CDS_SCREEN_PLAN_AREA_RLTN
+		<where>
+			<if test="cusNumber!=null and cusNumber!=''">
+				AND SPR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="screenPlanId!=null and screenPlanId!=''">
+				AND SPR_SCREEN_PLAN_ID = #{screenPlanId}
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,63 @@
+
+/*日历*/
+.calendar *{box-sizing:border-box;font-size:14px}
+.calendar-sm{cursor:default;width:800px;height:370px}
+.calendar{cursor:default;width:100%;height:100%;margin:5px auto}
+.calendar-sm .c-pad-top{padding-top:2%}
+.c-event-top{width: 20%;height:94%;background:url(../images/calendar-border.png) 0 0 no-repeat;background-size:100% 100%;float: left;position: relative;}
+/*.calendar .c-pad-top{padding-top:3%}*/
+.c-grid{height:95%;width:32%;float:left;/*background: #fff;*/padding:0 25px;color: #bbc3cd;}
+.c-day{border-radius: 3px;width:45px;height:26px;float:left;text-align:center;margin: 5px 5px 0px 5px;color: #bbc3cd;line-height: 30px;}
+.c-day-previous-month{width:45px;height:26px;float:left;text-align:center;color:gray;margin: 5px 5px 0px 5px;}
+.c-day-next-month{width:45px;height:45px;float:left;text-align:center;color:gray;margin: 5px 5px 0px 5px;}
+.c-week-day{width:55px;height:10.38%;line-height: 25px;float:left;text-align:center;padding-top:1%}
+.c-next{width:24px;height:24px;text-align:right;cursor:pointer;text-align: center;background: url(../images/you.png);position: absolute;bottom:15px;right: 15px;}
+.c-previous{width:24px;height:24px;text-align:left;cursor:pointer;text-align: center;background: url(../images/zuo.png);position: absolute;bottom:15px;right: 50px;}
+.c-month{width:100%;height:inherit;text-align:center;}
+.c-month-top{font-size: 22px;margin-top: 40px;}
+.c-month-center{font-size: 92px;color: #fff;}
+.c-month-bottom{font-size: 22px;height: 30px}
+.c-nav-btn-over{}
+.c-today{color:white;background: -webkit-linear-gradient(left, #ffc74e , #ff9211); /* Safari 5.1 - 6.0 */background: -o-linear-gradient(right, #ffc74e , #ff9211); /* Opera 11.1 - 12.0 */background: -moz-linear-gradient(right, #ffc74e , #ff9211); /* Firefox 3.6 - 15 */background: linear-gradient(to right, #ffc74e , #ff9211)}
+.c-event{background-color:#00aeff;color:#fff;font-weight:700;cursor:pointer;position:relative;overflow:hidden; }
+/*.c-event:before{content:"课";color:#FFF;position:absolute;top:0;left:0;z-index:1}
+.c-event:after{content:" ";position:absolute;width:50px;height:50px;background:#2FA8EC;left:-25px;top:-25px;transform:rotate(45deg);-ms-transform:rotate(45deg);-webkit-transform:rotate(45deg);-o-transform:rotate(45deg);-moz-transform:rotate(45deg);z-index:0}*/
+.c-event-grid{margin-left:1px;height:inherit;width:43%;float:left;height:230px;
+	overflow:auto;
+	margin:0 auto;
+	padding:0;
+	scrollbar-arrow-color: rgba(21, 16, 46, 1);
+     /*滚动条滑块按钮的颜色*/
+     scrollbar-face-color: rgba(21, 16, 46, 1);
+     /*滚动条整体颜色*/
+     scrollbar-highlight-color: rgba(21, 16, 46, 1);
+     /*滚动条阴影*/
+     scrollbar-shadow-color: rgba(21, 16, 46, 1);
+     /*滚动条轨道颜色*/
+     scrollbar-track-color: rgba(21, 16, 46, 1);
+}
+
+.c-grid-title{float:left;color:#fff}
+/*.c-event-title{width:100%;height:12%;text-align:center;font-weight:700;background-color:#879bbc;color:#fff}*/
+.c-event-body{height:250px;overflow: hidden;}
+.c-event-list{padding:7px 0 0 0;overflow:auto;height:94%;position:relative; overflow-x: hidden;}
+.c-event-list::-webkit-scrollbar {display:none}
+.c-event-item>.title{font-weight:700}
+.c-event-item-a{
+	color:#fff;
+}
+.c-event-item>div{text-overflow:ellipsis;width:inherit;overflow:hidden;white-space:nowrap}
+.c-event-item{transition:all .5s;-moz-transition:all .5s;-webkit-transition:all .5s;-o-transition:all .5s;padding-left:10px;padding: 7px 0px 11px 20px;
+    margin-left: 30px;
+    margin-top: 10px;
+    color: #fff;
+    border: 1px solid #2a7bb6;}
+.c-event-over{font-weight:700;color:#fff;background: -webkit-linear-gradient(left, #01c2e6 , #1160ff); /* Safari 5.1 - 6.0 */background: -o-linear-gradient(right, #01c2e6 , #1160ff); /* Opera 11.1 - 12.0 */background: -moz-linear-gradient(right, #01c2e6 , #1160ff); /* Firefox 3.6 - 15 */background: linear-gradient(to right, #01c2e6 , #1160ff)}
+.c-event-over1{background: transparent;color: #fff;}
+.c-event-over1 a{color: #fff;}
+.c-event-over a{color: white;}
+.c-event-over>.description{font-weight:400}
+.title{float: left;}
+.description{float: left;}
+
+

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.region.dao.RegionMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.region.entity.Region">
+    <result column="ABD_CUS_NUMBER" jdbcType="VARCHAR" property="abdCusNumber" />
+    <result column="ABD_AREA_ID" jdbcType="NUMERIC" property="abdAreaId" />
+    <result column="ABD_AREA_NAME" jdbcType="VARCHAR" property="abdAreaName" />
+    <result column="ABD_TYPE_INDC" jdbcType="NUMERIC" property="abdTypeIndc" />
+    <result column="ABD_LEVEL_INDC" jdbcType="NUMERIC" property="abdLevelIndc" />
+    <result column="ABD_PARENT_AREA_ID" jdbcType="NUMERIC" property="abdParentAreaId" />
+    <result column="ABD_REMARK" jdbcType="VARCHAR" property="abdRemark" />
+    <result column="ABD_CRTE_TIME" jdbcType="TIMESTAMP" property="abdCrteTime" />
+    <result column="ABD_CRTE_USER_ID" jdbcType="VARCHAR" property="abdCrteUserId" />
+    <result column="ABD_UPDT_TIME" jdbcType="TIMESTAMP" property="abdUpdtTime" />
+    <result column="ABD_UPDT_USER_ID" jdbcType="VARCHAR" property="abdUpdtUserId" />
+    <result column="ABD_SHORT_NAME" jdbcType="VARCHAR" property="abdShortName" />
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="ABD_ORDER" jdbcType="VARCHAR" property="abdOrder" />
+    <result column="ABD_IS_LEAF" jdbcType="VARCHAR" property="abdIsLeaf" />
+    <result column="ABD_JQ_ID" jdbcType="VARCHAR" property="abdJqId" />
+    <result column="ABD_JQ_NAME" jdbcType="VARCHAR" property="abdJqName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, ABD_CUS_NUMBER, ABD_AREA_ID, ABD_AREA_NAME, ABD_TYPE_INDC, ABD_LEVEL_INDC,  
+    ABD_PARENT_AREA_ID, ABD_REMARK, ABD_CRTE_TIME, ABD_CRTE_USER_ID, ABD_UPDT_TIME, 
+    ABD_UPDT_USER_ID, ABD_SHORT_NAME,ABD_ORDER,ABD_IS_LEAF,ABD_JQ_ID,ABD_JQ_NAME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_AREA_BASE_DTLS
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CDS_AREA_BASE_DTLS
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateByXml" parameterType="com.cesgroup.prison.region.entity.Region">
+    update CDS_AREA_BASE_DTLS
+    <set>
+      <if test="abdCusNumber != null">
+        ABD_CUS_NUMBER = #{abdCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="abdAreaId != null">
+        ABD_AREA_ID = #{abdAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="abdAreaName != null">
+        ABD_AREA_NAME = #{abdAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="abdTypeIndc != null">
+        ABD_TYPE_INDC = #{abdTypeIndc,jdbcType=NUMERIC},
+      </if>
+      <if test="abdLevelIndc != null">
+        ABD_LEVEL_INDC = #{abdLevelIndc,jdbcType=NUMERIC},
+      </if>
+      <if test="abdParentAreaId != null">
+        ABD_PARENT_AREA_ID = #{abdParentAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="abdRemark != null">
+        ABD_REMARK = #{abdRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="abdCrteTime != null">
+        ABD_CRTE_TIME = #{abdCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="abdCrteUserId != null">
+        ABD_CRTE_USER_ID = #{abdCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="abdUpdtTime != null">
+        ABD_UPDT_TIME = #{abdUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="abdUpdtUserId != null">
+        ABD_UPDT_USER_ID = #{abdUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="abdShortName != null">
+        ABD_SHORT_NAME = #{abdShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="abdOrder != null">
+        ABD_ORDER = #{abdOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="abdIsLeaf != null">
+        ABD_IS_LEAF = #{abdIsLeaf,jdbcType=VARCHAR},
+      </if>
+      <if test="abdJqId != null">
+        ABD_JQ_ID = #{abdJqId,jdbcType=VARCHAR},
+      </if>
+      <if test="abdJqName != null">
+        ABD_JQ_NAME = #{abdJqName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cesgroup.prison.region.entity.Region">
+    update CDS_AREA_BASE_DTLS
+    set ABD_CUS_NUMBER = #{abdCusNumber,jdbcType=VARCHAR},
+      ABD_AREA_ID = #{abdAreaId,jdbcType=VARCHAR},
+      ABD_AREA_NAME = #{abdAreaName,jdbcType=VARCHAR},
+      ABD_TYPE_INDC = #{abdTypeIndc,jdbcType=NUMERIC},
+      ABD_LEVEL_INDC = #{abdLevelIndc,jdbcType=NUMERIC},
+      ABD_PARENT_AREA_ID = #{abdParentAreaId,jdbcType=VARCHAR},
+      ABD_REMARK = #{abdRemark,jdbcType=VARCHAR},
+      ABD_CRTE_TIME = #{abdCrteTime,jdbcType=TIMESTAMP},
+      ABD_CRTE_USER_ID = #{abdCrteUserId,jdbcType=VARCHAR},
+      ABD_UPDT_TIME = #{abdUpdtTime,jdbcType=TIMESTAMP},
+      ABD_UPDT_USER_ID = #{abdUpdtUserId,jdbcType=VARCHAR},
+      ABD_SHORT_NAME = #{abdShortName,jdbcType=VARCHAR},
+      ABD_ORDER = #{abdOrder,jdbcType=VARCHAR},
+      ABD_IS_LEAF = #{abdIsLeaf,jdbcType=VARCHAR},
+      ABD_JQ_ID = #{abdJqId,jdbcType=VARCHAR},
+      ABD_JQ_NAME = #{abdJqName,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateParentIdByIds" parameterType="java.util.HashMap" >
+    update CDS_AREA_BASE_DTLS
+    set ABD_PARENT_AREA_ID = #{parentId}
+    <where>
+    	ID in
+	    <foreach collection="ids" item="id" index="index" separator="," open="(" close=")">  
+	         #{id}
+	    </foreach> 
+    </where>
+  </update>
+  <delete id="batchDelete" parameterType="java.util.List">
+  	delete cds_area_base_dtls where id in 
+  	<foreach collection="list" item="id" index="index" separator="," open="(" close=")">  
+         #{id}
+    </foreach>
+  </delete>
+  <select id="findByParendIdAndCusNumerByXml" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from CDS_AREA_BASE_DTLS 
+	<where>
+		ABD_PARENT_AREA_ID = #{1} 
+	    and ABD_CUS_NUMBER = #{0} 
+	    order by ABD_ORDER asc
+    </where>
+  </select>
+  <select id="findByCusNumberAndAreaId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from CDS_AREA_BASE_DTLS 
+	<where>
+		ABD_CUS_NUMBER = #{0} 
+	    and ABD_AREA_ID = #{1} 
+	    order by ABD_ORDER asc
+    </where>
+  </select>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.sppz.dao.VideoClientMapper">
+  
+  <select id="searchVideoClient" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT id, VCC_CUS_NUMBER, VCC_APP_IP, VCC_CLIENT_IP, VCC_WIDTH, VCC_HEIGHT, VCC_X_CRDNT, VCC_Y_CRDNT, 
+    VCC_IMG_PATH, VCC_VIDEO_PATH, VCC_REMARK, TO_CHAR(VCC_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as VCC_CRTE_TIME, VCC_CRTE_USER_ID, TO_CHAR(VCC_UPDT_TIME,'YYYY-MM-DD HH24:MI:SS') as VCC_UPDT_TIME, 
+    VCC_UPDT_USER_ID
+			 FROM DVC_VIDEO_CLIENT_CONFIG
+			 <where>
+			 	<if test="videoClient.vccClientIp!=null and videoClient.vccClientIp!=''">
+			 		and VCC_CLIENT_IP =#{videoClient.vccClientIp}
+			 	</if>
+			 	<if test="videoClient.vccCusNumber!=null and videoClient.vccCusNumber!=''">
+			 		AND VCC_CUS_NUMBER=#{videoClient.vccCusNumber}
+			 	</if>
+			 </where> 
+	</select>
+  
+  <update id="updatePart" parameterType="map">
+    update DVC_VIDEO_CLIENT_CONFIG
+    <set>
+      <if test="videoClient.vccCusNumber != null">
+        VCC_CUS_NUMBER = #{videoClient.vccCusNumber},
+      </if>
+      <if test="videoClient.vccAppIp != null">
+        VCC_APP_IP = #{videoClient.vccAppIp},
+      </if>
+      <if test="videoClient.vccClientIp != null">
+        VCC_CLIENT_IP = #{videoClient.vccClientIp},
+      </if>
+      <if test="videoClient.vccWidth != null">
+        VCC_WIDTH = #{videoClient.vccWidth},
+      </if>
+      <if test="videoClient.vccHeight != null">
+        VCC_HEIGHT = #{videoClient.vccHeight},
+      </if>
+      <if test="videoClient.vccXCrdnt != null">
+        VCC_X_CRDNT = #{videoClient.vccXCrdnt},
+      </if>
+      <if test="videoClient.vccYCrdnt != null">
+        VCC_Y_CRDNT = #{videoClient.vccYCrdnt},
+      </if>
+      <if test="videoClient.vccImgPath != null">
+        VCC_IMG_PATH = #{videoClient.vccImgPath},
+      </if>
+      <if test="videoClient.vccVideoPath != null">
+        VCC_VIDEO_PATH = #{videoClient.vccVideoPath},
+      </if>
+      <if test="videoClient.vccRemark != null">
+        VCC_REMARK = #{videoClient.vccRemark},
+      </if>
+      <if test="videoClient.vccCrteTime != null">
+        VCC_CRTE_TIME = TO_CHAR(#{videoClient.vccCrteTime},'YYYY-MM-DD HH24:MI:SS'),
+      </if>
+      <if test="videoClient.vccCrteUserId != null">
+        VCC_CRTE_USER_ID = #{videoClient.vccCrteUserId},
+      </if>
+      <if test="videoClient.vccUpdtTime != null">
+        VCC_UPDT_TIME = TO_CHAR(#{videoClient.vccUpdtTime},'YYYY-MM-DD HH24:MI:SS') ,
+      </if>
+      <if test="videoClient.vccUpdtUserId != null">
+        VCC_UPDT_USER_ID = #{videoClient.vccUpdtUserId},
+      </if>
+    </set>
+    where ID = #{videoClient.id}
+  </update>
+
+</mapper>

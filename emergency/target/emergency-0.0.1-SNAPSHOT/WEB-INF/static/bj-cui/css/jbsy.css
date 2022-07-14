@@ -1,0 +1,402 @@
+html,
+body {
+  line-height: 1.15;
+}
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: url(../img/header_bg.jpg);
+  z-index: 1;
+}
+
+.logo {
+  float: left;
+  height: 70px;
+  margin-top: 10px;
+}
+
+.header-content {
+  float: right;
+  height: 100%;
+  font-size: 14px;
+}
+
+.header-item {
+  float: left;
+  padding: 15px 0;
+  color: #C9CACA;
+}
+
+.header-item.date {
+  margin-right: 30px;
+}
+
+.header-item .icon {
+  font-size: 34px;
+  margin-right: 12px;
+}
+.header-item .icon-police2 {
+  font-size: 40px;
+}
+.header-item .icon,
+.header-item .title {
+  float: left;
+}
+
+.title {
+  vertical-align: super;
+}
+
+.header-item .title {
+  line-height: 1.5;
+}
+
+.user {
+  font-weight: bold;
+}
+
+.header-item.dropdow {
+  margin-right: 19px;
+  margin-left: 0;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.dropdow .icon {
+  margin-right: 0;
+}
+
+.dropdown-content {
+  width: 150px;
+  text-align: center;
+  background: rgba(0, 0, 0, .9);
+  position: fixed;
+  right: 0;
+  top: 70px;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height .4s;
+}
+
+.dropdow .icon-xialadown:hover .dropdown-content {
+  height: 80px;
+  opacity: 1;
+}
+
+.header-item .icon .menu-item {
+  font-size: 16px;
+}
+
+.icon-police2 {
+  width: 40px;
+}
+
+.tolist {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00fff6;
+}
+
+.home .status {
+  width: auto;
+  margin-right: 12px;
+  padding: 7px 17px;
+}
+
+.tolist .status {
+  background: url(../img/border.png) no-repeat;
+  margin-right: 10px;
+  background-size: 100% 100%;
+  margin: 16px 12px 16px 0;
+  float: left;
+  font-size: 16px;
+  text-align: center;
+}
+
+.tolist-item .tolist-menu {
+  position: absolute;
+  left: 0;
+  top: 35px;
+  background: #07111d;
+  margin: 20px 0 0 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.tolist-item,
+.tolist-menuitem {
+  position: relative;
+  cursor: pointer;
+}
+
+.tolist-item .tolist-menuitem {
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #434343;
+  width: 150px;
+  background: #07111d;
+}
+
+.tolist-menu ul {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  top: 0;
+  left: 150px;
+  margin: 0 0 0 20px;
+  transition: all .2s ease-in-out;
+}
+
+.tolist-item:hover>ul,
+.tolist-menuitem:hover>ul {
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  border-left: 1px solid #434343;
+}
+
+.home-page.status {
+  background: url(../img/command/home.png) no-repeat;
+  background-size: 100% 100%;
+  height: 36px;
+}
+.jbsy {
+  height: 100%;
+  padding-top: 70px;
+  background: url(../img/lishijilu/bg.jpg) 100% 100%;
+}
+.jbsy .left,.jbsy .right{
+    float: left;
+    height:100%;
+}
+.jbsy .left{
+  width: 18%;
+  background:url("../img/command/yf_bg.png") no-repeat;
+  background-size:100% 100%;
+  padding-left: 27px;
+  padding-right: 12px;
+}
+.jbsy .left .left-top ul li {
+	position: relative;
+  height: 24%;
+}
+.jbsy .left .left-top .coral-tabs-panel li{
+  margin-bottom: 12px;
+}
+.jbsy .left .left-top {
+	height: 42%;
+}
+.jbsy .left .left-top h3{
+  font-size:22px;
+  margin-bottom:15px
+}
+.jbsy .left .left-bottom h3{
+  font-size:22px;
+  margin-bottom:15px
+}
+.jbsy .left .left-bottom {
+	height: 68%;
+}
+.jbsy .left{
+  font-size: 22px;
+  color: #c9caca;
+}
+.jbsy .left .coral-component-content {
+  background: transparent;
+  margin-top: 8px;
+}
+.dutyIcon {
+	position: absolute;
+	left: -5px;
+	top: 4px;
+}
+
+.dutyIcon .iconfont {
+	font-size: 33px;
+}
+
+.dutyPerson {
+	padding-left: 35px;
+}
+
+.dutyPerson p {
+	padding-left: 10px;
+}
+
+.dutyPerson .dutyTitle {
+	color: #ffffff;
+	position: relative;
+	font-size: 16px;
+  padding: 2px 0 2px 10px;
+  margin:0;
+}
+p.zbsj{
+  position: relative;
+  font-size: 16px;
+  margin-top: 5px;
+  color: #fff;
+}
+.jbsy p.zbsj-time{
+  font-size: 16px;
+  color: #fff;
+  margin:8px 0
+}
+.zbsj::after {
+	content: "";
+	position: absolute;
+  left: 70px;
+  right: 20px;
+  top: 50%;
+  height: 1px;
+	border-bottom: 1px solid #144065;
+}
+
+.dutyPerson .dutyNme {
+	font-size: 18px;
+  color: #00fff6;
+  padding-left:10px;
+}
+.dutyPerson .dutyNme>a{
+	font-size: 18px;
+	color: #00fff6;
+}
+.jbsy .right{
+  width: 78%;
+  padding-left: 67px;
+}
+
+.jryf-bottom>div{
+  height:70%;
+  width: 48%;
+  position: absolute;
+}
+.jryf-bottom .realTimeAlert ul, .jryf-bottom .realTimeOffense ul {
+  height: 93%;
+  padding-top: 15px;
+  width: 86%;
+  position: relative;
+}
+.jryf-bottom ul li {
+  position: relative;
+  height: 16.5%;
+}
+
+.jryf-bottom .realTimeAlert .alermIcon {
+  left: -1px;
+}
+
+.jryf-bottom .alermIcon {
+  position: absolute;
+  left: -5px;
+}
+.alermIcon .iconfont {
+  font-size: 30px;
+  color: #dcdcdc;
+}
+.alertShow {
+  padding-left: 35px;
+}
+.alertShow .alertType {
+  color: #ffffff;
+  font-size: 16px;
+  background: #144065;
+  padding: 0 4px 0 4px;
+}
+
+.container-box p {
+  margin: 0;
+  padding: 0;
+}
+.realTimeOffense .alertShow .alertType {
+  padding: 0 2px 0 6px;
+}
+.alertShow .custodyNum {
+  color: #00fff6;
+}
+.alertShow .alertNum {
+  font-size: 22px;
+  text-align: left;
+  padding-left: 10px;
+}
+.realTimeOffense {
+  left: 50%;
+}
+.jryf-bottom .realTimeOffense h4 {
+  margin-left: 17px;
+}
+
+.jryf-bottom h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 0;
+  width: 95%;
+  color: #c9caca;
+}
+.jbsy .right>div{
+  float: left;
+  width: 47%;
+  margin-left: 33px;
+}
+.jbsy .right h3{
+  font-size:20px;
+  color:#c9caca;
+  position: relative;
+}
+.jbsy .right h3>span{
+  position: absolute;
+  right:0;
+  font-size: 16px;
+}
+.jbsy .right>div>div{
+  height: 377px;
+  border:1px solid #00fff6;
+  border-radius: 8px;
+  padding-top: 11px;
+  padding-left: 18px;
+    padding-right: 20px;
+}
+.dasx  .coral-tabs{
+  margin-top: 15px;
+  margin-left: 15px
+}
+.dbsx-bottom ul{
+  margin-top: 10px;
+  overflow: hidden;
+  height: 300px;
+  padding-bottom:15px;
+}
+.right-box.dbsx-bottom ul{
+  height:338px;
+}
+.dbsx-bottom ul li{
+  font-size: 16px;
+  color: #00fff6;
+  padding: 5px 0 5px 13px;
+  border: 1px solid #123452;
+  width: 100%;
+  margin: 5px 11px 5px 0;
+}
+.dbsx-bottom .bbbs ul li>span:first-child{
+  width: 100%;
+  font-size: 16px;
+  color: #c9caca;
+}
+.dbsx-bottom .bbbs ul li>span>i{
+  font-style: normal;
+  color: #00fff6;
+}
+.dbsx-bottom ul li>span:first-child{
+  display: inline-block;
+  width: 73%;
+}
+.dbsx-bottom ul li>span:last-child{
+ color: #c9caca;
+}
+.dbsx-bottom.coral-tabs-panel{
+  padding-right: 15px;
+}

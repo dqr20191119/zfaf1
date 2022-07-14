@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YjjlMapper">
+	 
+	<select id="getById" resultType="com.cesgroup.prison.yjct.entity.YjjlEntity"> 
+		SELECT A.*, B.EPI_PLAN_TYPE, B.EPI_PLAN_NAME FROM CDS_EMERGENCY_HANDLE_RECORD A, CDS_EMERGENCY_PLAN_INFO B 
+		WHERE A.EHR_EM_PLAN_FID = B.ID
+		AND A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.yjct.entity.YjjlEntity" resultType="com.cesgroup.prison.yjct.entity.YjjlEntity">
+		SELECT A.*, b.EPI_PLAN_NAME, c.ABD_AREA_NAME  
+		FROM CDS_EMERGENCY_HANDLE_RECORD A 
+		LEFT JOIN CDS_EMERGENCY_PLAN_INFO B ON B.ID = A.EHR_EM_PLAN_FID 
+		LEFT JOIN CDS_AREA_BASE_DTLS C ON C.ABD_AREA_ID = A.EHR_ADDRESS
+		<where>
+			<if test="ehrCusNumber != null and ehrCusNumber != ''"> 
+				AND A.EHR_CUS_NUMBER = #{ehrCusNumber} 		
+			</if>
+			<if test="ehrType != null and ehrType != ''"> 
+				AND A.EHR_TYPE = #{ehrType} 		
+			</if>
+			<if test="epiPlanName != null and epiPlanName != ''"> 
+				AND B.EPI_PLAN_NAME like '%' || #{epiPlanName} || '%' 
+			</if>		
+			<if test="ehrTimeStart != null and ehrTimeStart != ''"> 
+				AND A.EHR_TIME &gt;= #{ehrTimeStart} 		
+			</if>
+			<if test="ehrTimeEnd != null and ehrTimeEnd != ''"> 
+				AND A.EHR_TIME &lt;= #{ehrTimeEnd} 		
+			</if>
+		</where>
+	</select>
+	<!--预案类型统计  -->
+	<select id="tjByAll" parameterType="com.cesgroup.prison.yjct.entity.YjjlEntity" resultType="com.cesgroup.prison.yjct.entity.YjjlEntity">
+		SELECT B.EPI_PLAN_TYPE, COUNT(1) CS 
+		FROM CDS_EMERGENCY_HANDLE_RECORD A	   
+  	    LEFT JOIN CDS_EMERGENCY_PLAN_INFO B ON B.ID = A.EHR_EM_PLAN_FID 	  
+		WHERE A.EHR_TYPE = #{ehrType} 
+		AND TO_CHAR(A.EHR_TIME, 'yyyy-MM-dd') &gt;= TO_CHAR(#{ehrTimeStart}, 'yyyy-MM-dd') 
+		AND TO_CHAR(A.EHR_TIME, 'yyyy-MM-dd') &lt;= TO_CHAR(#{ehrTimeEnd}, 'yyyy-MM-dd') 
+		GROUP BY B.EPI_PLAN_TYPE  
+		ORDER BY B.EPI_PLAN_TYPE 
+	</select>
+	
+	<select id="tjByPlanType" parameterType="com.cesgroup.prison.yjct.entity.YjjlEntity" resultType="com.cesgroup.prison.yjct.entity.YjjlEntity">
+		SELECT 
+		<if test='timeType == "1"'>
+			SUBSTRING(A.EHR_TIME, 0, 4) TJ_EHR_TIME, 
+		</if>
+		<if test='timeType == "2"'>
+			SUBSTRING(A.EHR_TIME, 0, 7) TJ_EHR_TIME, 
+		</if>
+		<if test='timeType == "3"'>
+			SUBSTRING(A.EHR_TIME, 0, 11) TJ_EHR_TIME, 
+ 		</if>
+		COUNT(1) CS 
+		FROM CDS_EMERGENCY_HANDLE_RECORD A	   
+  	    LEFT JOIN CDS_EMERGENCY_PLAN_INFO B ON B.ID = A.EHR_EM_PLAN_FID 	  
+		WHERE A.EHR_TYPE = #{ehrType} 
+		AND B.EPI_PLAN_TYPE = #{epiPlanType}
+		AND TO_CHAR(A.EHR_TIME, 'yyyy-MM-dd') &gt;= TO_CHAR(#{ehrTimeStart}, 'yyyy-MM-dd') 
+		AND TO_CHAR(A.EHR_TIME, 'yyyy-MM-dd') &lt;= TO_CHAR(#{ehrTimeEnd}, 'yyyy-MM-dd') 		
+		<if test='timeType == "1"'>
+			GROUP BY SUBSTRING(A.EHR_TIME, 0, 4)
+			ORDER BY SUBSTRING(A.EHR_TIME, 0, 4)
+		</if>
+		<if test='timeType == "2"'>
+			GROUP BY SUBSTRING(A.EHR_TIME, 0, 7)
+			ORDER BY SUBSTRING(A.EHR_TIME, 0, 7)
+		</if>
+		<if test='timeType == "3"'>
+			GROUP BY SUBSTRING(A.EHR_TIME, 0, 11)
+			ORDER BY SUBSTRING(A.EHR_TIME, 0, 11)
+		</if>
+	</select>
+	
+	<select id="findEventRecord" resultType="hashmap"> 
+		SELECT B.ARD_ALARM_POLICE, TO_CHAR(B.ARD_ALERT_TIME, 'yyyy-MM-dd HH:mm:ss') ARD_ALERT_TIME, 
+		B.ARD_EVENT_TYPE, C.ABD_AREA ADDRESS, B.ARD_CUS_NUMBER, B.ARD_LOCAL_CASE 
+		FROM CDS_EMERGENCY_HANDLE_RECORD A 
+		LEFT JOIN CDS_ALERT_RECORD_DTLS B ON A.EHR_ALARM_RECORD_ID = B.ID 
+		LEFT JOIN DVC_ALERTOR_BASE_DTLS C ON C.ABD_IDNTY = B.ARD_ALERTOR_IDNTY 
+		WHERE A.ID = #{id} 
+	</select>
+</mapper>

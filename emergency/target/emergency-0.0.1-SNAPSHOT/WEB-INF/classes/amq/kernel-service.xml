@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/jms 
+			http://www.springframework.org/schema/jms/spring-jms.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+			http://www.springframework.org/schema/integration/jms
+			http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.1.xsd">
+	<context:property-placeholder />
+	
+	<!-- lihh   door  message -->
+	<int:channel id="channel.send.door.out" />
+	<int-jms:outbound-channel-adapter
+		channel="channel.send.door.out" destination-name="queue.door.out"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendDoorMessage" default-request-channel="channel.send.door.out"
+	service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+	<int:method name="send" payload-expression="#args[0]">
+		<int:header name="cusNumber" expression="#args[1]" />
+		<int:header name="msgID" expression="#args[2]" />
+	</int:method>
+	</int:gateway>
+	
+	<!-- lihh   talk  message -->
+	<int:channel id="channel.send.talk.out" />
+	<int-jms:outbound-channel-adapter
+		channel="channel.send.talk.out" destination-name="queue.talk.out"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendTalkMessage" default-request-channel="channel.send.talk.out"
+	service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+	<int:method name="send" payload-expression="#args[0]">
+		<int:header name="cusNumber" expression="#args[1]" />
+		<int:header name="msgID" expression="#args[2]" />
+	</int:method>
+	</int:gateway>
+	
+	<!-- lihh   screen  message -->
+	<int:channel id="channel.send.screen.out" />
+	<int-jms:outbound-channel-adapter
+		channel="channel.send.screen.out" destination-name="queue.screen.out"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendScreenMessage" default-request-channel="channel.send.screen.out"
+	service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+	<int:method name="send" payload-expression="#args[0]">
+        <int:header name="cusNumber" expression="#args[1]" />
+        <int:header name="msgID" expression="#args[2]" />
+    </int:method>
+	</int:gateway>
+	
+	<!-- add by tao  -->
+	<int:channel id="channel.send.callNames.out" />
+	<int-jms:outbound-channel-adapter
+		channel="channel.send.callNames.out" destination-name="queue.callName.out"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendCallNamesMessage" default-request-channel="channel.send.callNames.out"
+	service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+	<int:method name="send" payload-expression="#args[0]">
+		<int:header name="cusNumber" expression="#args[1]" />
+		<int:header name="msgID" expression="#args[2]" />
+	</int:method>
+	</int:gateway>
+	
+	<!-- 通讯融合消息发送 add by lincoln.cheng 20190120 start -->
+	<int:channel id="channel.send.rcs.out" />
+	<int-jms:outbound-channel-adapter channel="channel.send.rcs.out" destination-name="queue.rcs.out" explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendRcsMessage" default-request-channel="channel.send.rcs.out" service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+		<int:method name="send" payload-expression="#args[0]">
+			<int:header name="cusNumber" expression="#args[1]" />
+			<int:header name="msgID" expression="#args[2]" />
+		</int:method>
+	</int:gateway>
+	<!-- 通讯融合消息发送 add by lincoln.cheng 20190120 end -->
+	
+	<!-- 广播消息发送 add by lincoln.cheng 20190225 start -->
+	<int:channel id="channel.send.broadcast.out" />
+	<int-jms:outbound-channel-adapter channel="channel.send.broadcast.out" destination-name="queue.broadcast.out" explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendBroadcastMessage" default-request-channel="channel.send.broadcast.out" service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+		<int:method name="send" payload-expression="#args[0]">
+			<int:header name="cusNumber" expression="#args[1]" />
+			<int:header name="msgID" expression="#args[2]" />
+		</int:method>
+	</int:gateway>
+	<!-- 广播消息发送 add by lincoln.cheng 20190225 end -->
+	<!--布防撤防  开始  -->
+	<int:channel id="channel.send.bfcf.out" />
+	<int-jms:outbound-channel-adapter channel="channel.send.bfcf.out" destination-name="queue.bfcf.out" explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendBfCfMessage" default-request-channel="channel.send.bfcf.out" service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+		<int:method name="send" payload-expression="#args[0]">
+			<int:header name="cusNumber" expression="#args[1]" />
+			<int:header name="msgID" expression="#args[2]" />
+		</int:method>
+	</int:gateway>
+	<!--布防撤防  结束  -->
+	
+</beans>

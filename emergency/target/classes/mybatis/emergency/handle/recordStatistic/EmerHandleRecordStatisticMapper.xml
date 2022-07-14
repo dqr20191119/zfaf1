@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.handle.recordStatistic.dao.EmerHandleRecordStatisticDao">
+    <!-- 应急统计结果集 -->
+    <resultMap id="EmerHandleRecordStatisticDtoResultMap" type="com.cesgroup.prison.emergency.handle.recordStatistic.dto.EmerHandleRecordStatisticDto">
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="PREPLAN_NAME" jdbcType="CHAR" property="preplanName"/>
+        <result column="COUNTS" jdbcType="DECIMAL" property="counts"/>
+    </resultMap>
+
+    <!-- 应急处置记录结果集 -->
+    <resultMap id="EmerHandleRecordResultMap" type="com.cesgroup.prison.emergency.handle.record.entity.EmerHandleRecord">
+        <id column="ID" jdbcType="CHAR" property="id"/>
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="ALARM_RECORD_ID" jdbcType="CHAR" property="alarmRecordId"/>
+        <result column="PREPLAN_ID" jdbcType="CHAR" property="preplanId"/>
+        <result column="PREPLAN_NAME" jdbcType="CHAR" property="preplanName"/>
+        <result column="PREPLAN_SOURCE" jdbcType="CHAR" property="preplanSource"/>
+        <result column="PREPLAN_REMARKS" jdbcType="CHAR" property="preplanRemarks"/>
+        <result column="ALARM_PLAN_ID" jdbcType="CHAR" property="alarmPlanId"/>
+        <result column="ALARM_PLAN_NAME" jdbcType="CHAR" property="alarmPlanName"/>
+        <result column="ALARM_AREA_ID" jdbcType="CHAR" property="alarmAreaId"/>
+        <result column="ALARM_AREA_NAME" jdbcType="CHAR" property="alarmAreaName"/>
+        <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="FILE_TIME" jdbcType="TIMESTAMP" property="fileTime"/>
+        <result column="RECORD_STATUS" jdbcType="CHAR" property="recordStatus"/>
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder"/>
+        <result column="CREATE_USER_ID" jdbcType="CHAR" property="createUserId"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!-- 应急统计字段 -->
+    <sql id="EmerHandleRecordStatisticDto_Column_List">
+        CUS_NUMBER, PREPLAN_NAME, COUNTS
+    </sql>
+
+    <!-- 应急处置记录字段 -->
+    <sql id="EmerHandleRecord_Column_List">
+        ID, CUS_NUMBER, ALARM_RECORD_ID, PREPLAN_ID, PREPLAN_NAME, PREPLAN_SOURCE, PREPLAN_REMARKS, ALARM_PLAN_ID, ALARM_PLAN_NAME, ALARM_AREA_ID,
+        ALARM_AREA_NAME, START_TIME, END_TIME, FILE_TIME, RECORD_STATUS, STATUS, SHOW_ORDER, CREATE_USER_ID,
+        CREATE_TIME, UPDATE_USER_ID, UPDATE_TIME
+    </sql>
+
+    <!-- 分页查询应急统计列表 -->
+    <select id="findWithPage" resultMap="EmerHandleRecordStatisticDtoResultMap" useCache="true">
+        SELECT
+        T1.CUS_NUMBER, T1.PREPLAN_NAME, COUNT(T1.ID) COUNTS
+        FROM PRISON.CDS_EMER_HANDLE_RECORD T1
+        <where>
+            <if test="cusNumberList != null">
+                AND T1.CUS_NUMBER IN
+                <foreach collection="cusNumberList" item="cusNumber" index="index" separator="," open="(" close=")">
+                    #{cusNumber, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="preplanName != null and preplanName != ''">
+                AND T1.PREPLAN_NAME LIKE '%${preplanName}%'
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        GROUP BY T1.CUS_NUMBER, T1.PREPLAN_NAME
+    </select>
+
+    <!-- 分页查询应急处置记录列表 -->
+    <select id="findRecordWithPage" resultMap="EmerHandleRecordResultMap" useCache="true">
+        SELECT
+        <include refid="EmerHandleRecord_Column_List"/>
+        FROM PRISON.CDS_EMER_HANDLE_RECORD T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=VARCHAR}
+            </if>
+            <if test="preplanName != null and preplanName != ''">
+                AND T1.PREPLAN_NAME = #{preplanName, jdbcType=VARCHAR}
+            </if>
+            <if test="recordStatus != null">
+                AND T1.RECORD_STATUS = #{recordStatus, jdbcType=VARCHAR}
+            </if>
+            <if test="startTimeStart != null and startTimeStart != ''">
+                AND TO_DATE(T1.START_TIME, 'yyyy-MM-dd') &gt;= TO_DATE('${startTimeStart}', 'yyyy-MM-dd')
+            </if>
+            <if test="startTimeEnd != null and startTimeEnd != ''">
+                AND TO_DATE(T1.START_TIME, 'yyyy-MM-dd') &lt;= TO_DATE('${startTimeEnd}', 'yyyy-MM-dd')
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T1.CREATE_TIME DESC
+    </select>
+</mapper>

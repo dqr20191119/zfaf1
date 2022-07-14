@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.users.dao.UsersMapper">
+	<!-- 条件查询结果集 -->
+	<select id="listAll" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		 SELECT a.id ,a.user_name,a.user_pass,a.sex,a.age,a.address,a.phone,a.description,a.entry_date,b.department_name from t_fw_user a
+		 left join
+		t_fw_department b on a.department_id=b.id
+		 where FIND_IN_SET(b.id, queryChildrenDepartmentInfo(#{user.departmentId}))
+		<if test="user.userName !=null and user.userName !=''" >
+		  	and user_name like CONCAT('%',#{user.userName},'%' ) 
+		</if>
+		<if test="user.sex !=null and user.sex !=''" >
+		  	and sex =#{user.sex}
+		</if>
+		
+		<if test="user.phone !=null and user.phone !=''" >
+		  	and phone like CONCAT('%',#{user.phone},'%' ) 
+		</if>
+		<if test="ageBeg !=null and ageBeg !=''" >
+		  	and age BETWEEN #{ageBeg} AND #{ageEnd}
+		</if>
+		<if test="departments !=null" >
+		  	and a.department_id in 
+		  	<foreach collection="departments" index="index" item="item" open="(" separator="," close=")"> 
+       			 #{item} 
+   			 </foreach>
+		</if>
+	</select> 
+
+</mapper>

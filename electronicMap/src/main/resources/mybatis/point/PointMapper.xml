@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.point.dao.PointMapper">
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.point.vo.PointVo">
+        <result column="ALP_CUS_NUMBER" jdbcType="NUMERIC" property="alpCusNumber" />
+        <result column="ALP_DEVICE_TYPE" jdbcType="NUMERIC" property="alpDeviceType" />
+        <result column="ALP_DEVICE_IDNTY" jdbcType="VARCHAR" property="alpDeviceIdnty" />
+        <result column="ALP_DEVICE_NAME" jdbcType="VARCHAR" property="alpDeviceName" />
+        <result column="ALP_X_POINT_IDNTY" jdbcType="VARCHAR" property="alpXPointIdnty" />
+        <result column="ALP_Y_POINT_IDNTY" jdbcType="VARCHAR" property="alpYPointIdnty" />
+        <result column="ALP_Z_POINT_IDNTY" jdbcType="VARCHAR" property="alpZPointIdnty" />
+        <result column="ALP_STATU_IDNC" jdbcType="NUMERIC" property="alpStatuIdnc" />
+        <result column="ALP_CRTE_TIME" jdbcType="TIMESTAMP" property="alpCrteTime" />
+        <result column="ALP_CRTE_USER_ID" jdbcType="VARCHAR" property="alpCrteUserId" />
+        <result column="ALP_UPDT_TIME" jdbcType="TIMESTAMP" property="alpUpdtTime" />
+        <result column="ALP_UPDT_USER_ID" jdbcType="VARCHAR" property="alpUpdtUserId" />
+        <result column="ID" jdbcType="VARCHAR" property="id" />
+    </resultMap>
+    <!--添加操作-->
+    <insert id="insertAll" parameterType="com.cesgroup.prison.point.vo.PointVo">
+        insert into CDS_ARCGIS_LAYER_POINTS (ALP_CUS_NUMBER,
+        ALP_DEVICE_TYPE, ALP_DEVICE_IDNTY, ALP_DEVICE_NAME,
+        ALP_X_POINT_IDNTY, ALP_Y_POINT_IDNTY, ALP_Z_POINT_IDNTY,ALP_STATU_IDNC,
+        ALP_CRTE_TIME, ALP_CRTE_USER_ID, ALP_UPDT_TIME,
+        ALP_UPDT_USER_ID, ID,ALP_GRAND_ID,ALP_DEVICE_MODEL)
+        values (#{alpCusNumber,jdbcType=NUMERIC},#{alpDeviceType,jdbcType=NUMERIC}, #{alpDeviceIdnty,jdbcType=VARCHAR}, #{alpDeviceName,jdbcType=VARCHAR},
+        #{alpXPointIdnty,jdbcType=VARCHAR}, #{alpYPointIdnty,jdbcType=VARCHAR}, #{alpZPointIdnty,jdbcType=VARCHAR},
+        #{alpStatuIdnc,jdbcType=NUMERIC},now(), #{alpCrteUserId,jdbcType=VARCHAR}, now(),
+        #{alpUpdtUserId,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR},#{alpGrandId,jdbcType=VARCHAR},#{alpDeviceModel,jdbcType=VARCHAR})
+    </insert>
+    <!--摄像机查询-->
+  <select id="getAllCamera" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+      select (case CBD_TYPE_INDC when 1 then '网络半球' when 2 then '网络枪机' when 3 then '模拟半球' when 4 then '网络球机' else '其他' end) as deviceTypeName,
+          CBD_TYPE_INDC as  deviceType,
+          CBD_NAME as deviceName,
+          cd.id as deviceId,
+          ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+          cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+      from DVC_CAMERA_BASE_DTLS cd
+      left join CDS_ARCGIS_LAYER_POINTS cp on cd.id=cp.ALP_DEVICE_IDNTY
+      where 1=1
+      <if test="alpCusNumber!=null and alpCusNumber!=''">
+        and CBD_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="alpGrandId!=null and alpGrandId!=''">
+        and CBD_AREA_ID=#{alpGrandId,jdbcType=VARCHAR}
+      </if>
+      <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+          and cd.id=#{alpDeviceIdnty,jdbcType=VARCHAR}
+      </if>
+		AND cd.cbd_action_indc != '3'
+      order by cp.ALP_STATU_IDNC desc,CBD_NAME DESC
+  </select>
+    <!--报警器查询-->
+    <select id="getAllAlarm" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select (case ABD_TYPE_INDC when 1 then '报警器' else '其他' end) as deviceTypeName,
+        ABD_TYPE_INDC as  deviceType,
+        ABD_NAME as deviceName,
+        cd.id as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from DVC_ALERTOR_BASE_DTLS cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.id=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and ABD_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and ABD_AREA_ID=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.id=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,ABD_NAME DESC
+    </select>
+    <!--门禁查询-->
+    <select id="getAllDoor" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select (case DCB_TYPE_INDC when 1 then '门禁' else '其他' end) as deviceTypeName,
+        DCB_TYPE_INDC as  deviceType,
+        DCB_NAME as deviceName,
+        cd.id as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from DVC_DOOR_CONTROL_BASE_DTLS cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.DCB_IDNTY=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and DCB_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and DCB_AREA_ID=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.DCB_IDNTY=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,DCB_NAME DESC
+    </select>
+    <!--广播查询-->
+    <select id="getAllBroadcast" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select '广播' as deviceTypeName,
+        (select '1') as  deviceType,
+        BBD_NAME as deviceName,
+        cd.id as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from DVC_BROADCAST_BASE_DTLS cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.id=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and BBD_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and BBD_AREA=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.id=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,BBD_NAME DESC
+    </select>
+    <!--门禁控制器-->
+    <select id="getAllDoorControll" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select '门禁控制器' as deviceTypeName,
+        (select '1') as  deviceType,
+        DCD_NAME as deviceName,
+        cd.id as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from DVC_DOOR_CONTROL_DEVICE cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.id=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and DCD_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and DCD_AREA=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.id=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,DCD_NAME DESC
+    </select>
+    <!--对讲分机-->
+    <select id="getAllDeviceOther" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select '分机' as deviceTypeName,
+        (select '1') as  deviceType,
+        TBD_NAME as deviceName,
+        cd.TBD_IDNTY as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from DVC_TALKBACK_BASE_DTLS cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.TBD_IDNTY=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and TBD_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and TBD_AREA_ID=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.TBD_IDNTY=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,TBD_NAME DESC
+    </select>
+    <!--对讲主机-->
+    <select id="getAllDeviceMain" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select '主机' as deviceTypeName,
+        (select '1') as  deviceType,
+        TSE_NAME as deviceName,
+        cd.id as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from DVC_TALKBACK_SERVER cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.id=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and TSE_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and TSE_AREA_ID=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.id=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,TSE_NAME DESC
+    </select>
+    <!--地图标签-->
+    <select id="getAllTabs" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select '地图标签' as deviceTypeName,
+        (select '1') as  deviceType,
+        MLI_LABEL_CODE as deviceName,
+        cd.id as deviceId,
+        ifnull(cp.ALP_STATU_IDNC,2) as alpStatuIdnc,
+        cp.ALP_X_POINT_IDNTY as alpXPointIdnty
+        from CDS_MESSAGE_LABEL_INFO cd
+        left join CDS_ARCGIS_LAYER_POINTS cp on cd.id=cp.ALP_DEVICE_IDNTY
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and MLI_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and MLI_AREA_CODE=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceIdnty!=null and alpDeviceIdnty!=''">
+            and cd.id=#{alpDeviceIdnty,jdbcType=VARCHAR}
+        </if>
+        order by cp.ALP_STATU_IDNC desc,MLI_LABEL_CODE DESC
+    </select>
+    <!--查询点位中是否已经存在-->
+    <select id="getCountById" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="int">
+        select count(id) from CDS_ARCGIS_LAYER_POINTS
+        where ALP_DEVICE_IDNTY=#{alpDeviceIdnty,jdbcType=VARCHAR}
+             and ALP_DEVICE_TYPE=#{alpDeviceType,jdbcType=VARCHAR} and ALP_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+    </select>
+    <!--更新操作-->
+    <update id="updateAll" parameterType="com.cesgroup.prison.point.vo.PointVo" >
+        update CDS_ARCGIS_LAYER_POINTS set ALP_X_POINT_IDNTY=#{alpXPointIdnty,jdbcType=VARCHAR},
+                                           ALP_Y_POINT_IDNTY=#{alpYPointIdnty,jdbcType=VARCHAR},
+                                           ALP_Z_POINT_IDNTY=#{alpZPointIdnty,jdbcType=VARCHAR},
+                                           ALP_STATU_IDNC=#{alpStatuIdnc,jdbcType=VARCHAR},
+                                           ALP_UPDT_TIME=now(),
+                                           ALP_UPDT_USER_ID=#{alpUpdtUserId,jdbcType=VARCHAR}
+            where ALP_DEVICE_IDNTY=#{alpDeviceIdnty,jdbcType=VARCHAR} and ALP_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+                 and ALP_DEVICE_TYPE=#{alpDeviceType,jdbcType=VARCHAR}
+
+
+    </update>
+    <!--条件查询 分页-->
+    <select id="findByPage" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select (case ALP_DEVICE_TYPE when 1 then '摄像机' when 2 then '对讲分机' when 3 then '报警器' when 4 then '门禁' when 5 then '广播' when 6 then '对讲主机' when 20 then '地图标签'  else '其他' end) as deviceTypeName,
+        ALP_CUS_NUMBER as  alpCusNumber,
+        ALP_DEVICE_TYPE as alpDeviceType,
+        ALP_DEVICE_MODEL as alpDeviceModel,
+        ALP_GRAND_ID as alpGrandId,
+        d.ABD_AREA_NAME as alpGrandName,
+        p.ID as ID,
+        ALP_DEVICE_IDNTY as alpDeviceIdnty,
+        ALP_DEVICE_NAME as alpDeviceName,
+        ALP_X_POINT_IDNTY as alpXPointIdnty,
+        ALP_Y_POINT_IDNTY as alpYPointIdnty,
+        ALP_Z_POINT_IDNTY as alpZPointIdnty,
+        ALP_STATU_IDNC as alpStatuIdnc,
+        ALP_CRTE_TIME as alpCrteTime,
+        ALP_CRTE_USER_ID as alpCrteUserId,
+        ALP_UPDT_TIME as alpUpdtTime,
+        ALP_UPDT_USER_ID as alpUpdtUserId
+        from CDS_ARCGIS_LAYER_POINTS p
+        left join CDS_AREA_BASE_DTLS d on d.ABD_AREA_ID =p.ALP_GRAND_ID
+        where 1=1
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and ALP_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+        <if test="alpDeviceType!=null and alpDeviceType!=''">
+            and ALP_DEVICE_TYPE=#{alpDeviceType,jdbcType=VARCHAR}
+        </if>
+
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and ALP_GRAND_ID=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+
+        <if test="deviceName!=null and deviceName!=''">
+            and ALP_DEVICE_NAME like concat('%',#{deviceName,jdbcType=VARCHAR},'%')
+        </if>
+        order by ALP_CRTE_TIME desc
+    </select>
+    <select id="getDevicePointById" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        SELECT ALP_X_POINT_IDNTY as alpXPointIdnty,
+        ALP_Y_POINT_IDNTY as alpYPointIdnty,
+        ALP_Z_POINT_IDNTY as alpZPointIdnty
+        from CDS_ARCGIS_LAYER_POINTS
+        where ALP_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR} and ALP_DEVICE_IDNTY=#{alpDeviceIdnty,jdbcType=VARCHAR}
+    </select>
+    <select id="getAllTypeDevice" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select (case CBD_TYPE_INDC when 1 then '球机' when 2 then '枪机' when 3 then '半球' else '其他' end) as deviceTypeName,
+        CBD_TYPE_INDC as  deviceType,
+        CBD_NAME as deviceName,
+        cd.id as deviceId
+        from DVC_CAMERA_BASE_DTLS cd
+        where 1=1
+        <if test="Q!=null and Q!=''">
+            and CBD_NAME like  concat('%',#{Q,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and CBD_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="getViewByGrandId" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.view.entity.View">
+        select VFU_X_CRDNT as vfuXCrdnt,
+        VFU_Y_CRDNT as vfuYCrdnt,
+        VFU_Z_CRDNT as vfuZCrdnt,
+        VFU_TILT_CRDNT as vfuTiltCrdnt,
+        VFU_HEADING_CRDNT as vfuHeadingCrdnt,
+        (select d.ABD_PARENT_AREA_ID from CDS_AREA_BASE_DTLS d where d.ABD_AREA_ID= f.VFU_AREA_ID)as vfuParentViewId
+        from CDS_VIEW_FUNC f
+        where VFU_CONFINE=1
+        <if test="alpGrandId!=null and alpGrandId!=''">
+            and VFU_AREA_ID=#{alpGrandId,jdbcType=VARCHAR}
+        </if>
+        <if test="alpCusNumber!=null and alpCusNumber!=''">
+            and VFU_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="getAllPointByGrandAndType" resultType="com.cesgroup.prison.point.vo.PointVo" parameterType="com.cesgroup.prison.point.vo.PointVo">
+       select * from
+       CDS_ARCGIS_LAYER_POINTS
+        <where>
+            <if test="strList != null and strList.size() > 0" >
+                <foreach item="str" index="index" open="(" close=")" separator="or" collection="strList">
+                    ALP_GRAND_ID =#{str}
+                </foreach>
+            </if>
+            <if test="alpCusNumber != null and alpCusNumber!=''">
+                and ALP_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="alpDeviceStr != null and alpDeviceStr.size()>0 ">
+                and
+                <foreach item="str" index="index" open="(" close=")" separator="or" collection="alpDeviceStr">
+                          ALP_DEVICE_TYPE =#{str}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+
+    <!--条件查询 监舍点位分页-->
+    <select id="findByDormPage" parameterType="com.cesgroup.prison.point.vo.PointVo" resultType="com.cesgroup.prison.point.vo.PointVo">
+        select (case ALP_DEVICE_TYPE when 8 then '监舍信息点位' else '其他' end) as deviceTypeName,
+        ALP_CUS_NUMBER as  alpCusNumber,
+        ALP_DEVICE_TYPE as alpDeviceType,
+        ALP_DEVICE_MODEL as alpDeviceModel,
+        ALP_GRAND_ID as alpGrandId,
+        d.ABD_AREA_NAME as alpGrandName,
+        p.ID as ID,
+        ALP_DEVICE_IDNTY as alpDeviceIdnty,
+        ALP_DEVICE_NAME as alpDeviceName,
+        ALP_X_POINT_IDNTY as alpXPointIdnty,
+        ALP_Y_POINT_IDNTY as alpYPointIdnty,
+        ALP_Z_POINT_IDNTY as alpZPointIdnty,
+        ALP_STATU_IDNC as alpStatuIdnc,
+        ALP_CRTE_TIME as alpCrteTime,
+        ALP_CRTE_USER_ID as alpCrteUserId,
+        ALP_UPDT_TIME as alpUpdtTime,
+        ALP_UPDT_USER_ID as alpUpdtUserId
+        from CDS_ARCGIS_LAYER_POINTS p
+        left join CDS_AREA_BASE_DTLS d on d.ABD_AREA_ID =p.ALP_GRAND_ID
+        <where>
+            <if test="alpCusNumber!=null and alpCusNumber!=''">
+                and ALP_CUS_NUMBER=#{alpCusNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="alpGrandId!=null and alpGrandId!=''">
+                and ALP_GRAND_ID = #{alpGrandId}
+            </if>
+            <if test="alpDeviceName!=null and alpDeviceName!=''">
+                and ALP_DEVICE_IDNTY LIKE concat('%',#{alpDeviceName,jdbcType=VARCHAR},'%')
+            </if>
+            and ALP_DEVICE_TYPE='8'
+        </where>
+        order by ALP_CRTE_TIME desc
+    </select>
+
+    <delete id="destoryPoint" parameterType="java.lang.String">
+        delete from CDS_ARCGIS_LAYER_POINTS
+        where ID=#{id,jdbcType=VARCHAR}
+    </delete>
+</mapper>

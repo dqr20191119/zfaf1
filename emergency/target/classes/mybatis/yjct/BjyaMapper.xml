@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.BjyaMapper">
+	 
+	<select id="findAllListForCombobox" parameterType="com.cesgroup.prison.yjct.entity.BjyaEntity" resultType="hashmap">
+		SELECT A.ID "value", A.PMA_PLAN_NAME "text" FROM CDS_PLAN_MASTER A 
+		<where>
+			<if test="pmaCusNumber != null and pmaCusNumber != ''"> 
+				AND A.PMA_CUS_NUMBER = #{pmaCusNumber} 		
+			</if>			 
+		</where>
+		ORDER BY A.PMA_CRTE_TIME DESC  
+	</select>	
+</mapper>

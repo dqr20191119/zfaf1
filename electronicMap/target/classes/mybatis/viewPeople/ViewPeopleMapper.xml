@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.viewPeople.dao.ViewPeopleMapper">
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.viewPeople.entity.ViewPeople">
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="VPR_CUS_NUMBER" jdbcType="VARCHAR" property="vprCusNumber"/>
+        <result column="VPR_AREA_ID" jdbcType="VARCHAR" property="vprAreaId"/>
+        <result column="VPR_AREA_NAME" jdbcType="NUMERIC" property="vprAreaName"/>
+        <result column="VPR_POLICE_ID" jdbcType="VARCHAR" property="vprPoliceId"/>
+        <result column="VPR_POLICE_NAME" jdbcType="VARCHAR" property="vprPoliceName"/>
+        <result column="VPR_CRTE_TIME" jdbcType="VARCHAR" property="vprCrteTime"/>
+        <result column="VPR_CRTE_USER_ID" jdbcType="VARCHAR" property="vprCrteUserId"/>
+        <result column="VPR_UPDT_TIME" jdbcType="VARCHAR" property="vprUpdtTime"/>
+        <result column="VPR_UPDT_USER_ID" jdbcType="VARCHAR" property="vprUpdtUserId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, VPR_CUS_NUMBER, VPR_AREA_ID, VPR_AREA_NAME, VPR_POLICE_ID,VPR_POLICE_NAME,VPR_CRTE_TIME,
+    VPR_CRTE_USER_ID,VPR_UPDT_TIME,VPR_UPDT_USER_ID
+    </sql>
+
+    <!-- 根据监狱编号和区域编号查询 -->
+    <select id="findByCusNumberAndAreaId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from CDS_VIEW_PEOPLE_RELATION
+        where VPR_CUS_NUMBER = #{0}
+        and VPR_AREA_ID = #{1}
+    </select>
+
+    <!-- 批量添加 -->
+    <insert id="insertByBatch" parameterType="java.util.List">
+        INSERT INTO CDS_VIEW_PEOPLE_RELATION (ID,VPR_CUS_NUMBER,VPR_AREA_ID,VPR_AREA_NAME,
+        VPR_POLICE_ID,VPR_POLICE_NAME,VPR_CRTE_TIME,VPR_CRTE_USER_ID,VPR_UPDT_TIME,VPR_UPDT_USER_ID)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=VARCHAR},#{item.vprCusNumber,jdbcType=VARCHAR},#{item.vprAreaId,jdbcType=VARCHAR}
+            ,#{item.vprAreaName,jdbcType=VARCHAR}, #{item.vprPoliceId,jdbcType=VARCHAR}
+            ,#{item.vprPoliceName,jdbcType=VARCHAR},#{item.vprCrteTime,jdbcType=TIMESTAMP},#{item.vprCrteUserId,jdbcType=VARCHAR}
+            ,#{item.vprUpdtTime,jdbcType=TIMESTAMP},#{item.vprUpdtUserId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <!-- 批量删除 -->
+    <delete id="deleteByCusNumberAndAreaId" parameterType="java.util.List">
+        DELETE CDS_VIEW_PEOPLE_RELATION
+        WHERE VPR_CUS_NUMBER = #{0}
+        AND VPR_AREA_ID = #{1}
+    </delete>
+
+    <select id="findDepAndAreaRelation" parameterType="string" resultType="int">
+        SELECT COUNT(1) FROM CDS_AREA_DEPARTMENT_RELATION WHERE
+        ADR_DPRTMNT_ID =
+        (SELECT PBD_DRPTMNT_ID FROM V_POLICE_BASE_DTLS WHERE PBD_USER_ID=#{0})
+        AND ADR_AREA_ID = #{1}
+    </select>
+
+    <select id="findParenAreaIdAndName" parameterType="hashmap" resultType="hashmap">
+        SELECT C.ABD_AREA_ID "id",C.ABD_AREA_NAME "name" FROM CDS_AREA_BASE_DTLS C
+        WHERE C.ABD_AREA_ID IN (
+            SELECT DISTINCT A.ABD_PARENT_AREA_ID
+            FROM CDS_AREA_BASE_DTLS A
+            WHERE A.ABD_AREA_ID IN (SELECT DISTINCT B.VPR_AREA_ID FROM CDS_VIEW_PEOPLE_RELATION B))
+            AND C.ABD_CUS_NUMBER = #{cusNumber}
+        ORDER BY C.ABD_AREA_ID
+	</select>
+
+    <select id="findChildAreaIdAndName" parameterType="hashmap" resultType="hashmap">
+        SELECT DISTINCT A.VPR_AREA_ID "id",A.VPR_AREA_NAME "name"
+        FROM CDS_VIEW_PEOPLE_RELATION A
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND A.VPR_CUS_NUMBER = #{cusNumber}
+            </if>
+        </where>
+        ORDER BY A.VPR_AREA_ID
+    </select>
+
+    <select id="findAreaIdByPoliceID" parameterType="java.lang.String" resultType="hashmap">
+		SELECT VPR_AREA_ID "ADR_AREA_ID" FROM "PRISON"."CDS_VIEW_PEOPLE_RELATION"
+		where vpr_cus_number = #{0}
+		AND vpr_police_id= #{1}
+        UNION
+		SELECT abd.abd_parent_area_id "ADR_AREA_ID" FROM "PRISON"."CDS_VIEW_PEOPLE_RELATION" vpr
+		RIGHT JOIN cds_area_base_dtls abd
+		ON abd.abd_cus_number = vpr.vpr_cus_number AND vpr.vpr_area_id=abd.abd_area_id
+		WHERE vpr.vpr_cus_number = #{0}  AND vpr.vpr_police_id= #{1}
+		AND abd.abd_parent_area_id IS NOT NULL
+    </select>
+
+</mapper>

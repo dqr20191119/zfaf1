@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.layer.dao.LayerMapper" >
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.layer.entity.Layer" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="LIN_CUS_NUMBER" property="linCusNumber" jdbcType="VARCHAR" />
+    <result column="LIN_LAYER_NAME" property="linLayerName" jdbcType="VARCHAR" />
+    <result column="LIN_DEVICE_ID" property="linDeviceId" jdbcType="VARCHAR" />
+    <result column="LIN_DEVICE_TYPE" property="linDeviceType" jdbcType="VARCHAR" />
+    <result column="LIN_REMARK" property="linRemark" jdbcType="VARCHAR" />
+    <result column="LIN_CRTE_USER_ID" property="linCrteUserId" jdbcType="VARCHAR" />
+    <result column="LIN_CRTE_TIME" property="linCrteTime" jdbcType="TIMESTAMP" />
+    <result column="LIN_UPDT_USER_ID" property="linUpdtUserId" jdbcType="VARCHAR" />
+    <result column="LIN_UPDT_TIME" property="linUpdtTime" jdbcType="TIMESTAMP" />
+  </resultMap> 
+</mapper>

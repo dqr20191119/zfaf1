@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+default-lazy-init="true">
+
+	<description>JCaptcha修改配置</description>
+	<!-- 已经有了默认配置 -->
+	
+	<!-- 相当于调用com.cesgroup.framework.jcaptcha.JCaptcha.setCaptchaService(imageCaptchaService) -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.cesgroup.framework.jcaptcha.JCaptcha.setCaptchaService" />
+		<property name="arguments" ref="imageCaptchaService" />
+	</bean>
+	
+	<!-- 验证码图片生成引擎 -->
+	<bean id="imageCaptchaEngine" class="com.cesgroup.framework.jcaptcha.engine.GMailEngine"/>
+	
+	<!-- 
+	JCaptchaManageableImageCaptchaService由构造函数生成，参数分别是：
+	CaptchaStore captchaStore：存储类型
+	CaptchaEngine captchaEngine：验证码图片生成引擎
+	int minGuarantedStorageDelayInSeconds：大概是验证码保存时间
+	int maxCaptchaStoreSize：最大保存数量
+	int captchaStoreLoadBeforeGarbageCollection：垃圾回收？必须比maxCaptchaStoreSize小
+	 -->
+	<!-- 默认情况，在内存中使用map存储 -->
+	<!-- <bean id="imageCaptchaService" class="com.cesgroup.framework.jcaptcha.service.JCaptchaManageableImageCaptchaService">   
+        <constructor-arg index="0" ref="imageCaptchaStore" />    
+        <constructor-arg index="1" ref="imageCaptchaEngine" />    
+        <constructor-arg index="2" value="180" />       
+        <constructor-arg index="3" value="100000" />       
+        <constructor-arg index="4" value="75000" />       
+    </bean>    
+    <bean id="imageCaptchaStore" class="com.octo.captcha.service.captchastore.FastHashMapCaptchaStore"/> -->
+
+	<!-- Ehcache默认配置版本 -->
+	<!-- 
+	<bean id="imageCaptchaService" class="com.cesgroup.framework.jcaptcha.service.EhcacheManageableImageCaptchaService">   
+        <constructor-arg index="0" ref="imageCaptchaEngine" />    
+    </bean>
+     -->
+     
+	<!-- Ehcache默认配置版本，可配置超时时间和内存保存数量 -->
+	<!-- <bean id="imageCaptchaService" class="com.cesgroup.framework.jcaptcha.service.EhcacheManageableImageCaptchaService">   
+        <constructor-arg index="0" ref="imageCaptchaEngine" />
+        <constructor-arg index="1" value="180" />
+        <constructor-arg index="2" value="100000" />
+    </bean> -->
+     
+	<!-- Ehcache读取配置文件 -->
+	<bean id="imageCaptchaService" class="com.cesgroup.framework.jcaptcha.service.JCaptchaManageableImageCaptchaService">   
+        <constructor-arg index="0" ref="imageCaptchaStore" />    
+        <constructor-arg index="1" ref="imageCaptchaEngine" />    
+        <constructor-arg index="2" value="0" />       
+        <constructor-arg index="3" value="0" />       
+        <constructor-arg index="4" value="0" />       
+    </bean>    
+    <bean id="imageCaptchaStore" class="com.cesgroup.framework.jcaptcha.captchastore.CacheCaptchaStore">
+    	<constructor-arg index="0" ref="captchaCacheManager" />
+    	<property name="cacheName" value="jcaptchacaptchastore" /> 
+    </bean>
+	<bean id="captchaCacheManager" class="com.cesgroup.framework.jcaptcha.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:ehcache/ehcache-jcaptcha.xml"/>
+<!-- 		<property name="cacheManagerConfigFile" value="classpath:ehcache/ehcache-jcaptcha-terracotta.xml"/> -->
+	</bean>
+	
+	<!-- Redis的缓存管理器 -->
+	<!-- <bean id="captchaCacheManager" class="com.cesgroup.framework.jcaptcha.cache.redis.RedisCacheManager">
+		<property name="configFile" value="classpath:redis/redis-jcaptcha.properties"/>
+	</bean> -->
+	
+	<!-- Spring提供的基于的Ehcache实现的缓存管理器   -->
+	<!-- <bean id="imageCaptchaStore" class="com.cesgroup.framework.jcaptcha.captchastore.SpringCacheCaptchaStore">
+    	<property name="cache" ref="captchaCache" /> 
+    </bean>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+        <property name="configLocation" value="classpath:ehcache/ehcache-jcaptcha.xml"/>  
+    </bean>  
+    <bean id="captchaCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	    <property name="cacheManager" ref="cacheManager" />
+	    <property name="cacheName" value="jcaptchacaptchastore" />
+	</bean>  -->
+</beans>

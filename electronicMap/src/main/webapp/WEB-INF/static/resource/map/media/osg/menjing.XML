@@ -1,0 +1,9 @@
+<ModelPointClass>
+  <ModelPoint>
+    <ModelName>Line02</ModelName>
+    <LocationX>0.0</LocationX>
+    <LocationY>0.0</LocationY>
+    <LocationZ>0.0</LocationZ>
+    <Matrix3>1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0</Matrix3>
+  </ModelPoint>
+</ModelPointClass>

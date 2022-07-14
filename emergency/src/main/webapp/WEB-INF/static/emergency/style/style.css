@@ -1,0 +1,509 @@
+body {
+    margin: 0;
+}
+
+html, body, div, h4, h5, h6, p, ul, li, input, a, i, b, span {
+    box-sizing: border-box;
+    font-style: normal;
+    font-family: "Microsoft Yahei", Arial;
+    font-size: 14px;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    outline: 0px;
+    text-decoration: none;
+}
+
+div {
+    /*text-align: center;*/
+}
+
+table.member-list {
+    width: 100%;
+    border: 1px solid #ededed;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+table.member-list th {
+    background: #4692f0;
+    text-align: center;
+    border: 1px solid #ededed;
+}
+
+table.member-list td {
+    border: 1px solid #ededed;
+}
+
+/** 应急预案样式 start */
+#wrap {
+    width: 1065px;
+    height: 556px;
+    margin: 0 0 0 0;
+    position: relative;
+    /*border: 1px solid #ff0000;*/
+}
+
+#wrap .header {
+    /* position:absolute; */
+    top: 0px;
+    height: 80px;
+    width: 100%;
+    /*border: 1px solid #f00;*/
+    /*line-height: 120px;*/
+}
+
+#wrap .main {
+    /* position:absolute; */
+    top: 80px;
+    width: 100%;
+    height: 476px;
+    border-top: 1px solid #008eff;
+    /*line-height: 300px;*/
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#wrap .main ul {
+    padding: 0px 0px 0px 0px;
+    /*border: 1px solid #074d6c;*/
+}
+
+#wrap .main ul li {
+    display: inline-block;
+    width: 195px;
+    height: 120px;
+    text-align: center;
+    /*border: 1px solid #ff0000;*/
+    background: #008eff;
+    border-radius: 2px;
+    margin: 5px 5px 5px 5px;
+}
+
+#wrap .main .content-item {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    /* border-bottom: 0; */
+}
+
+#wrap .main .content-item .item-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+#wrap .main ul li:hover {
+    background: #1c57d2;
+}
+/** 应急预案样式 end */
+
+/** 预案预览[处置步骤、工作组样式] start */
+#tabsId_preplan_view_2 {
+    width: 1065px;
+    margin: 0px 0px 0px 0px;
+    position: relative;
+    width: 100%;
+    /*height: 470px;*/
+    /*border:solid 1px #00FF00;*/
+}
+
+#tabsId_preplan_view_2 .left_side {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    width: 180px;
+    height: 460px;
+    margin: 10px 0px 0px 0px;
+    /*border:solid 1px #0000FF;*/
+}
+
+#tabsId_preplan_view_2 .middle_side {
+    position: absolute;
+    top: 0px;
+    margin: 10px 0px 0px 210px;
+    width: 180px;
+    height: 460px;
+    /*border:solid 1px #0000FF;*/
+}
+
+#tabsId_preplan_view_2 .right_side {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    width: 645px;
+    height: 460px;
+    margin: 10px 0px 0px 0px;
+    /*border:solid 1px #0000FF;*/
+}
+
+#tabsId_preplan_view_2 .left_side .title {
+    height: 20px;
+}
+
+#tabsId_preplan_view_2 .left_side .content {
+    width: 100%;
+    height: 440px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_preplan_view_2 .left_side .content .leftnav li {
+    text-align: center;
+    padding-top: 10px;
+    width: 115px;
+    height: 50px;
+    font-size: 11.5px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-left: 35px;
+    background: #fafafa;
+    background: url('./images/left_button.png') no-repeat;
+    color: #000000;
+}
+
+#tabsId_preplan_view_2 .left_side .content .leftnav li:hover {
+    color: #ffffff;
+}
+
+#tabsId_preplan_view_2 .left_side .content .leftnav .li-select {
+    color: #ffffff;
+}
+
+#tabsId_preplan_view_2 .middle_side .title {
+    height: 20px;
+}
+
+#tabsId_preplan_view_2 .middle_side .content {
+    width: 100%;
+    height: 440px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_preplan_view_2 .middle_side .content .middlenav li {
+    text-align: center;
+    width: 160px;
+    height: 30px;
+    font-size: 11.5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+#tabsId_preplan_view_2 .middle_side .content .middlenav li:hover {
+    color: #ff0000;
+}
+
+#tabsId_preplan_view_2 .middle_side .content .middlenav .li-select {
+    color: #ff0000;
+}
+
+#tabsId_preplan_view_2 .right_side .title1 {
+    height: 20px;
+}
+
+#tabsId_preplan_view_2 .right_side .title2 {
+    margin: 10px 0px 0px 0px;
+    height: 20px;
+}
+
+#tabsId_preplan_view_2 .right_side .content1 {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#tabsId_preplan_view_2 .right_side .content2 {
+    width: 100%;
+    height: 310px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/** 预案预览[处置步骤、工作组样式] end */
+
+/** 应急处置记录[处置步骤、工作组样式] start */
+#tabsId_handle_process_2 {
+    width: 1065px;
+    margin: 0px 0px 0px 0px;
+    position: relative;
+    width: 100%;
+    /*height: 470px;*/
+    /*border:solid 1px #00FF00;*/
+}
+#tabsId_handle_process_2 #container1 {
+    width: 1065px;
+    margin: 0px 0px 0px 0px;
+    position: relative;
+    width: 100%;
+    /*height: 470px;*/
+    /*border:solid 1px #00FF00;*/
+}
+
+#tabsId_handle_process_2 #container2 {
+    width: 1065px;
+    margin: 0px 0px 0px 0px;
+    position: relative;
+    width: 100%;
+    /*height: 470px;*/
+    /*border:solid 1px #00FF00;*/
+}
+
+#tabsId_handle_process_2 .left_side {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    width: 180px;
+    height: 460px;
+    margin: 10px 0px 0px 0px;
+    /*border:solid 1px #0000FF;*/
+}
+
+#tabsId_handle_process_2 .middle_side {
+    position: absolute;
+    top: 0px;
+    margin: 10px 0px 0px 210px;
+    width: 180px;
+    height: 460px;
+    /*border:solid 1px #0000FF;*/
+}
+
+#tabsId_handle_process_2 .right_side {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    width: 645px;
+    height: 460px;
+    margin: 10px 0px 0px 0px;
+    /*border:solid 1px #0000FF;*/
+}
+
+#tabsId_handle_process_2 .left_side .title {
+    height: 30px;
+}
+
+#tabsId_handle_process_2 .left_side .content {
+    width: 100%;
+    height: 430px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_handle_process_2 .left_side .content .leftnav li {
+    text-align: center;
+    padding-top: 10px;
+    width: 115px;
+    height: 50px;
+    font-size: 11.5px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-left: 35px;
+    background: #fafafa;
+    background: url('./images/left_button.png') no-repeat;
+    color: #000000;
+}
+
+#tabsId_handle_process_2 .left_side .content .leftnav li:hover {
+    color: #ffffff;
+}
+
+#tabsId_handle_process_2 .left_side .content .leftnav .li-select {
+    color: #ffffff;
+}
+
+#tabsId_handle_process_2 .middle_side .title1 {
+    height: 30px;
+}
+
+#tabsId_handle_process_2 .middle_side .title2 {
+    height: 20px;
+}
+
+#tabsId_handle_process_2 .middle_side .content1 {
+    width: 100%;
+    height: 190px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_handle_process_2 .middle_side .content2 {
+    width: 100%;
+    height: 220px;
+    /*border: 1px solid #4692f0;*/
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_handle_process_2 .middle_side .content1 .middlenav li {
+    text-align: center;
+    width: 160px;
+    height: 30px;
+    font-size: 11.5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+#tabsId_handle_process_2 .middle_side .content1 .middlenav li:hover {
+    color: #ff0000;
+}
+
+#tabsId_handle_process_2 .middle_side .content1 .middlenav .li-select {
+    color: #ff0000;
+}
+
+#tabsId_handle_process_2 .right_side .title1 {
+    height: 30px;
+}
+
+#tabsId_handle_process_2 .right_side .title2 {
+    margin: 10px 0px 0px 0px;
+    height: 20px;
+}
+
+#tabsId_handle_process_2 .right_side .content1 {
+    width: 100%;
+    height: 300px;
+    border: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_handle_process_2 .right_side .content2 {
+    width: 100%;
+    height: 100px;
+    /*border: 1px solid #4692f0;*/
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#tabsId_handle_process_2 .right_side .content2 textarea {
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px 5px 5px 5px
+}
+/** 应急处置记录[处置步骤、工作组样式] end */
+
+/** 附近民警信息样式 start */
+#divId_nearby_police {
+    margin: 0px 0px 0px 0px;
+    position: relative;
+    width: 100%;
+    /*border:solid 1px #00FF00;*/
+}
+
+#divId_nearby_police .left_side {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 190px;
+    height: 554px;
+    margin: 0px 0px 0px 0px;
+    border-right: solid 1px #4692f0;
+}
+
+#divId_nearby_police .right_side {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 870px;
+    height: 554px;
+    margin: 0px 0px 0px 0px;
+    /*border:solid 1px #FF0000;*/
+}
+
+#divId_nearby_police .left_side .title {
+    height: 0px;
+}
+
+#divId_nearby_police .left_side .content {
+    width: 100%;
+    height: 504px;
+    border-bottom: 1px solid #4692f0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*border: 1px solid #0000ff;*/
+    text-align: center;
+
+}
+
+#divId_nearby_police .left_side .bottom {
+    height: 50px;
+    text-align: center;
+    padding: 10px 0px 0px 0px;
+}
+
+#divId_nearby_police .right_side .title {
+    height: 0px;
+}
+
+#divId_nearby_police .right_side .content {
+    width: 100%;
+    height: 554px;
+    /*border: 1px solid #4692f0;*/
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#divId_nearby_police .right_side .bottom {
+    height: 0px;
+}
+
+#divId_nearby_police .left_side .content .leftnav li {
+    display: inline-block;
+    width: 160px;
+    height: 50px;
+    text-align: center;
+    /*border: 1px solid #ff0000;*/
+    background: #008eff;
+    border-radius: 2px;
+    margin: 5px 5px 5px 5px;
+}
+
+#divId_nearby_police .left_side .content .leftnav .content-item {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    /* border-bottom: 0; */
+}
+
+#divId_nearby_police .left_side .content .leftnav .content-item .item-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+#divId_nearby_police .left_side .content .leftnav li:hover {
+    background: #1c57d2;
+}
+
+#divId_nearby_police .left_side .content .leftnav .li-select {
+    color: #ffffff;
+}
+/** 附近民警信息样式 end */
+
+/** 对话框自定义样式 start */
+.coral-dialog .coral-dialog-buttonpane .coral-dialog-buttonset {
+    text-align: right;
+    background: #F0F0F0;
+    border-top: 1px solid #ccc;
+}
+/** 对话框自定义样式 end */

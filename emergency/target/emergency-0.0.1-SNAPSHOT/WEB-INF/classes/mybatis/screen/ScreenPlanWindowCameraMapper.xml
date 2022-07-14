@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.screen.dao.ScreenPlanWindowCameraMapper">
+
+<select id="listAllForSxNew" resultType="java.util.Map">
+    select ID,
+    CBD_NAME as DVC_NAME,
+    CBD_AREA_ID as DVC_AREA_ID,
+    CBD_PLATFORM_IDNTY AS DVC_PLATFORM_IDNTY
+    from DVC_CAMERA_BASE_DTLS
+    <where>
+        CBD_ACTION_INDC != '3'
+        <if test="cusNumber != null and cusNumber !='' ">
+            and CBD_CUS_NUMBER = #{cusNumber}
+        </if>
+        <if test="areaId != null and areaId !='' ">
+            and CBD_AREA_ID = #{areaId}
+        </if>
+        <if test="screenPlanId != null and screenPlanId !=''">
+            and id not in (select IFNULL(CAMERA_ID,'空值') from CDS_SCREEN_PLAN_WINDOW_CAMERA where   SCREEN_PLAN_ID = #{screenPlanId} and WINDOW_ID=#{windowId})
+        </if>
+    </where>
+</select>
+
+ <select id="selectWindowByScreenPlanId" resultType="com.cesgroup.prison.screen.entity.ScreenPlanWindowCameraEntity">
+  select  * from  CDS_SCREEN_PLAN_WINDOW_CAMERA
+  <where>
+      <if test="cusNumber != null and cusNumber !='' ">
+          and CUS_NUMBER = #{cusNumber}
+      </if>
+      <if test="screenPlanId != null and screenPlanId !='' ">
+          and SCREEN_PLAN_ID = #{screenPlanId}
+      </if>
+  </where>
+
+
+ </select>
+
+
+    <delete id="deleteByscreenPlanIdAndWindowId">
+        delete from CDS_SCREEN_PLAN_WINDOW_CAMERA
+        <where>
+            TVWALL_ID = #{tvwallId} and SCREEN_PLAN_ID =#{screenPlanId} and WINDOW_ID = #{windowId}
+        </where>
+
+    </delete>
+</mapper>

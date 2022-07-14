@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.alarm.flow.dao.FlowMasterMapper">
+
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from CDS_HANDLE_FLOW_MASTER
+		where ID IN
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="findByPage" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select
+		id,
+		HFM_CUS_NUMBER,
+		hfm_flow_name,
+		hfm_type_indc,
+		hfm_show_seq,
+		hfm_alarm_level
+		from CDS_HANDLE_FLOW_MASTER M
+		<where>
+			<if test="entity.hfmCusNumber != null">
+				AND (M.HFM_CUS_NUMBER = '1100' or M.HFM_CUS_NUMBER = #{entity.hfmCusNumber,jdbcType=VARCHAR})
+			</if>
+			<if test="entity.hfmFlowName != null">
+				AND M.HFM_FLOW_NAME like CONCAT('%',#{entity.hfmFlowName,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="entity.hfmTypeIndc != null">
+				AND M.HFM_TYPE_INDC = #{entity.hfmTypeIndc,jdbcType=VARCHAR}
+			</if>
+			<if test="entity.hfmAlarmLevel != null">
+				AND M.HFM_ALARM_LEVEL = #{entity.hfmAlarmLevel,jdbcType=VARCHAR}
+			</if>
+		</where>
+		ORDER BY hfm_show_seq
+	</select>
+
+	<!-- 查询流程主表信息列表 -->
+	<select id="findMaster" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT hfm_cus_number,
+		id,
+		hfm_flow_name,
+		hfm_type_indc,
+		hfm_show_seq,
+		hfm_alarm_level,
+		hfm_crte_time,
+		hfm_crte_user_id,
+		hfm_updt_time,
+		hfm_updt_user_id
+		FROM cds_handle_flow_master
+		<where>
+			<if test="cusNumber!=null and cusNumber!='' and cusNum!=null and cusNum!=''">
+				AND (hfm_cus_number = #{cusNumber} OR hfm_cus_number = #{cusNum})
+			</if>
+			<if test="id!=null and id!=''">
+				AND id = #{id}
+			</if>
+			ORDER BY hfm_show_seq
+		</where>
+
+	</select>
+	
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id AS "value" ,
+		hfm_flow_name As "text"
+		FROM
+		cds_handle_flow_master
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND (hfm_cus_number = #{cusNumber} OR hfm_cus_number = '1100')
+			</if>
+			ORDER BY hfm_type_indc,hfm_show_seq
+		</where>
+	</select>
+</mapper>

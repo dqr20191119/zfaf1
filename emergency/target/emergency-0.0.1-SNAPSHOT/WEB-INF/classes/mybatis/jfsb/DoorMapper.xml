@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 门禁控制数据操作类映射文件 -->
+<mapper namespace="com.cesgroup.prison.jfsb.dao.DoorMapper">
+	<!-- 门禁控制实体类-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.DoorEntity">
+		<result column="DCB_CUS_NUMBER" jdbcType="CHAR" property="dcbCusNumber" />
+		<result column="DCB_IDNTY" jdbcType="CHAR" property="dcbIdnty" />
+		<result column="DCB_CTRL_IDNTY" jdbcType="CHAR" property="dcbCtrlIdnty" />
+		<result column="DCB_CHANNEL_IDNTY" jdbcType="CHAR" property="dcbChannelIdnty" />
+		<result column="DCB_NAME" jdbcType="CHAR" property="dcbName" />
+		<result column="DCB_PRE_NAME" jdbcType="CHAR" property="dcbPreName" />
+		<result column="DCB_TYPE_INDC" jdbcType="CHAR" property="dcbTypeIndc" />
+		<result column="DCB_BRAND_INDC" jdbcType="CHAR" property="dcbBrandIndc" />
+		<result column="DCB_ADDRS" jdbcType="CHAR" property="dcbAddrs" />
+		<result column="DCB_NODE_ADDRS" jdbcType="CHAR" property="dcbNodeAddrs" />
+		<result column="DCB_SN_ID" jdbcType="CHAR" property="dcbSnId" />
+		<result column="DCB_CHNNL_ADDRS" jdbcType="CHAR" property="dcbChnnlAddrs" />
+		<result column="DCB_AREA_ID" jdbcType="CHAR" property="dcbAreaId" />
+		<result column="DCB_AREA" jdbcType="CHAR" property="dcbArea" />
+		<result column="DCB_DPRTMNT" jdbcType="CHAR" property="dcbDprtmnt" />
+		<result column="DCB_STTS_INDC" jdbcType="CHAR" property="dcbSttsIndc" />
+		<result column="DCB_ACTION_INDC" jdbcType="CHAR" property="dcbActionIndc" />
+		<result column="DCB_REMARK" jdbcType="CHAR" property="dcbRemark" />
+		<result column="DCB_CRTE_TIME" jdbcType="TIMESTAMP" property="dcbCrteTime" />
+		<result column="DCB_CRTE_USER_ID" jdbcType="CHAR" property="dcbCrteUserId" />
+		<result column="DCB_UPDT_TIME" jdbcType="TIMESTAMP" property="dcbUpdtTime" />
+		<result column="DCB_UPDT_USER_ID" jdbcType="CHAR" property="dcbUpdtUserId" />
+		<result column="DCB_PORT" jdbcType="CHAR" property="dcbPort" />
+		<result column="DCB_WHETHER_CTRL" jdbcType="CHAR" property="dcbWhetherCtrl" />
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="DCB_DPRTMNT_ID" jdbcType="CHAR" property="dcbDprtmntId" />
+		<result column="DCB_CAMERA_ID" jdbcType="CHAR" property="dcbCameraId" />
+		<result column="DCB_CAMERA_NAME" jdbcType="CHAR" property="dcbCameraName" />
+		<result column="DCB_ROOM_ID" jdbcType="CHAR" property="dcbRoomId" />
+		<result column="DCB_ROOM" jdbcType="CHAR" property="dcbRoom" />
+		<result column="DCB_IS_AB" jdbcType="CHAR" property="dcbIsAb" />
+	</resultMap>
+	
+	<!-- 门禁控制表-基础字段 -->
+	<sql id="Base_Column_List">
+		DCB_CUS_NUMBER, DCB_IDNTY, DCB_CTRL_IDNTY, DCB_CHANNEL_IDNTY, DCB_NAME, DCB_PRE_NAME, DCB_TYPE_INDC, DCB_BRAND_INDC, DCB_ADDRS, 
+		DCB_NODE_ADDRS, DCB_SN_ID, DCB_CHNNL_ADDRS, DCB_AREA_ID, DCB_AREA, DCB_DPRTMNT, DCB_STTS_INDC, DCB_ACTION_INDC, DCB_REMARK, DCB_CRTE_TIME, 
+		DCB_CRTE_USER_ID, DCB_UPDT_TIME, DCB_UPDT_USER_ID, DCB_PORT, DCB_WHETHER_CTRL, ID, DCB_DPRTMNT_ID, DCB_CAMERA_ID, DCB_CAMERA_NAME, DCB_ROOM_ID, DCB_ROOM,DCB_IS_AB
+	</sql>
+	
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT dvc_door_control_base_dtls.id as id,dcb_cus_number,
+		dcb_idnty,
+		dcb_ctrl_idnty,
+		dcb_channel_idnty,
+		dcb_name,
+		dcb_pre_name,
+		dcb_type_indc,
+		dcb_addrs,
+		dcb_sn_id,
+		dcb_stts_indc,
+		dcb_chnnl_addrs,
+		dcb_area_id,
+		dcb_area,
+		dcb_dprtmnt_id,
+		dcb_dprtmnt,
+		dcb_remark,
+		dcb_brand_indc,
+		to_char(dcb_crte_time,'YYYY-MM-DD
+		HH24:mi:ss') as dcb_crte_time,
+		dcb_crte_user_id,
+		to_char(dcb_updt_time,'YYYY-MM-DD HH24:mi:ss') as dcb_updt_time,
+		dcb_updt_user_id,
+		dcb_camera_id,
+		dcb_camera_name,
+		dcb_whether_ctrl
+		dcb_room_id,
+		dcb_room
+		FROM
+		dvc_door_control_base_dtls
+		<where>
+			<if test="doorEntity.dcbCusNumber != null and doorEntity.dcbCusNumber!='' ">
+				AND dcb_cus_number = #{doorEntity.dcbCusNumber}
+			</if>
+			<if test="doorEntity.dcbName != null and doorEntity.dcbName!='' ">
+				AND dcb_name like CONCAT('%',#{doorEntity.dcbName},'%')
+			</if>
+			<if test="doorEntity.dcbAreaId != null and doorEntity.dcbAreaId!='' ">
+				AND dcb_area_id =#{doorEntity.dcbAreaId}
+			</if>
+			<if test="doorEntity.dcbSttsIndc != null and doorEntity.dcbSttsIndc!='' ">
+				AND dcb_stts_indc = #{doorEntity.dcbSttsIndc}
+			</if>
+			<if test="doorEntity.dcbBrandIndc != null and doorEntity.dcbBrandIndc!='' ">
+				AND dcb_brand_indc = #{doorEntity.dcbBrandIndc}
+			</if>
+
+			AND dcb_action_indc != '3'
+		</where>
+	</select>
+
+	<select id="findDoorSum" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		COUNT(1) || '' as sum
+		FROM
+		dvc_door_control_base_dtls
+		<where>
+			<if test="doorEntity.dcbCusNumber != null and doorEntity.dcbCusNumber!='' ">
+				AND dcb_cus_number = #{doorEntity.dcbCusNumber}
+			</if>
+			<if test="doorEntity.dcbIdnty != null and doorEntity.dcbIdnty!='' ">
+				AND dcb_idnty = #{doorEntity.dcbIdnty}
+			</if>
+			AND dcb_action_indc != '3'
+		</where>
+	</select>
+	
+	<!-- 根据id批量删除 -->
+	<!-- <delete id="deleteByIds" parameterType="List"> DELETE FROM dvc_door_control_base_dtls WHERE ID in <foreach collection="list" item="id" index="index" separator="," open="(" close=")"> #{id} </foreach> </delete> -->
+	<!-- 根据id逻辑删除 --><!-- 1 "门禁"; 2 "摄像机"; 3 "广播"; 4 "大屏"; 5 "对讲"; -->
+	<update id="deleteByIds" parameterType="List">
+		UPDATE dvc_door_control_base_dtls set dcb_action_indc = '3' WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+		DELETE FROM CDS_PLAN_DEVICE_RLTN WHERE PDR_ITEM_ID = '1' and PDR_DVC_IDNTY in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+		;
+	</update>
+	
+	<!-- 根据多个门禁编号，查询门禁列表 -->
+	<select id="findByIds" parameterType="List" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+		dvc_door_control_base_dtls
+		WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</select>
+
+	<!-- 修改门禁信息 -->
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE dvc_door_control_base_dtls
+		<set>
+			<if test="doorEntity.dcbIdnty != null and doorEntity.dcbIdnty!='' ">
+				dcb_idnty = #{doorEntity.dcbIdnty},
+			</if>
+
+			<if test="doorEntity.dcbCtrlIdnty != null and doorEntity.dcbCtrlIdnty!='' ">
+				dcb_ctrl_idnty = #{doorEntity.dcbCtrlIdnty},
+			</if>
+
+			<if test="doorEntity.dcbChannelIdnty != null and doorEntity.dcbChannelIdnty!='' ">
+				dcb_channel_idnty = #{doorEntity.dcbChannelIdnty},
+			</if>
+
+			<if test="doorEntity.dcbName != null and doorEntity.dcbName!='' ">
+				dcb_name = #{doorEntity.dcbName},
+			</if>
+
+			<if test="doorEntity.dcbPreName != null and doorEntity.dcbPreName!='' ">
+				dcb_pre_name = #{doorEntity.dcbPreName},
+			</if>
+
+			<if test="doorEntity.dcbTypeIndc != null and doorEntity.dcbTypeIndc!='' ">
+				dcb_type_indc = #{doorEntity.dcbTypeIndc},
+			</if>
+
+			<if test="doorEntity.dcbBrandIndc != null and doorEntity.dcbBrandIndc!='' ">
+				dcb_brand_indc = #{doorEntity.dcbBrandIndc},
+			</if>
+
+			<if test="doorEntity.dcbAddrs != null and doorEntity.dcbAddrs!='' ">
+				dcb_addrs = #{doorEntity.dcbAddrs},
+			</if>
+
+			<if test="doorEntity.dcbNodeAddrs != null and doorEntity.dcbNodeAddrs!='' ">
+				dcb_node_addrs = #{doorEntity.dcbNodeAddrs},
+			</if>
+
+			<if test="doorEntity.dcbSnId != null and doorEntity.dcbSnId!='' ">
+				dcb_sn_id = #{doorEntity.dcbSnId},
+			</if>
+
+			<if test="doorEntity.dcbChnnlAddrs != null and doorEntity.dcbChnnlAddrs!='' ">
+				dcb_chnnl_addrs = #{doorEntity.dcbChnnlAddrs},
+			</if>
+
+			<if test="doorEntity.dcbAreaId != null and doorEntity.dcbAreaId!='' ">
+				dcb_area_id = #{doorEntity.dcbAreaId},
+			</if>
+
+			<if test="doorEntity.dcbArea != null and doorEntity.dcbArea!='' ">
+				dcb_area = #{doorEntity.dcbArea},
+			</if>
+
+			<if test="doorEntity.dcbDprtmntId != null and doorEntity.dcbDprtmntId!='' ">
+				dcb_dprtmnt_id = #{doorEntity.dcbDprtmntId},
+			</if>
+
+			<if test="doorEntity.dcbDprtmnt != null and doorEntity.dcbDprtmnt!='' ">
+				dcb_dprtmnt = #{doorEntity.dcbDprtmnt},
+			</if>
+
+			<if test="doorEntity.dcbSttsIndc != null and doorEntity.dcbSttsIndc!='' ">
+				dcb_stts_indc = #{doorEntity.dcbSttsIndc},
+			</if>
+
+			<if test="doorEntity.dcbActionIndc != null and doorEntity.dcbActionIndc!='' ">
+				dcb_action_indc = #{doorEntity.dcbActionIndc},
+			</if>
+
+			<if test="doorEntity.dcbRemark != null and doorEntity.dcbRemark!='' ">
+				dcb_remark = #{doorEntity.dcbRemark},
+			</if>
+
+			<if test="doorEntity.dcbUpdtTime != null and doorEntity.dcbUpdtTime!='' ">
+				dcb_updt_time = #{doorEntity.dcbUpdtTime},
+			</if>
+
+			<if test="doorEntity.dcbUpdtUserId != null and doorEntity.dcbUpdtUserId!='' ">
+				dcb_updt_user_id = #{doorEntity.dcbUpdtUserId},
+			</if>
+
+			<if test="doorEntity.dcbPort != null and doorEntity.dcbPort!='' ">
+				dcb_port = #{doorEntity.dcbPort},
+			</if>
+
+			<if test="doorEntity.dcbWhetherCtrl != null and doorEntity.dcbWhetherCtrl!='' ">
+				dcb_whether_ctrl = #{doorEntity.dcbWhetherCtrl},
+			</if>
+
+			<if test="doorEntity.dcbCameraId != null  ">
+				dcb_camera_id = #{doorEntity.dcbCameraId},
+			</if>
+
+			<if test="doorEntity.dcbCameraName != null  ">
+				dcb_camera_name = #{doorEntity.dcbCameraName},
+			</if>
+
+			<if test="doorEntity.dcbRoomId != null  ">
+				dcb_room_id = #{doorEntity.dcbRoomId},
+			</if>
+
+			<if test="doorEntity.dcbRoom != null  ">
+				dcb_room = #{doorEntity.dcbRoom},
+			</if>
+			
+			<if test="doorEntity.dcbIsAb != null  ">
+				DCB_IS_AB = #{doorEntity.dcbIsAb},
+			</if>
+		</set>
+
+		<where>
+			<if test="doorEntity.id !=null and doorEntity.id !=''">
+				AND (TRIM(#{doorEntity.id}) is null or id = #{doorEntity.id})
+			</if>
+		</where>
+	</update>
+
+
+	<select id="findAreaDepartment" parameterType="hashmap" resultType="hashmap">
+		SELECT ADR_AREA_ID "id", ADR_AREA_NAME "name"
+		FROM CDS_AREA_DEPARTMENT_RELATION
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND ADR_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="dprtmntId != null and dprtmntId != ''">
+				AND ADR_DPRTMNT_ID = #{dprtmntId}
+			</if>
+		</where>
+		ORDER BY ADR_CRTE_TIME asc
+	</select>
+
+	<select id="findAllDoor" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.DCB_NAME "name", 0 "isParent", 1 "open" , A.DCB_CAMERA_ID "cameraId", A.DCB_STTS_INDC "sttsIndc"
+		FROM DVC_DOOR_CONTROL_BASE_DTLS A
+		WHERE A.DCB_ACTION_INDC != '3'
+		<if test="cusNumber != null and cusNumber != ''">
+			AND A.DCB_CUS_NUMBER = #{cusNumber}
+		</if>
+		<if test="id != null and id != ''">
+			AND A.DCB_AREA_ID = #{id}
+		</if>
+		<if test="areaId != null and areaId != ''">
+			AND A.DCB_AREA_ID LIKE '${areaId}%'
+		</if>
+		<if test="name != null and name != ''">
+			AND A.DCB_NAME like concat('%', #{name}, '%')
+		</if>
+	</select>
+	
+	<select id="findByDoorIDAndCusNumber" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			*
+		FROM
+		DVC_DOOR_CONTROL_BASE_DTLS
+		<where>
+			<if test="dcbIdnty != null and dcbIdnty != ''">
+				AND dcb_idnty = #{dcbIdnty}
+			</if>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND DCB_CUS_NUMBER = #{cusNumber}
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.common.dao.CommonMapper">
+
+	<select id="findEvidenceForCombobox" parameterType="hashmap" resultType="hashmap">		
+		SELECT A.ID "value", A.EIN_TITLE "text" 
+		FROM CDS_EVIDENCE_INFO A 
+		<where>
+			<if test="einCusNumber != null and einCusNumber != ''">
+				AND A.EIN_CUS_NUMBER = #{einCusNumber}
+			</if>
+			<if test="einContentTypeIndc != null and einContentTypeIndc != ''">
+				AND A.EIN_CONTENT_TYPE_INDC = #{einContentTypeIndc}
+			</if>
+			<if test="einFileTypeIndc != null and einFileTypeIndc != ''">
+				AND A.EIN_FILE_TYPE_INDC = #{einFileTypeIndc}
+			</if>
+		</where>
+	</select>
+	 
+	<select id="findAreaViewFuncForCombotree" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "id", A.ABD_AREA_NAME "name", 
+		(SELECT COUNT(1) || '' FROM CDS_AREA_BASE_DTLS B WHERE B.ABD_PARENT_AREA_ID = A.ABD_AREA_ID AND B.ABD_CUS_NUMBER = A.ABD_CUS_NUMBER) "childrenNum", 
+		B.ID "viewId", B.VFU_VIEW_NAME "viewName", B.VFU_X_CRDNT "xCrdnt", B.VFU_Y_CRDNT "yCrdnt", B.VFU_Z_CRDNT "zCrdnt", 
+		B.VFU_TILT_CRDNT "tiltCrdnt", B.VFU_HEADING_CRDNT "headingCrdnt", B.VFU_STTS "vfuStts" 
+		FROM CDS_AREA_BASE_DTLS A 
+		LEFT JOIN (SELECT * FROM CDS_VIEW_FUNC C WHERE C.VFU_CUS_NUMBER = #{cusNumber} AND C.VFU_VIEW_TYPE = #{viewType} AND C.VFU_DEF_INDC = 1) B
+								  ON B.VFU_AREA_ID = A.ABD_AREA_ID 
+ 		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.ABD_CUS_NUMBER = #{cusNumber}	
+			</if>
+			<if test="id != null and id != ''"> 
+				AND A.ABD_PARENT_AREA_ID = #{id} 	
+			</if>
+			<if test="id == null or id == ''"> 
+				AND (A.ABD_PARENT_AREA_ID IS NULL or A.ABD_PARENT_AREA_ID = '') 
+			</if>
+		</where>							
+		ORDER BY A.ABD_ORDER  
+	</select>
+	
+	<select id="findSyncAreaForCombotree" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "id", A.ABD_AREA_NAME "name", A.ABD_PARENT_AREA_ID "pId", 
+		(SELECT COUNT(1) || '' FROM CDS_AREA_BASE_DTLS B WHERE B.ABD_PARENT_AREA_ID = A.ABD_AREA_ID AND B.ABD_CUS_NUMBER = A.ABD_CUS_NUMBER) "childrenNum" 
+ 		FROM CDS_AREA_BASE_DTLS A 
+ 		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.ABD_CUS_NUMBER = #{cusNumber}	
+			</if>
+			<if test="areaIdList != null and areaIdList != ''">
+				AND A.ABD_AREA_ID in
+				<foreach collection="areaIdList" item="region" index="index" separator="," open="(" close=")">
+					#{region.ADR_AREA_ID}
+				</foreach>
+			</if>
+		</where>
+		START WITH (A.ABD_PARENT_AREA_ID IS NULL OR A.ABD_PARENT_AREA_ID = '') CONNECT BY PRIOR A.ABD_AREA_ID = A.ABD_PARENT_AREA_ID 							
+		ORDER BY A.ABD_ORDER  
+	</select>
+	
+	<select id="findAreaEqualLevelModel" parameterType="hashmap" resultType="hashmap">
+		SELECT A.*, C.ABD_AREA_ID, C.ABD_ORDER FROM CDS_MODEL_INFO A 
+		LEFT JOIN CDS_AREA_BASE_DTLS C ON C.ABD_CUS_NUMBER = A.MIN_CUS_NUMBER AND C.ABD_AREA_ID = A.MIN_AREA_ID 
+		WHERE A.MIN_CUS_NUMBER = #{cusNumber} 			
+		<if test="parentAreaId != null and parentAreaId != ''"> 
+			AND A.MIN_AREA_ID IN (SELECT B.ABD_AREA_ID FROM CDS_AREA_BASE_DTLS B 
+					WHERE B.ABD_CUS_NUMBER = #{cusNumber} 
+					AND B.ABD_PARENT_AREA_ID = #{parentAreaId}) 
+		</if>
+		<if test="parentAreaId == null or parentAreaId == ''"> 
+			AND A.MIN_AREA_ID IN (SELECT B.ABD_AREA_ID FROM CDS_AREA_BASE_DTLS B 
+					WHERE B.ABD_CUS_NUMBER = #{cusNumber} 
+					AND (B.ABD_PARENT_AREA_ID IS NULL or B.ABD_PARENT_AREA_ID = '')) 
+		</if>
+		ORDER BY C.ABD_ORDER 
+	</select>
+	
+	<select id="findArea" parameterType="hashmap" resultType="hashmap">
+		SELECT A.* FROM CDS_AREA_BASE_DTLS A 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.ABD_CUS_NUMBER = #{cusNumber}	
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.ABD_AREA_ID = #{areaId}	
+			</if>
+		</where>
+	</select>
+	
+	<select id="findMasterPlanForCombobox" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "value", A.PMA_PLAN_NAME "text" FROM CDS_PLAN_MASTER A 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.PMA_CUS_NUMBER = #{cusNumber}	
+			</if>			 
+		</where>
+	</select>
+	
+	<select id="findAllJsxz" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ID "id", A.JSH "name" 
+		FROM V_AREA_BASE_JSH A 
+ 		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.JY_ID = #{cusNumber}	
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.LH_ID = #{areaId}	
+			</if>	
+			order by A.JSH		 
+		</where>							
+	</select>
+	
+	<!-- <select id="findLcjsh" parameterType="hashmap" resultType="hashmap">
+		SELECT distinct A.JY_ID||'_'||A.LH||'_'||A.JSH as "id",  A.JSH "name", A.JSH "value",
+		 A.JSH "label"
+		FROM V_AREA_BASE_JSH A 
+ 		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.JY_ID = #{cusNumber}	
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.LH_ID = #{areaId}	
+			</if>	
+			order by A.JSH		 
+		</where>							
+	</select> -->
+	
+	<select id="findLcjsh" parameterType="hashmap" resultType="hashmap">
+		SELECT distinct A.CPJ_CUS_NUMBER||'_'||A.CPJ_LCH||'_'||A.CPJ_JS as "id",  A.CPJ_JS "name", A.CPJ_JS "value",
+		 A.CPJ_JS "label"
+		FROM CDS_PRISON_JS A 
+ 		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.CPJ_CUS_NUMBER = #{cusNumber}	
+			</if>
+			<if test="areaId != null and areaId != ''"> 
+				AND A.CPJ_LCH = #{areaId}	
+			</if>	
+			order by A.CPJ_JS		 
+		</where>							
+	</select>
+	
+	<select id="findZfPicInfo" parameterType="hashmap" resultType="com.cesgroup.prison.common.entity.AffixEntity">
+		SELECT B.LINK_URL, B.IMAGE, B.FILE_NAME  
+		FROM YZGL.T_YZGL_DK_ZRXX_MTXX A, PORTAL.T_C_AFFIX B 
+		WHERE A.ID = B.YW_ID 
+		<if test="mtNrFl != null and mtNrFl != ''"> 
+			AND A.MT_NR_FL = #{mtNrFl}	
+		</if>
+		<if test="zfBh != null and zfBh != ''"> 
+			AND A.ZF_BH = #{zfBh}	
+		</if>			 
+	</select>
+	
+	<!--	<select id="findAreaOfJs" parameterType="hashmap" resultType="hashmap">
+		SELECT ABD_AREA_ID
+		FROM CDS_AREA_BASE_DTLS
+		WHERE ABD_CUS_NUMBER = #{cusNumber}
+		AND ABD_PARENT_AREA_ID = #{cusNumber}
+		AND ABD_LEVEL_INDC = '1'
+	</select>-->
+
+	<!--临时 wq 2018-5-17 (由于楼房的区域类型为空，所以更改为如下，勿删)-->
+	<!--	<select id="findAreaOfJs" parameterType="hashmap" resultType="hashmap">
+		SELECT distinct(ABD_PARENT_AREA_ID)
+		FROM CDS_AREA_BASE_DTLS
+		WHERE ABD_CUS_NUMBER = #{cusNumber}
+		AND ABD_PARENT_AREA_ID != #{cusNumber}
+		AND ABD_TYPE_INDC = '1'
+	</select>-->
+
+	<!--临时 wq 2018-5-30 楼房标签显示区域名称-->
+	<select id="findAreaOfJs" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID, A.ABD_AREA_NAME     
+		FROM CDS_AREA_BASE_DTLS A
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND LENGTH(A.ABD_PARENT_AREA_ID) = 4
+        AND EXISTS(SELECT 1 FROM PRISON.CDS_AREA_BASE_DTLS B WHERE B.ABD_TYPE_INDC = 4
+        START WITH B.ABD_AREA_ID = A.ABD_AREA_ID CONNECT BY PRIOR B.ABD_AREA_ID = B.ABD_PARENT_AREA_ID) 
+	</select>
+
+	<select id="countZfsl" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "zfsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN V_AREA_BASE_JSH B ON B.LH_ID = A.ABD_AREA_ID
+		LEFT JOIN V_AREA_BASE_JSCY C ON C.ID = B.ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<!-- <select id="countMjsl" parameterType="hashmap" resultType="hashmap">
+		SELECT COUNT(1) || '' "mjsl" FROM CDS_CUR_INPRSN_POLICE_RECORD A
+		WHERE A.CIP_CUS_NUMBER = #{cusNumber}
+		AND EXISTS(SELECT * FROM CDS_DOOR_RECORD_DTLS B, DVC_DOOR_CONTROL_BASE_DTLS C
+								 WHERE C.DCB_CUS_NUMBER = B.DRD_CUS_NUMBER 
+								 AND C.DCB_IDNTY = B.DRD_DOOR_IDNTY 
+								 AND A.CIP_CUS_NUMBER = B.DRD_CUS_NUMBER 
+								 AND A.CIP_POLICE_IDNTY = B.DRD_PEOPLE_IDNTY
+								 AND C.DCB_AREA_ID LIKE '${areaId}%'
+					)
+	</select> -->
+	
+	<select id="countMjslByAreaId" parameterType="hashmap" resultType="hashmap">
+		SELECT COUNT(1) || '' "mjsl" FROM V_POLICE_BASE_DTLS A 
+		WHERE PBD_CUS_NUMBER = #{cusNumber}
+		AND EXISTS(SELECT 1 FROM CDS_AREA_DEPARTMENT_RELATION B WHERE B.ADR_DPRTMNT_ID = A.PBD_DRPTMNT_ID AND B.ADR_AREA_ID LIKE '${areaId}%')
+	</select>
+	
+	<select id="countMjsl" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "mjsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN CDS_AREA_DEPARTMENT_RELATION B ON B.ADR_AREA_ID = A.ABD_AREA_ID
+		LEFT JOIN V_POLICE_BASE_DTLS C ON C.PBD_DRPTMNT_ID = B.ADR_DPRTMNT_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<select id="countCamera" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "sxjsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN DVC_CAMERA_BASE_DTLS B ON B.CBD_AREA_ID = A.ABD_AREA_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		AND B.CBD_ACTION_INDC != '3'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<select id="countAlertor" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "bjqsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN DVC_ALERTOR_BASE_DTLS B ON B.ABD_AREA_ID = A.ABD_AREA_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		AND B.ABD_ACTION_INDC != '3'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<select id="countTalk" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "djfjsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN DVC_TALKBACK_BASE_DTLS B ON B.TBD_AREA_ID = A.ABD_AREA_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		AND B.TBD_ACTION_INDC != '3'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<select id="countTalkServer" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "djzjsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN DVC_TALKBACK_SERVER B ON B.TSE_AREA_ID = A.ABD_AREA_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		AND B.TSE_ACTION_INDC != '3'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<select id="countDoor" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "doorsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN DVC_DOOR_CONTROL_BASE_DTLS B ON B.DCB_AREA_ID = A.ABD_AREA_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		AND B.DCB_ACTION_INDC != '3'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<select id="countBroadcast" parameterType="hashmap" resultType="hashmap">
+		SELECT A.ABD_AREA_ID "areaId", COUNT(1) || '' "gbsl"
+		FROM CDS_AREA_BASE_DTLS A
+		LEFT JOIN DVC_BROADCAST_BASE_DTLS B ON B.BBD_AREA_ID = A.ABD_AREA_ID
+		WHERE A.ABD_CUS_NUMBER = #{cusNumber}
+		AND A.ABD_IS_LEAF = '1'
+		GROUP BY A.ABD_AREA_ID
+	</select>
+	
+	<!-- 实时民警分布(根据区域或部门) -->
+	<select id="mjfbList" parameterType="hashmap" resultType="hashmap">
+		SELECT 	B.DRD_CUS_NUMBER,
+				B.DRD_PEOPLE_TYPE_INDC,
+				B.DRD_PEOPLE_IDNTY,
+				B.DRD_PEOPLE_NAME,
+				D.ABD_AREA_ID,
+				D.ABD_AREA_NAME,
+				D.ABD_PARENT_AREA_ID,
+				D.ABD_JQ_ID,
+				D.ABD_JQ_NAME
+		FROM (select distinct CIP_CUS_NUMBER,CIP_POLICE_IDNTY from prison.CDS_CUR_INPRSN_POLICE_RECORD) A
+		LEFT JOIN (select distinct DRD_CUS_NUMBER,DRD_PEOPLE_IDNTY,DRD_PEOPLE_NAME,DRD_PEOPLE_TYPE_INDC,DRD_DOOR_IDNTY from prison.CDS_DOOR_RECORD_DTLS) B 
+			ON A.CIP_CUS_NUMBER = B.DRD_CUS_NUMBER AND A.CIP_POLICE_IDNTY = B.DRD_PEOPLE_IDNTY AND B.DRD_PEOPLE_IDNTY IS NOT NULL
+		LEFT JOIN prison.DVC_DOOR_CONTROL_BASE_DTLS C 
+			ON C.DCB_CUS_NUMBER = B.DRD_CUS_NUMBER AND C.DCB_IDNTY = B.DRD_DOOR_IDNTY 
+		LEFT JOIN prison.CDS_AREA_BASE_DTLS D 
+			ON C.DCB_CUS_NUMBER = D.ABD_CUS_NUMBER AND C.DCB_AREA_ID = D.ABD_AREA_ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND B.DRD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="buildingNum != null and buildingNum != ''">
+				AND D.ABD_PARENT_AREA_ID = #{buildingNum}
+			</if>
+			<if test="floorNum != null and floorNum != ''">
+				AND D.ABD_AREA_ID = #{floorNum}
+			</if>
+			<if test="departmentId != null and departmentId != ''">
+				AND D.ABD_JQ_ID = #{departmentId}
+			</if>
+			<if test="drdPeopleTypeIndc != null and drdPeopleTypeIndc != ''">
+				AND B.DRD_PEOPLE_TYPE_INDC = #{drdPeopleTypeIndc}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 实时民警数量(根据区域或部门) -->
+	<select id="mjfbCount" parameterType="hashmap" resultType="hashmap">
+		SELECT 	COUNT(*) AS COUNT
+		FROM (select distinct CIP_CUS_NUMBER,CIP_POLICE_IDNTY from prison.CDS_CUR_INPRSN_POLICE_RECORD) A
+		LEFT JOIN (select distinct DRD_CUS_NUMBER,DRD_PEOPLE_IDNTY,DRD_PEOPLE_NAME,DRD_PEOPLE_TYPE_INDC,DRD_DOOR_IDNTY from prison.CDS_DOOR_RECORD_DTLS) B 
+			ON A.CIP_CUS_NUMBER = B.DRD_CUS_NUMBER AND A.CIP_POLICE_IDNTY = B.DRD_PEOPLE_IDNTY AND B.DRD_PEOPLE_IDNTY IS NOT NULL
+		LEFT JOIN prison.DVC_DOOR_CONTROL_BASE_DTLS C 
+			ON C.DCB_CUS_NUMBER = B.DRD_CUS_NUMBER AND C.DCB_IDNTY = B.DRD_DOOR_IDNTY 
+		LEFT JOIN prison.CDS_AREA_BASE_DTLS D 
+			ON C.DCB_CUS_NUMBER = D.ABD_CUS_NUMBER AND C.DCB_AREA_ID = D.ABD_AREA_ID
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND B.DRD_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="buildingNum != null and buildingNum != ''">
+				AND D.ABD_PARENT_AREA_ID = #{buildingNum}
+			</if>
+			<if test="floorNum != null and floorNum != ''">
+				AND D.ABD_AREA_ID = #{floorNum}
+			</if>
+			<if test="departmentId != null and departmentId != ''">
+				AND D.ABD_JQ_ID = #{departmentId}
+			</if>
+			<if test="drdPeopleTypeIndc != null and drdPeopleTypeIndc != ''">
+				AND B.DRD_PEOPLE_TYPE_INDC = #{drdPeopleTypeIndc}
+			</if>
+		</where>
+	</select>
+		
+	<select id="findAreaInfoHzCount" parameterType="hashmap" resultType="hashmap">
+		select * from cds_area_info_count where aic_cus_number = #{cusNumber} and aic_area_id like '${areaId}%'
+	</select>
+
+	<select id="findDepartmentByAreaId" parameterType="hashmap" resultType="hashmap">
+		select DISTINCT ADR_DPRTMNT_ID as id, ADR_DPRTMNT_NAME as name
+		from "PRISON"."CDS_AREA_DEPARTMENT_RELATION"
+		where ADR_AREA_ID in 
+		(select ABD_AREA_ID from "PRISON"."CDS_AREA_BASE_DTLS"
+		where ABD_PARENT_AREA_ID = #{areaId,jdbcType=VARCHAR}
+		and ABD_CUS_NUMBER = #{cusNumber,jdbcType=VARCHAR})
+	</select>
+	
+	<!-- 查询外来人员数量 -->
+	<select id="getPeopleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+			count(0)
+		FROM V_CDS_FOREIGN_PEOPLE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND FR_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="frTime != null and frTime != ''" >
+				AND TO_CHAR(FR_TIME, 'yyyy-MM-dd') = '${frTime}'
+			</if>
+			AND FR_TYPE = '1'
+		</where>
+	</select>
+	
+	<!-- 查询外来车辆数量 -->
+	<select id="getCarCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+			count(0)
+		FROM V_CDS_FOREIGN_CAR_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND FR_CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="frTime != null and frTime != ''" >
+				AND TO_CHAR(FR_TIME, 'yyyy-MM-dd') = '${frTime}'
+			</if>
+		</where>
+	</select>
+	
+	<select id="countPrisonInfoHz" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM V_PRISON_COUNT_PRISONERS
+	</select>
+	
+	
+	<!-- 查在监民警数量数量 -->
+	<!-- <select id="getPoliceCountInPrison" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*) from AUTH.T_USER u, AUTH.T_ORG_USER ou, AUTH.T_ORG o, PRISON.CDS_CUR_INPRSN_POLICE_RECORD r 
+		where u.user_id=ou.user_id and ou.organize_id=o.organize_id and r.cip_police_name=u.user_name
+		<if test="deptCode != null and deptCode != ''" >
+				and o.organize_code like '%${deptCode}%'
+		</if>
+		<if test="cusNumber != null and cusNumber != ''">
+				and r.cip_cus_number=#{cusNumber}
+		</if> 
+		jyId非空时查询监狱所有否则查询监区
+		<if test="jyId != null and jyId != ''" >
+				and o.ORGANIZE_code like '%${cusNumber}%' and o.ORGANIZE_NAME like '%监区%'  and o.flag2='0'
+		</if>
+	</select> -->
+	<!-- 查在监民警数量数量 -->
+	<select id="getPoliceCountInPrison" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*) from 
+    AUTH.T_USER u, 
+    AUTH.T_ORG_USER ou, 
+    AUTH.T_ORG o, 
+    PRISON.CDS_CUR_INPRSN_POLICE_RECORD r
+	where u.user_id=ou.user_id and ou.organize_id=o.organize_id and r.cip_police_name=u.user_name  
+	and ou.usertype ='0' 
+		<if test="cusNumber != null and cusNumber != ''">
+				and r.cip_cus_number=#{cusNumber}
+		</if>
+		<if test="deptCode != null and deptCode != ''" >
+				and o.organize_code like '%${deptCode}%'
+		</if>
+		<if test ="mytime !=null and mytime!=''" >
+			and cip_enter_time like '%${mytime}%'
+		</if>
+	</select>
+	<!--省局查询在监民警  -->
+	<select id="getPoliceCountInPrisonsj" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*) from 
+    	AUTH.T_USER u, 
+    	AUTH.T_ORG_USER ou, 
+   	 	AUTH.T_ORG o, 
+    	PRISON.CDS_CUR_INPRSN_POLICE_RECORD r
+		where u.user_id=ou.user_id and ou.organize_id=o.organize_id and r.cip_police_name=u.user_name  
+		and ou.usertype ='0' 
+		<if test="cusNumber != null and cusNumber != ''">
+				and r.cip_cus_number=#{cusNumber}
+		</if>
+		<if test ="mytime !=null and mytime!=''" >
+			and cip_enter_time like '%${mytime}%'
+		</if>
+	</select>
+
+
+    <!--根据监狱或监区编号查询在册民警-->
+    <select id="getPoliceCountZaiCeByCusNumberOrDeptCode" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1) from JCZG.T_JCZG_JCXX_JBXX where C_SCBZ='0'
+        <if test="cusNumber != null and cusNumber != ''">
+            and jy_Id=#{cusNumber}
+        </if>
+        <if test="deptCode != null and deptCode != ''">
+            and jq_Id=#{deptCode}
+        </if>
+
+    </select>
+
+
+	<!-- 查在监民警数量数量 -->
+	<select id="getSecurityCheckCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+			count(0)
+		FROM T_SECURITY_CHECK
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="checkTime != null and checkTime != ''" >
+				AND TO_CHAR(CHECK_TIME, 'yyyy-MM-dd') = '${checkTime}'
+			</if>
+		</where>
+	</select>
+
+	<!-- 获取监狱监区 -->
+	<select id="findjqByjy" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		ORGANIZE_ID as id ,ORGANIZE_NAME as name,ORGANIZE_code as code
+		from
+		"AUTH"."T_ORG"
+		where
+		parent_id=
+		(
+		select ORGANIZE_ID from "AUTH"."T_ORG"
+		<where>
+			<if test="jyId != null and jyId != ''">
+				AND parent_id = '${jyId}'
+			</if>
+			and ORGANIZE_NAME='监区'
+		</where>
+		)
+		and flag2='0'
+	</select>
+	
+		<!-- 查在监民警数量数量 对应的民警警号-->
+	<select id="getPoliceNo" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select u.job_no as police_no from AUTH.T_USER u, AUTH.T_ORG_USER ou, AUTH.T_ORG o, PRISON.CDS_CUR_INPRSN_POLICE_RECORD r 
+		where u.user_id=ou.user_id and ou.organize_id=o.organize_id and r.cip_police_name=u.user_name
+		<if test="deptCode != null and deptCode != ''" >
+				and o.organize_code = #{deptCode}
+		</if>
+		<if test="cusNumber != null and cusNumber != ''">
+				and r.cip_cus_number=#{cusNumber}
+		</if> 
+				<!-- jyId非空时查询监狱所有否则查询监区 -->
+		<if test="jyId != null and jyId != ''" >
+				and o.organize_code in (select ORGANIZE_code from
+				AUTH.T_ORG where parent_id= (select ORGANIZE_ID from AUTH.T_ORG
+				where parent_id = #{jyId} and ORGANIZE_NAME='监区') and flag2='0')
+		</if>
+	</select>
+	
+	<!-- 查在册民警数量-->
+	<select id="getPoliceCountZaiCePrison" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from JCZG.T_JCZG_JCXX_JBXX where C_SCBZ='0' 
+		<if test="sj == 1">
+		  and jy_id in  ('4312','4336','4304','4307','4303')
+		</if>
+		 <if test="cusNumber != null and cusNumber != ''">
+				and jy_Id=#{cusNumber}
+		</if> 
+		<if test="jqId != null and jqId != ''">
+				 and jq_Id=#{jqId} 
+		</if> 
+		
+	</select>
+	<!-- 查备勤民警数量-->
+	<select id="getPoliceCountBeiQinPrison" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select sum(bqs) from PORTAL.T_C_BQJC
+		<where>
+		<if test="mytime != null and mytime != ''">
+			  and	bqsj like '%${mytime}%'
+		</if> 
+		 <if test="cusNumber != null and cusNumber != ''">
+				and jy_Id=#{cusNumber}
+		</if> 
+		</where>
+	</select>
+</mapper>

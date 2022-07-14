@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.regionDepart.dao.RegionDepartMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.regionDepart.entity.RegionDepart">
+    <result column="ADR_CUS_NUMBER" jdbcType="VARCHAR" property="adrCusNumber" />
+    <result column="ADR_AREA_ID" jdbcType="VARCHAR" property="adrAreaId" />
+    <result column="ADR_AREA_NAME" jdbcType="VARCHAR" property="adrAreaName" />
+    <result column="ADR_DPRTMNT_ID" jdbcType="VARCHAR" property="adrDprtmntId" />
+    <result column="ADR_DPRTMNT_NAME" jdbcType="VARCHAR" property="adrDprtmntName" />
+    <result column="ADR_CRTE_TIME" jdbcType="TIMESTAMP" property="adrCrteTime" />
+    <result column="ADR_CRTE_USER_ID" jdbcType="VARCHAR" property="adrCrteUserId" />
+    <result column="ADR_UPDT_TIME" jdbcType="TIMESTAMP" property="adrUpdtTime" />
+    <result column="ADR_UPDT_USER_ID" jdbcType="VARCHAR" property="adrUpdtUserId" />
+  </resultMap>
+ <sql id="Base_Column_List">
+    ID, ADR_CUS_NUMBER, ADR_AREA_ID, ADR_AREA_NAME, ADR_DPRTMNT_ID, ADR_DPRTMNT_NAME, 
+    ADR_CRTE_TIME, ADR_CRTE_USER_ID, ADR_UPDT_TIME, ADR_UPDT_USER_ID
+  </sql>
+  <!-- 根据监狱编号和区域编号查询 -->
+  <select id="findByCusNumberAndAreaId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_AREA_DEPARTMENT_RELATION
+    where adr_cus_number = #{0}
+	and adr_area_id = #{1}
+  </select>
+  <!-- <delete id="batchDelete" parameterType="java.util.List">
+  	delete CDS_AREA_DEPARTMENT_RELATION where id in 
+  	<foreach collection="list" item="id" index="index" separator="," open="(" close=")">  
+         #{id}
+    </foreach> 
+  </delete>-->
+  <!-- 批量删除 -->
+  <delete id="deleteByCusNumberAndAreaId" parameterType="java.util.List">
+  	delete CDS_AREA_DEPARTMENT_RELATION 
+	where adr_cus_number = #{0} 
+	and adr_area_id = #{1}
+  </delete>
+  <!-- 批量添加 -->
+  <insert id="insertByBatch" parameterType="java.util.List">
+        insert into CDS_AREA_DEPARTMENT_RELATION (id,adr_cus_number,adr_area_id,adr_area_name,adr_dprtmnt_id
+        ,adr_dprtmnt_name,adr_crte_time,adr_crte_user_id,adr_updt_time,adr_updt_user_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=VARCHAR},#{item.adrCusNumber,jdbcType=VARCHAR},#{item.adrAreaId,jdbcType=VARCHAR}
+            ,#{item.adrAreaName,jdbcType=VARCHAR}, #{item.adrDprtmntId,jdbcType=VARCHAR}
+            ,#{item.adrDprtmntName,jdbcType=VARCHAR},#{item.adrCrteTime,jdbcType=TIMESTAMP},#{item.adrCrteUserId,jdbcType=VARCHAR}
+            ,#{item.adrUpdtTime,jdbcType=TIMESTAMP},#{item.adrUpdtUserId,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <!-- 根据监狱编号和部门编号查询 -->
+    <select id="findByCusNumberAndDprtmntId" parameterType="java.lang.String" resultType="java.util.HashMap">
+    	<!-- select * from CDS_AREA_DEPARTMENT_RELATION
+		where adr_cus_number = #{0}  
+		and adr_dprtmnt_id = #{1}  -->
+		select adr_area_id from CDS_AREA_DEPARTMENT_RELATION
+		where adr_cus_number = #{0}  and adr_dprtmnt_id=#{1} 
+		union
+		select abd.abd_parent_area_id adr_area_id from CDS_AREA_DEPARTMENT_RELATION adr 
+		right join cds_area_base_dtls abd
+		on abd.abd_cus_number = adr.adr_cus_number and adr.adr_area_id=abd.abd_area_id
+		where adr.adr_cus_number = #{0}  and adr.adr_dprtmnt_id=#{1}  
+		and abd.abd_parent_area_id is not null
+    </select>
+  <!-- <insert id="insertSelective" parameterType="com.cesgroup.prison.regionDepart.entity.RegionDepart">
+    insert into CDS_AREA_DEPARTMENT_RELATION
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="adrCusNumber != null">
+        ADR_CUS_NUMBER,
+      </if>
+      <if test="adrAreaId != null">
+        ADR_AREA_ID,
+      </if>
+      <if test="adrAreaName != null">
+        ADR_AREA_NAME,
+      </if>
+      <if test="adrDprtmntId != null">
+        ADR_DPRTMNT_ID,
+      </if>
+      <if test="adrDprtmntName != null">
+        ADR_DPRTMNT_NAME,
+      </if>
+      <if test="adrCrteTime != null">
+        ADR_CRTE_TIME,
+      </if>
+      <if test="adrCrteUserId != null">
+        ADR_CRTE_USER_ID,
+      </if>
+      <if test="adrUpdtTime != null">
+        ADR_UPDT_TIME,
+      </if>
+      <if test="adrUpdtUserId != null">
+        ADR_UPDT_USER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="adrCusNumber != null">
+        #{adrCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="adrRltnId != null">
+        #{adrRltnId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrAreaId != null">
+        #{adrAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrAreaName != null">
+        #{adrAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="adrDprtmntId != null">
+        #{adrDprtmntId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrDprtmntName != null">
+        #{adrDprtmntName,jdbcType=VARCHAR},
+      </if>
+      <if test="adrCrteTime != null">
+        #{adrCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adrCrteUserId != null">
+        #{adrCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrUpdtTime != null">
+        #{adrUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adrUpdtUserId != null">
+        #{adrUpdtUserId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert> -->
+  <!-- <update id="updateByPrimaryKeySelective" parameterType="com.cesgroup.prison.regionDepart.entity.RegionDepart">
+    update CDS_AREA_DEPARTMENT_RELATION
+    <set>
+      <if test="adrCusNumber != null">
+        ADR_CUS_NUMBER = #{adrCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="adrAreaId != null">
+        ADR_AREA_ID = #{adrAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrAreaName != null">
+        ADR_AREA_NAME = #{adrAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="adrDprtmntId != null">
+        ADR_DPRTMNT_ID = #{adrDprtmntId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrDprtmntName != null">
+        ADR_DPRTMNT_NAME = #{adrDprtmntName,jdbcType=VARCHAR},
+      </if>
+      <if test="adrCrteTime != null">
+        ADR_CRTE_TIME = #{adrCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adrCrteUserId != null">
+        ADR_CRTE_USER_ID = #{adrCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="adrUpdtTime != null">
+        ADR_UPDT_TIME = #{adrUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="adrUpdtUserId != null">
+        ADR_UPDT_USER_ID = #{adrUpdtUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> -->
+</mapper>

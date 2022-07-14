@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.preplanStart.dao.EmerPreplanStartDao">
+
+    <!-- EmerPreplanStartDto结果集 -->
+    <resultMap id="EmerPreplanStartDtoResultMap" type="com.cesgroup.prison.emergency.preplanStart.dto.EmerPreplanStartDto">
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+        <result column="PREPLAN_ID" jdbcType="CHAR" property="preplanId" />
+        <result column="PREPLAN_NAME" jdbcType="CHAR" property="preplanName" />
+    </resultMap>
+
+    <!-- EmerPreplanStartDto字段 -->
+    <sql id="EmerPreplanStartDto_Column_List">
+        CUS_NUMBER, PREPLAN_ID, PREPLAN_NAME
+    </sql>
+
+    <!-- 分页查询应急预案工作组列表 -->
+    <select id="findWithPage" resultMap="EmerPreplanStartDtoResultMap" useCache="true">
+        SELECT
+            T1.CUS_NUMBER, T1.ID PREPLAN_ID, T1.NAME PREPLAN_NAME
+        FROM PRISON.T_EMER_PREPLAN T1
+        WHERE EXISTS (
+            SELECT
+            *
+            FROM PRISON.CDS_ALERT_RECORD_DTLS T2
+            WHERE T1.CUS_NUMBER = T2.ARD_CUS_NUMBER
+            <if test="alarmRecordId != null and alarmRecordId != ''">
+                AND T2.ID = #{alarmRecordId, jdbcType=CHAR}
+            </if>
+        )
+        <if test="preplanName != null and preplanName != ''">
+            AND T1.NAME LIKE '%${preplanName}%'
+        </if>
+        AND T1.STATUS = '0'
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据报警记录ID、预案名称，查询报警记录可用的应急预案列表 -->
+    <select id="findEmerPreplanExistsCdsAlertRecordDtlsByCondition" resultMap="EmerPreplanStartDtoResultMap" useCache="true">
+        SELECT
+        T1.CUS_NUMBER, T1.ID PREPLAN_ID, T1.NAME PREPLAN_NAME
+        FROM PRISON.T_EMER_PREPLAN T1
+        WHERE EXISTS (
+        SELECT
+        *
+        FROM PRISON.CDS_ALERT_RECORD_DTLS T2
+        WHERE T1.CUS_NUMBER = T2.ARD_CUS_NUMBER
+        <if test="alarmRecordId != null and alarmRecordId != ''">
+            AND T2.ID = #{alarmRecordId, jdbcType=CHAR}
+        </if>
+        )
+        <if test="preplanName != null and preplanName != ''">
+            AND T1.NAME LIKE '%${preplanName}%'
+        </if>
+        AND T1.STATUS = '0'
+        ORDER BY T1.SHOW_ORDER
+    </select>
+</mapper>

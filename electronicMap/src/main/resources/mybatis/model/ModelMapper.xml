@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.model.dao.ModelMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.model.entity.Model">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MIN_CUS_NUMBER" jdbcType="VARCHAR" property="minCusNumber" />
+    <result column="MIN_MODEL_NAME" jdbcType="VARCHAR" property="minModelName" />
+    <result column="MIN_MODEL_NO" jdbcType="VARCHAR" property="minModelNo" />
+    <result column="MIN_AREA_ID" jdbcType="VARCHAR" property="minAreaId" />
+    <result column="MIN_CRTE_USER_ID" jdbcType="VARCHAR" property="minCrteUserId" />
+    <result column="MIN_CRTE_TIME" jdbcType="TIMESTAMP" property="minCrteTime" />
+    <result column="MIN_UPDT_USER_ID" jdbcType="VARCHAR" property="minUpdtUserId" />
+    <result column="MIN_UPDT_TIME" jdbcType="TIMESTAMP" property="minUpdtTime" />
+    <result column="MIN_MODEL_FCNAME" property="minModelFcname" jdbcType="VARCHAR" />
+    <result column="MIN_MODEL_FDSNAME" property="minModelFdsname" jdbcType="VARCHAR" />
+    <result column="MIN_IS_TOP" property="minIsTop" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MIN_CUS_NUMBER, MIN_MODEL_NAME, MIN_MODEL_NO, MIN_AREA_ID, MIN_CRTE_USER_ID, 
+    MIN_CRTE_TIME, MIN_UPDT_USER_ID, MIN_UPDT_TIME, MIN_MODEL_FCNAME, MIN_MODEL_FDSNAME,
+    MIN_IS_TOP
+  </sql>
+  
+  <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CDS_MODEL_INFO
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from CDS_MODEL_INFO
+    where ID IN
+  	<foreach collection="list" item="id" index="index" separator="," open="(" close=")">  
+         #{id}
+    </foreach>
+  </delete>
+  
+  <insert id="saveModel" parameterType="com.cesgroup.prison.model.entity.Model">
+    insert into CDS_MODEL_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="minCusNumber != null">
+        MIN_CUS_NUMBER,
+      </if>
+      <if test="minModelName != null">
+        MIN_MODEL_NAME,
+      </if>
+      <if test="minModelNo != null">
+        MIN_MODEL_NO,
+      </if>
+      <if test="minAreaId != null">
+        MIN_AREA_ID,
+      </if>
+      <if test="minCrteUserId != null">
+        MIN_CRTE_USER_ID,
+      </if>
+      <if test="minCrteTime != null">
+        MIN_CRTE_TIME,
+      </if>
+      <if test="minUpdtUserId != null">
+        MIN_UPDT_USER_ID,
+      </if>
+      <if test="minUpdtTime != null">
+        MIN_UPDT_TIME,
+      </if>
+      <if test="minModelFcname != null" >
+        MIN_MODEL_FCNAME,
+      </if>
+      <if test="minModelFdsname != null" >
+        MIN_MODEL_FDSNAME,
+      </if>
+      <if test="minIsTop != null">
+      	MIN_IS_TOP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="minCusNumber != null">
+        #{minCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="minModelName != null">
+        #{minModelName,jdbcType=VARCHAR},
+      </if>
+      <if test="minModelNo != null">
+        #{minModelNo,jdbcType=VARCHAR},
+      </if>
+      <if test="minAreaId != null">
+        #{minAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="minCrteUserId != null">
+        #{minCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="minCrteTime != null">
+        #{minCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="minUpdtUserId != null">
+        #{minUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="minUpdtTime != null">
+        #{minUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="minModelFcname != null" >
+        #{minModelFcname,jdbcType=VARCHAR},
+      </if>
+      <if test="minModelFdsname != null" >
+        #{minModelFdsname,jdbcType=VARCHAR},
+      </if>
+      <if test="minIsTop != null">
+      	#{minIsTop,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateModel" parameterType="com.cesgroup.prison.model.entity.Model">
+    update CDS_MODEL_INFO
+    <set>
+      <if test="minCusNumber != null">
+        MIN_CUS_NUMBER = #{minCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="minModelName != null">
+        MIN_MODEL_NAME = #{minModelName,jdbcType=VARCHAR},
+      </if>
+      <if test="minModelNo != null">
+        MIN_MODEL_NO = #{minModelNo,jdbcType=VARCHAR},
+      </if>
+      <if test="minAreaId != null">
+        MIN_AREA_ID = #{minAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="minCrteUserId != null">
+        MIN_CRTE_USER_ID = #{minCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="minCrteTime != null">
+        MIN_CRTE_TIME = #{minCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="minUpdtUserId != null">
+        MIN_UPDT_USER_ID = #{minUpdtUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="minUpdtTime != null">
+        MIN_UPDT_TIME = #{minUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="minModelFcname != null" >
+        MIN_MODEL_FCNAME = #{minModelFcname,jdbcType=VARCHAR},
+      </if>
+      <if test="minModelFdsname != null" >
+        MIN_MODEL_FDSNAME = #{minModelFdsname,jdbcType=VARCHAR},
+      </if>
+      <if test="minIsTop != null ">
+      	MIN_IS_TOP = #{minIsTop,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="findByModel"  resultType="java.util.HashMap" parameterType="com.cesgroup.prison.model.entity.Model">
+  	select min.*,cabd.abd_area_name,cabd.abd_area_id
+  	from cds_model_info min
+  	left join cds_area_base_dtls cabd
+	on min.min_area_id=cabd.abd_area_id and min.min_cus_number=cabd.abd_cus_number
+    where min.MIN_MODEL_NO = #{minModelNo,jdbcType=VARCHAR}
+    and min.MIN_MODEL_FCNAME = #{minModelFcname,jdbcType=VARCHAR}
+    and min.MIN_MODEL_FDSNAME = #{minModelFdsname,jdbcType=VARCHAR}
+    and min.MIN_CUS_NUMBER = #{minCusNumber,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="findByPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+  	select min.*,cabd.abd_area_name,cabd.abd_area_id
+  	from cds_model_info min
+  	left join cds_area_base_dtls cabd
+	on min.min_area_id=cabd.abd_area_id and min.min_cus_number=cabd.abd_cus_number
+	<where>
+		 1=1 
+		 <if test="minModelName!=null and minModelName!=''">
+			and min.min_model_name like concat('%', #{minModelName}, '%')
+		 </if>
+		 <if test="minCusNumber!=null and minCusNumber!=''">
+			and min.min_cus_number = #{minCusNumber}
+		 </if>
+		 <if test="minAreaId!=null and minAreaId!=''">
+		 	and cabd.abd_area_ID like concat(#{minAreaId}, '%')
+		 </if>
+	</where>
+  </select>
+  
+  
+  <select id="find" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+  	select min.*
+  	from cds_model_info min
+  	left join cds_area_base_dtls cabd
+	on min.min_area_id=cabd.abd_area_id and min.min_cus_number=cabd.abd_cus_number
+	<where>
+		 1=1 
+		 <if test="minModelName!=null and minModelName!=''">
+			and min.min_model_name like concat('%', #{minModelName}, '%')
+		 </if>
+		 <if test="minCusNumber!=null and minCusNumber!=''">
+			and min.min_cus_number = #{minCusNumber}
+		 </if>
+		 <if test="minAreaId!=null and minAreaId!=''">
+		 	and cabd.abd_area_ID like concat(#{minAreaId}, '%')
+		 </if>
+	</where>
+  </select>
+  
+  <select id="selectIdByModel" parameterType="com.cesgroup.prison.model.entity.Model" resultType="string">
+    select ID from CDS_MODEL_INFO
+    <where>
+      <if test="minCusNumber != null">
+        AND MIN_CUS_NUMBER = #{minCusNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="minModelNo != null">
+        AND MIN_MODEL_NO = #{minModelNo,jdbcType=VARCHAR}
+      </if>
+      <if test="minModelFcname != null" >
+        AND MIN_MODEL_FCNAME = #{minModelFcname,jdbcType=VARCHAR}
+      </if>
+      <if test="minModelFdsname != null" >
+        AND MIN_MODEL_FDSNAME = #{minModelFdsname,jdbcType=VARCHAR}
+      </if>
+     </where>
+  </select>
+</mapper>

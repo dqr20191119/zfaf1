@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.route.dao.RouteMapper">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.route.entity.Route">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="RPI_ROAM_NAME" jdbcType="VARCHAR" property="rpiName" />
+		<result column="RPI_REMARK" jdbcType="VARCHAR" property="rpiRemark" />
+		<result column="RPI_CRTE_TIME" jdbcType="TIMESTAMP" property="rpiCreateTime" />
+		<result column="RPI_CRTE_USER_ID" jdbcType="NUMERIC" property="rpiCreateUserId" />
+		<result column="RPI_UPDT_TIME" jdbcType="TIMESTAMP" property="rpiUpdateTime" />
+		<result column="RPI_UPDT_USER_ID" jdbcType="VARCHAR" property="rpiUpdateUserId" />
+		<result column="RPI_CUS_NUMBER" jdbcType="VARCHAR" property="rpiCusNumber" />
+		<result column="RPI_SPEED" jdbcType="DOUBLE" property="rpiSpeed" />
+		<result column="RPI_ROAM_TYPE" jdbcType="INTEGER" property="rpiRouteType" />
+		<result column="RPI_DEPARTCODE" jdbcType="VARCHAR" property="rpiDepartCode" />
+    	<result column="RPI_HORIZON_HEIGHT" jdbcType="DOUBLE" property="rpiHorizonHeight" />
+    	<result column="RPI_SHOW_ARROW" jdbcType="VARCHAR" property="rpiShowArrow" />
+		<!-- <result column="VFU_Z_CRDNT" jdbcType="VARCHAR" property="rpiUserName" /> <result column="VFU_HEADING_CRDNT" jdbcType="VARCHAR" property="updateName" /> -->
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, RPI_ROAM_NAME,RPI_REMARK,RPI_CRTE_TIME,RPI_CRTE_USER_ID,RPI_UPDT_TIME,RPI_UPDT_USER_ID,RPI_CUS_NUMBER,RPI_ROAM_TYPE,RPI_DEPARTCODE,RPI_HORIZON_HEIGHT,RPI_SHOW_ARROW
+	</sql>
+
+	<select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select *
+		from CDS_ROAM_PATH_INFO
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from "CDS_ROAM_PATH_INFO"
+		where ID = #{id,jdbcType=VARCHAR};
+		delete from CDS_ROAM_POINT_RLTN where RPR_ROAM_IDNTY = #{id,jdbcType=VARCHAR}
+	</delete>
+
+	<insert id="insertRoute" parameterType="com.cesgroup.prison.route.entity.Route">
+		insert into "CDS_ROAM_PATH_INFO"
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="rpiName != null">
+				RPI_ROAM_NAME,
+			</if>
+			<if test="rpiRemark != null">
+				RPI_REMARK,
+			</if>
+			<if test="rpiCreateUserId != null">
+				RPI_CRTE_USER_ID,
+			</if>
+			<if test="rpiCusNumber != null">
+				RPI_CUS_NUMBER,
+			</if>
+			<if test="rpiSpeed != null">
+				RPI_SPEED,
+			</if>
+			<if test="rpiRouteType != null">
+				RPI_ROAM_TYPE,
+			</if>
+			<if test="rpiDepartCode != null">
+				RPI_DEPARTCODE,
+			</if>
+			<if test="rpiHorizonHeight != null">
+				RPI_HORIZON_HEIGHT,
+			</if>
+			<if test="rpiShowArrow != null">
+				RPI_SHOW_ARROW,
+			</if>
+			RPI_CRTE_TIME
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiName != null">
+				#{rpiName,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiRemark != null">
+				#{rpiRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiCreateUserId != null">
+				#{rpiCreateUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiCusNumber != null">
+				#{rpiCusNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiSpeed != null">
+				#{rpiSpeed,jdbcType=DOUBLE},
+			</if>
+			<if test="rpiRouteType != null">
+				#{rpiRouteType,jdbcType=INTEGER},
+			</if>
+			<if test="rpiDepartCode != null">
+				#{rpiDepartCode,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiHorizonHeight != null">
+				#{rpiHorizonHeight,jdbcType=DOUBLE},
+			</if>
+			<if test="rpiShowArrow != null">
+				#{rpiShowArrow,jdbcType=VARCHAR},
+			</if>
+			now()
+		</trim>
+	</insert>
+
+
+	<update id="updateRoute" parameterType="com.cesgroup.prison.route.entity.Route">
+		update "CDS_ROAM_PATH_INFO"
+		<set>
+			<if test="rpiName != null">
+				RPI_ROAM_NAME = #{rpiName,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiRouteType != null">
+				RPI_ROAM_TYPE = #{rpiRouteType,jdbcType=INTEGER},
+			</if>
+			<if test="rpiDepartCode != null and rpiDepartCode != ''">
+				RPI_DEPARTCODE = #{rpiDepartCode,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiRemark != null">
+				RPI_REMARK = #{rpiRemark,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiSpeed != null">
+				RPI_SPEED = #{rpiSpeed,jdbcType=DOUBLE},
+			</if>
+			<if test="rpiCusNumber != null and rpiCusNumber != ''">
+				RPI_CUS_NUMBER = #{rpiCusNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="rpiUpdateUserId != null">
+				RPI_UPDT_USER_ID = #{rpiUpdateUserId,jdbcType=NUMERIC},
+			</if>
+			<if test="rpiHorizonHeight != null">
+				RPI_HORIZON_HEIGHT = #{rpiHorizonHeight,jdbcType=DOUBLE},
+			</if>
+			<if test="rpiShowArrow != null">
+				RPI_SHOW_ARROW = #{rpiShowArrow,jdbcType=VARCHAR},
+			</if>
+			RPI_UPDT_TIME = now()
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+
+	<!-- 根据监狱编码查询路线 -->
+	<select id="findByPrisonCode" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select * from "CDS_ROAM_PATH_INFO"
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND RPI_CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="departCode!=null and departCode!=''">
+				AND RPI_DEPARTCODE = #{departCode}
+			</if>
+			order by RPI_CRTE_TIME
+		</where>
+	</select>
+
+
+
+	<!-- 分页查询 -->
+	<select id="findByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select * from "CDS_ROAM_PATH_INFO"
+		<where>
+			<if test="rpiCusNumber!=null and rpiCusNumber!=''">
+				and RPI_CUS_NUMBER = #{rpiCusNumber,jdbcType=VARCHAR}
+			</if>
+			<if test="rpiName!=null and rpiName!=''">
+				and RPI_ROAM_NAME like concat('%', #{rpiName}, '%')
+			</if>
+			<if test="rpiRouteType != null">
+				and RPI_ROAM_TYPE = #{rpiRouteType,jdbcType=INTEGER}
+			</if>
+			<if test="rpiDepartCode != null and rpiDepartCode !=''">
+				and RPI_DEPARTCODE = #{rpiDepartCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by RPI_CRTE_TIME desc
+	</select>
+
+</mapper>

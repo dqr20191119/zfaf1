@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.groupMember.dao.EmerGroupMemberDao">
+    <!-- 基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.groupMember.entity.EmerGroupMember">
+        <id column="ID" jdbcType="CHAR" property="id" />
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+        <result column="GROUP_ID" jdbcType="CHAR" property="groupId" />
+        <result column="MEMBER_ID" jdbcType="CHAR" property="memberId" />
+        <result column="SOURCE" jdbcType="CHAR" property="source" />
+        <result column="MEMBER_ROLE" jdbcType="DECIMAL" property="memberRole" />
+        <result column="MEMBER_ROLE_TASK" jdbcType="CHAR" property="memberRoleTask" />
+        <result column="STATUS" jdbcType="CHAR" property="status" />
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder" />
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <!-- EmerGroupMemberDto结果集 -->
+    <resultMap id="EmerGroupMemberDtoResultMap" type="com.cesgroup.prison.emergency.groupMember.dto.EmerGroupMemberDto">
+        <result column="ID" jdbcType="CHAR" property="id" />
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+        <result column="GROUP_ID" jdbcType="CHAR" property="groupId" />
+        <result column="GROUP_NAME" jdbcType="CHAR" property="groupName" />
+        <result column="MEMBER_ID" jdbcType="CHAR" property="memberId" />
+        <result column="MEMBER_NAME" jdbcType="CHAR" property="memberName" />
+        <result column="CALL_NO" jdbcType="CHAR" property="callNo" />
+        <result column="UNIT_NAME" jdbcType="CHAR" property="unitName" />
+        <result column="DEPT_NAME" jdbcType="CHAR" property="deptName" />
+        <result column="SOURCE" jdbcType="CHAR" property="source" />
+        <result column="MEMBER_ROLE" jdbcType="DECIMAL" property="memberRole" />
+        <result column="MEMBER_ROLE_TASK" jdbcType="CHAR" property="memberRoleTask" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, GROUP_ID, MEMBER_ID, SOURCE, MEMBER_ROLE, MEMBER_ROLE_TASK, STATUS, SHOW_ORDER, UPDATE_USER_ID, UPDATE_TIME
+    </sql>
+
+    <!-- EmerGroupMemberDto字段 -->
+    <sql id="EmerGroupMemberDto_Column_List">
+        ID, CUS_NUMBER, GROUP_ID, GROUP_NAME, MEMBER_ID, MEMBER_NAME, UNIT_NAME, DEPT_NAME, CALL_NO, SOURCE, MEMBER_ROLE, MEMBER_ROLE_TASK, UPDATE_TIME
+    </sql>
+
+    <!-- 根据主键ID，查询应急预案工作组 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_GROUP_MEMBER T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumberAndGroupId" resultType="java.lang.Integer" useCache="true">
+        SELECT
+          max(T1.SHOW_ORDER)
+        FROM T_EMER_GROUP_MEMBER T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND T1.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+    </select>
+
+    <!-- 分页查询应急预案工作组成员列表 -->
+    <select id="findWithPage" resultMap="EmerGroupMemberDtoResultMap" useCache="true">
+        SELECT
+            T1.ID, T1.CUS_NUMBER, T1.GROUP_ID,
+            T2.NAME GROUP_NAME,
+            T1.MEMBER_ID,
+            T3.NAME MEMBER_NAME, T3.UNIT_NAME, T3.DEPT_NAME, T3.CALL_NO, T3.SOURCE,
+            T1.UPDATE_TIME
+        FROM T_EMER_GROUP_MEMBER T1
+        INNER JOIN T_EMER_GROUP T2 ON T1.GROUP_ID = T2.ID
+        INNER JOIN T_EMER_MEMBER T3 ON T1.MEMBER_ID = T3.ID
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND T1.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            <if test="memberName != null and memberName != ''">
+                AND T3.NAME LIKE '%${memberName}%'
+            </if>
+            <if test="callNo != null and callNo != ''">
+                AND T3.CALL_NO LIKE '%${callNo}%'
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T2.SHOW_ORDER, T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据单位编码、工作组编号、应急人员编号、数据状态，查询应急工作组与人员关系数据 -->
+    <select id="findByCusNumberAndGroupIdAndMemberIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_GROUP_MEMBER T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND T1.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                AND T1.MEMBER_ID = #{memberId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER DESC
+    </select>
+
+    <!-- 根据应急人员编号、数据状态，查询应急工作组与人员关系数据 -->
+    <select id="findByMemberIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_GROUP_MEMBER T1
+        <where>
+            <if test="memberId != null and memberId != ''">
+                AND T1.MEMBER_ID = #{memberId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER DESC
+    </select>
+
+    <!-- 根据工作组ID，查询工作组成员列表 -->
+    <select id="findEmerGroupMemberDtoByGroupId" parameterType="java.lang.String" resultMap="EmerGroupMemberDtoResultMap" useCache="true">
+        SELECT
+        T1.ID, T1.CUS_NUMBER, T1.GROUP_ID,
+        T2.NAME GROUP_NAME,
+        T1.MEMBER_ID,
+        T3.NAME MEMBER_NAME, T3.UNIT_NAME, T3.DEPT_NAME, T3.CALL_NO, T3.SOURCE,
+        T1.UPDATE_TIME
+        FROM T_EMER_GROUP_MEMBER T1
+        INNER JOIN T_EMER_GROUP T2 ON T1.GROUP_ID = T2.ID AND T2.STATUS = '0'
+        INNER JOIN T_EMER_MEMBER T3 ON T1.MEMBER_ID = T3.ID AND T2.STATUS = '0'
+        <where>
+            <if test="groupId != null and groupId != ''">
+                AND T1.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T2.SHOW_ORDER, T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据工作组ID数组、数据状态，查询工作组与成员关系列表 -->
+    <select id="findByGroupIdArrayAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_GROUP_MEMBER T1
+        <where>
+            <if test="groupIdArray != null">
+                AND T1.GROUP_ID IN
+                <foreach collection="groupIdArray" item="groupId" open="(" close=")" separator=",">
+                    #{groupId, jdbcType=CHAR}
+                </foreach>
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据应急预案ID数组、数据状态，查询工作组与成员关系列表 -->
+    <select id="findExistsEmerGroupByPreplanIdArrayAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_GROUP_MEMBER T1 WHERE EXISTS (
+            SELECT
+            *
+            FROM PRISON.T_EMER_GROUP T2
+            WHERE T1.GROUP_ID = T2.ID
+            <if test="preplanIdArray != null">
+                AND T2.PREPLAN_ID IN
+                <foreach collection="preplanIdArray" item="preplanId" open="(" close=")" separator=",">
+                    #{preplanId, jdbcType=CHAR}
+                </foreach>
+            </if>
+        )
+        AND T1.STATUS = '0'
+    </select>
+</mapper>

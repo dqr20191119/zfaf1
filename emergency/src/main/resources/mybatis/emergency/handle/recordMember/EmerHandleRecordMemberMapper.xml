@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.handle.recordMember.dao.EmerHandleRecordMemberDao">
+    <!-- 应急处置记录的工作组成员基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.handle.recordMember.entity.EmerHandleRecordMember">
+        <id column="ID" jdbcType="CHAR" property="id"/>
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="RECORD_ID" jdbcType="CHAR" property="recordId"/>
+        <result column="RECORD_GROUP_ID" jdbcType="CHAR" property="recordGroupId"/>
+        <result column="MEMBER_JOB_NO" jdbcType="CHAR" property="memberJobNo"/>
+        <result column="MEMBER_NAME" jdbcType="CHAR" property="memberName"/>
+        <result column="CALL_NO" jdbcType="CHAR" property="callNo"/>
+        <result column="UNIT_NAME" jdbcType="CHAR" property="unitName"/>
+        <result column="DEPT_NAME" jdbcType="CHAR" property="deptName"/>
+        <result column="CALL_STATUS" jdbcType="CHAR" property="callStatus"/>
+        <result column="CALL_TIME" jdbcType="TIMESTAMP" property="callTime"/>
+        <result column="CALL_RESULT" jdbcType="CHAR" property="callResult"/>
+        <result column="SOURCE" jdbcType="CHAR" property="source"/>
+        <result column="MEMBER_ROLE" jdbcType="DECIMAL" property="memberRole" />
+        <result column="MEMBER_ROLE_TASK" jdbcType="CHAR" property="memberRoleTask" />
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder"/>
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!-- 附近的民警结果集 -->
+    <resultMap id="NearbyPoliceDtoResultMap" type="com.cesgroup.prison.emergency.handle.recordMember.dto.NearbyPoliceDto">
+        <result column="POLICE_NO" jdbcType="CHAR" property="policeNo"/>
+        <result column="POLICE_NAME" jdbcType="CHAR" property="policeName"/>
+        <result column="POLICE_AFFAIR" jdbcType="CHAR" property="policeAffair"/>
+        <result column="DEPT_ID" jdbcType="CHAR" property="deptId"/>
+        <result column="DEPT_NAME" jdbcType="CHAR" property="deptName"/>
+        <result column="UNIT_ID" jdbcType="CHAR" property="unitId"/>
+        <result column="UNIT_NAME" jdbcType="CHAR" property="unitName"/>
+    </resultMap>
+
+    <!-- 附近的民警位置结果集 -->
+    <resultMap id="NearbyLocationDtoResultMap" type="com.cesgroup.prison.emergency.handle.recordMember.dto.NearbyLocationDto">
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="POLICE_NO" jdbcType="CHAR" property="policeNo"/>
+        <result column="POLICE_NAME" jdbcType="CHAR" property="policeName"/>
+        <result column="CAPTURE_TIME" jdbcType="TIMESTAMP" property="captureTime"/>
+        <result column="LOCATION_NAME" jdbcType="CHAR" property="locationName"/>
+        <result column="DATA_SOURCE" jdbcType="CHAR" property="dataSource"/>
+        <result column="DATA_CATEGORY" jdbcType="CHAR" property="dataCategory"/>
+    </resultMap>
+
+    <!-- 应急处置记录的工作组成员基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, RECORD_ID, RECORD_GROUP_ID, MEMBER_JOB_NO, MEMBER_NAME, CALL_NO, UNIT_NAME, DEPT_NAME,
+        CALL_STATUS, CALL_TIME, CALL_RESULT, SOURCE, MEMBER_ROLE, MEMBER_ROLE_TASK, STATUS, SHOW_ORDER, UPDATE_USER_ID, UPDATE_TIME
+    </sql>
+
+    <!-- 附近的民警信息字段 -->
+    <sql id="NearbyPoliceDto_Column_List">
+        POLICE_NO, POLICE_NAME, POLICE_AFFAIR, DEPT_ID, DEPT_NAME, UNIT_ID, UNIT_NAME
+    </sql>
+
+    <!-- 附近的民警位置字段 -->
+    <sql id="NearbyLocationDto_Column_List">
+        CUS_NUMBER, POLICE_NO, POLICE_NAME, CAPTURE_TIME, LOCATION_NAME, DATA_SOURCE, DATA_CATEGORY
+    </sql>
+
+    <!-- 根据主键ID，查询应急处置记录的工作组成员 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 分页查询应急处置记录的工作组成员 -->
+    <select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumberAndRecordIdAndRecordGroupId" parameterType="java.lang.String" resultType="java.lang.Integer" useCache="true">
+        SELECT
+        max(T1.SHOW_ORDER)
+        FROM CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+    </select>
+
+    <!-- 根据应急处置记录的工作组ID、数据状态，查询应急处置记录的工作组成员列表 -->
+    <select id="findByRecordGroupIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据应急处置记录的工作组ID、成员姓名、呼叫号码、数据状态，查询应急处置记录的工作组成员列表 -->
+    <select id="findByRecordGroupIdAndMemberNameAndCallNoAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            <if test="memberName != null and memberName != ''">
+                AND T1.MEMBER_NAME = #{memberName, jdbcType=CHAR}
+            </if>
+            <if test="callNo != null and callNo != ''">
+                AND T1.CALL_NO = #{callNo, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据应急处置记录的工作组ID、呼叫号码、数据状态，查询应急处置记录的工作组成员列表 -->
+    <select id="findByRecordGroupIdAndCallNoAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            <if test="callNo != null and callNo != ''">
+                AND T1.CALL_NO = #{callNo, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 分页查询应急处置记录的工作组成员 -->
+    <select id="findNearbyWithPage" resultMap="NearbyPoliceDtoResultMap" useCache="true">
+        SELECT
+        T1.PBD_POLICE_IDNTY POLICE_NO, T1.PBD_POLICE_NAME POLICE_NAME,
+        T1.PBD_POLICE_CMMNCT POLICE_AFFAIR,
+        T1.PBD_DRPTMNT_ID DEPT_ID, T1.PBD_DRPTMNT DEPT_NAME, T1.PBD_CUS_NUMBER UNIT_ID, T1.PBD_CUS_NAME UNIT_NAME
+        FROM PRISON.V_POLICE_BASE_DTLS T1 WHERE EXISTS (
+        SELECT * FROM (
+        SELECT
+        T1.POLICE_NO, T1.POLICE_NAME, T1.CUS_NUMBER
+        FROM (
+        SELECT
+        T1.C_ID POLICE_NO, T1.C_NAME POLICE_NAME, TO_DATE(T1.CAPTURE_TIME, 'yyyy-MM-dd hh24:mi:ss') CAPTURE_TIME, T1.CAMERA_NAME LOCATION_NAME, T1.ORIGIN DATA_SOURCE, '1' DATA_CATEGORY, T1.CUS_NUMBER
+        FROM PRISON.T_RLBJ_YT T1
+        WHERE 1 = 1
+        AND T1.IDENTITY_TYPE = '警察'
+        <if test="cusNumber != null and cusNumber != ''">
+            AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            AND T1.CAMERA_NAME LIKE '%${areaName}%'
+        </if>
+        <if test="timeBeforeThirtyMins != null and timeBeforeThirtyMins != ''">
+            AND TO_CHAR(T1.CAPTURE_TIME, 'yyyyMMddhh24mi') >= TO_CHAR('${timeBeforeThirtyMins}', 'yyyyMMddhh24mi')
+        </if>
+        UNION ALL
+        SELECT
+        T1.CERTIFICATE_NO POLICE_NO, T1.NAMELIST_NAME POLICE_NAME, TO_DATE(T1.CAP_TIME, 'yyyy-MM-dd hh24:mi:ss') CAPTURE_TIME, T1.LOCATION_NAME, '海康' DATA_SOURCE, '1' DATA_CATEGORY, T1.CUS_NUMBER
+        FROM PRISON.T_RLSB_HMD T1
+        WHERE 1 = 1
+        AND T1.BLACKLIST_NAME = '民警库'
+        <if test="cusNumber != null and cusNumber != ''">
+            AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            AND T1.LOCATION_NAME LIKE '%${areaName}%'
+        </if>
+        <if test="timeBeforeThirtyMins != null and timeBeforeThirtyMins != ''">
+            AND TO_CHAR(T1.CAP_TIME, 'yyyyMMddhh24mi') >= TO_CHAR('${timeBeforeThirtyMins}', 'yyyyMMddhh24mi')
+        </if>
+        UNION ALL
+        SELECT
+        T1.POLICE_NO, T1.POLICE_NAME, TO_DATE(T1.MQ_SYNC_TIME, 'yyyy-MM-dd hh24:mi:ss') CAPTURE_TIME, T1.LOCATION_NAME, '大旗' DATA_SOURCE, '2' DATA_CATEGORY, T1.PRISON_NO CUS_NUMBER
+        FROM PRISON.CDS_POLICE_LOCATION T1
+        WHERE 1 = 1
+        <if test="cusNumber != null and cusNumber != ''">
+            AND T1.PRISON_NO = #{cusNumber, jdbcType=CHAR}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            AND T1.LOCATION_NAME LIKE '%${areaName}%'
+        </if>
+        <if test="timeBeforeThirtyMins != null and timeBeforeThirtyMins != ''">
+            AND TO_CHAR(T1.MQ_SYNC_TIME, 'yyyyMMddhh24mi') >= TO_CHAR('${timeBeforeThirtyMins}', 'yyyyMMddhh24mi')
+        </if>
+        ) T1 GROUP BY T1.POLICE_NO, T1.POLICE_NAME, T1.CUS_NUMBER
+        ) T2
+        WHERE T1.PBD_POLICE_IDNTY = T2.POLICE_NO AND T1.PBD_POLICE_NAME = T2.POLICE_NAME
+        )
+        <if test="memberName != null and memberName != ''">
+            AND T1.PBD_POLICE_NAME LIKE '%${memberName}%'
+        </if>
+        <if test="callNo != null and callNo != ''">
+            AND T1.PBD_POLICE_CMMNCT LIKE '%${callNo}%'
+        </if>
+        ORDER BY T1.PBD_CUS_NUMBER, T1.PBD_DRPTMNT_ID, T1.PBD_POLICE_IDNTY
+    </select>
+
+    <!-- 根据查询条件，查询附近民警所在位置信息 -->
+    <select id="findNearbyLocationByContition" resultMap="NearbyLocationDtoResultMap" useCache="true">
+        SELECT
+        *
+        FROM (
+        SELECT
+        T1.C_ID POLICE_NO, T1.C_NAME POLICE_NAME, TO_DATE(T1.CAPTURE_TIME, 'yyyy-MM-dd hh24:mi:ss') CAPTURE_TIME, T1.CAMERA_NAME LOCATION_NAME, T1.ORIGIN DATA_SOURCE, '1' DATA_CATEGORY, T1.CUS_NUMBER
+        FROM PRISON.T_RLBJ_YT T1
+        WHERE 1 = 1
+        AND T1.IDENTITY_TYPE = '警察'
+        <if test="cusNumber != null and cusNumber != ''">
+            AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            AND T1.CAMERA_NAME LIKE '%${areaName}%'
+        </if>
+        <if test="timeBeforeThirtyMins != null and timeBeforeThirtyMins != ''">
+            AND TO_CHAR(T1.CAPTURE_TIME, 'yyyyMMddhh24mi') >= TO_CHAR('${timeBeforeThirtyMins}', 'yyyyMMddhh24mi')
+        </if>
+        UNION ALL
+        SELECT
+        T1.CERTIFICATE_NO POLICE_NO, T1.NAMELIST_NAME POLICE_NAME, TO_DATE(T1.CAP_TIME, 'yyyy-MM-dd hh24:mi:ss') CAPTURE_TIME, T1.LOCATION_NAME, '海康' DATA_SOURCE, '1' DATA_CATEGORY, T1.CUS_NUMBER
+        FROM PRISON.T_RLSB_HMD T1
+        WHERE 1 = 1
+        AND T1.BLACKLIST_NAME = '民警库'
+        <if test="cusNumber != null and cusNumber != ''">
+            AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            AND T1.LOCATION_NAME LIKE '%${areaName}%'
+        </if>
+        <if test="timeBeforeThirtyMins != null and timeBeforeThirtyMins != ''">
+            AND TO_CHAR(T1.CAP_TIME, 'yyyyMMddhh24mi') >= TO_CHAR('${timeBeforeThirtyMins}', 'yyyyMMddhh24mi')
+        </if>
+        UNION ALL
+        SELECT
+        T1.POLICE_NO, T1.POLICE_NAME, TO_DATE(T1.MQ_SYNC_TIME, 'yyyy-MM-dd hh24:mi:ss') CAPTURE_TIME, T1.LOCATION_NAME, '大旗' DATA_SOURCE, '2' DATA_CATEGORY, T1.PRISON_NO CUS_NUMBER
+        FROM PRISON.CDS_POLICE_LOCATION T1
+        WHERE 1 = 1
+        <if test="cusNumber != null and cusNumber != ''">
+            AND T1.PRISON_NO = #{cusNumber, jdbcType=CHAR}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            AND T1.LOCATION_NAME LIKE '%${areaName}%'
+        </if>
+        <if test="timeBeforeThirtyMins != null and timeBeforeThirtyMins != ''">
+            AND TO_CHAR(T1.MQ_SYNC_TIME, 'yyyyMMddhh24mi') >= TO_CHAR('${timeBeforeThirtyMins}', 'yyyyMMddhh24mi')
+        </if>
+        ) T1
+        WHERE 1 = 1
+        <if test="policeNo != null and policeNo != ''">
+            AND T1.POLICE_NO = #{policeNo, jdbcType=CHAR}
+        </if>
+        <if test="policeName != null and policeName != ''">
+            AND T1.POLICE_NAME = #{policeName, jdbcType=CHAR}
+        </if>
+        ORDER BY T1.DATA_CATEGORY, T1.CAPTURE_TIME DESC
+    </select>
+
+    <!-- 根据应急处置记录的处置记录ID、工作组ID、数据状态，查询应急处置记录的工作组成员列表 -->
+    <select id="findByRecordIdAndRecordGroupIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_MEMBER T1
+        <where>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            <if test="recordGroupId != null and recordGroupId != ''">
+                AND T1.RECORD_GROUP_ID = #{recordGroupId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 分页查询本单位全部的民警 -->
+    <select id="findAllPoliceWithPage" resultMap="NearbyPoliceDtoResultMap" useCache="true">
+        SELECT
+        T1.PBD_POLICE_IDNTY POLICE_NO, T1.PBD_POLICE_NAME POLICE_NAME,
+        T1.PBD_POLICE_CMMNCT POLICE_AFFAIR,
+        T1.PBD_DRPTMNT_ID DEPT_ID, T1.PBD_DRPTMNT DEPT_NAME, T1.PBD_CUS_NUMBER UNIT_ID, T1.PBD_CUS_NAME UNIT_NAME
+        FROM PRISON.V_POLICE_BASE_DTLS T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.PBD_CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="memberName != null and memberName != ''">
+                AND T1.PBD_POLICE_NAME LIKE '%${memberName}%'
+            </if>
+            <if test="callNo != null and callNo != ''">
+                AND T1.PBD_POLICE_CMMNCT LIKE '%${callNo}%'
+            </if>
+        </where>
+        ORDER BY T1.PBD_CUS_NUMBER, T1.PBD_DRPTMNT_ID, T1.PBD_POLICE_IDNTY
+    </select>
+
+</mapper>

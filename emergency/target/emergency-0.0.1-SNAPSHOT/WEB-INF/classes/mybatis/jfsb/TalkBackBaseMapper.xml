@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.TalkBackBaseMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select ID,TBD_CUS_NUMBER,TBD_MAIN_IDNTY,TBD_SEQ_NUM,TBD_IDNTY,
+		TBD_BRAND,TBD_NAME,TBD_PRE_NAME,TBD_ADDRS,TBD_STTS_INDC,
+		TBD_IP_ADDRS,TBD_CHNNL_ADDRS,TBD_TYPE_INDC,TBD_AREA_ID,
+		TBD_AREA,TBD_DPRTMNT_ID,TBD_DPRTMNT,TBD_ACTION_INDC,TBD_REMARK
+		FROM dvc_talkback_base_dtls
+		<where>
+			<if test="talkBackBaseEntity.tbdCusNumber!=null and talkBackBaseEntity.tbdCusNumber!=''">
+				AND (TRIM(#{talkBackBaseEntity.tbdCusNumber}) is null or tbd_cus_number = #{talkBackBaseEntity.tbdCusNumber})
+			</if>
+			<if test="talkBackBaseEntity.id!=null and talkBackBaseEntity.id!=''">
+				AND (TRIM(#{talkBackBaseEntity.id}) is null or id = #{talkBackBaseEntity.id})
+			</if>
+			<if test="talkBackBaseEntity.tbdName!=null and talkBackBaseEntity.tbdName!=''">
+				AND tbd_name like concat('%', #{talkBackBaseEntity.tbdName},'%')
+			</if>
+			<if test="talkBackBaseEntity.tbdMainIdnty!=null and talkBackBaseEntity.tbdMainIdnty!=''">
+				AND (TRIM(#{talkBackBaseEntity.tbdMainIdnty}) is null or tbd_main_idnty = #{talkBackBaseEntity.tbdMainIdnty})
+			</if>
+			AND tbd_action_indc != '3'
+		</where>
+	</select>
+
+	<select id="findTalkbackBaseSum" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT
+		COUNT(1) || '' as sum
+		FROM
+		dvc_talkback_base_dtls
+		<where>
+			<if test="talkBackBaseEntity.tbdCusNumber!=null and talkBackBaseEntity.tbdCusNumber!=''">
+				AND (TRIM(#{talkBackBaseEntity.tbdCusNumber}) is null or tbd_cus_number = #{talkBackBaseEntity.tbdCusNumber})
+			</if>
+			<if test="talkBackBaseEntity.tbdIdnty != null and talkBackBaseEntity.tbdIdnty!='' ">
+				AND tbd_idnty = #{talkBackBaseEntity.tbdIdnty}
+			</if>
+			AND tbd_action_indc != '3'
+		</where>
+	</select>
+
+
+	<!-- 逻辑删除对讲分机数据 --><!-- 1 "门禁"; 2 "摄像机"; 3 "广播"; 4 "大屏"; 5 "对讲"; -->
+	<update id="deleteById" parameterType="java.util.HashMap">
+		UPDATE dvc_talkback_base_dtls
+		<set>
+			<if test="talkBackBaseEntity.tbdActionIndc != null and talkBackBaseEntity.tbdActionIndc!='' ">
+				tbd_action_indc = #{talkBackBaseEntity.tbdActionIndc},
+			</if>
+			<if test="talkBackBaseEntity.tbdUpdtTime != null and talkBackBaseEntity.tbdUpdtTime!='' ">
+				tbd_updt_time = #{talkBackBaseEntity.tbdUpdtTime},
+			</if>
+			<if test="talkBackBaseEntity.tbdUpdtUserId != null and talkBackBaseEntity.tbdUpdtUserId!='' ">
+				tbd_updt_user_id = #{talkBackBaseEntity.tbdUpdtUserId},
+			</if>
+		</set>
+		where (TRIM(#{talkBackBaseEntity.id}) is null or id = #{talkBackBaseEntity.id})
+		;
+		DELETE FROM CDS_PLAN_DEVICE_RLTN WHERE PDR_ITEM_ID = '5' and PDR_DVC_IDNTY =
+		(select TBD_IDNTY from dvc_talkback_base_dtls where id = #{talkBackBaseEntity.id})
+		;
+		UPDATE dvc_alertor_base_dtls set abd_action_indc = '3' WHERE abd_type_indc = '9' and abd_host_idnty = #{talkBackBaseEntity.id};
+		DELETE FROM CDS_ALERT_PLAN_RLTN WHERE APR_DVC_IDNTY in (select abd_idnty from dvc_alertor_base_dtls where abd_type_indc = '9' and abd_host_idnty = #{talkBackBaseEntity.id});
+	</update>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE dvc_talkback_base_dtls
+		<set>
+
+			<if test="talkBackBaseEntity.tbdMainIdnty != null and talkBackBaseEntity.tbdMainIdnty!='' ">
+				tbd_main_idnty = #{talkBackBaseEntity.tbdMainIdnty},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdSeqNum != null and talkBackBaseEntity.tbdSeqNum!='' ">
+				tbd_seq_num = #{talkBackBaseEntity.tbdSeqNum},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdIdnty != null and talkBackBaseEntity.tbdIdnty!='' ">
+				tbd_idnty = #{talkBackBaseEntity.tbdIdnty},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdBrand != null and talkBackBaseEntity.tbdBrand!='' ">
+				tbd_brand = #{talkBackBaseEntity.tbdBrand},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdName != null and talkBackBaseEntity.tbdName!='' ">
+				tbd_name = #{talkBackBaseEntity.tbdName},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdPreName != null and talkBackBaseEntity.tbdPreName!='' ">
+				tbd_pre_name = #{talkBackBaseEntity.tbdPreName},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdAddrs != null and talkBackBaseEntity.tbdAddrs!='' ">
+				tbd_addrs = #{talkBackBaseEntity.tbdAddrs},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdSttsIndc != null and talkBackBaseEntity.tbdSttsIndc!='' ">
+				tbd_stts_indc = #{talkBackBaseEntity.tbdSttsIndc},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdIpAddrs != null and talkBackBaseEntity.tbdIpAddrs!='' ">
+				tbd_ip_addrs = #{talkBackBaseEntity.tbdIpAddrs},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdChnnlAddrs != null and talkBackBaseEntity.tbdChnnlAddrs!='' ">
+				tbd_chnnl_addrs = #{talkBackBaseEntity.tbdChnnlAddrs},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdTypeIndc != null and talkBackBaseEntity.tbdTypeIndc!='' ">
+				tbd_type_indc = #{talkBackBaseEntity.tbdTypeIndc},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdAreaId != null and talkBackBaseEntity.tbdAreaId!='' ">
+				tbd_area_id = #{talkBackBaseEntity.tbdAreaId},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdArea != null and talkBackBaseEntity.tbdArea!='' ">
+				tbd_area = #{talkBackBaseEntity.tbdArea},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdDprtmntId != null and talkBackBaseEntity.tbdDprtmntId!='' ">
+				tbd_dprtmnt_id = #{talkBackBaseEntity.tbdDprtmntId},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdDprtmnt != null and talkBackBaseEntity.tbdDprtmnt!='' ">
+				tbd_dprtmnt = #{talkBackBaseEntity.tbdDprtmnt},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdActionIndc != null and talkBackBaseEntity.tbdActionIndc!='' ">
+				tbd_action_indc = #{talkBackBaseEntity.tbdActionIndc},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdRemark != null and talkBackBaseEntity.tbdRemark!='' ">
+				tbd_remark = #{talkBackBaseEntity.tbdRemark},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdUpdtTime != null and talkBackBaseEntity.tbdUpdtTime!='' ">
+				tbd_updt_time = #{talkBackBaseEntity.tbdUpdtTime},
+			</if>
+
+			<if test="talkBackBaseEntity.tbdUpdtUserId != null and talkBackBaseEntity.tbdUpdtUserId!='' ">
+				tbd_updt_user_id = #{talkBackBaseEntity.tbdUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="talkBackBaseEntity.id !=null and talkBackBaseEntity.id !=''">
+				AND (TRIM(#{talkBackBaseEntity.id}) is null or id = #{talkBackBaseEntity.id})
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据主机号获取对讲分机信息 -->
+	<select id="findBaseByMain" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT tbd_name As "text",
+		TBD_IDNTY AS "number"
+		FROM
+		dvc_talkback_base_dtls
+		<where>
+			<if test="tbdMainIdnty != null and tbdMainIdnty!='' ">
+				AND TBD_MAIN_IDNTY = #{tbdMainIdnty} AND tbd_action_indc != '3'
+			</if>
+		</where>
+	</select>
+
+	<!-- 下拉控件数据 -->
+	<select id="searchCombData" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+
+		select tse_idnty AS "id",
+		tse_name As "name"
+		from dvc_talkback_server
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND tse_cus_number = #{cusNumber}
+			</if>
+			<if test="areaId!=null and areaId!=''">
+				AND tse_AREA_ID = #{areaId}
+			</if>
+			AND tse_stts_indc = '1'
+		</where>
+		union all
+		SELECT TBD_IDNTY AS "id",
+		TBD_NAME As "name"
+		FROM
+		dvc_talkback_base_dtls
+		<where>
+			<if test="cusNumber != null and cusNumber!='' ">
+				AND tbd_cus_number = #{cusNumber}
+			</if>
+			<if test="areaId!=null and areaId!=''">
+				AND TBD_AREA_ID = #{areaId}
+			</if>
+			AND tbd_action_indc != '3'
+		</where>
+	</select>
+
+	<select id="findByTbdIdntyOrTseIdnty" resultType="java.lang.String" parameterType="java.util.HashMap">
+
+		select tbd_name as "name"
+		from DVC_TALKBACK_BASE_DTLS
+		where
+		TBD_ACTION_INDC != '3'
+		<if test="cusNumber != null and cusNumber!='' ">
+			and tbd_cus_number = #{cusNumber}
+		</if>
+		<if test="idnty != null and idnty!='' ">
+			and tbd_idnty = #{idnty}
+		</if>
+		union
+		select tse_name as "name"
+		from DVC_TALKBACK_SERVER
+		where TSE_ACTION_INDC != '3'
+		<if test="cusNumber != null and cusNumber!='' ">
+			and tse_cus_number = #{cusNumber}
+		</if>
+		<if test="idnty != null and idnty!='' ">
+			and tse_idnty = #{idnty}
+		</if>
+
+	</select>
+
+</mapper>

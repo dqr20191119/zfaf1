@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 三维巡视记录DAO MyBatis映射文件 -->
+<mapper namespace="com.cesgroup.prison.roamRecord.dao.RoamRecordDao">
+	
+	<!-- 三维巡视记录表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.roamRecord.entity.RoamRecord">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+		<result column="ROAM_PATH_ID" jdbcType="CHAR" property="roamPathId" />
+		<result column="ROAM_PATH_NAME" jdbcType="CHAR" property="roamPathName" />
+		<result column="SCREEN_PLAN_ID" jdbcType="CHAR" property="screenPlanId" />
+		<result column="SCREEN_PLAN_NAME" jdbcType="CHAR" property="screenPlanName" />
+		<result column="ROAM_USER_ID" jdbcType="CHAR" property="roamUserId" />
+		<result column="ROAM_USER_NAME" jdbcType="CHAR" property="roamUserName" />
+		<result column="ROAM_TIME" jdbcType="TIMESTAMP" property="roamTime" />
+		<result column="ROAM_DEPT_ID" jdbcType="CHAR" property="roamDeptId" />
+		<result column="ROAM_DEPT_NAME" jdbcType="CHAR" property="roamDeptName" />
+	</resultMap>
+	
+	<!-- 三维巡视记录表-基础字段 -->
+	<sql id="Base_Column_List">
+		ID, CUS_NUMBER, ROAM_PATH_ID, ROAM_PATH_NAME, SCREEN_PLAN_ID, SCREEN_PLAN_NAME, ROAM_USER_ID, 
+		ROAM_USER_NAME, ROAM_TIME, ROAM_DEPT_ID, ROAM_DEPT_NAME
+	</sql>
+	
+	<!-- 查询三维巡视记录列表 -->
+	<select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM CDS_ROAM_RECORD T1
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND T1.CUS_NUMBER = '${cusNumber}'
+			</if>
+			<if test="roamDeptId != null and roamDeptId != ''">
+				AND T1.ROAM_DEPT_ID = '${roamDeptId}'
+			</if>
+			<if test="roamUserName != null and roamUserName != ''">
+				AND T1.ROAM_USER_NAME LIKE '%${roamUserName}%'
+			</if>
+		</where>
+		ORDER BY ROAM_TIME DESC
+	</select>
+	
+</mapper>

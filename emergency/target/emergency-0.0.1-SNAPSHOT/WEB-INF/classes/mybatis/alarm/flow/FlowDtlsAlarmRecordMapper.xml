@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.alarm.flow.dao.FlowDtlsAlarmRecordMapper">
+	<update id="updateById" parameterType="com.cesgroup.prison.alarm.flow.entity.FlowDtlsAlarmRecordEntity">
+        update CDS_HANDLE_FLOW_DTLS_ALARMRECORD
+        <set>
+            <if test="hfdaFlowId !=null and hfdaFlowId !='' ">
+                HFDA_FLOW_ID = #{hfdaFlowId},
+            </if>
+            <if test="hfdaFlowDtlsId !=null and hfdaFlowDtlsId !='' ">
+                HFDA_FLOW_DTLS_ID = #{hfdaFlowDtlsId},
+            </if>
+            <if test="hfdaAlertRecordDtlsId !=null and hfdaAlertRecordDtlsId !='' ">
+                HFDA_ALERT_RECORD_DTLS_ID = #{hfdaAlertRecordDtlsId},
+            </if>
+            <if test="hfdaXcqk !=null and hfdaXcqk !='' ">
+                HFDA_XCQK = #{hfdaXcqk},
+            </if>
+            <if test="hfdaCzqk !=null and hfdaCzqk !='' ">
+                HFDA_CZQK = #{hfdaCzqk},
+            </if>
+            <if test="hfdaCzjg !=null and hfdaCzjg !='' ">
+                HFDA_CZJG = #{hfdaCzjg},
+            </if>
+            <if test="hfdaBz !=null and hfdaBz !='' ">
+                HFDA_BZ = #{hfdaBz},
+            </if>
+            <if test="hfdaUpdateTime !=null and hfdaUpdateTime !='' ">
+                HFDA_UPDATE_TIME = #{hfdaUpdateTime},
+            </if>
+            <if test="hfdaUpdateId !=null and hfdaUpdateId !='' ">
+                HFDA_UPDATE_ID = #{hfdaUpdateId},
+            </if>
+            <if test="hfdaUpdateName !=null and hfdaUpdateName !='' ">
+                HFDA_UPDATE_NAME = #{hfdaUpdateName},
+            </if>
+        </set>
+        <where>
+            ID= #{id}
+        </where>
+    </update>
+
+
+</mapper>

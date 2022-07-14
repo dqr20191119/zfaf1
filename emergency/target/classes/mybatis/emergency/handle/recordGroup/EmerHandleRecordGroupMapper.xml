@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.handle.recordGroup.dao.EmerHandleRecordGroupDao">
+    <!-- 应急处置记录中的工作组基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.handle.recordGroup.entity.EmerHandleRecordGroup">
+        <id column="ID" jdbcType="CHAR" property="id"/>
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="RECORD_ID" jdbcType="CHAR" property="recordId"/>
+        <result column="RECORD_STEP_ID" jdbcType="CHAR" property="recordStepId"/>
+        <result column="GROUP_NAME" jdbcType="CHAR" property="groupName"/>
+        <result column="GET_MEMBER_WAY" jdbcType="CHAR" property="getMemberWay"/>
+        <result column="GROUP_NOTICE" jdbcType="CHAR" property="groupNotice"/>
+        <result column="GROUP_NOTICE_STATUS" jdbcType="CHAR" property="groupNoticeStatus"/>
+        <result column="GROUP_NOTICE_TIME" jdbcType="TIMESTAMP" property="groupNoticeTime"/>
+        <result column="SOURCE" jdbcType="CHAR" property="source"/>
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder"/>
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!-- 应急处置记录中的工作组基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, RECORD_ID, RECORD_STEP_ID, GROUP_NAME, GET_MEMBER_WAY, GROUP_NOTICE, GROUP_NOTICE_STATUS,
+        GROUP_NOTICE_TIME, SOURCE, STATUS, SHOW_ORDER, UPDATE_USER_ID, UPDATE_TIME
+    </sql>
+
+    <!-- 根据主键ID，查询应急处置记录的工作组 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM CDS_EMER_HANDLE_RECORD_GROUP T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumberAndRecordIdAndRecordStepId" parameterType="java.lang.String" resultType="java.lang.Integer" useCache="true">
+        SELECT max(T1.SHOW_ORDER)
+        FROM CDS_EMER_HANDLE_RECORD_GROUP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            <if test="recordStepId != null and recordStepId != ''">
+                AND T1.RECORD_STEP_ID = #{recordStepId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+    </select>
+
+    <!-- 根据应急处置记录的处置步骤ID、数据状态，查询应急处置记录的工作组列表 -->
+    <select id="findByRecordStepIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_GROUP T1
+        <where>
+            <if test="recordStepId != null and recordStepId != ''">
+                AND T1.RECORD_STEP_ID = #{recordStepId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据应急处置记录的处置记录ID、处置步骤ID、数据状态，查询应急处置记录的工作组列表 -->
+    <select id="findByRecordIdAndRecordStepIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_GROUP T1
+        <where>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            <if test="recordStepId != null and recordStepId != ''">
+                AND T1.RECORD_STEP_ID = #{recordStepId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+</mapper>

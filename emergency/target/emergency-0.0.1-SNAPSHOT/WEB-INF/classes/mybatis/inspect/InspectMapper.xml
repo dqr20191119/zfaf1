@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.inspect.dao.InspectMapper">
+	<!-- 巡查通报列表（本监狱发出的） -->
+  <select id="inspectListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		  select 	N.ID as id,
+		  			INO_CUS_NUMBER,
+		  			TO_CHAR(INO_INSPECT_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_INSPECT_TIME,
+		  			TO_CHAR(INO_INSPECT_END_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_INSPECT_END_TIME,
+		  			INO_APPROVAL_STTS_INDC,
+		  			INO_APPROVAL_USER_ID,
+		  			TO_CHAR(INO_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_CRTE_TIME,
+		  			INO_CRTE_USER_NAME,
+		  			INO_INSPECT_NAME,
+		  			INO_NOTICE_CUS_NUMBER,
+		  			P.ICP_POLICE_NAME as ICP_POLICE_NAME,
+		  			INO_INSPECT_BJ,
+		  			INO_INSPECT_PHASE
+			  from CDS_INSPECT_NOTICE N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC='0'
+			 where 1=1
+      		 <if test="startTime != null  and startTime!=''">
+			 	  and  N.INO_INSPECT_TIME  &gt;  #{startTime,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="endTime != null  and endTime!=''">
+			 	  and N.INO_INSPECT_TIME &lt; #{endTime ,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="inoCusNumber !=null  and inoCusNumber !=''">
+      		 	  and N.INO_CUS_NUMBER=#{inoCusNumber,jdbcType=VARCHAR}
+      		 </if>
+      		 ORDER BY INO_INSPECT_PHASE DESC,ino_approval_stts_indc,ino_crte_time DESC
+  </select>
+  <!-- 待审批列表 -->
+  <select id="inspectSpListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		  select 	N.ID as id,
+		  			INO_CUS_NUMBER,
+		  			TO_CHAR(INO_INSPECT_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_INSPECT_TIME,
+		  			TO_CHAR(INO_INSPECT_END_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_INSPECT_END_TIME,
+		  			INO_APPROVAL_STTS_INDC,
+		  			INO_APPROVAL_USER_ID,
+		  			TO_CHAR(INO_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_CRTE_TIME,
+		  			INO_CRTE_USER_NAME,
+		  			INO_INSPECT_NAME,
+		  			INO_NOTICE_CUS_NUMBER,
+		  			P.ICP_POLICE_NAME as ICP_POLICE_NAME,
+		  			INO_INSPECT_BJ,
+		  			INO_INSPECT_PHASE
+			  from CDS_INSPECT_NOTICE N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC='0'
+			 where INO_APPROVAL_STTS_INDC='1'
+			 <if test="checkPoliceIdnty != null  and checkPoliceIdnty!=''">
+			 	  and  P.ICP_POLICE_IDNTY = #{checkPoliceIdnty,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="startTime != null  and startTime!=''">
+			 	  and  N.INO_INSPECT_TIME  &gt;  #{startTime,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="endTime != null  and endTime!=''">
+			 	  and N.INO_INSPECT_TIME &lt; #{endTime ,jdbcType=VARCHAR}
+      		 </if>
+      		 ORDER BY INO_INSPECT_PHASE DESC, ino_approval_stts_indc,ino_crte_time DESC
+  </select>
+  	<!-- 汇总列表 -->
+  <select id="inspectHzListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		  select 	N.ID as id,
+		  			INO_CUS_NUMBER,
+		  			TO_CHAR(INO_INSPECT_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_INSPECT_TIME,
+		  			TO_CHAR(INO_INSPECT_END_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_INSPECT_END_TIME,
+		  			INO_APPROVAL_STTS_INDC,
+		  			INO_APPROVAL_USER_ID,
+		  			TO_CHAR(INO_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as INO_CRTE_TIME,
+		  			INO_CRTE_USER_NAME,
+		  			INO_INSPECT_NAME,
+		  			INO_NOTICE_CUS_NUMBER,
+		  			P.ICP_POLICE_NAME as ICP_POLICE_NAME,
+		  			INO_INSPECT_BJ,
+		  			INO_INSPECT_PHASE
+			  from CDS_INSPECT_NOTICE N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC='0'
+			 where 1=1
+      		 <if test="startTime != null  and startTime!=''">
+			 	  and  N.INO_INSPECT_TIME  &gt;  #{startTime,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="endTime != null  and endTime!=''">
+			 	  and N.INO_INSPECT_TIME &lt; #{endTime ,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="inoNoticeCusNumber !=null  and inoNoticeCusNumber !=''">
+      		 	  and N.INO_NOTICE_CUS_NUMBER=#{inoNoticeCusNumber,jdbcType=VARCHAR} and INO_APPROVAL_STTS_INDC= '3'
+      		 </if>
+      		 ORDER BY INO_INSPECT_PHASE DESC,ino_approval_stts_indc,ino_crte_time DESC
+  </select>
+  
+  <select id="inspectlist" resultType="com.cesgroup.prison.inspect.entity.Inspect" parameterType="com.cesgroup.prison.inspect.entity.Inspect">
+		  select N.ID as id, 
+		  			INO_CUS_NUMBER as inoCusNumber, 
+			       INO_DUTY_LOG_ID as inoDutyLogId, INO_INSPECT_TIME as inoInspectTime,INO_INSPECT_END_TIME as inoInspectEndTime, 
+			       INO_DUTY_ORDER_ID as inoDutyOrderId, INO_SUPERVISION_DEVICE as inoSupervisionDevice, INO_PRISON_CASE as inoPrisonCase, 
+			       INO_RULE_EXECUTE as inoRuleExecute, INO_MORNING_CHECK as inoMorningCheck ,INO_SUGGESITION as inoSuggesition, 
+			       INO_PROBLEM as inoProblem, INO_DOCUMENT_ID as inoDocumentId,INO_APPROVAL_STTS_INDC as inoApprovalSttsIndc,
+			       INO_APPROVAL_TIME as inoApprovalTime,INO_APPROVAL_USER_ID as inoApprrovalUserId, INO_REMARK as inoRemark, 
+			       INO_CRTE_TIME as inoCrteTime, INO_CRTE_USER_ID as inoCrteUserId, INO_UPDT_TIME as inoUpdtTime, 
+			       INO_UPDT_USER_ID as inoUpdtUserId, INO_INSPECT_NAME as inoInspectName, INO_NOTICE_CUS_NUMBER as inoNoticeCusNumber, 
+			       INO_UPDT_USER_NAME as inoUpdtUserName, INO_CRTE_USER_NAME as inoCrteUserName,
+			       P.ICP_POLICE_IDNTY AS checkPoliceIdnty,P.ICP_POLICE_NAME as checkPoliceName,
+			       INO_INSPECT_BJ AS inoInspectBj,
+		  			INO_INSPECT_PHASE AS inoInspectPhase,
+			       (select listagg(IPR_POLICE_IDNTY,',') within GROUP (order by IPR_CRTE_TIME)  from CDS_INSPECT_POLICE_RELATION where IPR_INSPECT_ID=N.ID and IPR_TYPE_INDC=0) as iprPoliceIdntys,
+			       (select listagg(IPR_POLICE_NAME,',') within GROUP (order by IPR_CRTE_TIME)  from CDS_INSPECT_POLICE_RELATION where IPR_INSPECT_ID=N.ID and IPR_TYPE_INDC=0) as iprPoliceNames
+			  from CDS_INSPECT_NOTICE N
+			  LEFT JOIN CDS_NOTICE_CHECK_POLICE P ON P.ICP_INSPECT_ID=N.ID and ICP_INSPECT_TYPE_INDC=0
+			 where 0=0
+			 <if test="inoApprovalSttsIndc != null and inoApprovalSttsIndc!=''">
+			 	  and INO_APPROVAL_STTS_INDC= #{inoApprovalSttsIndc,jdbcType=VARCHAR}
+      		 </if>
+      		 <if test="id!=null and id!=''">
+      		 	  and N.ID=#{id,jdbcType=VARCHAR}
+      		 </if>
+      		 order by INO_INSPECT_PHASE DESC, INO_CRTE_TIME desc
+  </select>
+  <select id="findInoInspectDocumentById" resultType="java.util.HashMap" parameterType="java.lang.String">
+		  select INO_INSPECT_DOCUMENT 		
+				from CDS_INSPECT_NOTICE N 
+			where  N.ID=#{id}
+  </select>
+  
+  <update id="updateInspect" parameterType="com.cesgroup.prison.inspect.entity.Inspect" >
+  	  update CDS_INSPECT_NOTICE
+  	  <set>
+	      <if test="inoCusNumber != null and inoCusNumber!=''" >
+	         INO_CUS_NUMBER = #{inoCusNumber,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoDutyLogId != null and inoDutyLogId!=''">
+	        INO_DUTY_LOG_ID = #{inoDutyLogId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoInspectTime != null and inoInspectTime!=''">
+	        INO_INSPECT_TIME = #{inoInspectTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="inoInspectEndTime != null and inoInspectEndTime!=''" >
+	        INO_INSPECT_END_TIME = #{inoInspectEndTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="inoDutyOrderId != null and inoDutyOrderId!=''"  >
+	        INO_DUTY_ORDER_ID = #{inoDutyOrderId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoSupervisionDevice != null and inoSupervisionDevice!=''">
+	        INO_SUPERVISION_DEVICE = #{inoSupervisionDevice,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoPrisonCase != null and inoPrisonCase!=''">
+	        INO_PRISON_CASE = #{inoPrisonCase,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoRuleExecute != null and inoRuleExecute!=''">
+	        INO_RULE_EXECUTE = #{inoRuleExecute,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoMorningCheck != null and inoMorningCheck!=''">
+	        INO_MORNING_CHECK = #{inoMorningCheck,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoSuggesition != null and inoSuggesition!=''">
+	        INO_SUGGESITION = #{inoSuggesition,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoProblem != null and inoProblem!=''">
+	         INO_PROBLEM = #{inoProblem,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoDocumentId != null and inoDocumentId!=''">
+	        INO_DOCUMENT_ID = #{inoDocumentId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoApprovalSttsIndc != null and inoApprovalSttsIndc!=''">
+	        INO_APPROVAL_STTS_INDC = #{inoApprovalSttsIndc,jdbcType=VARCHAR},
+	        INO_APPROVAL_TIME=getdate(),
+	      </if>
+	      <if test="inoApprovalUserId != null and inoApprovalUserId!=''">
+	         INO_APPROVAL_USER_ID = #{inoApprovalUserId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoRemark != null and inoRemark!=''">
+	         INO_REMARK=#{inoRemark,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoCrteTime != null and inoCrteTime!=''">
+	        INO_CRTE_TIME=#{inoCrteTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="inoCrteUserId != null and inoCrteUserId!=''">
+	         INO_CRTE_USER_ID = #{inoCrteUserId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoCrteUserName != null and inoCrteUserName!=''">
+	        INO_CRTE_USER_NAME = #{inoCrteUserName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoUpdtUserId != null and inoUpdtUserId!=''">
+	        INO_UPDT_USER_ID = #{inoUpdtUserId,jdbcType=VARCHAR},
+	         INO_UPDT_TIME = getdate(),
+	      </if>
+	      <if test="inoUpdtUserName != null and inoUpdtUserName!=''">
+	         INO_UPDT_USER_NAME = #{inoUpdtUserName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoInspectName != null and inoInspectName!=''">
+	        INO_INSPECT_NAME = #{inoInspectName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoNoticeCusNumber != null and inoNoticeCusNumber!=''">
+	        INO_NOTICE_CUSNUMBER=#{inoNoticeCusNumber,jdbcType=VARCHAR},
+	      </if>
+	      <if test="inoInspectDocument != null and inoInspectDocument !=''">
+	        INO_INSPECT_DOCUMENT=#{inoInspectDocument},
+	      </if> 
+	      <if test="inoInspectPhase != null and inoInspectPhase !=''">
+	        INO_INSPECT_PHASE=#{inoInspectPhase},
+	      </if> 
+	      <if test="inoInspectBj != null and inoInspectBj !=''">
+	        INO_INSPECT_BJ=#{inoInspectBj}
+	      </if> 
+	  </set>
+      where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

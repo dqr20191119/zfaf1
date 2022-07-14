@@ -1,0 +1,46 @@
+@CHARSET "UTF-8";
+.cameraGroup{
+	width:99%;
+	height:100%;
+	position:relative;
+}
+.hz-mask {
+	position: absolute;
+	z-index: 999999;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	display: none;
+	background-color: rgba(225,225,225,0.4);
+}
+.hz-mask * {
+	margin: 0px auto;
+	padding: 0px;
+	color: #282828;
+	font-size: 12px;
+	font-family: 微软雅黑;
+}
+.hz-mask div.table {
+	display: table;
+	width: 100%;
+	height: 100%;
+}
+.hz-mask div.table-cell {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+.hz-mask div.table-cell a {
+	padding: 20px 25px 20px 25px;
+	border: 2px solid #2783E9;
+	background-color: #FFF;
+}
+.hz-mask div.table-cell a.waiting {
+	padding-left: 35px;
+	background: url(images/loading.gif) 17px center no-repeat #FFF;
+}
+.hz-mask div.table-cell a span {
+	letter-spacing: 1px;
+	text-shadow: 1px 1px 2px #999;
+}

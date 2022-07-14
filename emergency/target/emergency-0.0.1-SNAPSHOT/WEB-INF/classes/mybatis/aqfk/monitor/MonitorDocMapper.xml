@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cesgroup.prison.aqfk.monitor.dao.MonitorDocMapper" >
+
+  <update id="updatePart" parameterType="com.cesgroup.prison.aqfk.monitor.entity.MonitorDoc" >
+    update CDS_MONITOR_DOC
+    <set >
+      <if test="mdoCusNumber != null and mdoCusNumber!=''" >
+        MDO_CUS_NUMBER = #{mdoCusNumber},
+      </if>
+      <if test="mdoMonitorName != null and mdoMonitorName!=''" >
+        MDO_MONITOR_NAME = #{mdoMonitorName},
+      </if>
+     <!--  <if test="mdoTime != null and mdoTime!=''" >
+        MDO_TIME = TO_CHAR(#{mdoTime},'YYYY-MM-DD HH24:MI:SS'),
+      </if> -->
+      <if test="mdoAddr != null and mdoAddr!=''" >
+        MDO_ADDR = #{mdoAddr},
+      </if>
+      <if test="mdoProblem != null and mdoProblem!=''" >
+        MDO_PROBLEM = #{mdoProblem},
+      </if>
+      <if test="modSttsIndc != null and modSttsIndc!=''" >
+        MOD_STTS_INDC = #{modSttsIndc},
+      </if>
+      <if test="mdoRemark != null and mdoRemark!=''" >
+        MDO_REMARK = #{mdoRemark},
+      </if>
+      <if test="mdoCrteUserId != null and mdoCrteUserId!=''" >
+        MDO_CRTE_USER_ID = #{mdoCrteUserId},
+      </if>
+      <!-- <if test="mdoUpdtTime != null and mdoUpdtTime!=''" >
+        MDO_UPDT_TIME = TO_CHAR(#{mdoUpdtTime},'YYYY-MM-DD HH24:MI:SS'),
+      </if> -->
+      <if test="mdoUpdtUserId != null and mdoUpdtUserId!=''" >
+        MDO_UPDT_USER_ID = #{mdoUpdtUserId},
+      </if>
+      <if test="mdoNoticeCusNumber != null and mdoNoticeCusNumber!=''" >
+        MDO_NOTICE_CUS_NUMBER = #{mdoNoticeCusNumber},
+      </if>
+      <if test="mdoIsFromProv != null and mdoIsFromProv!=''" >
+        MDO_IS_FROM_PROV = #{mdoIsFromProv},
+      </if>
+      <if test="mdoConsultStatus != null and mdoConsultStatus!=''" >
+        MDO_CONSULT_STATUS = #{mdoConsultStatus},
+      </if>
+      <if test="mdoNoticeDepartment != null and mdoNoticeDepartment !=''" >
+        MDO_NOTICE_DEPARTMENT = #{mdoNoticeDepartment},
+      </if>
+	  <if test="mdoFeedbackmessage != null and mdoFeedbackmessage !=''" >
+		MDO_FEEDBACKMESSAGE = #{mdoFeedbackmessage},
+	  </if>
+    </set>
+    where ID = #{id}
+  </update>
+	<!-- 更改证据使用状态 -->
+	<update id="updateEviStatusByMonId" parameterType="java.util.HashMap" >
+		update CDS_EVIDENCE_INFO as evi
+			set evi.ein_stts_indc=#{einSttsIndc}
+			where exists (select 1
+			from CDS_MONITOR_EVIDENCE_RELATION b
+			where b.MER_EVIDENCE_SQNO=evi.id
+			 and b.MER_MONITOR_SQNO=#{monitorId}
+			)
+	</update>
+	<!-- 更改接受监督单的查看状态 -->
+	<update id="updateMrrStatus" parameterType="java.util.HashMap" >
+		update cds_monitor_recipient_relation 
+			set mrr_status=#{mrrStatus}
+			where mrr_rcpnt_idnty=#{mrrRcpntIdnty}
+			AND MRR_MONITOR_SQNO=#{mrrMonitorSqno}
+	</update>
+	<!-- 查询已发监督单（包含已下发）信息 -->
+	<select id="searchYFMonitor" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT id,mdo_cus_number,
+			       mdo_monitor_name,
+			       TO_CHAR(mdo_time,'YYYY-MM-DD HH24:MI:SS') as mdo_time,
+			       mdo_addr,
+			       mdo_problem,
+			       TO_CHAR(mdo_crte_time,'YYYY-MM-DD HH24:MI:SS') as mdo_crte_time,
+			       mod_stts_indc,
+			       mdo_remark,
+			       TO_CHAR(mdo_updt_time,'YYYY-MM-DD HH24:MI:SS') as mdo_updt_time,
+			       mdo_crte_user_id,
+			       crte.user_name as crte_user_name,
+			       mdo_updt_user_id,
+			       updt.user_name as updt_user_name,
+			       MDO_CONSULT_STATUS
+			FROM   cds_monitor_doc 
+			LEFT JOIN AUTH.T_USER crte ON mdo_crte_user_id = crte.USER_ID
+			LEFT JOIN AUTH.T_USER updt ON mdo_updt_user_id = updt.USER_ID
+			 <where>
+			 	<if test="monitor.mdoMonitorName!=null and monitor.mdoMonitorName!=''">
+			 		and mdo_monitor_name like concat('%',#{monitor.mdoMonitorName},'%' )
+			 	</if>
+			 	<if test="monitor.mdoCusNumber!=null and monitor.mdoCusNumber!=''">
+			 		AND mdo_cus_number=#{monitor.mdoCusNumber}
+			 	</if>
+			 	<if test="startTime!=null and startTime!=''">
+			 		and MDO_CRTE_TIME &gt; #{startTime}
+			 	</if>
+			 	<if test="endTime!=null and endTime!=''">
+			 		and MDO_CRTE_TIME &lt; #{endTime}
+			 	</if>
+			 	<!-- 省局级 -->
+			 	<if test="userLevel == 1">
+			 		and mdo_crte_user_id = #{monitor.mdoCrteUserId} 
+			 		and mod_stts_indc in (1,2) 
+			 	</if>
+			 	<!-- 非省局级 -->
+			 	<if test="userLevel != 1">
+			 		and (mdo_updt_user_id = #{monitor.mdoUpdtUserId}
+			 			and mod_stts_indc = 2 or  mdo_crte_user_id = #{monitor.mdoCrteUserId}
+			 			and mod_stts_indc = 1)
+			 	</if>
+			 </where>
+			 order by mdo_updt_time desc
+	</select>
+	<!-- 查询监督单信息 -->
+	<select id="searchMonitor" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT id,mdo_cus_number,
+			       mdo_monitor_name,
+			       TO_CHAR(mdo_time,'YYYY-MM-DD HH24:MI:SS') as mdo_time,
+			       mdo_addr,
+			       mdo_problem,
+			       TO_CHAR(mdo_crte_time,'YYYY-MM-DD HH24:MI:SS') as mdo_crte_time,
+			       mod_stts_indc,
+			       mdo_remark,
+			       TO_CHAR(mdo_updt_time,'YYYY-MM-DD HH24:MI:SS') as mdo_updt_time,
+			       mdo_crte_user_id,
+			       crte.user_name as crte_user_name,
+			       mdo_updt_user_id,
+			       updt.user_name as updt_user_name,
+			       MDO_CONSULT_STATUS,
+			       MDO_NOTICE_DEPARTMENT,
+				   MDO_NOTICE_DEPARTMENT_NAME
+			FROM   cds_monitor_doc 
+			LEFT JOIN AUTH.T_USER crte ON mdo_crte_user_id = crte.USER_ID
+			LEFT JOIN AUTH.T_USER updt ON mdo_updt_user_id = updt.USER_ID
+			 <where>
+			 	<if test="monitor.mdoMonitorName!=null and monitor.mdoMonitorName!=''">
+			 		and mdo_monitor_name like concat('%',#{monitor.mdoMonitorName},'%' )
+			 	</if>
+			 	<if test="monitor.modSttsIndc!=null and monitor.modSttsIndc!=''">
+			 		and mod_stts_indc =#{monitor.modSttsIndc}
+			 	</if>
+			 	<if test="monitor.mdoCusNumber!=null and monitor.mdoCusNumber!=''">
+			 		AND mdo_cus_number=#{monitor.mdoCusNumber}
+			 	</if>
+			 	<if test="startTime!=null and startTime!=''">
+			 		and MDO_CRTE_TIME &gt; #{startTime}
+			 	</if>
+			 	<if test="endTime!=null and endTime!=''">
+			 		and MDO_CRTE_TIME &lt; #{endTime}
+			 	</if>
+			 	<if test="monitor.mdoCrteUserId!=null and monitor.mdoCrteUserId!=''">
+			 		and mdo_crte_user_id = #{monitor.mdoCrteUserId}
+			 	</if>
+				<if test="monitor.mdoConsultStatus!=null and monitor.mdoConsultStatus!=''">
+					and MDO_CONSULT_STATUS = #{monitor.mdoConsultStatus}
+				</if>
+				 <if test="monitor.mdoNoticeDepartment!=null and monitor.mdoNoticeDepartment!=''">
+					 and MDO_NOTICE_DEPARTMENT = #{monitor.mdoNoticeDepartment}
+				 </if>
+			 </where>
+			 order by mdo_updt_time desc
+	</select>
+	
+	<!-- 根据网络督查通报id查询关联的监督单信息 -->
+	<select id="searchMonitorByInspectId" resultType="java.util.Map"
+		parameterType="java.lang.String">
+		SELECT     CDS_MONITOR_DOC.ID as id,
+					mdo_cus_number,
+			       mdo_monitor_name,
+			       TO_CHAR(mdo_time,'YYYY-MM-DD HH24:MI:SS') as mdo_time,
+			       mdo_addr,
+			       mdo_problem,
+			       TO_CHAR(mdo_crte_time,'YYYY-MM-DD HH24:MI:SS') as mdo_crte_time,
+			       mod_stts_indc,
+			       mdo_remark,
+			       TO_CHAR(mdo_updt_time,'YYYY-MM-DD HH24:MI:SS') as mdo_updt_time,
+			       mdo_crte_user_id,
+			       crte.user_name as crte_user_name,
+			       mdo_updt_user_id,
+			       updt.user_name as updt_user_name,
+			       MDO_CONSULT_STATUS
+			FROM  CDS_INSPECT_MONITOR_RELATION  
+			LEFT JOIN CDS_MONITOR_DOC ON IMR_MONITOR_SQNO = CDS_MONITOR_DOC.ID
+			LEFT JOIN AUTH.T_USER crte ON mdo_crte_user_id = crte.USER_ID
+			LEFT JOIN AUTH.T_USER updt ON mdo_updt_user_id = updt.USER_ID
+			where IMR_INSPECT_ID = #{inspectId}
+			order by mdo_crte_time asc
+	</select>
+	
+	<!-- 查询监督单在巡查通报中被使用的次数-->
+	<select id="searchMonitorInXctbCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		SELECT count(*)
+			FROM  CDS_INSPECT_MONITOR_RELATION  
+			LEFT JOIN CDS_INSPECT_NOTICE ON IMR_INSPECT_ID = CDS_INSPECT_NOTICE.ID
+			<where>
+			 	<if test="imrMonitorSqno !=null and imrMonitorSqno !=''">
+			 		and IMR_MONITOR_SQNO = #{imrMonitorSqno}
+			 	</if>
+			 	<if test="inoApprovalSttsIndc !=null and inoApprovalSttsIndc !=''">
+			 		and INO_APPROVAL_STTS_INDC = #{inoApprovalSttsIndc}
+			 	</if>
+			</where>
+	</select>
+	
+	<!-- 根据网络督查通报id查询关联的监督单ID(通过创建时间升序排序) -->
+	<select id="searchMonitorIdsByInspectId" resultType="java.util.Map"
+		parameterType="java.lang.String">
+		SELECT     CDS_MONITOR_DOC.ID as id 
+			FROM  CDS_INSPECT_MONITOR_RELATION  
+			LEFT JOIN CDS_MONITOR_DOC ON IMR_MONITOR_SQNO = CDS_MONITOR_DOC.ID
+			where IMR_INSPECT_ID = #{inspectId}
+			order by mdo_crte_time asc
+	</select>
+	<!-- 查询部门已接收到的监督单信息 -->
+	<select id="searchDeptReceivedMonitor" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT  	mdo_cus_number,
+					cds_monitor_doc.id as id,
+             		mdo_monitor_name, 
+             		TO_CHAR(mdo_time,'YYYY-MM-DD HH24:MI:SS') as mdo_time, 
+             		mdo_addr, 
+             		mdo_problem,
+             		TO_CHAR(mdo_crte_time,'YYYY-MM-DD HH24:MI:SS') as mdo_crte_time,
+             		TO_CHAR(mdo_updt_time,'YYYY-MM-DD HH24:MI:SS') as mdo_updt_time,
+             		mdo_remark,
+             		MOD_STTS_INDC,
+             		(case MDO_IS_FROM_PROV when '1' then 
+             			case MOD_STTS_INDC when'2' then 
+             				'已下发' 
+             				else  '待下发'  
+                  		end  
+         			else  
+          				case when MDO_CONSULT_STATUS is null then 
+             				0 
+             				else MDO_CONSULT_STATUS  
+                  		end 
+					end) as status,
+             		mdo_updt_user_id,
+             		user_name as updt_user_name,
+             		MDO_IS_FROM_PROV,
+             		MDO_CONSULT_STATUS,
+					MDO_FEEDBACKMESSAGE
+      		 FROM   cds_monitor_doc
+			 LEFT JOIN AUTH.T_USER ON mdo_updt_user_id = USER_ID
+			 <where>
+			 	<if test="startTime!=null and startTime!=''">
+			 		and MDO_UPDT_TIME &gt; #{startTime}
+			 	</if>
+			 	<if test="endTime!=null and endTime!=''">
+			 		and MDO_UPDT_TIME &lt; #{endTime}
+			 	</if>
+			 	<!-- 监狱级 -->
+			 	<if test="userLevel == 2">
+			 		AND MDO_NOTICE_CUS_NUMBER=#{cusNumber}
+			 	</if>
+			 	<!-- 非监狱级 -->
+			 	<if test="userLevel != 2">
+			 		AND MDO_NOTICE_DEPARTMENT=#{departmentId}
+			 	</if>
+			 	
+			 	AND (mod_stts_indc = 1 or mod_stts_indc=2)
+			 </where>
+			 order by MDO_UPDT_TIME desc
+	</select>
+	<!-- 查询已接收到的监督单信息 -->
+	<select id="searchReceivedMonitor" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT DISTINCT mdo_cus_number,
+					cds_monitor_doc.id as id,
+             		mdo_monitor_name, 
+             		TO_CHAR(mdo_time,'YYYY-MM-DD HH24:MI:SS') as mdo_time, 
+             		mdo_addr, 
+             		mdo_problem,
+             		TO_CHAR(mdo_crte_time,'YYYY-MM-DD HH24:MI:SS') as mdo_crte_time,
+             		TO_CHAR(mdo_updt_time,'YYYY-MM-DD HH24:MI:SS') as mdo_updt_time,
+             		mod_stts_indc,
+             		mdo_remark,
+             		(case MDO_IS_FROM_PROV when '1' then 
+             			case MOD_STTS_INDC when'2' then 
+             				'已下发' 
+             				else  '待下发'  
+                  		end  
+         			else  
+          				mrr_status  
+					end) as mrr_status,
+             		mdo_updt_user_id,
+             		user_name as updt_user_name,
+             		mrr_cus_number,
+             		mrr_rcpnt_idnty,
+             		mrr_rcpnt_name,
+             		MDO_IS_FROM_PROV,
+             		MDO_CONSULT_STATUS
+      		 FROM   cds_monitor_doc
+			 LEFT JOIN cds_monitor_recipient_relation ON (cds_monitor_doc.id=mrr_monitor_sqno) 
+			 LEFT JOIN AUTH.T_USER ON mdo_updt_user_id = USER_ID
+			 <where>
+			 	<if test="cusNumber!=null and cusNumber!=''">
+			 		and mrr_cus_number =#{cusNumber}
+			 	</if>
+			 	<if test="startTime!=null and startTime!=''">
+			 		and MDO_UPDT_TIME &gt; #{startTime}
+			 	</if>
+			 	<if test="endTime!=null and endTime!=''">
+			 		and MDO_UPDT_TIME &lt; #{endTime}
+			 	</if>
+			 	<!-- 监狱级 -->
+			 	<if test="userLevel == 2">
+			 		AND mrr_rcpnt_idnty=#{rcpntIdnty}
+			 		OR (MDO_IS_FROM_PROV=1 AND MDO_NOTICE_CUS_NUMBER=#{cusNumber})
+			 	</if>
+			 	<!-- 非监狱级 -->
+			 	<if test="userLevel != 2">
+			 		AND mrr_rcpnt_idnty=#{rcpntIdnty}
+			 	</if>
+			 	
+			 	AND (mod_stts_indc = 1 or mod_stts_indc=2)
+			 </where>
+			 order by MDO_UPDT_TIME desc
+	</select>
+	
+	<!-- 批量新增监督单证据关联信息-->
+	<insert id="batchInsertMonitorAndEvidence" parameterType="List">  
+	    insert into CDS_MONITOR_EVIDENCE_RELATION(ID, MER_CUS_NUMBER, MER_MONITOR_SQNO,MER_EVIDENCE_SQNO,
+	    MER_CRTE_TIME,MER_CRTE_USER_ID) values 
+	    <foreach collection="list" item="o" index="index" separator="," >  
+	         ( #{o.id},#{o.merCusNumber},#{o.merMonitorSqno},#{o.merEvidenceSqno},TO_DATE(#{o.merCrteTime},'YYYY-MM-DD HH24:MI:SS'),#{o.merCrteUserId} )
+	    </foreach>
+	</insert>
+	
+	<!-- 批量新增监督单接收人关联信息-->
+	<insert id="batchInsertMonitorAndRecipient" parameterType="List">  
+	    insert into CDS_MONITOR_RECIPIENT_RELATION(ID, MRR_CUS_NUMBER, MRR_MONITOR_SQNO,MRR_RCPNT_IDNTY,
+	    MRR_RCPNT_NAME,MOD_CRTE_TIME,MOD_CRTE_USER_ID,MOD_UPDT_TIME,MOD_UPDT_USER_ID,MRR_STATUS)
+	    values 
+	    <foreach collection="list" item="o" index="index" separator="," >  
+	         ( #{o.id},#{o.mrrCusNumber},#{o.mrrMonitorSqno},#{o.mrrRcpntIdnty},
+	         #{o.mrrRcpntName},
+	         TO_DATE(#{o.modCrteTime},'YYYY-MM-DD HH24:MI:SS'),#{o.modCrteUserId}, 
+	         TO_DATE(#{o.modUpdtTime},'YYYY-MM-DD HH24:MI:SS'),#{o.modUpdtUserId},0 )
+	    </foreach>
+	</insert>
+	
+	<!-- 批量新增监督单和网络通报关联信息-->
+	<insert id="batchInsertMonitorAndInspect" parameterType="List">  
+	    insert into CDS_INSPECT_MONITOR_RELATION(IMR_CUS_NUMBER, IMR_INSPECT_ID,IMR_MONITOR_SQNO,
+	    IMR_REMARK,IMR_CRTE_TIME,IMR_CRTE_USER_ID,IMR_UPDT_TIME,IMR_UPDT_USER_ID)
+	    values 
+	    <foreach collection="list" item="o" index="index" separator="," >  
+	         ( #{o.IMR_CUS_NUMBER},#{o.IMR_INSPECT_ID},#{o.IMR_MONITOR_SQNO},#{o.IMR_REMARK},
+	         TO_DATE(#{o.IMR_CRTE_TIME},'YYYY-MM-DD HH24:MI:SS'),#{o.IMR_CRTE_USER_ID}, 
+	         TO_DATE(#{o.IMR_UPDT_TIME},'YYYY-MM-DD HH24:MI:SS'),#{o.IMR_UPDT_USER_ID} )
+	    </foreach>
+	</insert>	
+	<!-- 查询监督单关联证据信息 -->
+	<select id="searchRelationMonEvi" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT   cds_evidence_info.id as id,
+		      		   ein_title,
+		      		   ein_content_desc,
+		      		   ein_file_type_indc,
+		      		   ein_file_path,
+		      		   TO_CHAR(EIN_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as EIN_CRTE_TIME,
+		      		   ein_content_type_indc
+          		FROM   cds_monitor_evidence_relation
+           LEFT JOIN   cds_evidence_info ON (mer_evidence_sqno = cds_evidence_info.id)
+           <where>
+			 	<if test="monitorSqno!=null and monitorSqno!=''">
+			 		AND mer_monitor_sqno = #{monitorSqno}  
+			 	</if>
+			</where>
+	</select>
+	
+	<!-- 查询监督单关联证据信息(图片url集合) -->
+	<select id="searchRelationImgList" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT   ein_file_path,
+				ein_file_name,
+				ein_ftp_path,
+				EIN_FTP_PREFIX
+          		FROM   cds_monitor_evidence_relation
+           LEFT JOIN   cds_evidence_info ON (mer_evidence_sqno = cds_evidence_info.id)
+           <where>
+           		EIN_FILE_TYPE_INDC = '1'
+			 	<if test="monitorSqno!=null and monitorSqno!=''">
+			 		AND mer_monitor_sqno = #{monitorSqno}  
+			 	</if>
+			</where>
+			order by ein_crte_time asc
+	</select>
+	
+	<!-- 查询监督单关联接收人信息 -->
+	<select id="searchRelationMonRec" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		SELECT mrr_rcpnt_idnty,mrr_rcpnt_name,
+			mrr_status 
+		    FROM   cds_monitor_recipient_relation
+		    <where>
+			 	<if test="cusNumber!=null and cusNumber!=''">
+			 		and mrr_cus_number =#{cusNumber}
+			 	</if>
+			 	<if test="monitorSqno!=null and monitorSqno!=''">
+			 		AND mrr_monitor_sqno = #{monitorSqno} 
+			 	</if>
+			</where>
+	</select>
+	
+	<!-- 删除与监督关联的证据信息 -->
+	<delete id="delRelationMonEvi"
+		parameterType="java.util.HashMap">
+		DELETE FROM cds_monitor_evidence_relation
+		<where>
+		 	<if test="cusNumber!=null and cusNumber!=''">
+		 		and mer_cus_number = #{cusNumber}
+		 	</if>
+		 	<if test="monitorSqno!=null and monitorSqno!=''">
+		 		AND mer_monitor_sqno = #{monitorSqno}  
+		 	</if>
+		</where> 
+	</delete>
+	<!-- 删除与监督关联的接收人信息 -->
+	<delete id="delRelationMonRec"
+		parameterType="java.util.HashMap">
+		DELETE FROM cds_monitor_recipient_relation
+		 <where>
+		 	<if test="cusNumber!=null and cusNumber!=''">
+		 		and mrr_cus_number =#{cusNumber}
+		 	</if>
+		 	<if test="monitorSqno!=null and monitorSqno!=''">
+		 		AND mrr_monitor_sqno = #{monitorSqno} 
+		 	</if>
+		</where>
+	</delete>
+	
+	<!-- 根据网络督查通报id删除关联的监督单信息 -->
+	<delete id="deleteMonitorByInspectId"
+		parameterType="java.lang.String">
+		DELETE FROM CDS_INSPECT_MONITOR_RELATION
+		 <where>
+		 	IMR_INSPECT_ID = #{inspectId} 
+		</where>
+	</delete>
+	
+</mapper>

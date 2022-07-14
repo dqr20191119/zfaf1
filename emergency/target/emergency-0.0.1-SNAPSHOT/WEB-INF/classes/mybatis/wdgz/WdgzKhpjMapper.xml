@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Descripgion: 风险采集数据操作类映射文件FxcjMapper -->
+<mapper namespace="com.cesgroup.prison.wdgz.dao.WdgzKhpjMapper">
+	  
+	
+	
+	<!-- 分页查询风险采集数据 -->
+	<select id="findList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select 
+		ID,BH,XM,
+		TO_CHAR(CS_RQ,'yyyy-mm-dd') as CS_RQ,
+		JY_ID,JQ_ID,ZF_ZT1,ZF_ZT2,TO_CHAR(RJ_RQ,'yyyy-mm-dd') as RJ_RQ,SY_LB,XB 
+		from YZGL.T_YZGL_DK_JBXX
+		where ZF_ZT1='1'
+		<if test="cusNumber != null and cusNumber != ''">
+			and jy_id = #{cusNumber}
+		</if>
+		<if test="deptCode != null and deptCode != ''">
+			and jq_id = #{deptCode}
+		</if>
+		<if test="bh != null and bh != ''">
+			AND BH = #{bh}
+		</if>
+		<if test="xm != null and xm != ''">
+			AND XM = #{xm}
+		</if>
+			<if test="zfzt2 != null and zfzt2 != ''">
+			AND ZF_ZT2 = #{zfzt2}
+		</if>
+	</select> 
+	 
+	
+	<select id="getAll" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select zf_xm,jy_name,jq_name,id from PRISON.T_WDGZ_KHPJ kh
+ 		where kh.status=1
+ 		<if test="zfjbxxId != null and zfjbxxId != ''">
+			AND ZFJBXX_ID = #{zfjbxxId}
+		</if>
+ 		ORDER BY  KPRQ DESC
+	</select>
+	
+	
+	<select id="getAllById" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select zf_xm,jy_name,jq_name,id from PRISON.T_WDGZ_KHPJ kh
+ 		where kh.status=1
+ 		<if test="id != null and id != ''">
+			AND ID = #{id}
+		</if>
+ 		ORDER BY  KPRQ DESC
+	</select>
+	
+	<select id="getAllMX" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			
+		select WDGZ_TYPE_CODE,WDGZ_TYPE_NAME,WDGZ_MX,WDGZ_MX_TYPE,WDGZ_MX_NAME,WDGZ_MX_FZ 
+		from PRISON.T_WDGZ_KHPJ_MX where  STATUS=1
+ 		<if test="khpjId != null and khpjId != ''">
+			AND KHPJ_ID = #{khpjId}
+		</if>
+	</select>
+	<select id="getAllpm" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from (				   
+			select khpj_id,sum(wdgz_mx_fz)as zfhz from prison.T_WDGZ_KHPJ_MX,(	   
+			select kprq,
+			row_number() OVER(PARTITION BY zfjbxx_id ORDER BY kprq desc) as row_flg    
+			from prison.T_WDGZ_KHPJ where jq_name = #{jqName}	and status='1'	)temp
+			where 	temp.row_flg  = '1'	group by khpj_id
+			) order by zfhz desc	
+	</select>
+	
+	<select id="getAllqs" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select * from prison.T_WDGZ_KHPJ   where  ZFJBXX_ID = #{zfjbxxId} and status='1' order by kprq  desc
+	</select>
+</mapper>

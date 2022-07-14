@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.stepGroup.dao.EmerStepGroupDao">
+    <!-- 基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.stepGroup.entity.EmerStepGroup">
+        <id column="ID" jdbcType="CHAR" property="id" />
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+        <result column="STEP_ID" jdbcType="CHAR" property="stepId" />
+        <result column="GROUP_ID" jdbcType="CHAR" property="groupId" />
+        <result column="STATUS" jdbcType="CHAR" property="status" />
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder" />
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <!-- 基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, STEP_ID, GROUP_ID, STATUS, SHOW_ORDER, UPDATE_USER_ID, UPDATE_TIME
+    </sql>
+
+    <!-- 根据主键ID，查询应急预案工作组 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_STEP_GROUP T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumberAndStepId" resultType="java.lang.Integer" useCache="true">
+        SELECT
+          max(T1.SHOW_ORDER)
+        FROM T_EMER_STEP_GROUP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="stepId != null and stepId != ''">
+                AND T1.STEP_ID = #{stepId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+    </select>
+
+    <!-- 分页查询应急预案工作组列表 -->
+    <select id="findWithPage" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_STEP_GROUP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="name != null and name != ''">
+                AND T1.NAME LIKE '%${name}%'
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据单位编号、处置步骤ID、数据状态，查询应急预案工作组 -->
+    <select id="findByCusNumberAndStepIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_STEP_GROUP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="stepId != null and stepId != ''">
+                AND T1.STEP_ID = #{stepId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据单位编号、工作组ID、数据状态，查询处置步骤与应急预案工作组关联关系数据列表 -->
+    <select id="findByCusNumberAndGroupIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_STEP_GROUP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND T1.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据单位编号、处置步骤ID、工作组ID、数据状态，查询应急预案工作组 -->
+    <select id="findByCusNumberAndStepIdAndGroupIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM T_EMER_STEP_GROUP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="stepId != null and stepId != ''">
+                AND T1.STEP_ID = #{stepId, jdbcType=CHAR}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND T1.GROUP_ID = #{groupId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据工作组ID数组、数据状态，查询处置步骤与工作组关系列表 -->
+    <select id="findByGroupIdArrayAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_STEP_GROUP T1
+        <where>
+            <if test="groupIdArray != null">
+                AND T1.GROUP_ID IN
+                <foreach collection="groupIdArray" item="groupId" open="(" close=")" separator=",">
+                    #{groupId, jdbcType=CHAR}
+                </foreach>
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据处置步骤ID数组、数据状态，查询处置步骤与工作组关系列表 -->
+    <select id="findByStepIdArrayAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_STEP_GROUP T1
+        <where>
+            <if test="stepIdArray != null">
+                AND T1.STEP_ID IN
+                <foreach collection="stepIdArray" item="stepId" open="(" close=")" separator=",">
+                    #{stepId, jdbcType=CHAR}
+                </foreach>
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据应急预案ID数组、数据状态，查询工作组与成员关系列表 -->
+    <select id="findExistsEmerStepByPreplanIdArrayAndStatus" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.T_EMER_STEP_GROUP T1 WHERE EXISTS (
+        SELECT
+        *
+        FROM PRISON.T_EMER_STEP T2
+        WHERE T1.STEP_ID = T2.ID
+        <if test="preplanIdArray != null">
+            AND T2.PREPLAN_ID IN
+            <foreach collection="preplanIdArray" item="preplanId" open="(" close=")" separator=",">
+                #{preplanId, jdbcType=CHAR}
+            </foreach>
+        </if>
+        )
+        AND T1.STATUS = '0'
+    </select>
+</mapper>
