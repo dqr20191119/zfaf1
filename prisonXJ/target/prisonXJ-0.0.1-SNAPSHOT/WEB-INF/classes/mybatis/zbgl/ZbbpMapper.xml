@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.zbbp.dao.ZbbpMapper">
+
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.zbbp.entity.ZbbpEntity" resultType="com.cesgroup.prison.zbgl.zbbp.entity.ZbbpEntity">
+		SELECT B.DBD_DUTY_MODE_ORDER_JOB_ID, A.MOJ_ORDER_ID, B.DBD_DUTY_DATE, B.DBD_CRTE_TIME, WM_CONCAT(B.DBD_STAFF_ID) DBD_STAFF_ID,WM_CONCAT(B.DBD_STAFF_NAME) DBD_STAFF_NAME
+        FROM CDS_DUTY_MODE_ORDER_JOB A
+        LEFT JOIN CDS_DUTY_BASE_DTLS B ON B.DBD_DUTY_MODE_ORDER_JOB_ID = A.ID
+		<where>
+			<if test="dbdDutyModeDepartmentId != null and dbdDutyModeDepartmentId != ''">
+				AND B.DBD_DUTY_MODE_DEPARTMENT_ID = #{dbdDutyModeDepartmentId}
+			</if>
+			<if test="dbdDutyModeOrderJobId != null and dbdDutyModeOrderJobId != ''">
+				AND B.DBD_DUTY_MODE_ORDER_JOB_ID = #{dbdDutyModeOrderJobId}
+			</if>
+		</where>
+		GROUP BY B.DBD_DUTY_MODE_ORDER_JOB_ID,A.MOJ_ORDER_ID,B.DBD_DUTY_DATE,B.DBD_CRTE_TIME
+		ORDER BY B.DBD_CRTE_TIME ASC, B.DBD_DUTY_DATE ASC
+	</select>
+	
+	<select id="deleteByConditions" parameterType="com.cesgroup.prison.zbgl.zbbp.entity.ZbbpEntity" >
+		DELETE FROM CDS_DUTY_BASE_DTLS A
+		<where>
+			<if test="dbdDutyModeDepartmentId != null and dbdDutyModeDepartmentId != ''">
+			 	AND A.DBD_DUTY_MODE_DEPARTMENT_ID = #{dbdDutyModeDepartmentId}
+			</if>
+		</where> 
+	</select>
+
+    <select id="getUser" resultType="java.util.Map">
+        select * from PRISON.V_POLICE_BASE_DTLS
+        <where>
+            <if test="cusNumber != null and cusNumber !=''">
+              and PBD_CUS_NUMBER =#{cusNumber}
+            </if>
+            <if test="dprtmntCode != null and dprtmntCode !=''">
+              and  PBD_DRPTMNT_ID =#{dprtmntCode}
+            </if>
+            <if test="userName != null and userName !=''">
+              and  PBD_POLICE_NAME =#{userName}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

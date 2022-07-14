@@ -1,0 +1,166 @@
+.container-box {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 69px;
+  width: 100%;
+  bottom: 0;
+  background-image: url(../img/moxing/bg.jpg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+.row {
+  margin-left: 0;
+  margin-right: 0
+}
+.coral-panel-header {
+  border-width: 0;
+}
+
+.container-box .coral-panel-body {
+  background-color: transparent;
+}
+
+.container-box .coral-panel-body,
+.coral-panel-header {
+  border-width: 0;
+}
+
+.wrapper {
+  height: 100%;
+  background: url(../img/rightBg.png) no-repeat 0 0;
+  padding: 25px 18px 0 30px;
+  background-size: 100% 100%;
+  color: #fff;
+}
+.wrapper .title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  float:none;
+}
+.wrapper .coral-textbox-hover .coral-textbox-border {
+  box-shadow: none;
+}
+
+.wrapper .coral-textbox-border {
+  background-color: transparent;
+  border-radius: 3px;
+  border-color: #e0a904;
+  color: #fff;
+}
+
+.wrapper ::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: #fff;
+}
+
+.wrapper :-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #fff;
+}
+
+.wrapper ::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #fff;
+}
+
+.wrapper :-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #fff;
+}
+.wrapper .coral-textbox-default {
+  color: #fff;
+  height: 35px;
+  font-size: 18px;
+}
+.wrapper .coral-textbox .coral-button {
+  background: #e0a904;
+  border: none;
+  padding: 1px 6px;
+  color: #fff;
+}
+
+.wrapper .coral-textbox .coral-button .iconfont {
+  font-size: 22px;
+}
+/* .wrapper .query-wrapper {
+  height: 10%;
+} */
+.wrapper .device-nav {
+  font-size: 18px;
+}
+.wrapper .icon-camera {
+  font-size: 18px;
+}
+.wrapper .device-item {
+  padding: 4px 10px;
+  background: #144065;
+  position: relative;
+  margin-bottom: 15px;
+}
+.device-nav .iconfont {
+  font-size: 22px;
+  position: absolute;
+  top: 50%;
+  left:15px;
+  transform: translate(0, -50%);
+}
+.device-wrapper{
+	margin-top:12px;
+}
+.device-nav .content {
+  text-align: right;
+  font-weight: bold;
+}
+.device-nav .all,
+.device-nav .split {
+  color: #04d7d6;
+}
+.device-nav .done {
+  color: #f08300;
+}
+/* dialog */
+
+.custom .form-wrapper {
+  width: 80%;
+  margin: 0 auto;
+}
+.custom .coral-radiolist .coral-radio-label {
+  font-size: 18px;
+  color: #c9caca;
+}
+.custom .coral-textbox-textarea {
+  height: 150px;
+}
+.custom .coral-textbox-textarea .coral-textbox-default {
+  background: #cfd1cf;
+  font-size: 18px;
+}
+.custom .row {
+  margin-bottom: 20px;
+}
+/* button */
+.custom .button-wrapper {
+  width: 80%;
+  margin-left: 30%;
+}
+.custom .button-wrapper > button {
+  margin-right: 15px;
+}
+.custom .coral-form-default {
+  padding: 0;
+}
+
+.custom .coral-radiolist .coral-radio {
+  margin-bottom: 15px;
+}
+.custom .coral-radiolist .coral-radio-label .coral-radio-icon {
+  font-size: 30px;
+  margin-right: 20px;
+  color: #c9caca;
+  cursor: pointer;
+}
+.custom .coral-radiolist .coral-radio-label .cui-icon-radio-checked {
+  color: #00fff6;
+}

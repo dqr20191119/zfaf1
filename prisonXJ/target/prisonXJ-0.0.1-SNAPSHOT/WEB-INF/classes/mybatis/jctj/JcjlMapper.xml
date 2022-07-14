@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.cesgroup.prison.jctj.dao.JcjlDao">
+	
+  	<sql id="query_page" >
+    	from prison.t_rlsb_hmd a, yzgl.t_yzgl_dk_jbxx b where a.card_no=b.bh 
+    	<if test="cusNumber != null and cusNumber != ''">
+			and a.cus_number = #{cusNumber}
+		</if>
+		<if test="deptCode != null and deptCode != ''">
+			and b.jq_id = #{deptCode}
+		</if> 
+		<if test="zfxm != null and zfxm != ''">
+			and b.xm = #{zfxm}
+		</if>
+		<if test="startTime != null">
+			<![CDATA[and a.st >= #{startTime}]]>
+		</if>
+		<if test="endTime != null">
+			<![CDATA[and a.st <= #{endTime}]]>
+		</if>
+		<if test="time != null and time != ''">
+			and to_char(a.st,'yyyy-MM-dd')=to_char(sysdate,'yyyy-MM-dd')
+		</if>
+  	</sql>
+  
+  	<select id="getQbjcjlTotal" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		  select count(*) as TOTAL
+		  <include refid="query_page" />
+	</select>
+	
+	<select id="getQbjcjl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select xm,jq_id,channel_name,st from
+		(select rownum as rowno, t.* 
+			from (select b.xm,b.jq_id,a.channel_name,a.st
+		  	<include refid="query_page" />
+		order by a.st desc) t where <![CDATA[rownum < #{end}]]>) where <![CDATA[rowno >= #{begin}]]>
+	</select>
+	 
+	<select id="getZxjcjl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 select distinct(user_id) user_id,temp2.CHANNEL_NAME,temp2.inOut,jbxx.c_hjzh from(
+			select 
+				USER_ID,
+				CHANNEL_NAME,
+				TIME,
+				inOut,
+				row_number() OVER(PARTITION BY USER_ID ORDER BY TIME desc) as rowflg 
+				from (
+					select * from (
+						select 
+							CARD_NO as USER_ID ,
+							CHANNEL_NAME AS CHANNEL_NAME,
+							st as TIME,
+							'' as inOut,
+							row_number() OVER(PARTITION BY CARD_NO ORDER BY st desc) as row_flg 
+						 from prison.t_rlsb_hmd
+					)temp where temp.row_flg  = '1'
+					union
+					select * from (
+						select 
+							DRD_people_IDNTY as USER_ID , 
+							DRD_DOOR_NAME AS CHANNEL_NAME,
+							drd_bsns_date as TIME,
+							drd_in_out_indc as inOut,
+							row_number() OVER(PARTITION BY DRD_people_IDNTY ORDER BY drd_bsns_date desc) as row_flg1   
+						 from prison.cds_door_record_dtls where DRD_PEOPLE_TYPE_INDC='2'
+					)temp1 where temp1.row_flg1  = '1'
+					union
+					select * from (
+						select 
+							DRD_people_IDNTY as USER_ID ,
+							DRD_DOOR_NAME AS CHANNEL_NAME,
+							drd_bsns_date as TIME,
+							drd_in_out_indc as inOut,
+							row_number() OVER(PARTITION BY DRD_people_IDNTY ORDER BY drd_bsns_date desc) as row_flg1   
+						 from prison.cds_door_record_dtls_h where DRD_PEOPLE_TYPE_INDC='2'
+					)temp1 where temp1.row_flg1  = '1'
+				)
+			)temp2 ,zfinfo.t_zf_jbxx jbxx
+		where temp2.rowflg  = '1' and jbxx.c_zfbh=temp2.USER_ID and to_char(temp2.time,'yyyy-MM-dd')=to_char(sysdate,'yyyy-MM-dd')
+		<if test="jyId != null and jyId != ''">
+			and jbxx.c_jy_id=#{jyId} 
+		</if>
+		<if test="jqName != null and jqName != ''">
+		and jbxx.c_szjq=#{jqName}
+		</if>
+	</select>
+	
+	
+	<select id="getHjzh" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select count(1) as gs, c_hjzh from "ZFINFO"."T_ZF_JBXX"
+		where 1=1
+		<if test="jyId != null and jyId != ''">
+		and c_jy_id=#{jyId} 
+		</if>
+		<if test="jqName != null and jqName != ''">
+		and c_szjq=#{jqName}
+		</if>
+		 group by c_hjzh
+	
+	</select>
+	
+	<select id="getZf" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select c_zfbh,c_szjq from "ZFINFO"."T_ZF_JBXX"  
+		where 1=1
+		<if test="jyId != null and jyId != ''">
+		and c_jy_id=#{jyId} 
+		</if>
+		<if test="jqName != null and jqName != ''">
+		and c_szjq=#{jqName}
+		</if>
+	
+	</select>
+	
+	
+</mapper>

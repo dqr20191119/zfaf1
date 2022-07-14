@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.alarm.flow.dao.FlowDtlsMapper">
+	<select id="findByMasterId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select *
+		FROM CDS_HANDLE_FLOW_DTLS
+		where HFD_FLOW_ID = #{id,jdbcType=VARCHAR}
+		ORDER BY HFD_CRTE_TIME ASC
+	</select>
+
+	<delete id="deleteByMasterIds" parameterType="java.util.List">
+		delete from CDS_HANDLE_FLOW_DTLS
+		where HFD_FLOW_ID IN
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<delete id="deleteByMasterId" parameterType="java.util.HashMap">
+		delete from CDS_HANDLE_FLOW_DTLS
+		where HFD_FLOW_ID = #{masterId}
+	</delete>
+	
+	<!-- 查询流程列详情 -->
+	<select id="findFlowDtls" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT id,
+		hfd_cus_number,
+		hfd_flow_id,
+		hfd_flow_item_name,
+		hfd_crte_time,
+		hfd_crte_user_id,
+		hfd_updt_time,
+		hfd_updt_user_id
+		FROM cds_handle_flow_dtls
+		<where>
+			<if test="cusNumber!=null and cusNumber!='' and cusNum!=null and cusNum!=''">
+				AND (hfd_cus_number = #{cusNumber} OR hfd_cus_number = #{cusNum})
+			</if>
+			<if test="flowId!=null and flowId!=''">
+				AND hfd_flow_id = #{flowId}
+			</if>
+			ORDER BY HFD_CRTE_TIME ASC
+		</where>
+
+	</select>
+
+</mapper>

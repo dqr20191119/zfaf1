@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.pbtbhz.dao.JyzbDetailMapper">
+
+	<update id="updateById" parameterType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbDetailEntity">
+		update CDS_DUTY_JYZB_DETAIL 
+			<set>
+				<if test="dutyDate !=null and dutyDate!=''">
+					DUTY_DATE  = #{dutyDate},
+				</if>
+				<if test="zhz !=null and zhz!=''">
+					ZHZ= #{zhz},
+				</if>
+				<if test="zbz !=null and zbz !=''">
+					ZBZ  = #{zbz},
+				</if>
+				<if test="zby !=null and zby!=''">
+					ZBY  = #{zby},
+				</if>
+				<if test="cjrq !=null and cjrq!=''">
+					CJRQ  = #{cjrq},
+				</if>
+				<if test="cjrId !=null and cjrId!=''">
+					CJR_ID  = #{cjrId},
+				</if>
+				<if test="cjrName !=null and cjrName!=''">
+					CJR_NAME  = #{cjrName},
+				</if>
+				<if test="updateDate !=null and updateDate !=''">
+					UPDATE_DATE  = #{updateDate},
+				</if>
+				<if test="updateId !=null and updateId!=''">
+					UPDATE_ID  = #{updateId},
+				</if>
+				<if test="updateName !=null and updateName!=''">
+					UPDATE_NAME  = #{updateName},
+				</if>
+				<if test="ywId !=null and ywId !=''">
+					YW_ID  = #{ywId},
+				</if>
+				<if test="cusNumber !=null and cusNumber !=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+			</set>
+			where id = #{id}
+	</update>
+	<!--用于分页  -->
+	<select id="getByDutyDate" parameterType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbDetailEntity"  resultType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbDetailEntity">
+	  select a.*,b.ZB_DH  from  CDS_DUTY_JYZB_DETAIL a, CDS_DUTY_JYZB_BASE b where a.yw_id = b.id  
+	    and b.zt='2'
+	  <if test="dutyDate !=null and dutyDate!=''">
+				and	a.DUTY_DATE =#{dutyDate} 
+	  </if>
+	  
+	 <if test="zbYf !=null and zbYf != ''">
+				and	b.ZB_YF =#{zbYf} 
+	  </if>
+	  order by a.CUS_NUMBER ,a.DUTY_DATE
+	</select>
+	
+
+	<delete id="deleteByYwId">
+	  delete from CDS_DUTY_JYZB_DETAIL   where yw_id = #{ywId}
+	</delete>
+	
+	
+	
+	
+	<select id="getByDutyDateOrZbyf" parameterType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbDetailEntity"  resultType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbDetailEntity">
+	  select a.*,b.ZB_DH  from  CDS_DUTY_JYZB_DETAIL a, CDS_DUTY_JYZB_BASE b where a.yw_id = b.id  
+	    and b.zt='2'
+	  <if test="dutyDate !=null and dutyDate!=''">
+				and	a.DUTY_DATE =#{dutyDate} 
+	  </if>
+	  
+	 <if test="zbYf !=null and zbYf != ''">
+				and	b.ZB_YF =#{zbYf} 
+	  </if>
+	  order by a.CUS_NUMBER ,a.DUTY_DATE
+	</select>
+	
+
+</mapper>

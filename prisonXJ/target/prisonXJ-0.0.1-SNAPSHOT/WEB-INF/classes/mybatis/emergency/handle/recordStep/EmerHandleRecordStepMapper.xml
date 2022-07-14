@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.emergency.handle.recordStep.dao.EmerHandleRecordStepDao">
+    <!-- 应急处置记录记录的处置步骤基础结果集 -->
+    <resultMap id="BaseResultMap" type="com.cesgroup.prison.emergency.handle.recordStep.entity.EmerHandleRecordStep">
+        <id column="ID" jdbcType="CHAR" property="id"/>
+        <result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber"/>
+        <result column="RECORD_ID" jdbcType="CHAR" property="recordId"/>
+        <result column="STEP_NAME" jdbcType="CHAR" property="stepName"/>
+        <result column="HANDLE_STATUS" jdbcType="CHAR" property="handleStatus"/>
+        <result column="HANDLE_TIME" jdbcType="TIMESTAMP" property="handleTime"/>
+        <result column="HANDLE_CONTENT" jdbcType="CHAR" property="handleContent"/>
+        <result column="STATUS" jdbcType="CHAR" property="status"/>
+        <result column="SHOW_ORDER" jdbcType="DECIMAL" property="showOrder"/>
+        <result column="UPDATE_USER_ID" jdbcType="CHAR" property="updateUserId"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!-- 应急处置记录记录的处置步骤基础字段 -->
+    <sql id="Base_Column_List">
+        ID, CUS_NUMBER, RECORD_ID, STEP_NAME, HANDLE_STATUS, HANDLE_TIME, HANDLE_CONTENT, STATUS, SHOW_ORDER, UPDATE_USER_ID,
+        UPDATE_TIME
+    </sql>
+
+    <!-- 根据主键ID，查询应急处置记录的处置步骤信息 -->
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM CDS_EMER_HANDLE_RECORD_STEP T1
+        WHERE T1.ID = #{id, jdbcType=CHAR}
+    </select>
+
+    <!-- 查询最大排序号 -->
+    <select id="findMaxShowOrderByCusNumberAndRecordId" parameterType="java.lang.String" resultType="java.lang.Integer"
+            useCache="true">
+        SELECT
+        max(T1.SHOW_ORDER)
+        FROM CDS_EMER_HANDLE_RECORD_STEP T1
+        <where>
+            <if test="cusNumber != null and cusNumber != ''">
+                AND T1.CUS_NUMBER = #{cusNumber, jdbcType=CHAR}
+            </if>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            AND T1.STATUS = '0'
+        </where>
+    </select>
+
+    <!-- 根据应急处置记录ID、数据状态，查询应急处置记录的处置步骤 -->
+    <select id="findByRecordIdAndStatus" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_STEP T1
+        <where>
+            <if test="recordId != null and recordId != ''">
+                AND T1.RECORD_ID = #{recordId, jdbcType=CHAR}
+            </if>
+            <if test="status != null">
+                AND T1.STATUS = #{status, jdbcType=CHAR}
+            </if>
+        </where>
+        ORDER BY T1.SHOW_ORDER
+    </select>
+
+    <!-- 根据应急处置记录的处置步骤ID，查询当前处置步骤之前的未被处置的处置步骤列表 -->
+    <select id="findUnhandledPrevStepById" parameterType="java.lang.String" resultMap="BaseResultMap" useCache="true">
+        SELECT *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_STEP T1
+        WHERE EXISTS (
+        SELECT
+        *
+        FROM PRISON.CDS_EMER_HANDLE_RECORD_STEP T2
+        WHERE
+        T1.RECORD_ID = T2.RECORD_ID
+        AND T1.SHOW_ORDER &lt; T2.SHOW_ORDER
+        <if test="id != null and id != ''">
+            AND T2.ID = #{id, jdbcType=CHAR}
+        </if>
+        AND T2.STATUS = '0'
+        )
+        AND T1.STATUS = '0'
+        AND (T1.HANDLE_STATUS = '0' OR T1.HANDLE_CONTENT IS NULL OR T1.HANDLE_CONTENT = '')
+        ORDER BY T1.SHOW_ORDER
+    </select>
+</mapper>

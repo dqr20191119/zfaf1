@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.orgMapping.dao.CescodeContrastDaqiDao">
+	<!-- 中信与大旗机构映射表-基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.orgMapping.entity.CescodeContrastDaqi">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="CES_KEY" jdbcType="CHAR" property="cesKey" />
+		<result column="CES_NAME" jdbcType="CHAR" property="cesName" />
+		<result column="DAQI_KEY" jdbcType="CHAR" property="daqiKey" />
+		<result column="DAQI_NAME" jdbcType="CHAR" property="daqiName" />
+	</resultMap>
+	
+	<!-- 中信与大旗机构映射表-基础字段列 -->
+	<sql id="Base_Column_List">
+		ID, CES_KEY, CES_NAME, DAQI_KEY, DAQI_NAME
+	</sql>
+	
+	<!-- 根据中信机构编码查询中信与大旗机构映编码映射数据 -->
+	<select id="findByCesKey" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			*
+		FROM T_CESCODE_CONTRAST_DAQI T1
+		<where>
+			<if test="cesKey != null and cesKey != ''">
+				AND T1.CES_KEY = '${cesKey}'
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据大旗机构编码查询中信与大旗机构映编码映射数据 -->
+	<select id="findByDaqiKey" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			*
+		FROM T_CESCODE_CONTRAST_DAQI T1
+		<where>
+			<if test="daqiKey != null and daqiKey != ''">
+				AND T1.DAQI_KEY = '${daqiKey}'
+			</if>
+		</where>
+	</select>
+</mapper>

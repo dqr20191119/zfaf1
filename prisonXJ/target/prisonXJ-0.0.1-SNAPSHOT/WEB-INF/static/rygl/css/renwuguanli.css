@@ -1,0 +1,321 @@
+html,
+body {
+  line-height: 1.15;
+}
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: url(../img/header_bg.jpg);
+  z-index: 1;
+}
+
+.logo {
+  float: left;
+  height: 70px;
+  margin-top: 10px;
+}
+
+.header-content {
+  float: right;
+  height: 100%;
+  font-size: 14px;
+}
+
+.header-item {
+  float: left;
+  padding: 15px 0;
+  color: #C9CACA;
+}
+
+.header-item.date {
+  margin-right: 30px;
+}
+
+.header-item .icon {
+  font-size: 34px;
+  margin-right: 12px;
+}
+.header-item .icon-police2 {
+  font-size: 40px;
+}
+.header-item .icon,
+.header-item .title {
+  float: left;
+}
+
+.title {
+  vertical-align: super;
+}
+
+.header-item .title {
+  line-height: 1.5;
+}
+
+.user {
+  font-weight: bold;
+}
+
+.header-item.dropdow {
+  margin-right: 19px;
+  margin-left: 0;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.dropdow .icon {
+  margin-right: 0;
+}
+
+.dropdown-content {
+  width: 150px;
+  text-align: center;
+  background: rgba(0, 0, 0, .9);
+  position: fixed;
+  right: 0;
+  top: 70px;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height .4s;
+}
+
+.dropdow .icon-xialadown:hover .dropdown-content {
+  height: 80px;
+  opacity: 1;
+}
+
+.header-item .icon .menu-item {
+  font-size: 16px;
+}
+
+.icon-police2 {
+  width: 40px;
+}
+
+.tolist {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00fff6;
+}
+
+.home .status {
+  width: auto;
+  margin-right: 12px;
+  padding: 7px 17px;
+}
+
+.tolist .status {
+  background: url(../img/border.png) no-repeat;
+  margin-right: 10px;
+  background-size: 100% 100%;
+  margin: 16px 12px 16px 0;
+  float: left;
+  font-size: 16px;
+  text-align: center;
+}
+
+.tolist-item .tolist-menu {
+  position: absolute;
+  left: 0;
+  top: 35px;
+  background: #07111d;
+  margin: 20px 0 0 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.tolist-item,
+.tolist-menuitem {
+  position: relative;
+  cursor: pointer;
+}
+
+.tolist-item .tolist-menuitem {
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #434343;
+  width: 150px;
+  background: #07111d;
+}
+
+.tolist-menu ul {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  top: 0;
+  left: 150px;
+  margin: 0 0 0 20px;
+  transition: all .2s ease-in-out;
+}
+
+.tolist-item:hover>ul,
+.tolist-menuitem:hover>ul {
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  border-left: 1px solid #434343;
+}
+
+.home-page.status {
+  background: url(../img/command/home.png) no-repeat;
+  background-size: 100% 100%;
+  height: 36px;
+}
+
+/* center */
+.renwuguanli {
+  height: 100%;
+  padding-top: 70px;
+  background: url(../img/lishijilu/bg.jpg) no-repeat 100% 100%;
+}
+
+.renwuguanli .title {
+  color: #c9caca;
+  font-size: 22px;
+  width: 90%;
+  margin: 30px auto;
+}
+.renwuguanli .tabs-wrapper {
+  height: 90%;
+  width: 90%;
+  margin: 0 auto;
+}
+.renwuguanli .form-wrapper {
+  height: 15%;
+  color: #c9caca;
+  font-size: 19px;
+  padding: 1% 0;
+  position: relative;
+}
+
+.renwuguanli .grid-wrapper {
+  height: 80%;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+
+
+/* form */
+.renwuguanli .form-wrapper label {
+  margin-right: 10px;
+}
+.renwuguanli .form-wrapper .form-item {
+  float: left;
+  margin-right: 20px;
+}
+.renwuguanli .form-wrapper .button-wrapper {
+  position: absolute;
+  right: 0;
+  top: 33px;
+}
+.renwuguanli .form-wrapper .button-wrapper .query-button {
+  margin-right: 20px;
+}
+.renwuguanli .ctrl-init-form {
+  overflow: hidden;
+}
+.renwuguanli .form-wrapper .right-button .coral-button {
+  float: right;
+}
+.renwuguanli .coral-combo, 
+.renwuguanli .coral-textbox {
+  width: 175px;
+}
+.renwuguanli .grid-oper,
+.renwuguanli .form-wrapper .coral-button {
+  padding: 4px 20px 4px 10px;
+  height: 37px;;
+  font-size: 20px;
+  color: #008eff;
+  background: linear-gradient(#003265, #001426);
+  border-color: #004984;
+}
+.renwuguanli .form-wrapper .coral-button .coral-button-text {
+  vertical-align: super;
+}
+.renwuguanli .form-wrapper .new-button {
+  padding: 4px 20px;
+}
+.renwuguanli .grid-oper:hover,
+.renwuguanli .form-wrapper .coral-button.coral-state-hover {
+  color: #fff;
+  background: linear-gradient(#504821, #222215);
+  border-color: #8a7d40;
+}
+
+.renwuguanli .form-wrapper .history-button {
+  font-size: 18px;
+}
+
+.renwuguanli .form-wrapper .query-button .coral-button-text {
+  float: left;
+  margin-left: 15px;
+  margin-right: 30px;
+}
+
+.renwuguanli .form-wrapper .coral-button .iconfont {
+  font-size: 20px;
+  margin-right: 10px;
+  float: left;
+}
+
+.coral-icon-calendar {
+  color: #e0a904;
+  font-size: 24px;
+}
+
+
+
+.renwuguanli .grid-wrapper .grid-bg {
+  position: absolute;
+  top: 0;
+  height: 90%;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+.renwuguanli .grid-list {
+  width: 95%;
+  margin: 0 auto;
+}
+
+.renwuguanli .oper-wrapper {
+  text-align: center;
+}
+.renwuguanli .oper-wrapper .iconfont{
+  padding: 5px 15px;;
+  margin-right: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(#003265, #001426);
+  border-color: #004984;
+  border-radius: 6px;
+}
+.renwuguanli .grid-content {
+  height: 100%;
+}
+
+
+.renwuguanli .grid-oper {
+  margin-right: 10px;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.renwuguanli .grid-oper:last-child {
+  margin-right: 0;
+}
+
+.renwuguanli .grid-oper .text {
+  padding: 0 0 0 15px;
+  font-size: 16px;
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YabzMapper">
+	 
+	<select id="getById" resultType="com.cesgroup.prison.yjct.entity.YabzEntity"> 
+		SELECT A.* FROM CDS_EMERGENCY_PLAN_INFO A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.yjct.entity.YabzEntity" resultType="com.cesgroup.prison.yjct.entity.YabzEntity">
+		SELECT A.* FROM CDS_EMERGENCY_PLAN_INFO A 
+		<where>
+			<if test="epiCusNumber != null and epiCusNumber != ''"> 
+				AND A.EPI_CUS_NUMBER = #{epiCusNumber} 		
+			</if>
+			<if test="epiPlanName != null and epiPlanName != ''"> 
+				AND A.EPI_PLAN_NAME like '%' || #{epiPlanName} || '%' 		
+			</if>		
+			<if test="epiPlanType != null and epiPlanType != ''"> 
+				AND A.EPI_PLAN_TYPE = #{epiPlanType} 		
+			</if>
+			<if test="epiPlanStatus != null and epiPlanStatus != ''"> 
+				AND A.EPI_PLAN_STATUS = #{epiPlanStatus} 		
+			</if>
+			<if test="ehaIsAgree != null and ehaIsAgree != ''"> 
+				AND EXISTS(SELECT 1 FROM CDS_EMERGENCY_HANDLE_APPROVE B 
+					WHERE B.EHA_PH_FID = A.ID AND B.EHA_IS_AGREE = #{ehaIsAgree})
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.YabzEntity" resultType="com.cesgroup.prison.yjct.entity.YabzEntity">
+		SELECT A.* FROM CDS_EMERGENCY_PLAN_INFO A 
+		<where>
+			<if test="epiCusNumber != null and epiCusNumber != ''"> 
+				AND A.EPI_CUS_NUMBER = #{epiCusNumber} 		
+			</if>
+			<if test="epiPlanName != null and epiPlanName != ''"> 
+				AND A.EPI_PLAN_NAME like '%' || #{epiPlanName} || '%' 		
+			</if>		
+			<if test="epiPlanType != null and epiPlanType != ''"> 
+				AND A.EPI_PLAN_TYPE = #{epiPlanType} 		
+			</if>
+			<if test="epiPlanStatus != null and epiPlanStatus != ''"> 
+				AND A.EPI_PLAN_STATUS = #{epiPlanStatus} 		
+			</if>
+		</where>
+		ORDER BY A.EPI_CRTE_TIME DESC 
+	</select>
+</mapper>

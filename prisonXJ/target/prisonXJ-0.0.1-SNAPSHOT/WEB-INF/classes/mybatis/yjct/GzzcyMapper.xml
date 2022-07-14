@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.GzzcyMapper">
+	 
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.GzzcyEntity" resultType="com.cesgroup.prison.yjct.entity.GzzcyEntity">
+		SELECT A.*, B.PBD_PHONE FROM CDS_WORKGROUP_MEMBER A 
+		LEFT JOIN V_POLICE_BASE_DTLS B ON B.PBD_USER_ID = A.WGM_POLICE_ID 
+		<where>
+			<if test="wgmWorkgroupFid != null and wgmWorkgroupFid != ''"> 
+				AND A.WGM_WORKGROUP_FID = #{wgmWorkgroupFid} 		
+			</if>
+		</where>
+		ORDER BY A.WGM_CRTE_TIME DESC 
+	</select>	
+		 
+	<select id="deleteByCondition" parameterType="com.cesgroup.prison.yjct.entity.GzzcyEntity">
+		DELETE FROM CDS_WORKGROUP_MEMBER A 
+		<where>
+			<if test="wgmWorkgroupFid != null and wgmWorkgroupFid != ''"> 
+				AND A.WGM_WORKGROUP_FID = #{wgmWorkgroupFid} 		
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,232 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  line-height: 1.15;
+  background: #062446;
+}
+ul {
+  margin: 0;
+}
+li {
+  list-style: none;
+}
+.container {
+  width: 100%;
+  height: 100%;
+  /* background: url(../img/images/bg.jpg); */
+  background-size: 100%;
+}
+.center-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  z-index: 1;
+}
+.header-content {
+  float: right;
+  height: 100%;
+  font-size: 12px;
+}
+.header-item.date {
+  margin-right: 60px;
+}
+
+.header-item {
+  float: left;
+  padding: 15px 0;
+  color: #C9CACA;
+}
+.header-item .icon, .header-item .title {
+  float: left;
+}
+.icon-police2 {
+  width: 30px;
+}
+.header-item .icon {
+  font-size: 34px;
+  margin-right: 12px;
+}
+.title {
+  vertical-align: super;
+}
+.header .user {
+  font-weight: bold;
+}
+.header-item .title {
+  line-height: 1.5;
+}
+
+.center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  /* background: linear-gradient(#050914,rgba(0,0,0,0.2));
+  height: 165px; */
+  z-index: 1;
+  /* background: url(../img/images/footer.png) 100% 100%; */
+}
+.center .logo-wrapper {
+  /* padding-top: 50px; */
+}
+.logo-wrapper .logo {
+  display: block;
+  margin: 0 auto;
+}
+.element {
+  
+  width: 288px;
+  height: 288px;
+  text-align: center;
+  cursor: default;
+  position: relative;
+  padding: 40px;
+  z-index: 999;
+}
+
+.element .element-box {
+  position: relative;
+  border: 1px solid rgba(171, 45, 34, 0.7);
+  box-shadow: 0px 0px 12px rgba(249, 41, 41, 0.5);
+  background-color: rgba(142, 48, 48, 0.5);
+  height: 100%;
+}
+.element .second{
+    box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+    border: 1px solid rgba(12, 12, 12, 0.7);
+    background-color: rgba(77, 169, 168, 0.5);
+}
+.element .third{
+    background-color: rgb(19, 61, 32);
+    box-shadow: 0px 0px 12px #004030;
+    border: 1px solid rgb(78, 160, 13,0.5);
+  
+}
+.element .fourth{
+    box-shadow: 0px 0px 12px rgb(0, 52, 64);
+    border: 1px solid #0666cc;
+    background: #003440;
+}
+
+
+.element:hover {
+  box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+  border: 1px solid rgba(127, 255, 255, 0.75);
+}
+
+.symbol img {
+  width: 99.8%;
+}
+
+/* .element .symbol {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  font-size: 60px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+} */
+
+.element .details {
+  position: absolute;
+  bottom: 15px;
+  left: 0px;
+  right: 0px;
+  font-size: 12px;
+  color: rgba(127, 255, 255, 0.75);
+}
+/* .element .details.notImg{
+  bottom:50%;
+  transform: translateY(50%);
+} */
+.details p{
+  margin:0 0 5px 0px;
+  font-size: 15px;
+}
+.details p.name{
+  font-size: 18px;
+}
+.bgZIndex{
+  width:1000%;
+  height:1000%;
+  background: url(../img/images/ppbj.png) 36px -18px;
+  background-size:  1.5% auto;
+  transform: translate3d(-50%, -50%, 2000px) !important;
+  z-index: -1;
+}
+.bgZIndex.bgZIndex2{
+  background: url(../img/images/ppbj.png) 36px -18px;
+  background-size: 1.5% auto;
+  transform: translate3d(-50%, -55%, 2200px) rotateX(90deg) !important;
+}
+.backBgBox{
+  width:800%;
+  height:800%;
+  background: url(../img/images/ppbj2.png) 0 0;
+  background-size: 100% auto;
+  transform: translate3d(-50%, -38%, -2000px) !important;
+  display: none;
+}
+/* #container {
+  height: 70%;
+  width: 80%;
+  margin: 0 auto;
+} */
+.wangge {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 20%;
+  margin: 0 auto;
+}
+.wangge .coral-button {
+  padding: 4px 20px 4px;
+  height: 37px;
+  font-size: 20px;
+  color: #008eff;
+  background: linear-gradient(#003265, #001426);
+  border-color: #004984;
+}
+.element-box .peoplePic {
+  width: 80%;
+  margin: 20px;
+}
+.element-box .details {
+
+}
+.element-box .notImg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+.bg-full {
+  position: absolute;
+  background: url(../img/images/footer.png);
+    z-index: 2;
+    width: 1000%;
+    height: 150%;
+   transform: translate3d(-50%, -173%, 2000px) !important;
+   background-size: 100% 100%;
+}
+.bg-full-top {
+  position: absolute;
+  background: url(../img/images/footer.png);
+    z-index: 2;
+    width: 1000%;
+    height: 150%;
+   transform: translate3d(-50%, 82%, 2000px) rotate(180deg) !important;
+   background-size: 100% 100%;
+}

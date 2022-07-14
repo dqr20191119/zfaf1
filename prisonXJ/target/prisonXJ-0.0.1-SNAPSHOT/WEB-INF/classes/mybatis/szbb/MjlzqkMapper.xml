@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 民警履职情况 --> 
+<mapper namespace="com.cesgroup.prison.szbb.dao.MjlzqkDao">
+
+  	<sql id="query_page" >
+    	from AUTH.T_USER a, AUTH.T_ORG b, AUTH.T_ORG_USER c 
+		where a.user_id=c.user_id and b.organize_id=c.organize_id
+		and b.organize_code like '${cusNumber}%'
+  	</sql>
+  	
+	<!-- 民警年龄构成 -->
+	<select id="selectMjnlgc" parameterType="java.util.Map" resultType="hashmap">
+		select count(*) as rs, age from (
+		select floor(MONTHS_BETWEEN(sysdate, a.birthday)/12) as age 
+		<include refid="query_page" />
+		and a.birthday is not null 
+		) group by age order by age
+	</select>
+	
+	<!-- 当前民警数量 -->
+	<select id="selectMjsl" parameterType="java.util.Map" resultType="hashmap">
+		select count(*) as rs
+		<include refid="query_page" />
+	</select>
+	
+	<!-- 监区民警数量 -->
+	<select id="selectJqmjsl" parameterType="java.util.Map" resultType="hashmap">
+		select count(*) as rs, b.organize_name as name
+		<include refid="query_page" />
+		and b.organize_name like '%监区%'
+		group by b.organize_name
+	</select>
+	
+	<!-- 机关民警分布 -->
+	<select id="selectJgmjfb" parameterType="java.util.Map" resultType="hashmap">
+		select count(*) as rs, b.organize_name as name
+		<include refid="query_page" />
+		and b.organize_name in ('狱政科', '刑罚科', '狱侦科', '教育科', '生卫科', '指挥中心', '办公室')
+		group by b.organize_name
+	</select>
+	
+	<!-- 各监区警囚比 -->
+	<select id="selectJqjqb" parameterType="java.util.Map" resultType="hashmap">
+		select a.zfrs, b.mjrs, b.name from(select count(*) as zfrs, jq_id as jq_id from YZGL.T_YZGL_DK_JBXX 
+		where jy_id=#{cusNumber} and zf_zt1='1' and zf_zt2='11' group by jq_id) a,
+		(select count(*) as mjrs, b.organize_name as name, b.organize_code
+		<include refid="query_page" />
+		and b.organize_name like '%监区%'
+		group by b.organize_name, b.organize_code) b where a.jq_id=b.organize_code
+	</select>
+	
+</mapper>

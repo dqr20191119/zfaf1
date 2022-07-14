@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.lbbm.dao.LbbmMapper">
+
+	<select id="findAllList" parameterType="com.cesgroup.prison.zbgl.lbbm.entity.LbbmEntity" resultType="java.util.Map">
+		SELECT A.* ,B.DCA_CATEGORY_NAME FROM CDS_DUTY_CATEGORY_DEPARTMENT A LEFT JOIN CDS_DUTY_CATEGORY B 
+		ON A.DCD_CATEGORY_ID = B.ID
+	    <where>
+			<if test="dcdCategoryId != null and dcdCategoryId != ''">
+				AND A. DCD_CATEGORY_ID = #{dcdCategoryId}
+			</if>
+			<if test="dcdDprtmntId != null and dcdDprtmntId != ''">
+				AND A. DCD_DPRTMNT_ID = #{dcdDprtmntId}
+			</if>
+	   	 </where>  
+	   	 ORDER BY DCD_DPRTMNT_ID
+	</select> 
+	
+	<select id="deleteByConditions" > 
+		DELETE FROM CDS_DUTY_CATEGORY_DEPARTMENT A 
+		<where>
+			<if  test="dcdCategoryId != null and dcdCategoryId != ''">
+				AND A.DCD_CATEGORY_ID = #{dcdCategoryId}
+			</if>
+		</where> 
+	</select>
+	
+</mapper>

@@ -1,0 +1,832 @@
+#rightSideHome{
+	height:97%;
+}
+.mCSB_inside > .mCSB_container {
+	margin-right: 0px;
+}
+.scorllBar {
+	height: 97%;
+	margin-top:20px;
+}
+.xslb-div{
+	margin-top:20px;
+	height: 68%;
+}
+#p_alarmMsgDiv,.current-sj{
+	height: 92.6%;
+	margin-top:5px;
+	padding-top:17px;
+	background:url(../images/box-larger.png);
+	background-size:100% 100%;
+}
+#rightSide_Pwfsb{
+	height: 97%;
+	margin-top:20px;
+}
+.rightDivStyle.right-zb.zoom-box h4{
+	height:36px;
+	line-height:36px;
+	font-size:16px;
+}
+.right-zb{
+	background:url(../images/box.png);
+	background-size:100% 100%;
+}
+#rightSide_Pwfsb #prisonDeviceCount{
+	background:url(../images/box-larger.png);
+	background-size:100% 100%;
+}
+.right-zb.mjkz-box2{
+	background:url(../images/box-larger.png);
+	background-size:100% 100%;
+}
+.right-zb#policeList{
+	position:relative;
+}
+.right-bar{
+	padding-bottom:0}
+.rightDivStyle a{
+	color:#be6a50
+}
+.rightDivStyle h4{
+	background: url(../images/title-box.png);
+    background-size: 100% 100%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+    display: inline-block;
+    width: 92%;
+    margin-left: 10px;
+    text-align:left;
+    padding-left:15px;
+}
+.rightDivStyle.police h4{
+	margin: 5px 0 7px 10px;
+}
+.rightDivStyle.police h4 span:last-child{
+	color: #e57e30;
+    font-size: 20px;
+}
+.rightDivStyle h4 img{
+	float: right;
+    margin-top: 4px;
+    margin-right: 8px;
+}
+.rightDivStyle h4 a{
+	font-size:12px;
+	float:right;
+	margin-right: 8px;
+}
+.rightDivStyle li{
+	padding:0 26px;
+	font-size:15px;
+	margin-top:2px;
+}
+
+.rightDivStyle .tree-tabs-box1 li , .rightDivStyle .tree-box li{
+	padding:0 10px;
+	font-size:15px;
+	margin-top:2px;
+	/* 门禁控制面板 */
+}
+
+.rightDivStyle li>span{
+	display:inline-block;
+	padding:7px 0;
+}
+.rightDivStyle .sp{
+	color: #be6a50;
+    vertical-align: middle;
+}
+#ForeignCarPeople.offender ul{
+	background:url(../images/fengefu.png);
+	background-size:100% 100%;
+	margin: 10px 10px 0 10px;
+    overflow: hidden;
+    height: 80px;
+}
+#ForeignCarPeople.offender ul li{
+	float: left;
+    padding: 0;
+    width: 45%;
+    text-align: center;
+    font-size:16px;
+    color:#85b3d3;
+}
+#ForeignCarPeople.offender ul li>p:first-child{
+	padding: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #8681cc;
+}
+#ForeignCarPeople.offender ul li>p:first-child>span:first-child{
+	font-size:22px;
+	margin-right:5px;
+}
+.rightDivStyle.offender li>span,.rightDivStyle.offender li{
+	color:#3d86cc;
+}
+.rightDivStyle.offender li>span:first-child{
+	width:70%;
+}
+.rightDivStyle.offender li>span:last-child{
+	margin-right:5px;
+}
+.rightDivStyle .icon-shezhi{
+	font-size: 18px;
+    margin-top: 9px;
+    margin-right: 5px;
+
+}
+.rightDivStyle.right-zb,.rightDivStyle.right-mj {
+	margin-right: 9px;
+    margin-bottom: 9px;
+    padding-bottom: 6px;
+    padding-top: 10px;
+	margin-top: 17px;
+}
+.right-mj{
+	background: url(../images/box.png);
+    background-size: 100% 100%;
+}
+.right-zb#prisonCount{
+	background: url(../images/box-small.png);
+    background-size: 100% 100%;
+}
+.rightDivStyle.right-zb .a_btn {
+	margin-left: 210px;
+    margin-top: 10px;
+}
+.coral-scroll-box{
+	width:99%;
+	height:98%;
+	overflow-y:auto;
+	margin-top:17px;
+     padding: 0;
+     overflow-x: hidden;
+     /*三角箭头的颜色*/
+     scrollbar-arrow-color: rgba(16, 15, 55, 1);
+     /*滚动条滑块按钮的颜色*/
+     scrollbar-face-color: rgba(16, 15, 55, 1);
+     /*滚动条整体颜色*/
+     scrollbar-highlight-color: rgba(16, 15, 55, 1);
+     /*滚动条阴影*/
+     scrollbar-shadow-color: rgba(16, 15, 55, 1);
+     /*滚动条轨道颜色*/
+     scrollbar-track-color: rgba(16, 15, 55, 1);
+}
+.coral-scroll-box #alarmMsgDiv{
+	margin-top:0;
+}
+.overflow_div {
+	margin-top: 15px;
+	/* width: 320px; */
+	height: 100%;
+	overflow: auto;
+	
+}
+.overflow_div table {
+	float: left;
+	text-align: left;
+	width:47%;
+	font-size: 14px;
+	white-space: nowrap;
+	display: table;
+}
+.overflow_div #left{
+	margin-left:6px;
+}
+.overflow_div #right{
+	margin-right:6px;
+}
+.overflow_div table tr{
+	color: #3b89d1;
+}
+.overflow_div table .spTwo{
+	color: #be6a50;
+}
+.notData {
+ 	font-size: 15px;
+    font-weight: bold;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+ }
+.rightTable{
+	display: block;
+    text-align: center;
+    font-size: 13px;
+    border-collapse: collapse;
+    border-width: 1px;
+    width: 88%;
+    margin: 10px auto;
+}
+.rightTable td {
+	border: solid #4592f0;
+	border-width: 1px;
+	height: 30px;
+	text-align:center;
+} 
+
+.overflow_div  td {
+	font-size: 15px;
+	height: 25px;
+}
+ #policeCount ul {
+	float: left;
+	margin: 0px;
+}
+.zyfr{
+	text-align: center;
+    margin: 10px 0;
+    font-size: 16px;
+}
+.zyfr span{
+    display: inline-block;
+    border: 1px solid #237eb9;
+    height: 38px;
+    width: 95px;
+    line-height: 35px;
+    vertical-align:middle;
+}
+.zyfr span:first-child{
+	  background: #1d2856;
+	  margin-right:3px;
+}
+.rightTable td {
+	height: 28.9px;
+	font-size: 15px;
+	text-align: center;
+}
+.zyfr #inside{
+	text-align: left;
+    vertical-align: middle;
+    width:auto;
+}
+
+.zyfr #inside .inside-detail{
+	display: inline-block;
+    width: 14px;
+    text-align: center;
+    height: 30px;
+    vertical-align: baseline;
+    background: #1b478e;
+    border: #1b478e;
+    line-height: 30px;
+    margin:2px;
+    color:#87baf8;
+    font-weight:bold;
+}
+.rightTable .one {
+	text-align: center;
+	font-weight: bold;
+}
+.contact nav {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+  max-height: 0px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.contact nav.active {
+  max-height: 280px;
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+}
+.contact nav.active a {
+  opacity: 1;
+  -webkit-transform: translateY(0px);
+  -moz-transform: translateY(0px);
+  -ms-transform: translateY(0px);
+  -o-transform: translateY(0px);
+  transform: translateY(0px);
+  -webkit-transition: all 0.7s;
+  -moz-transition: all 0.7s;
+  -o-transition: all 0.7s;
+  transition: all 0.7s;
+}
+.contact nav.active a:nth-of-type(1) {
+  transition-delay: .5s;
+}
+.contact nav.active a:nth-of-type(2) {
+  transition-delay: .7s;
+}
+.contact nav.active a:nth-of-type(3) {
+  transition-delay: .9s;
+}
+.contact nav a {
+  float: left;
+  width: 100%;
+  text-align:center;
+  padding: 10px 10px;
+  text-decoration: none;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  opacity: 0;
+  font-size:18px;
+  color:#fff;
+  -webkit-transform: translateY(-10px);
+  -moz-transform: translateY(-10px);
+  -ms-transform: translateY(-10px);
+  -o-transform: translateY(-10px);
+  transform: translateY(-10px);
+  position: relative;
+}
+@media (min-width: 280px) {
+  .contact nav a {
+    padding: 10px 10px;
+  }
+}
+.contact .gmail>span:first-child{
+	padding: 10px 15px;
+    border: 1px solid #952b39;
+    background-color: #50031d;
+}
+.contact .gmail>span:last-child{
+	padding: 10px;
+    border: 1px solid #952b39;
+    background: #de1918;
+    width:46px;
+    display: inline-block;
+    border-left: none;
+}
+.contact .gmail>span .icon-iconjg{
+	color: #962b39;
+    font-size: 22px;
+}
+.contact .facebook>span:first-child{
+	padding: 10px 15px;
+    border: 1px solid #dfd57a;
+    background: #4d410c;
+}
+.contact .facebook>span:last-child{
+	padding: 10px;
+    width: 46px;
+    border: 1px solid #dfd57a;
+    display: inline-block;
+    background: #ffca02;
+}
+.contact .facebook>span .icon-iconjg{
+	color: #cac06a;
+    font-size: 22px;
+}
+.contact .twitter>span:first-child{
+	padding: 10px 15px;
+    border: 1px solid #075595;
+    background: #1d4e74;
+}
+.contact .twitter>span:last-child{
+	 padding: 10px;
+    width: 46px;
+    border: 1px solid #075595;
+    display: inline-block;
+    background: #3456ab;
+}
+.contact .twitter>span .icon-iconjg{
+	color: #0b2a43;
+    font-size: 22px;
+}
+.contact nav a .arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.contact nav a .arrow path {
+  fill: #e6e6e6;
+}
+.contact nav a.gmail .icon svg {
+  background-color: #d14836;
+}
+.contact nav a.gmail .content h1 {
+  color: #d14836;
+}
+.contact nav a.facebook .icon svg {
+  background-color: #3b5998;
+}
+.contact nav a.facebook .content h1 {
+  color: #f28b02;
+}
+.contact nav a.twitter .icon svg {
+  background-color: #1da1f2;
+}
+.contact nav a.twitter .content h1 {
+  color: #1da1f2;
+}
+.contact nav a .icon {
+  float: left;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.contact nav a .icon svg {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+}
+.contact nav a .icon svg path {
+  fill: #ffffff;
+}
+.contact nav a .content h1 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 160%;
+  letter-spacing: .4px;
+}
+.contact-area *, .contact-area  *:before, .contact-area *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.contact-area__1  {
+  background: #051321;
+}
+
+.contact-area {
+  width: 300px;
+  height: 205px;
+  position: relative;
+}
+
+.contact {
+  position: relative;
+  max-width: 300px;
+  padding: 10px 10px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+@media (min-width: 300px) {
+  .contact {
+    position: absolute;
+
+  }
+}
+.contact main {
+  float: left;
+  width: 100%;
+  position: relative;
+}
+.contact main section {
+  border-radius: 5px;
+  float: left;
+  width: 100%;
+  background-color: #eb524a;
+}
+.contact main section .content {
+  float: left;
+  width: 100%;
+  padding: 10px 10px;
+  position: relative;
+  text-align: center;
+}
+@media (min-width: 280px) {
+  .contact main section .content {
+    text-align: left;
+  }
+}
+.contact main section .content img {
+  display: inline-block;
+  width: 140px;
+  border-radius: 50%;
+}
+@media (min-width: 414px) {
+  .contact main section .content img {
+    float: left;
+    width: 30%;
+    margin-right: 10%;
+  }
+}
+ .overflow_div table .one {
+	text-align: right;
+}
+.right-zb td {
+	font-size: 14px;
+	height: 25px;
+	display: table-cell;
+}
+#offenderList .overflow_div {
+	margin-left: 25%;
+}
+
+.spThree {
+	font-size: 17px;
+}
+
+.spFour {
+	font-size: 19px;
+}
+
+.txtSearch {
+	width: 282px;
+	height: 24px;
+	margin: 10px 0px 9px 3px;
+	border: 1px solid rgba(255, 255, 255, 0.19);
+	background: url(../../scs/screen/css/img/search.png) 0px center
+		no-repeat;
+	line-height: 21px;
+	text-indent: 23px;
+	color: #D7D7D7;
+	cursor: auto;
+}
+.rightDivStyle .info_list{
+	width:100%;
+	margin-top:12px;
+}
+.rightDivStyle .info_list dl{
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	border:1px solid #3366a5;
+	background-color:#0a1d55;
+	color: #42e5e0;
+}
+.rightDivStyle .info_list dl dd{
+	float:left;
+	text-align:center;
+	margin:0;
+	height:30px;
+	line-height:30px;
+}
+.rightDivStyle .info_list dl dd:nth-child(1){
+	width:29%;
+}
+.rightDivStyle .info_list dl dd:nth-child(2){
+	width:45%;
+}
+.rightDivStyle .info_list dl dd:nth-child(3){
+	width:25%;
+}
+.rightDivStyle .info_list.wfsb dl dd:nth-child(1){
+	width:33%;
+}
+.rightDivStyle .info_list.wfsb dl dd:nth-child(2){
+	width:33%;
+}
+.rightDivStyle .info_list.wfsb dl dd:nth-child(3){
+	width:17%;
+}
+.rightDivStyle .info_list.wfsb dl dd:nth-child(4){
+	width:17%;
+}
+.rightDivStyle .info_list .maquee{
+	width:90%;
+	overflow:auto;
+	margin:0 auto;
+	padding:0;
+	scrollbar-arrow-color: rgba(24, 37, 81, 1);
+     /*滚动条滑块按钮的颜色*/
+     scrollbar-face-color: rgba(24, 37, 81, 1);
+     /*滚动条整体颜色*/
+     scrollbar-highlight-color: rgba(24, 37, 81, 1);
+     /*滚动条阴影*/
+     scrollbar-shadow-color: rgba(24, 37, 81, 1);
+     /*滚动条轨道颜色*/
+     scrollbar-track-color: rgba(24, 37, 81, 1);
+}
+.rightDivStyle .info_list .maquee.wfsb-list{
+	height:680px;
+}
+
+.rightDivStyle .info_list .maquee ul li{
+	width:100%;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	font-size:14px;
+	background-color:#182551;
+	padding:0;
+}
+.rightDivStyle .info_list .maquee ul li div{
+	float:left;
+}
+.rightDivStyle .info_list .maquee ul li div:nth-child(1){
+	width:31%;
+}
+/* .rightDivStyle .info_list .maque .jfsb-list ul li div{
+	width:50%;
+} */
+.rightDivStyle .info_list .maquee ul li div:nth-child(2){
+	width:49%;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+}
+.rightDivStyle .info_list .maquee ul li div:nth-child(3){
+	width:20%;
+}
+.rightDivStyle .info_list .maquee.wfsb-list ul li div:nth-child(1){
+	width:33%;
+}
+.rightDivStyle .info_list .maquee.wfsb-list ul li div:nth-child(2){
+	width:33%;
+}
+.rightDivStyle .info_list .maquee.wfsb-list ul li div:nth-child(3){
+	width:17%;
+}
+.rightDivStyle .info_list .maquee.wfsb-list ul li div:nth-child(4){
+	width:17%;
+}
+#offender table{
+	width:92%;
+	color:#3b89d1;
+	margin-top:10px;
+	margin-left:10px;
+}
+.right-zb#offender table tr{
+	height:28px;
+	line-height:28px;
+}
+.right-zb#offender table td:first-child{
+	width: 70%;
+    padding-left: 20px;
+}
+.right-zb#offender table td:last-child{
+	width:30%;
+	text-align:left;
+	padding-left:5px;
+}
+.right-zb#offender table td:last-child>span{
+	color:#be6a50
+}
+#drptmntList table{
+	width:92%;
+	color:#3b89d1;
+	margin-top:10px;
+}
+.right-zb#drptmntList table tr{
+	height:28px;
+	line-height:28px;
+}
+.right-zb#drptmntList table td:first-child{
+	width: 70%;
+    text-align: center;
+    padding-left: 50px;
+}
+.right-zb#drptmntList table td:last-child{
+	width:30%;
+	text-align:left;
+	/* padding-left:5px; */
+}
+.right-zb#drptmntList table td:last-child>span{
+	color:#be6a50
+}
+.rightDivStyle #formId_alarmMsg_man table tr>th{
+	 text-align: right;
+	 vertical-align:center;
+}
+.model-mainten{
+	margin-top:10px;
+}
+.model_box table{
+	width: 90%;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+.model_box table tr:first-child{
+	border: 2px solid #1e74ad;
+    background: #0f1d4d;
+    color: #4de3e2;
+    height: 30px;
+    line-height: 30px;
+}
+.model_box table tbody tr{
+	text-align:center;
+    background: #0f1d4d;
+	 height: 30px;
+    line-height: 30px;
+}
+.radio-box{
+	 width: 95%;
+    margin: 10px;
+    /* height: 100%; */
+    overflow: auto;
+    height: 520px;
+}
+.radio-box .combo-box{
+	width:100%;
+	text-align:left;
+}
+.radio-box .combo-box span{
+    font-size: 15px;
+}
+.radio-box{
+	width: 101%;
+     padding: 0;
+     overflow-x: hidden;
+     /*三角箭头的颜色*/
+     scrollbar-arrow-color: rgba(16, 15, 55, 1);
+     /*滚动条滑块按钮的颜色*/
+     scrollbar-face-color: rgba(16, 15, 55, 1);
+     /*滚动条整体颜色*/
+     scrollbar-highlight-color: rgba(16, 15, 55, 1);
+     /*滚动条阴影*/
+     scrollbar-shadow-color: rgba(16, 15, 55, 1);
+     /*滚动条轨道颜色*/
+     scrollbar-track-color: rgba(16, 15, 55, 1);
+}
+.btn-box{
+	/* height: 50px; */
+    width: 200px;
+    margin: 0 auto;
+}
+.btn-box .btnCls{
+	width: 165px;
+    height: 38px;
+    border: 1px solid #2c6fb3;
+    margin: 0px auto;
+    margin-bottom: 5px;
+    background-color: #0d205d;
+    cursor: pointer;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 5px 5px 5px 5px;
+}
+.current-model{
+	margin-top:17px;
+}
+.model-box{
+	margin: 8px auto;
+    width: 92%;
+}
+.model-box .model-content{
+	height: 30px;
+}
+.model-box .model-content-sj{
+	margin:5px 10px;
+}
+.model-box .model-input{
+	height:40px;
+}
+.mjkz-box2{
+	height:95%;
+}
+.mjkz-box2 .tree-box{
+	height: 88%;
+    overflow-y: auto;
+     width: 101%;
+     padding: 0;
+     overflow-x: hidden;
+     /*三角箭头的颜色*/
+     scrollbar-arrow-color: rgba(16, 15, 55, 1);
+     /*滚动条滑块按钮的颜色*/
+     scrollbar-face-color: rgba(16, 15, 55, 1);
+     /*滚动条整体颜色*/
+     scrollbar-highlight-color: rgba(16, 15, 55, 1);
+     /*滚动条阴影*/
+     scrollbar-shadow-color: rgba(16, 15, 55, 1);
+     /*滚动条轨道颜色*/
+     scrollbar-track-color: rgba(16, 15, 55, 1);
+}
+.mjkz-box2 .button-box{
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+ }
+ .mjkz-box2 .button-box .coral-button{
+ 	padding: 8px 12px;
+    background-color: #0c2c79;
+    color: #fff;
+    border: none;
+ }
+ .model_buttons_save{
+ 	text-align: center;
+    height: 45px;
+    line-height: 45px;
+ }
+ .model_buttons_save .coral-button{
+ 	 border: 1px solid #2075a7;
+    background: #091e4f;
+    color: #fff;
+    margin-right:10px;
+ }
+ .current-sj .model-box .coral-form-default{
+ 	padding-top:5px;
+ }
+ .second.model-content-sj>.model-input:first-child{
+ 	margin-top:10px;
+ }
+ .model-content-sj .model-input .coral-checkbox .coral-checkbox-label .coral-checkbox-text{
+ 	color:#fff;
+ }
+.model_div .coral-form-default{
+  	padding-top:5px;
+  }
+ .coral-form-default .title-box{
+ 	margin-top:13px;
+ }

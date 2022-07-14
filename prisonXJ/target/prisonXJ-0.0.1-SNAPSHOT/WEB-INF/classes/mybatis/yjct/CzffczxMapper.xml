@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.CzffczxMapper">
+	 
+	 <select id="findCountByPlanid" parameterType="arraylist" resultType="com.cesgroup.prison.yjct.entity.CzffczxEntity">
+		SELECT A.MRA_METHOD_FID, COUNT(1) || '' ACTION_COUNT FROM CDS_METHOD_REL_ACTION A 
+		WHERE A.MRA_METHOD_FID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 				 
+		GROUP BY A.MRA_METHOD_FID  
+	</select>	
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.CzffczxEntity" resultType="com.cesgroup.prison.yjct.entity.CzffczxEntity">
+		SELECT A.* FROM CDS_METHOD_REL_ACTION A 
+		<where>
+			<if test="mraMethodFid != null and mraMethodFid != ''"> 
+				AND A.MRA_METHOD_FID = #{mraMethodFid} 		
+			</if>			 
+		</where>
+		ORDER BY A.MRA_REL_ACTION_TYPE  
+	</select>	
+		 
+	<select id="deleteByCondition" parameterType="com.cesgroup.prison.yjct.entity.CzffczxEntity">
+		DELETE FROM CDS_METHOD_REL_ACTION A 
+		<where>
+			<if test="mraMethodFid != null and mraMethodFid != ''"> 
+				AND A.MRA_METHOD_FID = #{mraMethodFid} 		
+			</if>
+		</where>
+	</select>
+</mapper>

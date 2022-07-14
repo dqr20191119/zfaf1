@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="cds_manual_alarm_queryRecordList">
+		<desc>报警处置-人工报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_RECEIVE_ALARM_POLICE">user</Const>
+		<Const key="ARD_OPRTR">user</Const>
+		<Const key="ARD_FINISH_SURE_POLICE">user</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       to_char(ard_bsns_date,'yyyy-MM-dd') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc as ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc as ard_alarm_type,
+			       ard_type_indc,
+			       to_char(ard_alert_time,'hh24:mi:ss') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts,
+			       abd_x_crdnt,
+			       abd_y_crdnt,
+			       abd_z_crdnt,
+			       abd_pitch_crdnt,
+			       abd_rotate_crdnt,
+			       abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id
+			  FROM (
+					SELECT abd_cus_number,
+		                abd_area_id AS abd_idnty,
+		                abd_area_name AS abd_name,
+		                abd_area_id,
+		                abd_area_name AS abd_area,
+		                vfu_x_crdnt AS abd_x_crdnt,
+		                vfu_y_crdnt AS abd_y_crdnt,
+		                vfu_z_crdnt AS abd_z_crdnt,
+		                vfu_pitch_crdnt AS abd_pitch_crdnt,
+		                vfu_rotate_crdnt AS abd_rotate_crdnt,
+		                '' AS abd_analyse_chnnl_idnty,
+		                '8' AS abd_alertor_type
+		           FROM cds_area_base_dtls
+		           LEFT JOIN cds_view_func
+		             ON (abd_cus_number = vfu_cus_number AND
+		                abd_area_id = vfu_area_id)
+		          WHERE abd_cus_number = ?
+		            AND ABD_AREA_ID = ?
+			  )
+			 INNER JOIN cds_alert_record_dtls
+			 	ON abd_cus_number = ard_cus_number
+			   AND abd_idnty = ard_alertor_idnty
+			   AND abd_alertor_type = ard_type_indc
+			 INNER JOIN cds_area_department_relation  
+			 	ON abd_cus_number = adr_cus_number
+			   AND abd_area_id = adr_area_id
+		</sql>
+	   <where wid="0">
+		     WHERE ard_cus_number = ?
+			   AND ard_record_id = ?
+			   AND ard_type_indc = ?
+	   </where>
+	   <order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   </order>
+	   <Const key="ard_alert_level_indc">alarmLevel</Const>
+	   <Const key="ard_type_indc">alarmDvcType</Const>
+	   <Const key="ard_alert_stts_indc">alarmStatus</Const>
+	   <Const key="ard_oprtn_stts_indc">alarmOprtnStatus</Const>
+	</item>
+	
+	<item id="cds_alert_record_dtls">
+		<desc>报警信息查询</desc>
+		<sql>
+			SELECT ard_cus_number,  
+			       ard_record_id,
+			       ard_bsns_date,
+			       ard_alert_time,
+			       ard_type_indc,
+			       ard_alarm_police,
+			       ard_receive_alarm_police,
+			       ard_oprtr,
+			       ard_event_type,
+			       ard_oprtn_desc
+			  FROM cds_alert_record_dtls
+		</sql>
+	   <where wid="0">
+		     WHERE ard_cus_number = ?
+			   AND ard_record_id = ?
+	   </where>
+	</item>
+	
+	<item id="cds_alarm_queryPlanDevice">
+		<desc>报警处置-设备联动查询</desc>
+		<sql>
+			SELECT pid_item_id,  
+			       pid_item_name,
+			       pid_stts_indc,
+			       pid_level_indc,
+			       pid_outo_indc,
+			       pdr_dvc_idnty,
+			       pdr_dvc_name,
+			       pdr_exec_order
+			  FROM cds_plan_item_dtls
+			 INNER JOIN cds_alert_plan_rltn
+			    ON pid_cus_number = apr_cus_number
+			   AND pid_plan_id = apr_plan_id
+			 INNER JOIN cds_plan_device_rltn
+			    ON pid_cus_number = pdr_cus_number
+			   AND pid_plan_id = pdr_plan_id
+			   AND pid_item_id = pdr_item_id
+		</sql>
+		<where wid="0">
+		     WHERE apr_cus_number = ?
+			   AND apr_dvc_idnty = ?
+			   AND apr_dvc_type_indc = ?
+			   AND pid_stts_indc = 1
+	   </where>
+	   <order oid="0">
+	   		 ORDER BY pid_level_indc ASC, pdr_exec_order ASC
+	   </order>
+	</item>
+
+   <item id="cds_alarm_queryPolice">
+		<desc>报警处置-值班民警查询</desc>
+		<sql>
+			SELECT DISTINCT pir_police_idnty,
+			                pir_cus_number,
+			                pir_dprtmnt_id,
+			                pir_police_name,
+			                pbd_phone,
+			                pbd_drptmnt_id,
+			                pbd_pstn_name,
+			                pbd_police_cmmnct,
+			                pbd_talk_num,
+			                pbd_fixed_phone,
+			                pbd_short_phone,
+			                pbd_drptmnt
+			  FROM cds_police_inout_record, v_police_base_dtls
+		</sql>
+		<where wid="0">
+			  WHERE pir_cus_number = pbd_cus_number
+			   AND pir_police_idnty = pbd_police_idnty
+			   AND pir_leave_time IS NULL
+			   AND TO_CHAR(pir_brush_date, 'YYYY-MM-DD') =
+			       TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+			   AND pbd_cus_number = ? 
+			   AND pbd_drptmnt_id = ?
+	   </where>
+	   <where wid="1">
+			  WHERE pir_cus_number = pbd_cus_number
+			   AND pir_police_idnty = pbd_police_idnty
+			   AND pir_leave_time IS NULL
+			   AND TO_CHAR(pir_brush_date, 'YYYY-MM-DD') =
+			       TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+			   AND pbd_cus_number = ?
+			   AND pbd_drptmnt_id in (SELECT column_value FROM table(CDS_PKG_COMMON_FUNC.CDS_F_SPLIT_DATA(?,','))) 
+	   </where>
+	   <order oid="0">
+	   		 ORDER BY pir_police_idnty ASC
+	   </order>
+   </item>
+   
+   <item id="cds_device_queryDprtmnt">
+		<desc>报警处置-根据报警器查询区域部门信息</desc>
+		<sql>
+			SELECT adr_dprtmnt_id
+			  FROM cds_area_department_relation
+			 INNER JOIN (
+				 	SELECT abd_cus_number,
+					       abd_idnty,
+					       abd_name,
+					       abd_area_id,
+					       abd_area,
+					       abd_x_crdnt,
+					       abd_y_crdnt,
+					       abd_z_crdnt,
+					       abd_pitch_crdnt,
+					       abd_rotate_crdnt,
+					       '1' AS abd_alertor_type
+					  FROM dvc_alertor_base_dtls
+					 WHERE abd_cus_number = ?
+					  AND abd_action_indc #$ 3
+					UNION ALL
+					SELECT dcb_cus_number AS abd_cus_number,
+					       dcb_ctrl_idnty || dcb_door_idnty AS abd_idnty,
+					       dcb_name AS abd_name,
+					       dcb_area_id AS abd_area_id,
+					       dcb_area AS abd_area,
+					       dcb_x_crdnt AS abd_x_crdnt,
+					       dcb_y_crdnt AS abd_y_crdnt,
+					       dcb_z_crdnt AS abd_z_crdnt,
+					       dcb_pitch_crdnt AS abd_pitch_crdnt,
+					       dcb_rotate_crdnt AS abd_rotate_crdnt,
+					       '10' AS abd_alertor_type
+					  FROM dvc_door_control_base_dtls
+					 WHERE dcb_cus_number = ?
+					 AND dcb_action_indc #$ 3
+					UNION ALL
+					SELECT cbd_cus_number   AS abd_cus_number,
+					       cbd_idnty        AS abd_idnty,
+					       cbd_name         AS abd_name,
+					       cbd_area_id      AS abd_area_id,
+					       cbd_area         AS abd_area,
+					       cbd_x_crdnt      AS abd_x_crdnt,
+					       cbd_y_crdnt      AS abd_y_crdnt,
+					       cbd_z_crdnt      AS abd_z_crdnt,
+					       cbd_pitch_crdnt  AS abd_pitch_crdnt,
+					       cbd_rotate_crdnt AS abd_rotate_crdnt,
+					        '9' AS abd_alertor_type
+					  FROM dvc_camera_base_dtls
+					 WHERE cbd_cus_number = ?
+					 AND cbd_action_indc #$ 3
+			 )ON adr_cus_number = abd_cus_number
+			   AND adr_area_id = abd_area_id
+		</sql>
+		<where wid="0">
+		    WHERE adr_cus_number = ?
+		      AND abd_idnty = ?
+		      AND abd_alertor_type = ?
+	   </where>
+	</item>
+	
+	 <item id="cds_alarm_queryEventType">
+		<desc>报警处置-接警-查询事件性质</desc>
+		<Const key="HFM_TYPE_INDC_CH">hfmTypeIndc</Const>
+		<Const key="HFM_ALARM_LEVEL_CH">alarmLevel</Const>
+		<Const key="HFM_CRTE_USER_ID">user</Const>
+		<Const key="HFM_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT hfm_cus_number,
+			       hfm_flow_id,
+			       hfm_flow_name,
+			       hfm_type_indc,
+			       hfm_type_indc AS hfm_type_indc_ch,
+			       hfm_show_seq,
+			       hfm_alarm_level,
+			       hfm_alarm_level AS hfm_alarm_level_ch,
+			       hfm_crte_time,
+			       hfm_crte_user_id,
+			       hfm_updt_time,
+			       hfm_updt_user_id
+			  FROM cds_handle_flow_master
+		</sql>
+		<where wid="0">
+		    WHERE (hfm_cus_number = ? OR hfm_cus_number = ?)
+	   </where>
+	   <where wid="1">
+		    WHERE (hfm_cus_number = ? OR hfm_cus_number = ?) AND
+		    	  (TRIM(?) is null or hfm_flow_id = ? )
+	   </where>
+	   <where wid="2">
+		    WHERE (hfm_cus_number = ? OR hfm_cus_number = ?) AND
+		    	  (TRIM(?) is null or hfm_alarm_level = ? )
+	   </where>
+	   <order oid="0">
+	   		 ORDER BY hfm_show_seq
+	   </order>
+	   	<order oid="1">
+	   		 ORDER BY hfm_user_count desc
+	   </order>
+	</item>
+	
+	 <item id="cds_alarm_queryEventFlow">
+		<desc>报警处置-接警-查询事件处置流程</desc>
+		<Const key="HFD_CRTE_USER_ID">user</Const>
+		<Const key="HFD_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT hfd_cus_number,
+			       hfd_flow_id,
+			       hfd_flow_item_id,
+			       hfd_flow_item_name,
+			       hfd_crte_time,
+			       hfd_crte_user_id,
+			       hfd_updt_time,
+			       hfd_updt_user_id
+			  FROM cds_handle_flow_dtls
+		</sql>
+		<where wid="0">
+		     WHERE (hfd_cus_number = ? OR hfd_cus_number = ?)
+		       AND hfd_flow_id = ?
+	   </where>
+	   <order oid="0">
+	   		 ORDER BY hfd_flow_item_id ASC
+	   </order>
+	</item>
+	
+	<item id="cds_alarm_queryAlertorList">
+		<desc>报警处置-人工报警-查询报警器</desc>
+		<sql>
+			SELECT abd_idnty,
+			       abd_name
+			  FROM dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+		     WHERE abd_cus_number = ?
+		      AND abd_action_indc #$ 3
+	   </where>
+	   <order oid="0">
+	   		 ORDER BY abd_idnty ASC
+	   </order>
+	</item>
+	
+	<item id="cds_planSet_queryPlansWid">
+		<desc>预案管理-预案查询,#代表小于号$代表大于号</desc>
+		<Const key="PMA_CRTE_USER_ID">user</Const>
+		<Const key="PMA_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT pma_cus_number,
+			       pma_plan_id,
+			       pma_plan_name,
+			       pma_remark,
+			       pma_crte_time,
+			       pma_crte_user_id,
+			       pma_updt_time,
+			       pma_updt_user_id
+			  FROM cds_plan_master
+		</sql>
+		<where wid="0">
+			 WHERE pma_cus_number = ?
+		     AND 1 = 1
+	    </where>
+	    <where wid="1">
+	    	 WHERE (TRIM(?) is null or pma_cus_number = ? )
+			   AND (TRIM(?) is null or pma_plan_id = ? )
+	    </where>
+	    <order oid="0">
+	   		 ORDER BY pma_plan_id
+	    </order>
+	</item>
+	
+	<item id="cds_planSet_queryPlansWidByDid">
+		<desc>预案管理-预案查询,#代表小于号$代表大于号</desc>
+		<Const key="PMA_CRTE_USER_ID">user</Const>
+		<Const key="PMA_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT pma_cus_number,
+			       pma_plan_id,
+			       pma_plan_name,
+			       pma_remark,
+			       pma_crte_time,
+			       pma_crte_user_id,
+			       pma_updt_time,
+			       pma_updt_user_id
+			  from cds_alert_plan_rltn
+			  LEFT JOIN cds_plan_master
+			    ON apr_cus_number = pma_cus_number
+			   AND apr_plan_id = pma_plan_id
+		</sql>
+		<where wid="0">
+			 WHERE (TRIM(?) is null or apr_cus_number = ? )
+			   AND (TRIM(?) is null or apr_dvc_type_indc = ? )
+			   AND (TRIM(?) is null or apr_dvc_idnty = ? )
+	    </where>
+	    <order oid="0">
+	   		 ORDER BY pma_plan_id
+	    </order>
+	</item>
+	
+	<item id="cds_planSet_queryPlans">
+		<desc>预案管理-预案查询,#代表小于号$代表大于号</desc>
+		<Const key="PMA_CRTE_USER_ID">user</Const>
+		<Const key="PMA_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT pma_cus_number,
+			       pma_plan_id,
+			       pma_plan_name,
+			       pma_remark,
+			       pma_crte_time,
+			       pma_crte_user_id,
+			       pma_updt_time,
+			       pma_updt_user_id
+			  FROM cds_plan_master
+			  WHERE pma_cus_number = ?
+		</sql>
+		<where wid="0">
+		     AND 1 = 1
+	    </where>
+	    <order oid="0">
+	   		 ORDER BY pma_plan_name
+	    </order>
+	</item>
+	
+	<item id="cds_EquipmentRelations_queryDoorControlList">
+		<desc>设备关联管理-门禁列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT dcb_ctrl_idnty || dcb_door_idnty AS dcb_dvc_idnty, dcb_name
+			  FROM dvc_door_control_base_dtls
+			 WHERE dcb_cus_number = ?
+			 AND dcb_action_indc #$ 3
+			 ORDER BY dcb_dvc_idnty
+		</sql>
+	</item>
+	
+	<item id="cds_EquipmentRelations_queryBaseStation">
+	    <desc>设备关联管理-基站信息列表查询</desc>
+	    <sql>
+	      SELECT bsi_idnty,
+	             bsi_name	          
+	      FROM   dvc_base_station_info
+	      WHERE  bsi_cus_number = ?
+	       ORDER BY bsi_idnty 
+	    </sql>
+	</item>
+	
+	<item id="cds_EquipmentRelations_queryCameraList">
+		<desc>设备关联管理-摄像头列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT cbd_idnty, cbd_name, dre_device_idnty
+			  FROM dvc_camera_base_dtls
+			  LEFT JOIN dvc_device_relation
+			    ON cbd_cus_number = dre_cus_number
+			   AND cbd_idnty = dre_rltn_device_idnty
+			   AND dre_device_idnty = ?			  
+			 WHERE cbd_action_indc #$ 3
+			   AND cbd_cus_number = ?
+			 ORDER BY cbd_name,cbd_idnty
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryPlanItems">
+		<desc>预案管理-联动项列表查询,#代表小于号$代表大于号</desc>
+		<Const key="PID_CRTE_USER_ID">user</Const>
+		<Const key="PID_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT pid_cus_number,
+			       pid_plan_id,
+			       pid_plan_name,
+			       pid_item_id,
+			       pid_item_name,
+			       pid_stts_indc,
+			       pid_level_indc,
+			       pid_outo_indc,
+			       pid_remark,
+			       pid_crte_time,
+			       pid_crte_user_id,
+			       pid_updt_time,
+			       pid_updt_user_id
+			  FROM cds_plan_item_dtls
+			 WHERE pid_cus_number = ?
+			   AND pid_plan_id = ?
+			 ORDER BY pid_level_indc
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryCameraList">
+		<desc>预案管理-设备(摄像机)列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			 SELECT cbd_idnty idnty, 
+			        cbd_name name,
+			        pdr_plan_id
+			  FROM  dvc_camera_base_dtls
+			  LEFT JOIN (select * from cds_plan_device_rltn where pdr_plan_id = ?)
+			    ON cbd_cus_number = pdr_cus_number
+			   AND cbd_idnty = pdr_dvc_idnty
+			  WHERE cbd_action_indc #$ 3
+			   	AND cbd_cus_number = ?
+		   ORDER BY idnty
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryBroadcastList">  
+		<desc>预案管理-设备(广播)列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT bbd_idnty idnty, bbd_name name, pdr_plan_id
+			  FROM dvc_broadcast_base_dtls
+			  LEFT JOIN (select * from cds_plan_device_rltn where pdr_plan_id = ?)
+			    ON bbd_cus_number = pdr_cus_number
+			   AND bbd_idnty = pdr_dvc_idnty
+			   AND bbd_cus_number = ?
+			 ORDER BY idnty
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryDoorCtrlList">  
+		<desc>预案管理-设备(门禁)列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT dcb_ctrl_idnty || dcb_door_idnty idnty, dcb_name name, pdr_plan_id
+			  FROM dvc_door_control_base_dtls
+			  LEFT JOIN (select * from cds_plan_device_rltn where pdr_plan_id = ?)
+			    ON dcb_cus_number = pdr_cus_number
+			   AND dcb_ctrl_idnty || dcb_door_idnty = pdr_dvc_idnty
+			   AND dcb_action_indc #$ 3
+			   AND dcb_cus_number = ?
+			 ORDER BY idnty
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryBigScreenList">  
+		<desc>预案管理-设备(大屏)列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+	        SELECT sbd_screen_idnty idnty, sbd_screen_name name, pdr_plan_id
+	          FROM cds_screen_base_dtls
+	          LEFT JOIN (select * from cds_plan_device_rltn where pdr_plan_id = ?)
+	            ON sbd_cus_number = pdr_cus_number
+	           AND sbd_screen_idnty = pdr_dvc_idnty
+	           AND sbd_cus_number = ?
+		     ORDER BY idnty
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryItems">
+		<desc>预案设置-修改预案-联动项查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT cdt_key, cdt_value, pid_plan_id, pid_stts_indc, pid_outo_indc
+			  FROM com_constant_dtls
+			  LEFT JOIN cds_plan_item_dtls
+			    ON cdt_key = pid_item_id
+			   AND pid_plan_id = ?
+			   AND pid_cus_number = ?
+			 WHERE cdt_cnstnt_idnty = 'PLAN_ITEMS'
+			 ORDER BY cdt_key
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryAlertors">
+		<desc>预案管理-报警器关联-报警器列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT abd_idnty, abd_name, apr_plan_id, abd_type, abd_alertor_type
+			  FROM (
+			  			SELECT abd_cus_number,
+						       abd_idnty,
+						       abd_name,
+						       '报警器' AS abd_type,
+						       '1' AS abd_alertor_type
+						  FROM dvc_alertor_base_dtls
+						 WHERE abd_cus_number = ?
+						  AND abd_action_indc #$ 3
+						 UNION ALL
+						SELECT dcb_cus_number AS abd_cus_number,
+						       dcb_ctrl_idnty || dcb_door_idnty AS abd_idnty,
+						       dcb_name AS abd_name,
+						       '安检门' AS abd_type,
+						       '10' AS abd_alertor_type
+			              FROM dvc_door_control_base_dtls
+			             WHERE dcb_cus_number = ?
+			             AND dcb_action_indc #$ 3
+			             UNION ALL
+			            SELECT cbd_cus_number   AS abd_cus_number,
+			                   cbd_idnty        AS abd_idnty,
+			                   cbd_name         AS abd_name,
+			                   '摄像机' AS abd_type,
+			                   '9' AS abd_alertor_type
+			              FROM dvc_camera_base_dtls
+			             WHERE cbd_cus_number = ?
+			             AND cbd_action_indc #$ 3
+			             UNION ALL
+						SELECT ibi_cus_number   AS abd_cus_number,
+						       ibi_idnty        AS abd_idnty,
+						       ibi_name         AS abd_name,
+						       DECODE(ibi_type_indc, 1, '红外对射', 2,'红外幕帘', '红外') AS abd_type,
+						       '3' AS abd_alertor_type
+						  FROM dvc_infrared_base_info
+						 WHERE ibi_cus_number = ?
+			  )LEFT JOIN cds_alert_plan_rltn
+			    ON abd_cus_number = apr_cus_number
+			   AND abd_idnty = apr_dvc_idnty
+			   AND apr_dvc_type_indc = abd_alertor_type
+			   AND abd_cus_number = ?
+			 ORDER BY abd_type, abd_name DESC, abd_idnty
+		</sql>
+	</item>
+	
+	<item id="cds_planSet_queryAlertorsList">
+		<desc>预案管理-报警器关联-报警器列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			SELECT abd_idnty, abd_name, apr_plan_id, abd_type, abd_alertor_type
+			  FROM (
+			  			SELECT abd_cus_number,
+						       abd_idnty,
+						       abd_name,
+						       '报警器' AS abd_type,
+						       '1' AS abd_alertor_type
+						  FROM dvc_alertor_base_dtls
+						 WHERE abd_cus_number = ?
+						   AND abd_action_indc #$ 3
+						UNION ALL
+						SELECT dcb_cus_number AS abd_cus_number,
+						       dcb_ctrl_idnty || dcb_door_idnty AS abd_idnty,
+						       dcb_name AS abd_name,
+						       '安检门' AS abd_type,
+						       '10' AS abd_alertor_type
+			              FROM dvc_door_control_base_dtls
+			             WHERE dcb_cus_number = ?
+			             AND dcb_action_indc #$ 3
+			             UNION ALL
+			            SELECT cbd_cus_number   AS abd_cus_number,
+			                   cbd_idnty        AS abd_idnty,
+			                   cbd_name         AS abd_name,
+			                   '摄像机' AS abd_type,
+			                   '9' AS abd_alertor_type
+			              FROM dvc_camera_base_dtls
+			             WHERE cbd_cus_number = ?
+			               AND cbd_action_indc #$ 3
+			             UNION ALL
+						SELECT ibi_cus_number   AS abd_cus_number,
+						       ibi_idnty        AS abd_idnty,
+						       ibi_name         AS abd_name,
+						       DECODE(ibi_type_indc, 1, '红外对射', 2,'红外幕帘', '红外') AS abd_type,
+						       '3' AS abd_alertor_type
+						  FROM dvc_infrared_base_info
+						 WHERE ibi_cus_number = ?
+			  )LEFT JOIN cds_alert_plan_rltn
+			    ON abd_cus_number = apr_cus_number
+			   AND abd_idnty = apr_dvc_idnty
+			   AND apr_dvc_type_indc = abd_alertor_type
+			   AND abd_cus_number = ?
+			 WHERE apr_plan_id = ?
+			 ORDER BY abd_type, abd_name DESC, abd_idnty
+		</sql>
+	</item>
+	
+	<item id="cds_alarm_queryFlowSeq">
+		<desc>处置流程维护-查询下一个流程编号</desc>
+		<sql>
+			SELECT hfm_flow_id.NEXTVAL flow_id FROM DUAL
+		</sql>
+	</item>
+	
+	<item id="cds_alarm_queryAlarmType">
+		<desc>报警分级-查询报警类别</desc>
+		<Const key="ALT_CRTE_USER_ID">user</Const>
+		<Const key="ALT_UPDT_USER_ID">user</Const>
+		<Const key="ALT_LEVEL_CH">alarmLevel</Const>
+		<sql>
+			SELECT alt_cus_number,
+			       alt_type_id,
+			       alt_level,
+			       alt_level AS alt_level_ch,
+			       alt_crte_time,
+			       alt_crte_user_id,
+			       alt_updt_time,
+			       alt_updt_user_id
+			  FROM cds_alarm_type
+		</sql>
+		<where wid="0">
+			 WHERE alt_cus_number = ?
+	   </where>
+	   <where wid="1">
+			 WHERE (TRIM(?) is null or alt_cus_number = ? )
+			   AND (TRIM(?) is null or alt_type_id = ? )
+			   AND (TRIM(?) is null or alt_level = ? )
+	   </where>
+	   <order oid="0">
+	   		  ORDER BY alt_updt_time DESC
+	   </order>
+	</item>
+	
+	<item id="cds_alert_event_rep_info">
+		<desc>查询报警事件报告</desc>
+		<Const key="ARD_TYPE_INDC_CH">alarmDvcType</Const>
+		<sql>
+			SELECT aev_cus_number,
+			       aev_record_id,
+			       aev_event_time,
+			       aev_event_user_id,
+			       ard_alert_time,
+			       ard_type_indc,
+			       ard_type_indc AS ard_type_indc_ch,
+			       ard_alarm_police,
+			       ard_receive_alarm_police,
+			       ard_oprtr,
+			       ard_event_type,
+			       ard_oprtn_desc,
+			       abd_addrs,
+			       ard_save_file
+			  FROM cds_alert_event_rep LEFT JOIN
+			  	   cds_alert_record_dtls ON
+			  	   (aev_cus_number = ard_cus_number AND aev_record_id = ard_record_id) LEFT JOIN
+			  	   dvc_alertor_base_dtls ON
+			  	   (ard_cus_number = abd_cus_number AND ard_alertor_idnty = abd_idnty)
+			  	   
+		</sql>
+		<where wid="0">
+			 WHERE aev_cus_number = ? AND
+			 	   aev_record_id = ?
+	   </where>
+	</item>
+	
+	<item id="cds_alert_evidence_relation_info">
+		<desc>查询报警证据信息</desc>
+		<sql>
+			SELECT aer_cus_number,
+			       aer_record_id,
+			       aer_evidence_sqno,
+			       aer_remark,
+			       aer_crte_time,
+			       aer_crte_user_id,
+			       ein_title,
+			       ein_file_name,
+			       ein_file_path
+			  FROM cds_alert_evidence_relation LEFT JOIN
+			  	   cds_evidence_info ON
+			  	   (aer_cus_number = ein_cus_number AND aer_evidence_sqno = ein_evidence_sqno)
+		</sql>
+		<where wid="0">
+			 WHERE aer_cus_number = ? AND
+			 	   aer_record_id = ?
+	   </where>
+	   <order oid="0">
+	   		  ORDER BY aer_crte_time DESC
+	   </order>
+	</item>
+	
+	<item id="cds_planSet_queryCameraListForPlan">
+		<desc>应急处置-预案内摄像机列表查询,#代表小于号$代表大于号</desc>
+		<sql>
+			  SELECT cbd_idnty idnty, 
+			        cbd_name name,
+			        pdr_plan_id
+			  FROM  dvc_camera_base_dtls
+			  INNER JOIN cds_plan_device_rltn
+			    ON cbd_cus_number = pdr_cus_number
+			   AND cbd_idnty = pdr_dvc_idnty
+			  WHERE cbd_action_indc #$ 3
+			   	AND cbd_cus_number = ?
+			   	AND pdr_plan_id = ?
+		   ORDER BY idnty
+		</sql>
+	</item>
+	
+	<item id="cds_alert_event_file_query">
+		<desc>报警记录归档信息--附件查询</desc>
+		<sql>
+			  SELECT aef_cus_number,
+			  		 aef_file_seq,
+			  		 aef_file_dir,
+			  		 aef_type_indc,
+			  		 aef_file_name
+			  FROM  cds_alert_event_file
+			  WHERE (? is null OR aef_cus_number = ?)
+			   	AND aef_record_id = ?
+		   ORDER BY aef_file_seq
+		</sql>
+	</item>
+	<item id="cds_alert_event_file_imgQuery">
+		<desc>报警记录归档信息--附件图片查询</desc>
+		<sql>
+			  SELECT aef_file
+			    FROM cds_alert_event_file
+			   WHERE aef_file_seq = ? 
+		</sql>
+	</item>
+	<item id="cds_alert_record_handleStatus_query">
+		<desc>报警记录处置状态查询</desc>
+		<sql>
+			  SELECT ard_oprtn_stts_indc
+			    FROM cds_alert_record_dtls
+			   WHERE ard_record_id = ? 
+		</sql>
+	</item>					
+</sqlItem>

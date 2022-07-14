@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.alarm.plan.dao.AlarmPlanBroadcastPlanMapper">
+
+<update id="updateByPlanId" parameterType="com.cesgroup.prison.alarm.plan.dao.AlarmPlanBroadcastPlanMapper">
+	update  CDS_BROADCAST_PLAN_RLTN 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="bprCusNumber !=null and bprCusNumber !=''">
+				BPR_CUS_NUMBER  =#{bprCusNumber},
+			</if>
+			<if test="bprPlanId !=null and bprPlanId !=''">
+				BPR_PLAN_ID =#{bprPlanId},
+			</if>
+			<if test="bprBroadcastPlanId !=null and bprBroadcastPlanId !=''">
+				BPR_BROADCAST_PLAN_ID =#{bprBroadcastPlanId},
+			</if>
+			<if test="bprBroadcastPlanName !=null and bprBroadcastPlanName !=''">
+				BPR_BROADCAST_PLAN_NAME = #{bprBroadcastPlanName},
+			</if>
+			<if test="bprUpdtTime !=null and bprUpdtTime !=''">
+				BPR_UPDT_TIME = #{bprUpdtTime},
+			</if>
+			<if test="bprUpdtUserId !=null and bprUpdtUserId !=''">
+				BPR_UPDT_USER_ID =#{bprUpdtUserId}
+			</if>
+		 </trim>
+		<where>
+			<if test="bprPlanId !=null and bprPlanId !=''">
+				BPR_PLAN_ID =#{bprPlanId}
+			</if>
+		</where>
+</update>
+	
+
+
+</mapper>

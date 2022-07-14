@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.SszkMapper">
+	
+	<select id="findConfig" parameterType="hashmap" resultType="hashmap">
+		SELECT A.* FROM CDS_SGZF_CONFIG A 
+		<where>
+			<if test="cusNumber != null and cusNumber != ''"> 
+				AND A.CSC_CUS_NUMBER = #{cusNumber} 		
+			</if>
+		</where>
+	</select>
+</mapper>

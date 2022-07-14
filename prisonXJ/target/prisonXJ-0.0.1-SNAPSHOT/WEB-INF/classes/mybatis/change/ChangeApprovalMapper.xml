@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.change.dao.ChangeApprovalMapper">
+	
+  <select id="searchChangeApproval" resultType="com.cesgroup.prison.change.entity.ChangeApproval" parameterType="com.cesgroup.prison.change.entity.ChangeApproval">
+  		select * from cds_circular_changed_approval
+  		<where>
+  			<if test="ccaCusNumber != null and ccaCusNumber!=''">
+		        CCA_CUS_NUMBER = #{ccaCusNumber,jdbcType=VARCHAR} 
+		      </if>
+		      <if test="ccaFlowIdnty != null and ccaFlowIdnty!=''">
+		        AND CCA_FLOW_IDNTY = #{ccaFlowIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccaChangedIdnty != null and ccaChangedIdnty!=''">
+		        AND CCA_CHANGED_IDNTY = #{ccaChangedIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccaDprtmntIdnty != null and ccaDprtmntIdnty!=''">
+		        AND CCA_DPRTMNT_IDNTY = #{ccaDprtmntIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccaApprovalType != null and ccaApprovalType!=''">
+		        AND CCA_APPROVAL_TYPE = #{ccaApprovalType,jdbcType=VARCHAR}
+		      </if>
+		      <if test="ccaPoliceIdnty != null and ccaPoliceIdnty!=''">
+		        AND CCA_POLICE_IDNTY = #{ccaPoliceIdnty,jdbcType=VARCHAR}
+		      </if>
+		      <if test="id != null and id != ''" >
+		        and ID = #{id}
+		      </if>	
+  		</where>
+  </select>
+
+  <update id="updateChangeApproval" parameterType="com.cesgroup.prison.change.entity.ChangeApproval">
+    update CDS_CIRCULAR_CHANGED_APPROVAL
+    <set>
+      <if test="ccaCusNumber != null">
+        CCA_CUS_NUMBER = #{ccaCusNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaFlowIdnty != null">
+        CCA_FLOW_IDNTY = #{ccaFlowIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaChangedIdnty != null">
+        CCA_CHANGED_IDNTY = #{ccaChangedIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaDprtmntIdnty != null">
+        CCA_DPRTMNT_IDNTY = #{ccaDprtmntIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaApprovalType != null">
+        CCA_APPROVAL_TYPE = #{ccaApprovalType,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaPoliceIdnty != null">
+        CCA_POLICE_IDNTY = #{ccaPoliceIdnty,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaPoliceName != null">
+        CCA_POLICE_NAME = #{ccaPoliceName,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaSuggestion != null">
+        CCA_SUGGESTION = #{ccaSuggestion,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaContent != null">
+        CCA_CONTENT = #{ccaContent,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaCrteTime != null">
+        CCA_CRTE_TIME = #{ccaCrteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccaCrteUserId != null">
+        CCA_CRTE_USER_ID = #{ccaCrteUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="ccaUpdtTime != null">
+        CCA_UPDT_TIME = #{ccaUpdtTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ccaUpdtUserId != null">
+        CCA_UPDT_USER_ID = #{ccaUpdtUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

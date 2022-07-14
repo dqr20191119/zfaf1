@@ -1,0 +1,109 @@
+   @charset "utf-8";
+/* CSS Document */
+
+
+.info .list_box{
+	width:100%;
+	float:right;
+	margin:0 0 0 -255px;
+}
+.list_box .list_table{
+	margin:0 15px 0 255px;
+}
+.info .selectBar{
+	float:left;
+	width:240px;
+	background:#fafdeb;
+	padding-bottom:10000px;
+	margin-bottom:-10000px
+}
+.info .searchFun{background:#f3f3cd;}
+.searchFun .coral-textbox {
+    line-height:30px;
+	width:210px;
+	margin:15px;
+}
+.searchFun .coral-textbox-border {
+	background:url(../images/search_icon.png) no-repeat 6px center; 
+	padding:0 3px 0 18px;
+	background-color: #fff;
+}
+.coral-textbox .innerRight .coral-button {
+    height: 30px;
+    margin-top: -3px;
+	background:#ebebb2;
+	color:#54541a;
+}
+.selectBar>.coral-tree{
+	float:left;
+	margin: 15px 0 0 30px;
+	font-size:14px;
+}
+
+
+
+.info{overflow:hidden;}
+.info .function{background:url(${ctx}/static/images/table-bg.png) no-repeat left center;}
+.function .add_button{float:right;margin:11px 0 ;}
+.function span.tip{
+	line-height:60px;
+	margin-left:14px;
+	font-size:16px;
+}
+
+/*表格样式*/
+.content .coral-grid {
+     position: static;
+	 border-left:#e1e1e1 solid 1px;
+	 border-right:#e1e1e1 solid 1px;
+}
+/*.coral-grid-rows-view {margin-bottom:40px;}*/
+.content .coral-grid-columns .coral-state-default{
+	border:none;
+	background-color:#f0f0f0;
+	font-size:14px;
+	color:#333333;
+	line-height:40px;
+}
+.content .coral-grid .coral-row-ltr td{
+	text-align:center;
+	font-size:13px;
+}
+
+.content .coral-grid a.edit, .content .coral-grid a.delete{
+	display:inline-block;
+	border:#e5e5e5 solid 1px;
+	padding:8px 10px;
+	margin:16px 4px 10px 0;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	-ms-border-radius:4px;
+	-o-border-radius:4px;
+	border-radius:4px;
+}
+.content a.edit .img{
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background:url(../images/edit.png) no-repeat center top;
+	margin: 0 4px 0 0;
+}
+.content a.delete .img{
+	display:inline-block;
+	width:16px;
+	height:18px;
+	background:url(../images/delete2.png) no-repeat center top;
+	margin: 0 4px 0 0;
+}
+.content .coral-grid a.edit:hover{
+	background-color:#009944;
+	color:#fff;
+}
+.content .coral-grid a.delete:hover{
+	background-color:#e60012;
+	color:#fff;
+}
+.content a.edit:hover .img, .content a.delete:hover .img{
+	background-position:center bottom;
+}
+ .coral-grid-pager { margin-left: -260px;} 

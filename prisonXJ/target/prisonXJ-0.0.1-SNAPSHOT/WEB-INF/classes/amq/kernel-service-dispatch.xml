@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/jms 
+			http://www.springframework.org/schema/jms/spring-jms.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+			http://www.springframework.org/schema/integration/jms
+			http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.1.xsd">
+	<context:property-placeholder />
+
+	<!--门禁消息接收处理     ${queue.fe.door.in}         queue.door.out           -->
+	<int:channel id="channel.fe.door.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-door" destination-name="queue.door.in"
+		channel="channel.fe.door.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.door.in"
+		 output-channel="channel.fe.out"       
+		expression="@doorMessageHandle.handle(payload,headers.cusNumber)"
+		requires-reply="false"/>
+
+
+	<!--门禁状态   消息接收处理     ${queue.fe.doorstate.in}         queue.doorstate.out           -->
+	<int:channel id="channel.fe.doorstate.in" />
+	<int-jms:message-driven-channel-adapter
+			id="jms-md-adapter@kernel-service-doorstate" destination-name="queue.doorstate.in"
+			channel="channel.fe.doorstate.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.doorstate.in"
+						   output-channel="channel.fe.out"
+						   expression="@doorStateMessageHandle.handle(payload,headers.cusNumber)"
+						   requires-reply="false"/>
+
+	<!-- 摄像机消息接收处理 -->
+	<int:channel id="channel.fe.camera.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-camera" destination-name="queue.camera.in"
+		channel="channel.fe.camera.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.camera.in"
+		output-channel="channel.fe.out"       
+		expression="@cameraMessageHandle.handle(payload,headers.cusNumber)"
+		requires-reply="false"/>
+	
+	<!-- 对讲消息接收处理 -->
+	<int:channel id="channel.fe.talk.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-talk" destination-name="queue.talk.in"
+		channel="channel.fe.talk.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.talk.in"
+		output-channel="channel.fe.out"       
+		expression="@talkMessageHandle.handle(payload,headers.cusNumber)"
+		requires-reply="false"/>
+	
+	<!--模拟报警消息发送 -->		
+    <int:channel id="channel.fe.alertor.out" />
+    <int-jms:outbound-channel-adapter
+		channel="channel.fe.alertor.out" destination-name="queue_alarm_in"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendAlarmMessage" default-request-channel="channel.fe.alertor.out"
+	service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+	<int:method name="send" payload-expression="#args[0]">
+		<int:header name="cusNumber" expression="#args[1]" />
+		<int:header name="msgID" expression="#args[2]" />
+	</int:method>
+	</int:gateway>
+			
+	<!--报警消息处理   queue_alarm_in-->		
+    <int:channel id="channel.fe.alertor.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-alarm" destination-name="queue_alarm_in"
+		channel="channel.fe.alertor.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.alertor.in"
+		output-channel="channel.fe.out"
+		expression="@alarmMessageActivator.handle(payload,headers.cusNumber)"
+		requires-reply="false"/>
+	
+	<!-- 点名消息接收处理  add by tao-->
+	<int:channel id="channel.fe.callName.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-callName" destination-name="queue.callName.in"
+		channel="channel.fe.callName.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.callName.in"
+		output-channel="channel.fe.out"       
+		expression="@callNameMessageHandle.handle(payload,headers.cusNumber)"
+		requires-reply="false"/>
+	
+	<!-- 湖南点名消息接收处理-->
+	<int:channel id="channel.fe.callRoll.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-callRoll" destination-name="queue.callroll.in"
+		channel="channel.fe.callRoll.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.callRoll.in"
+		output-channel="channel.fe.out"       
+		expression="@callRollMessageHandle.handle(payload,headers.cusNumber)"
+		requires-reply="false"/>
+	
+	<!-- 暂未使用 -->
+	<int:channel id="channel.send.front.out" />
+	<int:gateway id="sendFrontEndMessage" default-request-channel="channel.send.front.out"
+		service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+		<int:method name="send" payload-expression="#args[0]">
+			<int:header name="cusNumber" expression="#args[1]" />
+			<int:header name="msgID" expression="#args[2]" />
+		</int:method>
+	</int:gateway>
+	
+	<!-- 与前置机的MQ输入配置   给订阅消息的前置机统一发送主题-->
+	<int:channel id="channel.fe.out" />	<!---->
+	<int-jms:outbound-channel-adapter
+		channel="channel.fe.out" destination-name="queue.fe.out" pub-sub-domain="true"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendAction" default-request-channel="channel.fe.out"
+		service-interface="com.cesgroup.prison.frm.net.amq.service.SendMessageAction">
+		<int:method name="send" payload-expression="#args[0]">
+		    <int:header name="cusNumber" expression="#args[1]" />
+			<int:header name="msgID" expression="#args[2]" />
+		</int:method>
+	</int:gateway>  
+	
+	<!-- topic config -->	
+	<!-- lihh  web socket-->
+	<int:channel id="channel.send.web.out" />
+	<int:channel id="channel.send.web.in" />
+	<int-jms:outbound-channel-adapter
+		channel="channel.send.web.out" destination-name="topic.send.web" pub-sub-domain="true"
+		explicit-qos-enabled="true" delivery-persistent="false" />
+	<int:gateway id="sendWebMessage" default-request-channel="channel.send.web.out"
+		service-interface="com.cesgroup.prison.frm.net.amq.service.SendNettyMessageAction">
+		<int:method name="send" payload-expression="#args[0]">
+			<int:header name="cusNumber" expression="#args[1]" />
+		</int:method>
+	</int:gateway>
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@send-netty-service" destination-name="topic.send.web"
+		channel="channel.send.web.in" extract-payload="true"  pub-sub-domain="true" subscription-durable="false" 
+		durable-subscription-name="web-message"/>
+	<int:service-activator input-channel="channel.send.web.in"
+		expression="@messageSendService.handleNettyMessage(payload, headers.cusNumber)" requires-reply="false" />
+	
+	<!-- 车辆信息消息接收处理 begin -->
+	<int:channel id="channel.fe.vehicle.in" />
+	<int-jms:message-driven-channel-adapter
+			id="jms-md-adapter@kernel-service-vehicle" destination-name="queue.vehicle.in"
+			channel="channel.fe.vehicle.in" extract-payload="true" />
+	<int:service-activator input-channel="channel.fe.vehicle.in"
+						   output-channel="channel.fe.out"
+						   expression="@vehicleMessageHandle.handle(payload,headers.cusNumber)"
+						   requires-reply="false"/>
+	<!-- 车辆信息消息接收处理  end -->
+	
+	<!-- 注解：int:channel的id随意命名，  int-jms标签中的channel通道会用到此id，
+	 destination-name表示消息队列的名称，如mq里的queues中的名称 
+	-->	
+	<!-- 通讯融合消息接收 add by lincoln.cheng 20190120 start -->
+	<int:channel id="channel.fe.rcs.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-rcs" destination-name="queue.rcs.in"
+		channel="channel.fe.rcs.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.rcs.in"
+		output-channel="channel.fe.out"
+		expression="@rcsMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 通讯融合消息接收 add by lincoln.cheng 20190120 end -->
+	
+	<!-- 民警当前在监位置消息接收 add by lincoln.cheng 20190222 start -->
+	<int:channel id="channel.fe.policelocation.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-policelocation" destination-name="queue.policelocation.in"
+		channel="channel.fe.policelocation.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.policelocation.in"
+		output-channel="channel.fe.out"
+		expression="@policeLocationMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 民警当前在监位置消息接收 add by lincoln.cheng 20190222 end -->
+	
+	<!-- 广播消息接收 add by lincoln.cheng 20190225 start -->
+	<int:channel id="channel.fe.broadcast.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-broadcast" destination-name="queue.broadcast.in"
+		channel="channel.fe.broadcast.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.broadcast.in"
+		output-channel="channel.fe.out"
+		expression="@broadcastMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 广播消息接收 add by lincoln.cheng 20190225 end -->
+	
+	<!-- 人脸识别黑名单接收  start -->	
+	<int:channel id="channel.fe.facemark.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-facemark" destination-name="queue.facemark.in"
+		channel="channel.fe.facemark.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.facemark.in"
+		output-channel="channel.fe.out"
+		expression="@facemarkMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 人脸识别黑名单接收  end -->
+	
+	<!-- 安检消息接收 add by lincoln.cheng 20190303 start -->
+	<int:channel id="channel.fe.securitycheck.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-securitycheck" destination-name="queue.securitycheck.in"
+		channel="channel.fe.securitycheck.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.securitycheck.in"
+		output-channel="channel.fe.out"
+		expression="@securityCheckMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 安检消息接收 add by lincoln.cheng 20190303 end -->
+	
+	<!-- 巡更记录接收  start -->	
+	<int:channel id="channel.fe.patrolrecord.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-patrolrecord" destination-name="queue.patrolrecord.in"
+		channel="channel.fe.patrolrecord.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.patrolrecord.in"
+		output-channel="channel.fe.out"
+		expression="@patrolrecordMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 巡更记录接收  end -->
+	
+	<!-- 外来人员接收  start -->	
+	<int:channel id="channel.fe.outsiders.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-outsiders" destination-name="queue.outsiders.in"
+		channel="channel.fe.outsiders.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.outsiders.in"
+		output-channel="channel.fe.out"
+		expression="@outsidersMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 外来人员接收  end -->
+	
+	<!-- 电网数据接收  start -->	
+	<int:channel id="channel.fe.power.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-power" destination-name="queue.power.in"
+		channel="channel.fe.power.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.power.in"
+		output-channel="channel.fe.out"
+		expression="@powerMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 电网数据接收  end -->
+	
+	<!-- 行为侦测数据接收  start -->	
+	<int:channel id="channel.fe.behaviorn.in" />
+	<int-jms:message-driven-channel-adapter
+		id="jms-md-adapter@kernel-service-behaviorn" destination-name="queue.behaviorn.in"
+		channel="channel.fe.behaviorn.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.behaviorn.in"
+		output-channel="channel.fe.out"
+		expression="@behaviornMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 行为侦测数据接收  end -->
+
+	<!-- 电视墙数据接收  start -->
+	<int:channel id="channel.fe.screen.in" />
+	<int-jms:message-driven-channel-adapter
+			id="jms-md-adapter@kernel-service-screen" destination-name="queue.screen.in"
+			channel="channel.fe.screen.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.screen.in"
+						   output-channel="channel.fe.out"
+						   expression="@screenMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" />
+	<!-- 电视墙数据接收  end -->
+	
+	<!-- 布防撤防消息返回接收  start -->
+	 <int:channel id="channel.fe.bfcf.in" />
+	<int-jms:message-driven-channel-adapter
+			id="jms-md-adapter@kernel-service-bfcf" destination-name="queue.bfcf.in"
+			channel="channel.fe.bfcf.in" extract-payload="true"  />
+	<int:service-activator input-channel="channel.fe.bfcf.in"
+						   output-channel="channel.fe.out"
+						   expression="@bfCfMessageHandle.handle(payload, headers.cusNumber)" requires-reply="false" /> 
+	<!-- 布防撤防消息返回接收  end -->
+	<!-- 布防撤防适配器 -->
+	<bean id="bfCfMessageHandle" class="com.cesgroup.prison.fm.handle.bfcf.BfCfMessageHandle" />
+	<!-- 消息发送 -->
+	<bean id="messageSendService" class="com.cesgroup.prison.frm.net.amq.service.MessageSendService" />
+	<!-- 发送门信号 -->
+	<bean id="doorMessageHandle" class="com.cesgroup.prison.fm.handle.door.DoorMessageHandle" />
+	<!-- 摄像机适配器 -->
+	<bean id="cameraMessageHandle" class="com.cesgroup.prison.fm.handle.camera.CameraMessageHandle" />	
+	<!-- 对讲适配器 -->
+	<bean id="talkMessageHandle" class="com.cesgroup.prison.fm.handle.talk.TalkMessageHandle" />
+	
+	<!-- 点名适配器 -->   
+	<bean id="callNameMessageHandle" class="com.cesgroup.prison.fm.handle.callName.CallNameMessageHandle" />
+	
+	<!-- 点名适配器 -->   
+	<bean id="callRollMessageHandle" class="com.cesgroup.prison.fm.handle.callName.CallRollMessageHandle" />
+	
+	<!-- 报警信息适配器 -->
+	<bean id="alarmMessageActivator" class="com.cesgroup.prison.messager.alarm.activator.AlarmMessageActivator" />
+	<!-- 报警信息处理类 
+	<bean id="alarmMessageProcess" class="com.cesgroup.prison.messager.alarm.process.AlarmMessageProcess" />
+	-->
+	<!-- 车辆信息适配器 -->
+	<bean id="vehicleMessageHandle" class="com.cesgroup.prison.fm.handle.Vehicle.VehicleMessageHandle" />
+	
+	<!-- 通讯融合消息适配器 -->
+	<bean id="rcsMessageHandle" class="com.cesgroup.prison.fm.handle.rcs.RcsMessageHandle" />
+	
+	<!-- 民警当前在监位置消息适配器 -->
+	<bean id="policeLocationMessageHandle" class="com.cesgroup.prison.fm.handle.location.PoliceLocationMessageHandle" />
+	
+	<!-- 广播消息适配器 -->
+	<bean id="broadcastMessageHandle" class="com.cesgroup.prison.fm.handle.broadcast.BroadcastMessageHandle" />
+	
+	<!-- 人脸识别黑名单适配器 -->
+	<bean id="facemarkMessageHandle" class="com.cesgroup.prison.fm.handle.facemark.FacemarkMessageHandle" />
+	
+	<!-- 安检消息适配器 -->
+	<bean id="securityCheckMessageHandle" class="com.cesgroup.prison.fm.handle.securityCheck.SecurityCheckMessageHandle" />
+
+	<!-- 电子巡更适配器 -->
+	<bean id="patrolrecordMessageHandle" class="com.cesgroup.prison.fm.handle.patrolrecord.PatrolrecordMessageHandle" />
+	
+	<!-- 外来人员适配器 -->
+	<bean id="outsidersMessageHandle" class="com.cesgroup.prison.fm.handle.outsiders.OutsidersMessageHandle" />
+	
+	<!-- 电网适配器 -->
+	<bean id="powerMessageHandle" class="com.cesgroup.prison.fm.handle.power.PowerMessageHandle" />
+	
+	<!-- 行为侦测适配器 -->
+	<bean id="behaviornMessageHandle" class="com.cesgroup.prison.fm.handle.behaviorn.BehaviornMessageHandle" />
+
+	<!-- 行为侦测适配器 -->
+	<bean id="screenMessageHandle" class="com.cesgroup.prison.fm.handle.screen.ScreenMessageHandle" />
+
+	<!-- 门禁状态适配器 -->
+	<bean id="doorStateMessageHandle" class="com.cesgroup.prison.fm.handle.doorstate.DoorStateMessageHandler" />
+
+
+</beans>

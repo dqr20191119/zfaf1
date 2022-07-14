@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="cds_add_alarm_record">
+		<desc>添加报警记录</desc>
+		<sql>
+			INSERT INTO cds_alert_record_dtls (
+			   ard_cus_number,
+			   ard_record_id,
+			   ard_bsns_date,
+			   ard_type_indc,
+			   ard_alarm_type_indc,
+			   ard_alarm_police,
+			   ard_alertor_idnty,
+			   ard_alert_level_indc,
+			   ard_alert_time,
+			   ard_alert_stts_indc,
+			   ard_oprtn_stts_indc,
+			   ard_local_case,
+			   ard_remark,
+			   ard_crte_time,
+			   ard_crte_user_id,
+			   ard_updt_time,
+			   ard_updt_user_id,
+			   id)
+			VALUES(?,?,TO_DATE(?,'yyyy-MM-dd'),?,?, ?,?,?,TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'),?, ?,?,?,SYSDATE,?,SYSDATE,?,?)
+		</sql>
+	</item>
+	
+	<item id="cds_alarm_addFlowItem">
+		<desc>添加报警处置流程项</desc>
+		<sql>
+			INSERT INTO cds_handle_flow_dtls
+			  (hfd_cus_number,
+			   hfd_flow_id,
+			   hfd_flow_item_id,
+			   hfd_flow_item_name,
+			   hfd_crte_time,
+			   hfd_crte_user_id,
+			   hfd_updt_time,
+			   hfd_updt_user_id)
+			VALUES
+			  (?, ?, ?, ?, SYSDATE, ?, SYSDATE, ?)
+		</sql>
+	</item>
+	
+	<item id="cds_alarm_addFlow">
+		<desc>添加报警处置流程</desc>
+		<sql>
+			INSERT INTO cds_handle_flow_master
+			  (hfm_cus_number,
+			   hfm_flow_id,
+			   hfm_flow_name,
+			   hfm_type_indc,
+			   hfm_show_seq,
+			   hfm_alarm_level,
+			   hfm_crte_time,
+			   hfm_crte_user_id,
+			   hfm_updt_time,
+			   hfm_updt_user_id)
+			VALUES
+			  (?, ?, ?, ?, ?, ?, SYSDATE, ?, SYSDATE, ?)
+		</sql>
+	</item>
+	
+	<item id="cds_alarm_addAlarmType">
+		<desc>添加报警类别</desc>
+		<sql>
+			INSERT INTO cds_alarm_type
+			  (alt_cus_number,
+			   alt_type_id,
+			   alt_level,
+			   alt_crte_time,
+			   alt_crte_user_id,
+			   alt_updt_time,
+			   alt_updt_user_id)
+			VALUES
+			  (?, ?, ?, ?, SYSDATE, ?, SYSDATE, ?)
+		</sql>
+	</item>
+	
+	<item id="cds_alert_event_rep_add">
+		<desc>添加报警事件报告信息</desc>
+		<sql>
+			INSERT INTO cds_alert_event_rep
+			  (aev_cus_number,
+			   aev_record_id,
+			   aev_event_time,
+			   aev_event_user_id)
+			VALUES
+			  (?,?,SYSDATE,?)
+		</sql>
+	</item>
+	
+	<item id="cds_alert_evidence_relation_add">
+		<desc>添加报警证据信息信息</desc>
+		<sql>
+			INSERT INTO cds_alert_evidence_relation
+			  (aer_cus_number,
+			   aer_record_id,
+			   aer_evidence_sqno,
+			   aer_remark,
+			   aer_crte_time,
+			   aer_crte_user_id)
+			VALUES
+			  (?,?,?,?,SYSDATE,?)
+		</sql>
+	</item>
+
+	<item id="cds_alert_event_file_upload">
+		<desc>上传报警证据附件</desc>
+		<sql>
+			INSERT INTO cds_alert_event_file
+			  (aef_cus_number,
+			   aef_record_id,
+			   aef_file_seq,
+			   aef_type_indc,
+			   aef_file_name,
+			   aef_file,
+			   aef_file_dir,
+			   aef_crte_time,
+			   aef_crte_user_id)
+			VALUES
+			  (?,?,?,?,?,?,?,SYSDATE,?)
+		</sql>
+	</item>	
+	
+	<item id="cds_meet_alarm_add">
+		<desc>添加接警信息</desc>
+		<sql>
+			INSERT INTO cds_meet_alarm
+			  (mal_cus_number,
+			   mal_alarm_idnty,
+			   mal_date,
+			   mal_people_idnty,
+			   mal_people_name)
+			VALUES
+			  (?, ?, SYSDATE, ?, ?)
+		</sql>
+	</item>	
+</sqlItem>

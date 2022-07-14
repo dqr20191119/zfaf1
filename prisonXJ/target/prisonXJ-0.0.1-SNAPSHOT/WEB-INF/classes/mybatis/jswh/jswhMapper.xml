@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jswh.dao.JswhMapper">
+	<select id="getById" resultType="com.cesgroup.prison.jswh.entity.JswhEntity"> 
+		SELECT A.* FROM CDS_PRISON_JS A 
+		WHERE A.ID = #{id} 
+	</select>
+		
+	<select id="findList" parameterType="com.cesgroup.prison.jswh.entity.JswhEntity" resultType="com.cesgroup.prison.jswh.entity.JswhEntity">
+		SELECT A.* FROM CDS_PRISON_JS A
+		<where>
+			<if test="cpjCusNumber != null and cpjCusNumber != ''">
+				AND A.CPJ_CUS_NUMBER = #{cpjCusNumber}
+			</if>
+			<if test="cpjLch != null and cpjLch != ''">
+				AND A.CPJ_LCH LIKE '%' || #{cpjLch} || '%' 
+			</if>
+		</where>
+		ORDER BY CPJ_LCH,CPJ_JS,CPJ_UPDT_TIME DESC
+		
+	</select> 
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.jswh.entity.JswhEntity" resultType="com.cesgroup.prison.jswh.entity.JswhEntity">
+		SELECT A.* FROM CDS_PRISON_JS A
+		<where>
+			<if test="cpjCusNumber != null and cpjCusNumber != ''">
+				AND A.CPJ_CUS_NUMBER = #{cpjCusNumber}
+			</if>
+			<if test="id != null and id != ''">
+				AND A.id != #{id}
+			</if>
+			<if test="cpjLch != null and cpjLch != ''">
+				AND A.CPJ_LCH LIKE '%' || #{cpjLch} || '%' 
+			</if>
+		</where>
+		ORDER BY CPJ_LCH,CPJ_UPDT_TIME DESC
+	</select> 
+	
+	<select id="deleteByIds" parameterType="arraylist"> 
+		DELETE FROM CDS_PRISON_JS A
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+</mapper>

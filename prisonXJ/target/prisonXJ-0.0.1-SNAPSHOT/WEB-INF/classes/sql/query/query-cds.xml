@@ -1,0 +1,5481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="cds_toDay_foreignpeople_count">
+		<desc>各监狱今日外来人员数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   count(fpd_people_name) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN 
+				 (SELECT fpd_cus_number,
+				 	     fpd_people_name 
+				 	FROM v_foreign_people_dtls 
+				   WHERE TRUNC(fpd_enter_time) = TRUNC(SYSDATE))
+				  ON (obd_orga_idnty = fpd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_inside_foreignpeople_count">
+		<desc>各监狱今日在监外来人员数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   count(fpd_people_name) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN 
+				 (SELECT fpd_cus_number,
+				 	     fpd_people_name 
+				 	FROM v_foreign_people_dtls 
+				   WHERE TRUNC(fpd_enter_time) = TRUNC(SYSDATE) AND
+				   	     (fpd_enter_time >= fpd_leave_time or fpd_leave_time is null))
+				 ON (obd_orga_idnty = fpd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_outPrison_foreignpeople_count">
+		<desc>各监狱今日离监外来人员数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   count(fpd_people_name) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN 
+				 (SELECT fpd_cus_number,
+				 	     fpd_people_name 
+				 	FROM v_foreign_people_dtls 
+				   WHERE TRUNC(fpd_enter_time) = TRUNC(SYSDATE) AND
+				   	     fpd_enter_time # fpd_leave_time AND 
+				         fpd_leave_time IS NOT NULL)
+				 ON (obd_orga_idnty = fpd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_wait_foreignpeople_count">
+		<desc>各监狱今日待进外来人员数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   count(fpd_people_name) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN 
+				 (SELECT fpd_cus_number,
+				 	     fpd_people_name 
+				 	FROM v_foreign_people_dtls 
+				   WHERE TRUNC(fpd_oprtn_time) = TRUNC(SYSDATE) AND
+				   	     fpd_enter_time is NULL AND 
+				         fpd_leave_time is NULL)
+				  ON (obd_orga_idnty = fpd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_foreign_queryForeignPeopleCount">
+		<desc>查询今日外来人员</desc>
+		<sql>
+			SELECT 'totalCount' AS key, COUNT(fpd_people_name) AS count
+			FROM (SELECT fpd_people_name
+                    FROM v_foreign_people_dtls
+                  WHERE (TRIM(?) is null or fpd_cus_number = ?)
+                    AND TRUNC(fpd_enter_time) = TRUNC(SYSDATE))
+			UNION ALL
+			SELECT 'insideCount' AS key, COUNT(fpd_people_name) AS count
+			FROM (SELECT fpd_people_name
+                    FROM v_foreign_people_dtls
+                  WHERE (TRIM(?) is null or fpd_cus_number = ?)
+                    AND TRUNC(fpd_enter_time) = TRUNC(SYSDATE)
+                    AND (fpd_enter_time >= fpd_leave_time or fpd_leave_time is null))
+			UNION ALL
+			SELECT 'leaveCount' AS key, COUNT(fpd_people_name) AS count
+			FROM (SELECT fpd_people_name
+                    FROM v_foreign_people_dtls
+                  WHERE (TRIM(?) is null or fpd_cus_number = ?)
+                    AND TRUNC(fpd_enter_time) = TRUNC(SYSDATE)
+                    AND (fpd_enter_time >= fpd_leave_time or fpd_leave_time is not null))
+            UNION ALL
+			SELECT 'waitCount' AS key, COUNT(fpd_people_name) AS count
+			FROM (SELECT fpd_people_name
+                    FROM v_foreign_people_dtls
+                  WHERE (TRIM(?) is null or fpd_cus_number = ?)
+                 	AND TRUNC(fpd_oprtn_time) = TRUNC(SYSDATE)
+					AND fpd_enter_time is NULL
+					AND fpd_leave_time is NULL)          
+		</sql>
+	</item>
+	
+	<item id="cds_foreign_people_dtls_info">
+		<desc>查询外来人员信息</desc>
+		<Const key="FPD_SEX_INDC_CH">sexThr</Const>
+		<Const key="FPD_ID_CARD_TYPE_INDC_CH">idCardType</Const>
+		<Const key="FPD_OPRTN_POLICE_NAME">user</Const>
+		<sql>
+		 SELECT DISTINCT fpd_cus_number,
+		 		obd_orga_name,
+				fpd_record_id,
+				fpd_rgstr_idnty,
+				fpd_id_card_type_indc,
+				fpd_id_card_type_indc AS fpd_id_card_type_indc_ch,
+				fpd_id_card_code,
+				fpd_people_name,
+				fpd_sex_indc,
+				fpd_sex_indc AS fpd_sex_indc_ch,
+				fpd_age,
+				fpd_phone,
+				fpd_direction,
+				fpd_family_addrs,
+				fpd_accmpny_police_idnty,
+				fpd_accmpny_police_name,
+				fpd_oprtn_police_name,
+				fpd_oprtn_time,
+				fpd_reason,
+				fpd_driver_indc,
+				fpd_id_img_dir,
+				fpd_local_img_dir,
+				fpd_check_stts_indc,
+				fpd_remark,
+				fpd_crte_time,
+				pbd_police_idnty,
+				pbd_drptmnt,
+				pbd_pstn_name,
+				pbd_fixed_phone,
+				pbd_ip_phone,
+				pbd_phone,
+				pbd_short_phone,
+				pbd_fax,
+				pbd_talk_num,
+				pbd_email,
+				pbd_police_cmmnct
+				FROM cds_foreign_people_dtls
+				LEFT JOIN v_police_base_dtls
+				ON (TRIM(fpd_accmpny_police_idnty) = TRIM(pbd_police_idnty)) LEFT JOIN
+				com_organization_base_dtls ON
+				(fpd_cus_number = obd_orga_idnty)
+		</sql>
+		<where wid="0">
+			WHERE fpd_cus_number = ?
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null or fpd_cus_number = ?) AND
+				  (TRIM(?) is null or fpd_id_card_code = ?) AND
+				  (TRIM(?) is null or fpd_accmpny_police_idnty = ?)
+		</where>
+		<order oid="0">
+			ORDER BY fpd_crte_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_foreign_people_inout_info">
+		<desc>外来人员进出记录信息</desc>
+		<sql>
+		   SELECT DISTINCT 
+				   fpi_cus_number,
+				   fpi_rgstr_idnty,
+				   fpi_inout_idnty,
+				   fpi_enter_time,
+				   fpi_leave_time 
+	  FROM (SELECT fpi_cus_number,
+				   fpi_rgstr_idnty,
+				   fpi_inout_idnty,
+				   fpi_enter_time,
+				   fpi_leave_time,
+				   fpi_crte_time,
+				   fpi_crte_user_id
+			FROM cds_foreign_people_inout
+			UNION ALL
+			SELECT fpi_cus_number,
+				   fpi_rgstr_idnty,
+				   fpi_inout_idnty,
+				   fpi_enter_time,	
+				   fpi_leave_time,
+				   fpi_crte_time,
+				   fpi_crte_user_id
+			FROM cds_foreign_people_inout_h)
+		</sql>
+		<where wid="0">
+			WHERE fpi_cus_number = ? AND
+				  fpi_rgstr_idnty = ?
+		</where>
+		<order oid="0">
+			ORDER BY fpi_enter_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_foreignpeople_fpd_id_card_code">
+		<desc>外来人员证件号</desc>
+		<sql>
+			SELECT fpd_cus_number,
+			 	   fpd_id_card_code
+			  FROM cds_foreign_people_dtls
+			 WHERE fpd_cus_number = ? AND
+			  	   fpd_id_card_code is not null
+		  GROUP BY fpd_id_card_code,fpd_cus_number
+		</sql>
+	</item>
+	
+	<item id="cds_foreignpeople_fpd_accmpny_police">
+		<desc>外来人员陪同民警</desc>
+		<sql>
+			SELECT fpd_cus_number,
+				   fpd_accmpny_police_idnty,
+			 	   MAX(fpd_accmpny_police_name) AS fpd_accmpny_police_name
+			  FROM cds_foreign_people_dtls
+			 WHERE fpd_cus_number = ? AND
+			  	   fpd_accmpny_police_idnty is not null
+		  GROUP BY fpd_accmpny_police_idnty,fpd_cus_number
+		</sql>
+	</item>
+	
+	<item id="cds_foreignpeople_queryPeopleList">
+		<desc>外来人员查询,#代表小于号$代表大于号</desc>
+		<Const key="FPD_SEX_INDC">sexThr</Const>
+		<Const key="FPD_ID_CARD_TYPE_INDC">idCardType</Const>
+		<Const key="FPD_DRIVER_INDC">fpdDriverIndc</Const>
+		<sql>
+		 SELECT fpd_cus_number,
+		 		obd_orga_name,
+				fpd_record_id,
+				fpd_rgstr_idnty,
+				fpi_inout_idnty,
+				fpd_id_card_type_indc,
+				fpd_id_card_code,
+				fpd_people_name,
+				fpd_sex_indc,
+				fpd_age,
+				fpd_phone,
+				fpd_direction,
+				fpd_family_addrs,
+				fpd_accmpny_police_name,
+				fpd_oprtn_police_name,
+				fpd_oprtn_time,
+				fpd_reason,
+				fpd_driver_indc,
+				fpd_id_img_dir,
+				fpd_local_img_dir,
+				TO_CHAR(fpd_enter_time,'yyyy-mm-dd hh24:mi:ss') fpd_enter_time,
+				TO_CHAR(fpd_leave_time,'yyyy-mm-dd hh24:mi:ss') fpd_leave_time,
+				fpd_check_stts_indc,
+				fpd_remark,
+				pbd_police_idnty,
+				pbd_drptmnt,
+				pbd_pstn_name,
+				pbd_fixed_phone,
+				pbd_ip_phone,
+				pbd_phone,
+				pbd_short_phone,
+				pbd_fax,
+				pbd_talk_num,
+				pbd_email,
+				pbd_police_cmmnct
+				FROM v_foreign_people_dtls
+				LEFT JOIN v_police_base_dtls
+				ON (TRIM(fpd_accmpny_police_idnty) = TRIM(pbd_police_idnty)) LEFT JOIN
+				com_organization_base_dtls ON
+				(fpd_cus_number = obd_orga_idnty)
+		</sql>
+		<where wid="0">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?)) AND
+			(TRIM(?) is null or TO_CHAR(fpd_enter_time,'YYYY-MM-DD hh24:mi:ss') $ ?) AND
+			(TRIM(?) is null or TO_CHAR(fpd_enter_time,'YYYY-MM-DD hh24:mi:ss') # ?) AND
+			(TRIM(?) is null or TO_CHAR(fpd_leave_time,'YYYY-MM-DD hh24:mi:ss') $ ?) AND
+			(TRIM(?) is null or TO_CHAR(fpd_leave_time,'YYYY-MM-DD hh24:mi:ss') # ?) AND
+			(TRIM(?) is null or fpd_record_id = ?) AND
+			(TRIM(? ||  ?) is null  OR FPD_REASON = '施工')
+		</where>
+		<!-- 今日外来人员 -->
+		<where wid="1">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) = TRUNC(SYSDATE)
+		</where>
+		<!-- 在监外来人员 -->
+		<where wid="2">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) = TRUNC(SYSDATE)
+			AND (fpd_enter_time >= fpd_leave_time or fpd_leave_time is null)
+		</where>
+		<!-- 离监外来人员 -->
+		<where wid="3">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) = TRUNC(SYSDATE)
+			AND fpd_enter_time # fpd_leave_time
+			AND fpd_leave_time IS NOT NULL
+		</where>
+		<where wid="4">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fpd_people_name=?
+		</where>
+		<where wid="5">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fpd_enter_time BETWEEN to_date(?,'YYYY-MM-DD HH24:mi:ss') AND to_date(?,'YYYY-MM-DD HH24:mi:ss')
+		</where>
+		<where wid="6">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) = to_date(?,'YYYY-MM-DD')
+			AND (TRIM(?) is null  OR FPD_REASON ='施工' )
+		</where>
+		<where wid="7">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) = to_date(?,'YYYY-MM-DD')
+			AND fpd_direction = ?
+		</where>
+		<where wid="8">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fpd_record_id = ?
+		</where>
+		<!-- 离监外来人员 -->
+		<where wid="9">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_oprtn_time) = TRUNC(SYSDATE)
+			AND fpd_enter_time is NULL
+			AND fpd_leave_time is NULL
+		</where>
+		<where wid="10">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) BETWEEN to_date(?,'YYYY-MM-DD') AND to_date(?,'YYYY-MM-DD')
+		</where>
+		<where wid="11">
+			WHERE fpd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fpd_enter_time) BETWEEN to_date(?,'YYYY-MM-DD') AND to_date(?,'YYYY-MM-DD')
+			AND fpd_direction = ?
+		</where>
+		<order oid="0">
+			ORDER BY fpd_enter_time DESC nulls last
+		</order>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreignpeople">
+		<desc>各时段监内外来人员人数</desc>
+		<sql>
+			SELECT count(*) AS count FROM v_foreign_people_base
+		</sql>
+		<!-- 外来人员按一天24小时统计 -->
+		<where wid="0">
+			WHERE (TRIM(?) is null or fpd_cus_number = ?) AND
+				  TRUNC(fpd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				  fpd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				  (fpd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按天统计 -->
+		<where wid="1">
+			WHERE (TRIM(?) is null or fpd_cus_number = ?) AND
+				  TRUNC(fpd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				  TRUNC(fpd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				  (TRUNC(fpd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按月统计 -->
+		<where wid="2">
+			WHERE (TRIM(?) is null or fpd_cus_number = ?) AND
+				  TRUNC(fpd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				  TRUNC(fpd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				  (TRUNC(fpd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按年统计 -->
+		<where wid="3">
+			WHERE (TRIM(?) is null or fpd_cus_number = ?) AND
+				  EXTRACT(year from fpd_enter_time) >= ? AND
+				  EXTRACT(year from fpd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				  (EXTRACT(year from fpd_leave_time) >= ? or 
+				   fpd_leave_time is null)
+		</where>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreignpeople_prison">
+		<desc>各监狱监内外来人员人数</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name AS hour,
+				   obd_seq,
+		</sql>
+		<!-- 外来人员按一天24小时统计 -->
+		<where wid="0">
+				    (SELECT count(*) FROM v_foreign_people_base
+				    WHERE obd_orga_idnty = fpd_cus_number AND
+				    TRUNC(fpd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				    fpd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				    (fpd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				     fpd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+		<!-- 外来人员按天统计 -->
+		<where wid="1">
+				   (SELECT count(*) FROM v_foreign_people_base
+				    WHERE obd_orga_idnty = fpd_cus_number AND
+				     TRUNC(fpd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				     TRUNC(fpd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				     (TRUNC(fpd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				     fpd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+		<!-- 外来人员按月统计 -->
+		<where wid="2">
+				   (SELECT count(*) FROM v_foreign_people_base
+				    WHERE obd_orga_idnty = fpd_cus_number AND
+				    TRUNC(fpd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				    TRUNC(fpd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				    (TRUNC(fpd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				     fpd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+		<!-- 外来人员按年统计 -->
+		<where wid="3">
+				   (SELECT count(*) FROM v_foreign_people_base
+				    WHERE obd_orga_idnty = fpd_cus_number AND
+				    EXTRACT(year from fpd_enter_time) >= ? AND
+				    EXTRACT(year from fpd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				    (EXTRACT(year from fpd_leave_time) >= ? or 
+				     fpd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreignpeople_area">
+		<desc>查询监内各监区监内外来人员数量</desc>
+		<sql>
+			SELECT fpd_direction AS hour,
+				   MAX(dbd_dprtmnt_id) AS dbd_dprtmnt_id,
+				   count(*) AS count
+			  FROM v_foreign_people_dtls LEFT JOIN 
+			  	   cds_department_base_dtls ON 
+			  	   (dbd_cus_number = ? AND
+			  	    fpd_direction = dbd_dprtmnt_name)
+		</sql>
+		<!-- 外来人员按一天24小时统计 -->
+		<where wid="0">
+			WHERE fpd_cus_number = ? AND 
+		   		  TRUNC(fpd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				  fpd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				  (fpd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按天统计 -->
+		<where wid="1">
+			WHERE fpd_cus_number = ? AND 
+				  TRUNC(fpd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				  TRUNC(fpd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				  (TRUNC(fpd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按月统计 -->
+		<where wid="2">
+			WHERE fpd_cus_number = ? AND 
+				  TRUNC(fpd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				  TRUNC(fpd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				  (TRUNC(fpd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按年统计 -->
+		<where wid="3">
+			WHERE fpd_cus_number = ? AND 
+				  EXTRACT(year from fpd_enter_time) >= ? AND
+				  EXTRACT(year from fpd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				  (EXTRACT(year from fpd_leave_time) >= ? or 
+				   fpd_leave_time is null)
+		</where>
+		<order oid="0">
+			GROUP BY fpd_direction
+			ORDER BY dbd_dprtmnt_id
+		</order>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreignpeople_info">
+		<desc>查询监内外来人员信息</desc>
+		<sql>
+			SELECT fpd_record_id,
+				   fpd_id_card_code,
+				   fpd_people_name,
+				   fpd_direction,
+				   fpd_accmpny_police_name,
+				   fpd_reason,
+				   fpd_enter_time,
+				   fpd_leave_time
+			  FROM v_foreign_people_dtls
+		</sql>
+		<!-- 外来人员按一天24小时统计 -->
+		<where wid="0">
+		  WHERE fpd_cus_number = ? AND 
+	    	    fpd_direction = ? AND 
+	   		    TRUNC(fpd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				fpd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				(fpd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				 fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按天统计 -->
+		<where wid="1">
+			WHERE fpd_cus_number = ? AND 
+	    	      fpd_direction = ? AND 
+				  TRUNC(fpd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				  TRUNC(fpd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				  (TRUNC(fpd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按月统计 -->
+		<where wid="2">
+			WHERE fpd_cus_number = ? AND 
+	    	      fpd_direction = ? AND 
+				  TRUNC(fpd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				  TRUNC(fpd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				  (TRUNC(fpd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				   fpd_leave_time is null)
+		</where>
+		<!-- 外来人员按年统计 -->
+		<where wid="3">
+			WHERE fpd_cus_number = ? AND 
+	    	      fpd_direction = ? AND 
+	    	      EXTRACT(year from fpd_enter_time) >= ? AND
+				  EXTRACT(year from fpd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				  (EXTRACT(year from fpd_leave_time) >= ? or 
+				   fpd_leave_time is null)
+		</where>
+		<order oid="0">
+			ORDER BY fpd_direction
+		</order>
+	</item>
+	
+	<item id="cds_toDay_foreigncar_count">
+		<desc>各监狱今日外来车辆数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   COUNT(fcd_car_lcns_idnty) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN
+				 (SELECT fcd_cus_number,
+				 	     fcd_car_lcns_idnty 
+				 	FROM v_foreign_car_dtls 
+				   WHERE TRUNC(fcd_enter_time) = TRUNC(SYSDATE))
+				 ON (obd_orga_idnty = fcd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_inside_foreigncar_count">
+		<desc>各监狱今日在监外来车辆数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   COUNT(fcd_car_lcns_idnty) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN
+				 (SELECT fcd_cus_number,
+				 	     fcd_car_lcns_idnty 
+				 	FROM v_foreign_car_dtls 
+				   WHERE TRUNC(fcd_enter_time) = TRUNC(SYSDATE) AND
+				   	     (fcd_enter_time >= fcd_leave_time OR fcd_leave_time IS NULL))
+				 ON (obd_orga_idnty = fcd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_outPrison_foreigncar_count">
+		<desc>各监狱今日离监外来车辆数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   COUNT(fcd_car_lcns_idnty) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN
+				 (SELECT fcd_cus_number,
+				 	     fcd_car_lcns_idnty 
+				 	FROM v_foreign_car_dtls 
+				   WHERE TRUNC(fcd_enter_time) = TRUNC(SYSDATE) AND
+				   	     fcd_leave_time >= fcd_enter_time AND 
+				    	 fcd_leave_time IS NOT NULL)
+				 ON (obd_orga_idnty = fcd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_wait_foreigncar_count">
+		<desc>各监狱今日待进外来车辆数量</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name,
+				   obd_seq,
+				   COUNT(fcd_car_lcns_idnty) AS COUNT
+			FROM com_organization_base_dtls LEFT JOIN
+				 (SELECT fcd_cus_number,
+				 	     fcd_car_lcns_idnty 
+				 	FROM v_foreign_car_dtls 
+				   WHERE TRUNC(fcd_oprtn_time) = TRUNC(SYSDATE) AND
+				   	     fcd_enter_time is NULL AND 
+				    	 fcd_leave_time is NULL)
+				 ON (obd_orga_idnty = fcd_cus_number)
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</sql>
+	</item>
+	
+	<item id="cds_foreign_queryForeignCarCount">
+		<desc>查询今日外来车辆</desc>
+		<sql>
+			SELECT 'totalCount' AS key, COUNT(fcd_rgstr_idnty) AS count
+			FROM v_foreign_car_dtls
+			WHERE (TRIM(?) is null or fcd_cus_number = ?)
+			AND TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+			UNION ALL
+			SELECT 'insideCount' AS key, COUNT(fcd_rgstr_idnty) AS count
+			FROM v_foreign_car_dtls
+			WHERE (TRIM(?) is null or fcd_cus_number = ?)
+			AND TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+			AND (fcd_enter_time >= fcd_leave_time OR fcd_leave_time IS NULL)
+			UNION ALL
+			SELECT 'leaveCount' AS key, COUNT(fcd_rgstr_idnty) AS count
+			FROM v_foreign_car_dtls
+			WHERE (TRIM(?) is null or fcd_cus_number = ?)
+			AND TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+			AND fcd_leave_time>= fcd_enter_time
+			AND fcd_leave_time IS NOT NULL
+			UNION ALL
+			SELECT 'waitCount' AS key, COUNT(fcd_rgstr_idnty) AS count
+			FROM v_foreign_car_dtls
+			WHERE (TRIM(?) is null or fcd_cus_number = ?)
+			AND TRUNC(fcd_oprtn_time) = TRUNC(SYSDATE)
+			AND fcd_enter_time is NULL
+			AND fcd_leave_time is NULL
+		</sql>
+	</item>
+	
+	<item id="cds_ForeignCarCount_InPrison">
+	    <desc>查询当前在监车辆</desc>
+	    <sql>
+	        SELECT  'insideCount' AS key,
+	                 COUNT(fcd_rgstr_idnty) AS count
+			FROM     v_foreign_car_dtls
+			WHERE    fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND     TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+			AND     (fcd_enter_time >= fcd_leave_time OR fcd_leave_time IS NULL)
+	    </sql>
+	</item>
+	
+	<item id="cds_foreign_car_in_prison_query">
+	    <desc>在监最多外来车辆查询</desc>
+	    <sql>
+	      SELECT  fcip_car_max 
+	      FROM    cds_foreign_car_in_prison
+	    </sql>
+	    <where wid="0">
+	      WHERE (TRIM(?) is null or fcip_cus_number = ?)
+	    </where>
+	</item>
+	
+	<item id="cds_foreign_car_dtls_info">
+		<desc>查询车辆登记信息</desc>
+		<Const key="FCD_CAR_TYPE_INDC_CH">carType</Const>
+		<Const key="FCD_SEX_INDC_CH">sexThr</Const>
+		<sql>
+		 SELECT DISTINCT fcd_cus_number,
+		 	    obd_orga_name,
+				fcd_rgstr_idnty,
+				fcd_card_idnty,
+				fcd_outside_idnty,
+				fcd_car_lcns_idnty,
+				fcd_car_cmpny,
+				fcd_car_type_indc,
+				fcd_car_type_indc AS fcd_car_type_indc_ch,
+				fcd_car_color,
+				fcd_reason,
+				fcd_direction,
+				fcd_cargo,
+				fcd_driver_lcns,
+				fcd_driver_name,
+				fcd_sex_indc,
+				fcd_sex_indc AS fcd_sex_indc_ch,
+				fcd_age,
+				fcd_phone,
+				fcd_driver_id_img_dir,
+				fcd_driver_local_img_dir,
+				fcd_lead_police_idnty,
+				fcd_lead_police_name,
+				fcd_check_idnty,
+				fcd_oprtn_time,
+				fcd_oprtn_police_name,
+				fcd_check_stts_indc,
+				fcd_chsss_in_img_dir,
+				fcd_chsss_out_img_dir,
+				fcd_in_img_dir,
+				fcd_out_img_dir,
+				fcd_remark,
+				fcd_crte_time,
+				pbd_police_idnty,
+				pbd_drptmnt,
+				pbd_pstn_name,
+				pbd_fixed_phone pbd_ip_phone,
+				pbd_phone,
+				pbd_short_phone,
+				pbd_fax,
+				pbd_talk_num,
+				pbd_email
+				FROM cds_foreign_car_dtls
+				LEFT JOIN v_police_base_dtls
+				ON (TRIM(fcd_lead_police_idnty) = TRIM(pbd_police_idnty)) LEFT JOIN
+				com_organization_base_dtls ON
+				(fcd_cus_number = obd_orga_idnty)
+		</sql>
+		<where wid="0">
+			WHERE fcd_cus_number = ?
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null or fcd_cus_number = ?) AND
+				  (TRIM(?) is null or fcd_car_lcns_idnty = ?) AND
+				  (TRIM(?) is null or fcd_lead_police_idnty = ?)
+		</where>
+		<order oid="0">
+			ORDER BY fcd_crte_time DESC
+		</order>
+	</item>
+
+	<item id="cds_foreign_car_inout_info">
+		<desc>外来车辆进出记录信息</desc>
+		<sql>
+			SELECT DISTINCT 
+				   fci_cus_number,
+				   fci_rgstr_idnty,
+				   fci_inout_idnty,
+				   fci_enter_time,
+				   fci_leave_time 
+	   FROM (SELECT fci_cus_number,
+				   fci_rgstr_idnty,
+				   fci_inout_idnty,
+				   fci_enter_time,
+				   fci_leave_time,
+				   fci_crte_time,
+				   fci_crte_user_id
+			FROM cds_foreign_car_inout
+			UNION ALL
+			SELECT fci_cus_number,
+				   fci_rgstr_idnty,
+				   fci_inout_idnty,
+				   fci_enter_time,
+				   fci_leave_time,
+				   fci_crte_time,
+				   fci_crte_user_id
+			FROM cds_foreign_car_inout_h)
+		</sql>
+		<where wid="0">
+			WHERE fci_cus_number = ? AND
+				  fci_rgstr_idnty = ?
+		</where>
+		<order oid="0">
+			ORDER BY fci_enter_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_foreigncar_fcd_car_lcns_idnty">
+		<desc>外来车辆车牌号码</desc>
+		<sql>
+			SELECT fcd_cus_number,
+			 	   fcd_car_lcns_idnty
+			  FROM cds_foreign_car_dtls
+			 WHERE fcd_cus_number = ? AND
+			  	   fcd_car_lcns_idnty is not null
+		  GROUP BY fcd_car_lcns_idnty,fcd_cus_number
+		</sql>
+	</item>
+	
+	<item id="cds_foreigncar_fcd_lead_police">
+		<desc>外来车辆带车民警</desc>
+		<sql>
+			SELECT fcd_cus_number,
+				   fcd_lead_police_idnty,
+			 	   MAX(fcd_lead_police_name) AS fcd_lead_police_name
+			  FROM cds_foreign_car_dtls
+			 WHERE fcd_cus_number = ? AND
+			  	   fcd_lead_police_idnty is not null
+		  GROUP BY fcd_lead_police_idnty,fcd_cus_number
+		</sql>
+	</item>
+	<!--(fcd_lead_police_idnty is null OR TRIM(fcd_lead_police_idnty) = TRIM(pbd_police_idnty)) AND
+	(fcd_lead_police_idnty is not null OR TRIM(fcd_lead_police_name) = TRIM(pbd_police_name))  -->
+	<item id="cds_foreigncar_queryCarList">
+		<desc>外来车辆查询,#代表小于号$代表大于号</desc>
+		<Const key="FCD_CAR_TYPE_INDC_CH">carType</Const>
+		<Const key="FCD_SEX_INDC">sexThr</Const>
+		<Const key="FCA_INSPECT_INDC_CH">fcaInspectIndc</Const>
+		<sql>
+		 SELECT fcd_cus_number,
+		 	    obd_orga_name,
+				fcd_rgstr_idnty,
+				fci_inout_idnty,
+				fcd_card_idnty,
+				fcd_outside_idnty,
+				fcd_car_lcns_idnty,
+				fcd_car_cmpny,
+				fcd_car_type_indc,
+				fcd_car_type_indc AS fcd_car_type_indc_ch,
+				fcd_car_color,
+				fcd_reason,
+				fcd_direction,
+				fcd_cargo,
+				fcd_driver_lcns,
+				fcd_driver_name,
+				fcd_sex_indc,
+				fcd_age,
+				fcd_phone,
+				fcd_driver_id_img_dir,
+				fcd_driver_local_img_dir,
+				fcd_lead_police_name,
+				fcd_check_idnty,
+				fcd_oprtn_time,
+				fcd_oprtn_police_name,
+				fcd_check_stts_indc,
+				TO_CHAR(fcd_enter_time,'YYYY-MM-DD hh24:mi:ss') AS fcd_enter_time,
+				TO_CHAR(fcd_leave_time,'YYYY-MM-DD hh24:mi:ss') AS fcd_leave_time,
+				fcd_chsss_in_img_dir,
+				fcd_chsss_out_img_dir,
+				fcd_in_img_dir,
+				fcd_out_img_dir,
+				fcd_remark,
+				pbd_police_idnty,
+				pbd_drptmnt,
+				pbd_pstn_name,
+				pbd_fixed_phone,
+				pbd_ip_phone,
+				pbd_phone,
+				pbd_short_phone,
+				pbd_fax,
+				pbd_talk_num,
+				pbd_email,
+				pbd_police_cmmnct,
+				fca_police_idnty,
+				fca_people_count,
+				fca_inspect_indc,
+				fca_inspect_indc AS fca_inspect_indc_ch,
+				fca_remark
+				FROM v_foreign_car_dtls
+				LEFT JOIN v_police_base_dtls
+				ON (fcd_cus_number = pbd_cus_number AND
+				TRIM(fcd_lead_police_idnty) = TRIM(pbd_police_idnty)) LEFT JOIN
+				com_organization_base_dtls ON
+				(fcd_cus_number = obd_orga_idnty) LEFT JOIN
+				cds_foreign_car_inspect ON
+				(fcd_cus_number = fca_cus_number AND
+				fcd_rgstr_idnty = fca_rgstr_idnty AND
+				fci_inout_idnty = fca_inout_idnty)
+		</sql>
+		<where wid="0">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?)) AND
+			(TRIM(?) is null or TO_CHAR(fcd_enter_time,'YYYY-MM-DD hh24:mi:ss') $ ?) AND
+			(TRIM(?) is null or TO_CHAR(fcd_enter_time,'YYYY-MM-DD hh24:mi:ss') # ?) AND
+			(TRIM(?) is null or TO_CHAR(fcd_leave_time,'YYYY-MM-DD hh24:mi:ss') $ ?) AND
+			(TRIM(?) is null or TO_CHAR(fcd_leave_time,'YYYY-MM-DD hh24:mi:ss') # ?) AND
+			(TRIM(?) is null or fcd_rgstr_idnty = ?)
+		</where>
+		<!-- 今日外来车辆 -->
+		<where wid="1">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+		</where>
+		<!-- 在监外来车辆 -->
+		<where wid="2">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+			AND (fcd_enter_time >= fcd_leave_time OR fcd_leave_time IS NULL)
+		</where>
+		<!-- 离监外来车辆 -->
+		<where wid="3">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) = TRUNC(SYSDATE)
+			AND fcd_leave_time>= fcd_enter_time
+			AND fcd_leave_time IS NOT NULL
+		</where>
+		<where wid="4">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fcd_car_lcns_idnty=?
+			AND TRUNC(fcd_enter_time)=TRUNC(SYSDATE)
+		</where>
+		<where wid="5">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fcd_enter_time BETWEEN to_date(?,'YYYY-MM-DD HH24:mi:ss') AND to_date(?,'YYYY-MM-DD HH24:mi:ss')
+		</where>
+		<where wid="6">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) = to_date(?,'YYYY-MM-DD')
+		</where>
+		<where wid="7">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) = to_date(?,'YYYY-MM-DD')
+			AND fcd_direction = ?
+		</where>
+		<where wid="8">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fcd_rgstr_idnty = ?
+		</where>
+		<where wid="9">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND fcd_rgstr_idnty=?
+			AND TRUNC(fcd_enter_time)=TRUNC(SYSDATE)
+		</where>
+		<!-- 待进外来车辆 -->
+		<where wid="10">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			      AND TRUNC(fcd_oprtn_time) = TRUNC(SYSDATE) 
+			      AND fcd_enter_time is NULL 
+			      AND fcd_leave_time is NULL
+		</where>
+		<where wid="11">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) BETWEEN to_date(?,'YYYY-MM-DD') AND to_date(?,'YYYY-MM-DD')
+		</where>
+		<where wid="12">
+			WHERE fcd_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?))
+			AND TRUNC(fcd_enter_time) BETWEEN to_date(?,'YYYY-MM-DD') AND to_date(?,'YYYY-MM-DD')
+			AND fcd_direction = ?
+		</where>
+		<order oid="0">
+			ORDER BY fcd_enter_time DESC nulls last
+		</order>
+	</item>
+	
+	
+	<item id="cds_dateCount_inside_foreigncar">
+		<desc>各时段外来车辆人数</desc>
+		<sql>
+			SELECT count(*) AS count FROM v_foreign_car_base
+		</sql>
+		<!-- 外来车辆按一天24小时统计 -->
+		<where wid="0">
+			WHERE (TRIM(?) is null or fcd_cus_number = ?) AND
+				  TRUNC(fcd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				  fcd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				  (fcd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按天统计 -->
+		<where wid="1">
+			WHERE (TRIM(?) is null or fcd_cus_number = ?) AND
+				  TRUNC(fcd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				  TRUNC(fcd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				  (TRUNC(fcd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按月统计 -->
+		<where wid="2">
+			WHERE (TRIM(?) is null or fcd_cus_number = ?) AND
+				  TRUNC(fcd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				  TRUNC(fcd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				  (TRUNC(fcd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按年统计 -->
+		<where wid="3">
+			WHERE (TRIM(?) is null or fcd_cus_number = ?) AND
+				  EXTRACT(year from fcd_enter_time) >= ? AND
+				  EXTRACT(year from fcd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				  (EXTRACT(year from fcd_leave_time) >= ? or 
+				   fcd_leave_time is null)
+		</where>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreigncar_prison">
+		<desc>各监狱外来车辆人数</desc>
+		<sql>
+			SELECT obd_orga_idnty,
+				   obd_orga_name AS hour,
+				   obd_seq,
+		</sql>
+		<!-- 外来车辆按一天24小时统计 -->
+		<where wid="0">
+				   (SELECT count(*) FROM v_foreign_car_base
+				    WHERE obd_orga_idnty = fcd_cus_number AND
+				     TRUNC(fcd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				     fcd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				     (fcd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				     fcd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+		<!-- 外来车辆按天统计 -->
+		<where wid="1">
+				   (SELECT count(*) FROM v_foreign_car_base
+				    WHERE obd_orga_idnty = fcd_cus_number AND
+				     TRUNC(fcd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				     TRUNC(fcd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				     (TRUNC(fcd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				     fcd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+		<!-- 外来车辆按月统计 -->
+		<where wid="2">
+				   (SELECT count(*) FROM v_foreign_car_base
+				    WHERE obd_orga_idnty = fcd_cus_number AND
+				    TRUNC(fcd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				    TRUNC(fcd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				    (TRUNC(fcd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				     fcd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+		<!-- 外来车辆按年统计 -->
+		<where wid="3">
+				   (SELECT count(*) FROM v_foreign_car_base
+				    WHERE obd_orga_idnty = fcd_cus_number AND
+				    EXTRACT(year from fcd_enter_time) >= ? AND
+				    EXTRACT(year from fcd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				    (EXTRACT(year from fcd_leave_time) >= ? or 
+				     fcd_leave_time is null)) AS COUNT
+			FROM com_organization_base_dtls
+		    WHERE obd_parent_id #$ ?
+			GROUP BY obd_orga_name,obd_orga_idnty,obd_seq
+            ORDER BY obd_seq
+		</where>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreigncar_area">
+		<desc>查询监内各监区外来车辆数量</desc>
+		<sql>
+			SELECT fcd_direction AS hour,
+				   MAX(dbd_dprtmnt_id) AS dbd_dprtmnt_id,
+				   count(*) AS count
+			  FROM v_foreign_car_dtls LEFT JOIN 
+			  	   cds_department_base_dtls ON 
+			  	   (dbd_cus_number = ? AND
+			  	    fcd_direction = dbd_dprtmnt_name)
+		</sql>
+		<!-- 外来车辆按一天24小时统计 -->
+		<where wid="0">
+			WHERE fcd_cus_number = ? AND 
+		   		  TRUNC(fcd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				  fcd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				  (fcd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				  fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按天统计 -->
+		<where wid="1">
+			WHERE fcd_cus_number = ? AND 
+				  TRUNC(fcd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				  TRUNC(fcd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				  (TRUNC(fcd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按月统计 -->
+		<where wid="2">
+			WHERE fcd_cus_number = ? AND 
+				  TRUNC(fcd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				  TRUNC(fcd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				  (TRUNC(fcd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按年统计 -->
+		<where wid="3">
+			WHERE fcd_cus_number = ? AND 
+				  EXTRACT(year from fcd_enter_time) >= ? AND
+				  EXTRACT(year from fcd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				  (EXTRACT(year from fcd_leave_time) >= ? or 
+				   fcd_leave_time is null)
+		</where>
+		<order oid="0">
+			 GROUP BY fcd_direction
+			 ORDER BY dbd_dprtmnt_id
+		</order>
+	</item>
+	
+	<item id="cds_dateCount_inside_foreigncar_info">
+		<desc>查询监内外来车辆信息</desc>
+		<sql>
+			SELECT fcd_rgstr_idnty,
+				   fcd_car_lcns_idnty,
+				   fcd_direction,
+				   fcd_driver_name,
+				   fcd_phone,
+				   fcd_lead_police_name,
+				   fcd_enter_time,
+				   fcd_leave_time
+			  FROM v_foreign_car_dtls
+		</sql>
+		<!-- 外来车辆按一天24小时统计 -->
+		<where wid="0">
+			WHERE fcd_cus_number = ? AND 
+	    	      fcd_direction = ? AND 
+	   		      TRUNC(fcd_enter_time) $ to_date(?,'YYYY-MM-DD')-1 AND
+				  fcd_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss')+1/24.0 AND
+				  (fcd_leave_time $= to_date(?,'YYYY-MM-DD HH24:mi:ss') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按天统计 -->
+		<where wid="1">
+			WHERE fcd_cus_number = ? AND 
+	    	      fcd_direction = ? AND 
+				  TRUNC(fcd_enter_time) $= to_date(?,'YYYY-MM-DD')-1 AND
+				  TRUNC(fcd_enter_time) # to_date(?,'YYYY-MM-DD')+1 AND
+				  (TRUNC(fcd_leave_time) $= to_date(?,'YYYY-MM-DD') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按月统计 -->
+		<where wid="2">
+			WHERE fcd_cus_number = ? AND 
+	    	      fcd_direction = ? AND 
+				  TRUNC(fcd_enter_time) >= TO_DATE(?,'YYYY-MM-DD') AND
+				  TRUNC(fcd_enter_time) # add_months(TO_DATE(?,'YYYY-MM-DD'),1) AND
+				  (TRUNC(fcd_leave_time) >= TO_DATE(?,'YYYY-MM-DD') or 
+				   fcd_leave_time is null)
+		</where>
+		<!-- 外来车辆按年统计 -->
+		<where wid="3">
+			WHERE fcd_cus_number = ? AND 
+	    	      fcd_direction = ? AND 
+				  EXTRACT(year from fcd_enter_time) >= ? AND
+				  EXTRACT(year from fcd_enter_time) # to_char(add_months(to_date(?,'YYYY'),12),'YYYY') AND
+				  (EXTRACT(year from fcd_leave_time) >= ? or 
+				   fcd_leave_time is null)
+		</where>
+		<order oid="0">
+			ORDER BY fcd_direction
+		</order>
+	</item>
+	
+	<item id="dvc_queryDoorControlInfo">
+		<desc>查询门禁基础信息信息</desc>
+		<sql>
+			SELECT dcb_cus_number, dcb_ctrl_idnty, dcb_door_idnty,
+			dcb_ip_addrs,dcb_dprtmnt,dcb_name
+			FROM dvc_door_control_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE dcb_dprtmnt is not null
+			AND dcb_cus_number = ?
+			AND dcb_action_indc #$ 3
+			AND dcb_name like '%门%'
+		</where>
+		<order oid="0">
+			ORDER BY dcb_ctrl_idnty,dcb_door_idnty
+		</order>
+	</item>
+	
+	<item id="dvc_queryDoorCtrlDeviceRel">
+		<desc>查询门禁设备关联信息</desc>
+		<sql>
+			SELECT dre_device_idnty, dre_rltn_device_idnty
+			  FROM dvc_device_relation
+		</sql>
+		<where wid="0">
+			WHERE dre_rltn_type_indc = 1
+			  AND dre_cus_number = ?
+		</where>
+		<order oid="0">
+			ORDER BY dre_device_idnty
+		</order>
+	</item>
+
+	<item id="dvc_queryDoorCtrlDprtmnt">
+		<desc>查询门禁部门区域</desc>
+		<sql>
+			SELECT distinct dcb_dprtmnt
+			FROM dvc_door_control_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE dcb_dprtmnt = '老监房'
+			AND dcb_cus_number = ?
+			AND dcb_action_indc #$ 3
+		</where>
+		<order oid="0">
+			ORDER BY dcb_dprtmnt desc
+		</order>
+	</item>
+
+	<item id="dvc_queryPowerNetworkInfo">
+		<desc>查询高压电网基础信息信息</desc>
+		<Const key="PNB_STTS_INDC_CH">pnbSttsIndc</Const>
+		<sql>
+		   SELECT pnb_cus_number,
+			 	  pnb_idnty,
+				  pnb_name,
+				  pnb_ip,
+				  pnb_a_box_voltage/100 AS pnb_a_box_voltage,
+				  pnb_b_box_voltage/100 AS pnb_b_box_voltage,
+				  pnb_power_source_voltage,
+				  pnb_a_box_power_flow,
+				  pnb_b_box_power_flow,
+				  pnb_power_source_flow/10 AS pnb_power_source_flow,
+				  pnb_time,
+				  pnb_stts_indc,
+				  pnb_stts_indc AS pnb_stts_indc_ch
+		     FROM dvc_power_network_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE pnb_cus_number = ?
+		</where>
+		<where wid="1">
+			WHERE pnb_cus_number = ? AND
+				  pnb_idnty = ?
+		</where>
+		<order oid="0">
+			ORDER BY pnb_idnty
+		</order>
+	</item>
+
+	<item id="cds_videoplan_queryPrisoner">
+		<desc>视频监控-重点犯人查询</desc>
+		<sql>
+			SELECT DISTINCT pbd_prsnr_idnty,
+			pbd_prsnr_name,
+			pbd_front_img_dir
+			FROM cds_area_department_relation
+			INNER JOIN v_prisoner_master
+			ON adr_cus_number = pbd_cus_number
+			AND adr_dprtmnt_name = replace(pbd_prsn_area,'南京女子监狱','')
+		</sql>
+		<where wid="0">
+			WHERE (TRIM(?) is null or adr_cus_number = ? )
+			AND (TRIM(?) is null or adr_dprtmnt_id = ? )
+			AND pbd_type_indc = 1
+		</where>
+		<order oid="0">
+			ORDER BY pbd_prsnr_idnty ASC
+		</order>
+	</item>
+
+	<item id="cds_videoplan_queryPolice">
+		<desc>视频监控-值班民警查询</desc>
+		<sql>
+			SELECT DISTINCT pir_police_idnty,
+			                pir_cus_number,
+			                pir_dprtmnt_id,
+			                pir_police_name,
+			                pbd_phone,
+			                pbd_img_dir,
+			                pbd_drptmnt_id,
+			                pbd_pstn_name,
+			                pbd_police_cmmnct,
+			                pbd_talk_num,
+			                pbd_fixed_phone,
+			                pbd_short_phone,
+			                pbd_drptmnt
+			  FROM cds_police_inout_record, v_police_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE pir_cus_number = pbd_cus_number
+			   AND pir_police_idnty = pbd_police_idnty
+			   AND pir_leave_time IS NULL
+			   AND TO_CHAR(pir_brush_date, 'yyyy/MM/dd') =
+			       TO_CHAR(sysdate, 'yyyy/MM/dd')
+			   AND (TRIM(?) is null or pbd_cus_number = ? )
+			   AND (TRIM(?) is null or pbd_drptmnt_id = ? )
+		</where>
+		<order oid="0">
+			ORDER BY pir_police_idnty ASC
+		</order>
+	</item>
+	
+	<item id="cds_ecard_queryWarningRecord">
+		<desc>行为控制-预警信息查询</desc>
+		<sql>
+			 SELECT fwr_cus_number,
+	             fwr_record_id,
+	             fwr_time,
+	             fwr_content,
+	             fwr_people_name,
+	             fwr_area_idnty,
+	             fwr_area_name,
+	             fwr_type_indc,
+	             fwr_remark
+	        FROM cds_flow_warning_record
+		</sql>
+		<where wid="0">
+			WHERE fwr_cus_number = ?
+         	AND fwr_people_name = ?
+         	AND TO_CHAR(FWR_TIME,'YYYY-MM-DD') = ?
+		</where>
+		<order oid="0">
+			ORDER BY fwr_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_ecard_queryPrisonerMeeting">
+		<desc>会见信息-会见信息查询</desc>
+		<Const key="PME_TYPE_INDC">pmeTypeIndc</Const>
+		<sql>
+			SELECT pme_cus_number,
+			       pme_record_id,
+			       pme_prsnr_idnty,
+			       pme_prsnr_name,
+			       pme_type_indc,
+			       pme_start_time,
+			       pme_end_time,
+			       pme_meeting_people,
+			       pcm_remark,
+			       pme_comment,
+			       pcm_repeat_people,
+			       pme_sound_name
+			  FROM cds_prisoner_meeting
+		</sql>
+		<where wid="0">
+			 WHERE pme_cus_number = ?
+			   AND pme_prsnr_idnty = ?
+		</where>
+		<order oid="0">
+			ORDER BY pme_start_time DESC
+		</order>
+	</item>
+	<item id="cds_ecard_queryPrisonerPhone">
+		<desc>亲情电话-亲情电话信息查询</desc>
+		<Const key="PPH_TYPE_INDC">pphTypeIndc</Const>
+		<sql>
+			SELECT pph_cus_number,
+			       pph_record_id,
+			       pph_prsnr_idnty,
+			       pph_prsnr_name,
+			       pph_type_indc,
+			       pph_start_time,
+			       pph_end_time,
+			       pph_phone,
+			       pph_listen_people,
+			       pph_listen_count,
+			       pph_comment,
+			       pph_comment_people,
+			       pph_relative_name,
+			       pph_relation,
+			       pph_sound_name,
+			       pph_remark
+			  FROM cds_prisoner_phone
+		</sql>
+		<where wid="0">
+			 WHERE pph_cus_number = ? AND
+      			   pph_prsnr_idnty = ?
+		</where>
+		<order oid="0">
+			ORDER BY pph_start_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_lableBase_queryInfo">
+		<desc>定位标注-标注信息查询</desc>
+		<sql>
+		   SELECT lbd_cus_number,
+                  lbd_area_id,
+                  lbd_label_name,
+                  lbd_type_indc,
+                  lbd_device_idnty,
+                  lbd_devuce_name,
+                  lbd_x_crdnt,
+                  lbd_y_crdnt,
+                  lbd_z_crdnt,
+                  lbd_icon,
+                  lbd_font,
+                  lbd_lod_min,
+                  lbd_lod_max,
+                  lbd_drive_up,
+                  lbd_font_color,
+                  lbd_font_bkcolor,
+                  lbd_remark,
+                  lbd_crte_time,
+                  lbd_crte_user_id,
+                  lbd_updt_time,
+                  lbd_updt_user_id
+            FROM cds_lable_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE lbd_cus_number = ? AND
+      			   lbd_area_id = ? AND
+      			   lbd_type_indc = ?
+		</where>
+		<order oid="0">
+			 ORDER BY lbd_area_id DESC
+		</order>
+	</item>
+	
+	<item id="cds_lableBase_queryPrisonerInfo">
+		<desc>定位标注-罪犯信息查询</desc>
+		<sql>
+		   SELECT pbd_cus_number,
+		   		  pbd_prsnr_idnty AS deviceId,
+		   		  pbd_prsnr_name AS deviceName
+            FROM v_prisoner_master
+		</sql>
+		<where wid="0">
+			 WHERE pbd_cus_number = ? 
+		</where>
+		<order oid="0">
+			 ORDER BY pbd_prsnr_name DESC
+		</order>
+	</item>
+
+	<item id="cds_query_prisoner_bed_info">
+		<desc>定位标注-监舍床位查询</desc>
+		<sql>
+			SELECT pbe_cus_number, 
+			       pbe_bed_id 	AS deviceId, 
+			       pbe_bed_name AS deviceName
+			  FROM cds_prisoner_bed
+		</sql>
+		<where wid="0">
+			 WHERE pbe_cus_number = ?
+			   AND pbe_area_id = ?
+		</where>
+		<order oid="0">
+			 ORDER BY pbe_bed_id
+		</order>
+	</item>
+
+	<item id="cds_lableBase_queryAlertorInfo">
+		<desc>定位标注-报警器信息查询</desc>
+		<sql>
+		   SELECT abd_cus_number,
+		   		  abd_idnty AS deviceId,
+		   		  abd_name AS deviceName
+            FROM dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ?
+			   AND abd_action_indc #$ 3
+		</where>
+		<where wid="1">
+			 WHERE abd_cus_number = ?
+			   AND abd_area_id = ?
+			   AND abd_action_indc #$ 3
+		</where>
+		<where wid="2">
+			 WHERE abd_cus_number = ?
+			   AND abd_area_id IN(?,-1)
+			   AND abd_action_indc #$ 3
+		</where>
+		<where wid="3">
+			 WHERE abd_cus_number = ?
+			   AND abd_area_id = ?
+			   AND abd_action_indc #$ 3
+			   AND abd_idnty NOT IN (SELECT lbd_device_idnty
+			                           FROM cds_lable_base_dtls
+			                          WHERE lbd_cus_number = ?
+			                            AND lbd_type_indc = 3)
+		</where>
+		<order oid="0">
+			 ORDER BY abd_name DESC
+		</order>
+	</item>
+
+	<item id="cds_lableBase_queryRoomInfo">
+		<desc>定位标注-门禁信息查询</desc>
+		<sql>
+		   SELECT dcb_cus_number,
+		   		  (dcb_ctrl_idnty||','||dcb_door_idnty) AS deviceId,
+		   		  dcb_name AS deviceName
+            FROM dvc_door_control_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE dcb_cus_number = ? 
+			 AND   dcb_action_indc #$ 3
+		</where>
+		<where wid="1">
+			 WHERE dcb_cus_number = ? 
+			   AND dcb_area_id = ?
+			   AND dcb_action_indc #$ 3
+		</where>
+		<where wid="2">
+			 WHERE dcb_cus_number = ? 
+			   AND dcb_area_id IN(?,-1)
+			   AND dcb_action_indc #$ 3
+		</where>
+		<where wid="3">
+			 WHERE dcb_cus_number = ? 
+			   AND dcb_area_id = ?
+			   AND dcb_action_indc #$ 3
+			   AND (dcb_ctrl_idnty||','||dcb_door_idnty) NOT IN (SELECT lbd_device_idnty
+			                           FROM cds_lable_base_dtls
+			                          WHERE lbd_cus_number = ?
+			                            AND lbd_type_indc = 2)
+		</where>
+		<order oid="0">
+			 ORDER BY dcb_name DESC
+		</order>
+	</item>
+
+	<item id="cds_lableBase_queryViewInfo">
+		<desc>定位标注-视角信息查询</desc>
+		<sql>
+		   SELECT vfu_cus_number,
+		   		  vfu_view_id AS deviceId,
+		   		  vfu_view_name AS deviceName,
+		   		  vfu_view_type
+            FROM cds_view_func
+		</sql>
+		<where wid="0">
+			 WHERE vfu_cus_number = ? AND
+			 	   vfu_parent_view_id = ? AND
+			 	   vfu_view_type = ?
+		</where>
+		<order oid="0">
+			 ORDER BY vfu_view_name DESC
+		</order>
+	</item>
+	
+	<item id="cds_lableBase_queryPowerNetworkInfo">
+		<desc>定位标注-高压电网信息查询</desc>
+		<sql>
+			SELECT pnb_cus_number,
+				   pnb_idnty AS deviceId,
+				   pnb_name AS deviceName
+			FROM dvc_power_network_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE pnb_cus_number = ?
+		</where>
+		<order oid="0">
+			ORDER BY pnb_idnty
+		</order>
+	</item>
+
+	<item id="cds_query_viewMenu_Tree">
+		<desc>视角菜单信息查询</desc>
+		<sql>
+	      SELECT a.vfu_view_id,
+	             a.vfu_view_name,
+	             a.vfu_view_type,
+	             a.vfu_srno,
+	             a.vfu_area_id,
+	             b.vfu_view_name AS parent_name
+	        FROM cds_view_func a
+	        LEFT JOIN cds_view_func b
+	          ON a.vfu_parent_view_id = b.vfu_view_id
+	       WHERE a.vfu_view_id #$ 1
+		</sql>
+		<where wid="0">
+			 AND a.vfu_cus_number=?
+		</where>
+		<where wid="1">
+			 AND a.vfu_cus_number=? 
+			 AND a.vfu_view_type=?
+		</where>
+		<order oid="0">
+			ORDER BY a.vfu_view_id, a.vfu_srno desc
+		</order>
+	</item>
+
+	<item id="cds_viewMenu_queryInfo">
+		<desc>视角菜单配置-视角信息查询</desc>
+		<sql>
+		   SELECT vfu_cus_number,
+		   		  vfu_view_id,
+		   		  vfu_view_name,
+		   		  vfu_view_type,
+		   		  vfu_area_id,
+		   		  vfu_x_crdnt,
+		   		  vfu_y_crdnt,
+		   		  vfu_z_crdnt,
+		   		  vfu_pitch_crdnt,
+		   		  vfu_rotate_crdnt,
+		   		  vfu_3d_idnty,
+		   		  vfu_icon_desc,
+		   		  vfu_parent_view_id,
+		   		  vfu_htky_desc,
+		   		  vfu_srno,
+		   		  vfu_remark,
+		   		  vfu_crtd_user_id,
+	   		  	  vfu_crtd_date,
+	   		   	  vfu_updtd_user_id,
+	   		  	  vfu_updtd_date
+            FROM cds_view_func
+		</sql>
+		<where wid="0">
+			 WHERE vfu_cus_number = ? AND
+			 	   vfu_view_type #$ 0
+		</where>
+		<where wid="1">
+			WHERE vfu_cus_number=? AND vfu_view_type=?
+		</where>
+		<order oid="0">
+			 ORDER BY vfu_view_name DESC
+		</order>
+		<order oid="1">
+			 ORDER BY a.vfu_view_id, a.vfu_srno desc
+		</order>
+	</item>
+	
+	<item id="cds_query_viewMenu_points">
+		<desc>查询视角菜单表的坐标点信息</desc>
+		<sql>
+		   SELECT vfu_view_id,
+		   		  vfu_view_name,
+		   		  vfu_x_crdnt,
+		   		  vfu_y_crdnt,
+		   		  vfu_z_crdnt,
+		   		  vfu_pitch_crdnt,
+		   		  vfu_rotate_crdnt
+            FROM cds_view_func
+		</sql>
+		<where wid="0">
+			WHERE vfu_cus_number=? AND vfu_view_type=?
+		</where>
+		<order oid="0">
+			 ORDER BY vfu_view_id DESC
+		</order>
+	</item>
+	
+	<item id="cds_query_areaInfo_by_parentId">
+		<desc>根据父类查询子地区信息</desc>
+		<sql>
+			SELECT abd_area_id, 
+			       abd_area_name
+			FROM cds_area_base_dtls 
+		</sql>
+		<where wid="0">
+			WHERE abd_cus_number=? AND abd_parent_area_id IS NULL
+		</where>
+		<where wid="1">
+			WHERE abd_cus_number=? AND abd_parent_area_id=?
+		</where>
+		<where wid="2">
+			WHERE abd_cus_number=? 
+		</where>
+		<order oid="0">
+			ORDER BY abd_srno 
+		</order>
+	</item>
+	
+	<item id="cds_areaBase_queryInfo">
+		<desc>视角菜单配置-区域信息查询</desc>
+		<sql>
+		   SELECT abd_cus_number,
+		   		  abd_area_id,
+		   		  abd_area_name,
+		   		  abd_type_indc,
+		   		  abd_level_indc,
+		   		  abd_map_name,
+		   		  abd_parent_area_id,
+		   		  abd_x_crdnt,
+		   		  abd_y_crdnt,
+		   		  abd_z_crdnt,
+		   		  abd_pitch_crdnt,
+		   		  abd_rotate_crdnt,
+		   		  abd_3d_idnty,
+		   		  abd_remark,
+		   		  abd_crte_time,
+		   		  abd_crte_user_id,
+		   		  abd_updt_time,
+		   		  abd_updt_user_id
+            FROM cds_area_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ? 
+		</where>
+		<order oid="0">
+			 ORDER BY abd_area_name DESC
+		</order>
+	</item>
+
+	<item id="sys_query_srno_by_pid">
+		<desc>视角菜单配置-查询父菜单下的子级最大的排序Id</desc>
+		<sql>
+			SELECT MAX(vfu_srno) srno
+			  FROM cds_view_func
+		</sql>
+		<where wid="0">
+			 WHERE vfu_cus_number = ?
+			   AND vfu_parent_view_id = ?
+			    OR vfu_view_id = ?
+		</where>
+	</item>
+
+	<item id="cds_graphLabel_queryInfo">
+		<desc>图形标注-查询图形信息</desc>
+		<sql>
+		  	SELECT gla_cus_number,
+			       gla_area_id,
+			       gla_type_indc,
+			       gla_device_idnty,
+			       gla_device_name,
+			       gla_geom_name,
+			       gla_geom_color,
+			       gla_geom_alarm_color,
+			       gla_point,
+			       gla_font,
+			       gla_font_color,
+			       gla_font_bkcolor,
+			       gla_lod_min,
+			       gla_lod_max,
+			       gla_bkwidth,
+			       gla_gority,
+			       gla_status_indc,
+			       gla_remark,
+			       gla_crte_time,
+			       gla_crte_user_id,
+			       gla_updt_time,
+			       gla_updt_user_id
+			  FROM cds_geom_lable
+		</sql>
+		<where wid="0">
+			 WHERE gla_cus_number = ? 
+		</where>
+		<order oid="0">
+			 ORDER BY gla_device_name
+		</order>
+	</item>
+
+	<item id="cds_graphLabel_queryNetWorkAlertDevice">
+		<desc>图形标注-查询网络报警设备信息</desc>
+		<sql>
+		  	SELECT abd_cus_number,
+		  		   abd_idnty deviceId,
+		  		   abd_name deviceName
+			  FROM dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ? 
+			   AND abd_action_indc #$ 3
+			   AND abd_area_id = ?
+		</where>
+		<order oid="0">
+			 ORDER BY abd_name
+		</order>
+	</item>
+
+	<item id="cds_graphLabel_queryPowerNetworkDevice">
+		<desc>图形标注-查询高压电网设备信息</desc>
+		<sql>
+		  	SELECT pnb_cus_number,
+		  		   pnb_idnty deviceId,
+		  		   pnb_name deviceName
+			  FROM dvc_power_network_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE pnb_cus_number = ?
+			   AND pnb_area = ?
+		</where>
+		<where wid="1">
+			 WHERE pnb_cus_number = ?
+		</where>
+		<order oid="0">
+			 ORDER BY pnb_name
+		</order>
+	</item>
+	
+	<item id="cds_graphLabel_queryInfraredDevice">
+	    <desc>图形标注-查询红外对射设备信息</desc>
+	    <sql>
+	       SELECT   ibi_cus_number,
+	                ibi_idnty deviceId ,
+	                ibi_name  deviceName
+	        FROM    dvc_infrared_base_info
+	    </sql>
+	    <where wid="0">
+	       WHERE    ibi_cus_number = ?
+	    </where>
+	    <order oid="0">
+	      ORDER BY  ibi_idnty
+	    </order>
+	</item>
+	
+	<item id="cds_graphLabel_queryPowerSnakeDevice">
+		<desc>图形标注-查询蛇腹网设备信息</desc>
+		<sql>
+		  	SELECT swi_cus_number,
+		  		   swi_detector_idnty deviceid,
+		  		   swi_detector_idnty deviceName
+			  FROM dvc_snake_wire_info
+		</sql>
+		<where wid="0">
+			 WHERE swi_cus_number = ?			   
+		</where>		
+		<order oid="0">
+			 ORDER BY swi_defense_idnty
+		</order>
+	</item>
+
+	<item id="cds_graphLabel_queryCameraDevice">
+		<desc>图形标注-查询摄像机设备信息</desc>
+		<sql>
+		  	SELECT cbd_cus_number,
+		  		   dvc_camera_base_dtls.id deviceId,
+		  		   cbd_name deviceName
+			  FROM dvc_camera_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE cbd_cus_number = ? 
+			   AND cbd_action_indc #$ 3 
+			   AND cbd_area_id = ?
+			 
+		</where>
+		<order oid="0">
+			 ORDER BY cbd_name
+		</order>
+	</item>
+	
+	<item id="cds_graphLabel_queryArea">
+		<desc>图形标注-查询区域信息</desc>
+		<sql>
+		  	SELECT abd_cus_number,
+		  		   abd_area_id deviceId,
+		  		   abd_area_name deviceName
+			  FROM cds_area_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ? AND
+			 	   abd_area_id = ?
+		</where>
+		<order oid="0">
+			 ORDER BY abd_srno
+		</order>
+	</item>
+
+	<item id="query_cds_evidence_info_by_userid">
+		<desc>根据用户编号查询已保存的证据信息</desc>
+		<Const key="FILE_TYPE">fileType</Const>
+		<Const key="EIN_CONTENT_TYPE_INDC">contentType</Const>
+		<Const key="STATUS">einStatus</Const>
+		<Const key="USER_NAME">user</Const>
+		<sql>
+			SELECT ein_cus_number,
+				   ein_title,
+			       cds_evidence_info.id as id,
+			       ein_content_type_indc,
+			       ein_content_desc,
+				   ein_problem,				       
+			       ein_file_type_indc,
+			       ein_file_type_indc AS file_type,
+			       ein_addrs,
+			       ein_file_name,
+			       ein_file_path,
+			       ein_crte_time,
+			       ein_crte_user_id, 
+			       ein_crte_user_id AS user_name,
+			       ein_stts_indc,
+			       ein_stts_indc  AS status
+			FROM  cds_evidence_info
+		</sql>
+		<where wid="0">
+			WHERE (TRIM(?) is null OR ein_cus_number = ?) 
+			AND ein_stts_indc = ?
+			AND ein_content_type_indc = ?
+			AND (TRIM(?) is null OR ein_crte_user_id = ?)
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null OR ein_cus_number = ?) 
+			AND (TRIM(?) is null OR ein_stts_indc = ?)
+			AND (TRIM(?) is null OR ein_file_type_indc = ?)
+			AND (TRIM(?) is null OR ein_crte_user_id = ?)
+			AND (TRIM(?) is null OR trunc(ein_crte_time)  $= to_date(?,'YYYY-MM-DD'))
+			AND (TRIM(?) is null OR trunc(ein_crte_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="2">
+			WHERE ein_cus_number=? 
+			AND (TRIM(?) is null OR ein_file_type_indc = ?)
+			AND (TRIM(?) is null OR trunc(ein_crte_time)  $= to_date(?,'YYYY-MM-DD'))
+			AND (TRIM(?) is null OR trunc(ein_crte_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="3">
+			 WHERE ein_cus_number = ? AND
+			 	   ein_crte_time BETWEEN to_date(?,'YYYY-MM-DD HH24:mi:ss') AND to_date(?,'YYYY-MM-DD HH24:mi:ss') AND
+			 	   ein_crte_user_id in (SELECT column_value FROM table(CDS_PKG_COMMON_FUNC.CDS_F_SPLIT_DATA(?,',')))
+		</where>
+		<order oid="0">
+			ORDER BY ein_crte_time DESC
+		</order>
+	</item>
+	
+	<item id="query_cds_evidence_info_by_id">
+		<desc>根据保存的证据编号查询证据信息</desc>
+		<sql>
+			SELECT ein_cus_number,
+			       cds_evidence_info.id as id,
+			       ein_title,
+			       ein_content_type_indc,
+			       ein_content_desc,
+			       ein_camera_id,
+			       ein_camera_name,
+			       ein_addrs,
+			       ein_file_type_indc,
+			       ein_file_name,
+			       ein_file_path,
+			       ein_crte_time,
+			       ein_crte_user_id
+			FROM cds_evidence_info
+		</sql>
+		<where wid="0">
+			WHERE cds_evidence_info.id=?
+		</where>
+		<where wid="1">
+			WHERE ein_cus_number = ? AND
+				  ein_content_type_indc = ? AND
+				  ein_file_type_indc = ?
+		</where>
+	</item>
+	<item id="cds_query_evidence_init_info">
+		<desc>根据证据编号查询证据简要信息</desc>
+		<Const key="USER_NAME">user</Const>
+		<sql>
+			SELECT ein_cus_number        AS cus_number,
+				   obd_orga_name         AS cus_name,
+				   ein_title             AS title,
+			       ein_content_type_indc AS content_type,
+			       ein_content_desc      AS content_desc,
+			       ein_camera_name       AS camera_name,
+			       cds_evidence_info.id  AS evidence_sqno,
+			       ein_addrs             AS addrs,
+			       ein_file_type_indc    AS file_type,
+			       ein_file_name         AS file_name,
+			       ein_file_path         AS file_path,
+			       ein_crte_time         AS crte_time,
+			       ein_crte_user_id      AS user_id,
+			       ein_crte_user_id      AS user_name,
+			       ein_problem           AS problem 
+			  FROM cds_evidence_info
+		 LEFT JOIN com_organization_base_dtls 
+			    ON (ein_cus_number = obd_orga_idnty)
+		</sql>
+		<where wid="0">
+			 WHERE ein_cus_number = ? AND
+			 	   cds_evidence_info.id = ?
+		</where>
+	</item>
+	
+	<item id="query_cds_evidence_video">
+		<desc>查询视频文件名和路径</desc>
+		<sql>
+			SELECT ein_file_path,
+				   ein_file_name 
+			FROM   cds_evidence_info
+		</sql>
+		<where wid="0">
+			WHERE ein_cus_number = ? AND 
+			      cds_evidence_info.id  = ?
+		</where>
+	</item>
+	
+	<item id="query_cds_police_tree_info">
+		<desc>查询警员基础信息表的警员基础信息</desc>
+		<sql>
+			SELECT pbd_police_idnty, 
+			       pbd_police_name,
+			       pbd_pstn_name,
+			       pbd_drptmnt_id,
+			       pbd_drptmnt
+			FROM v_police_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE pbd_cus_number = ?
+			AND   PBD_ACTION_INDC #$ 3
+		</where>
+		<where wid="1">
+			WHERE pbd_cus_number=?
+			AND   pbd_action_indc #$ 3
+			AND   pbd_drptmnt_id = ?
+		</where>
+		<where wid="2">
+			WHERE pbd_cus_number = ?
+			AND   pbd_action_indc #$ 3
+			AND   (TRIM(?) is null OR pbd_drptmnt_id = ?)
+		</where>
+		<order oid="0">
+			ORDER BY pbd_pstn_name
+		</order>
+		<order oid="1">
+			ORDER BY pbd_drptmnt_id
+		</order>
+	</item>
+	
+	<item id="cds_query_received_supervise_order">
+		<desc>查询已接收到的监督单信息</desc>
+		<sql>
+		  	 SELECT DISTINCT mdo_cus_number, 
+             		cds_monitor_doc.id as id,
+             		mdo_monitor_name, 
+             		mdo_time, 
+             		mdo_addr, 
+             		mdo_problem,
+             		mdo_updt_time,
+             		mod_stts_indc,
+             		mdo_remark,
+             		mrr_status
+      		 FROM   cds_monitor_doc
+			 LEFT JOIN cds_monitor_recipient_relation ON (cds_monitor_doc.id=mrr_monitor_sqno)
+		</sql>
+		<where wid="0">
+			WHERE (TRIM(?) is null OR mrr_cus_number=?)   
+			AND   mod_stts_indc = 1
+			AND   TRUNC(MDO_UPDT_TIME) = TRUNC(SYSDATE)
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null OR mrr_cus_number=?) 
+			AND   mod_stts_indc = 1
+			AND (TRIM(?) is null OR mrr_rcpnt_idnty=?)
+			AND (TRIM(?) is null OR trunc(mdo_updt_time)  $= to_date(?,'YYYY-MM-DD'))
+			AND (TRIM(?) is null OR trunc(mdo_updt_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="2">
+			WHERE (TRIM(?) is null OR mrr_cus_number = ?) AND   
+				  mod_stts_indc = 1 AND   
+				  mrr_status = 0 AND   
+				  mrr_rcpnt_idnty = ?
+		</where>
+		<order oid="0">
+			ORDER BY mdo_updt_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_supervise_notQuery_count">
+		<desc>查询未查看的监督单数量</desc>
+		<sql>
+		  	 SELECT COUNT(*) AS count FROM cds_monitor_recipient_relation
+			 LEFT JOIN cds_monitor_doc ON (mrr_monitor_sqno = cds_monitor_doc.id)
+		</sql>
+		<where wid="0">
+			WHERE mrr_cus_number = ? AND 
+				  mod_stts_indc = ? AND
+				  mrr_status = ? AND
+				  mrr_rcpnt_idnty = ?
+		</where>
+	</item>
+
+	<item id="cds_query_sent_supervise_orders">
+		<desc>查询已创建(0)或已推送(1)的监督单信息</desc>
+		<Const key="USER_NAME">user</Const>
+		<sql>
+		  	SELECT mdo_cus_number,
+			       cds_monitor_doc.id as id,
+			       mdo_monitor_name,
+			       mdo_time,
+			       mdo_addr,
+			       mdo_problem,
+			       mdo_remark,
+			       mdo_crte_time,
+			       mod_stts_indc,
+			       mdo_crte_user_id,
+			       mdo_updt_user_id,
+			       mdo_crte_user_id AS user_name,
+			       mdo_updt_user_id AS user_name,
+			       mdo_updt_time
+			FROM   cds_monitor_doc
+		</sql>
+		<where wid="0">
+		WHERE
+		    (TRIM(?) is null OR mdo_monitor_name like ?)
+		    AND (TRIM(?) is null OR mod_stts_indc = ?)
+			AND (TRIM(?) is null OR trunc(mdo_updt_time)  $= to_date(?,'YYYY-MM-DD'))
+			AND (TRIM(?) is null OR trunc(mdo_updt_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="1">
+		WHERE cds_monitor_doc.id=?
+		</where>
+		<where wid="2">
+		WHERE mod_stts_indc=?
+		</where>
+		<order oid="0">
+		ORDER BY mdo_crte_time 
+		</order>
+		</item>
+	
+	<item id="cds_query_sent_supervise_order">
+		<desc>查询已创建(0)或已推送(1)的监督单信息</desc>
+		<Const key="MDO_CRTE_USER">user</Const>
+		<sql>
+		  	SELECT mdo_cus_number,
+			       cds_monitor_doc.id as id,
+			       mdo_monitor_name,
+			       mdo_time,
+			       mdo_addr,
+			       mdo_problem,
+			       mdo_crte_time,
+			       mod_stts_indc,
+			       mdo_remark,
+			       mdo_updt_time,
+			       mdo_crte_user_id,
+			       mdo_crte_user_id AS mdo_crte_user
+			FROM   cds_monitor_doc
+		</sql>
+		<where wid="0">
+			WHERE  (TRIM(?) is null OR mdo_cus_number=?) 
+			AND    mod_stts_indc = ?
+			AND    TRUNC(mdo_updt_time) = TRUNC(SYSDATE)
+		</where>
+		<where wid="1">
+	       WHERE (TRIM(?) is null OR mdo_cus_number = ?)
+	        AND  mod_stts_indc = ?  
+	        AND (TRIM(?) is null OR mdo_crte_user_id IN(?,?)) 	
+			AND (TRIM(?) is null OR TRUNC(mdo_crte_time)  $= to_date(?,'YYYY-MM-DD'))
+			AND (TRIM(?) is null OR TRUNC(mdo_crte_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="2">
+	       WHERE (TRIM(?) is null OR mdo_cus_number = ?)
+	        AND  mod_stts_indc = ?  
+	        AND (TRIM(?) is null OR mdo_crte_user_id IN (?,?))	
+			AND (TRIM(?) is null OR TRUNC(mdo_updt_time)  $= to_date(?,'YYYY-MM-DD'))
+			AND (TRIM(?) is null OR TRUNC(mdo_updt_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<order oid="0">
+			ORDER BY cds_monitor_doc.id 
+		</order>
+		<order oid="1">
+			ORDER BY mdo_updt_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_monitor_evidence_relation_query">
+		<desc>查询监督但关联的证据编号</desc>
+		<sql>
+		      SELECT   mer_evidence_sqno,
+		      		   ein_title,
+		      		   ein_file_type_indc
+          		FROM   cds_monitor_evidence_relation
+           LEFT JOIN   cds_evidence_info ON (mer_evidence_sqno = cds_evidence_info.id)
+		</sql>
+		<where wid="0">
+			 WHERE mer_cus_number = ? 
+			 AND mer_monitor_sqno = ? 
+		</where>
+		<order oid="0">
+			ORDER BY mer_evidence_sqno 
+		</order>
+	</item>
+	
+	<item id="cds_monitor_evidence_relation_list">
+		<desc>查询监督但关联的证据编号</desc>
+		<Const key="FILE_TYPE">fileType</Const>
+		<Const key="EIN_CONTENT_TYPE_INDC">contentType</Const>
+		<sql>
+		      SELECT   mer_evidence_sqno,
+		      		   ein_title,
+		      		   ein_content_desc,
+		      		   ein_file_type_indc,  
+		      		   ein_file_type_indc  file_type,
+		      		   ein_file_path,
+		      		   ein_content_type_indc
+          		FROM   cds_monitor_evidence_relation
+           LEFT JOIN   cds_evidence_info ON (mer_evidence_sqno = cds_evidence_info.id)
+		</sql>
+		<where wid="0">
+			 WHERE mer_cus_number = ? 
+			 AND mer_monitor_sqno = ? 
+		</where>
+		<order oid="0">
+			ORDER BY mer_evidence_sqno 
+		</order>
+	</item>		
+
+	<item id="cds_monitor_recipient_relation_query">
+		<desc>查询监督但关联的接收人姓名</desc>
+		<sql>
+		    SELECT mrr_rcpnt_idnty,mrr_rcpnt_name 
+		    FROM   cds_monitor_recipient_relation
+		</sql>
+		<where wid="0">
+			 WHERE mrr_cus_number = ? 
+			 AND mrr_monitor_sqno = ? 
+		</where>
+	</item>	
+	
+	<item id="cds_door_record_info">
+		<desc>门禁刷卡信息查询</desc>
+		<Const key="DRD_IN_OUT_INDC_CH">drdInOutIndc</Const>
+		<sql>
+		  	SELECT pir_cus_number,
+		  		   pir_record_id,
+		  		   to_char(pir_brush_date,'YYYY-MM-DD') AS pir_brush_date,
+		  		   pir_brush_idnty,
+		  		   pir_police_idnty,
+		  		   pbd_police_name AS pir_police_name,
+		  		   pir_door_card_idnty,
+		  		   pir_enter_time AS pir_enter_time1,
+		  		   to_char(pir_enter_time,'HH24:mi:ss') AS pir_enter_time,
+		  		   to_char(pir_leave_time,'HH24:mi:ss') AS pir_leave_time,
+		  		   pir_enter_time AS pir_enter_time_ys,
+		  		   pir_leave_time AS pir_leave_time_ys,
+		  		   pir_remark,
+		  		   pir_crte_time,
+		  		   pir_crte_user_id,
+		  		   pir_updt_time,
+		  		   pir_updt_user_id,
+		  		   pbd_pstn_name,
+		  		   pbd_drptmnt_id,
+		  		   pbd_drptmnt
+		   	  FROM v_police_inout_record a LEFT JOIN
+		   	  	   v_police_base_dtls b ON
+		   	  	   (a.pir_cus_number = b.pbd_cus_number AND a.pir_police_idnty = b.pbd_police_idnty)
+		</sql>
+		<where wid="0">
+			WHERE pir_cus_number = ? AND
+				  pir_police_idnty = ? 
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null or pir_cus_number = ?) AND
+				  (TRIM(?) is null or pir_police_idnty = ?) AND
+				  (TRIM(?) is null or to_char(pir_enter_time,'YYYY-MM-DD') $= ?) AND
+				  (TRIM(?) is null or to_char(pir_enter_time,'YYYY-MM-DD') #= ?)
+		</where>
+		<where wid="2">
+			WHERE pir_cus_number = ? AND
+				  DECODE(pbd_drptmnt,NULL,'其他',pbd_drptmnt) = ? AND
+				  pir_enter_time $ to_date(?,'YYYY-MM-DD HH24:mi:ss')-4 AND
+				  pir_enter_time # to_date(?,'YYYY-MM-DD HH24:mi:ss') AND
+				  (pir_leave_time $ to_date(?,'YYYY-MM-DD HH24:mi:ss') or pir_leave_time is null)
+		</where>
+		<order oid="0">
+			ORDER BY pir_enter_time1 DESC
+		</order>
+	</item>
+	
+
+	
+	<item id="cds_layer_point_info">
+		<desc>图层点位信息</desc>
+		<sql>
+			 SELECT lpi_cus_number,
+		       lpi_layer_point_id,
+		       lpi_map_name,
+		       lpi_device_type,
+		       lpi_device_idnty,
+		       lpi_device_name,
+		       lpi_x_point_idnty,
+		       lpi_y_point_idnty,
+		       lpi_point_img_path,
+		       lpi_point_statu_idnc  
+		  FROM cds_layer_points_info  
+		</sql>
+		<where wid="0">
+		    WHERE lpi_cus_number= ?
+		</where>
+		<where wid="1">
+		    WHERE lpi_cus_number= ? AND lpi_map_name  = ? 
+		</where>
+		<where wid="2">
+		    WHERE lpi_cus_number= ? AND lpi_device_type=? 
+		</where>
+		<where wid="3">
+		    WHERE lpi_cus_number= ? AND lpi_device_type= ?  AND lpi_device_idnty=?
+		</where>
+		<where wid="4">
+		    WHERE lpi_cus_number = ? AND lpi_map_name=?  AND lpi_device_type = ? 
+		</where>
+		<where wid="5">
+		    WHERE lpi_cus_number = ?  AND lpi_map_name=?  AND lpi_device_type=?  AND lpi_device_idnty=?
+		</where>
+	</item>
+	
+	<item id="cds_layer_names_query">
+		<desc>图层名称查询</desc>
+		<sql>
+			 SELECT DISTINCT abd_map_name, abd_area_name
+ 			 FROM cds_area_base_dtls 
+		</sql>
+		<where wid="0">
+			WHERE abd_cus_number=? AND abd_map_name is not null
+		</where>
+	</item>
+	
+	<item id="dvc_camera_query">
+		<desc>视频监控名称查询</desc>
+		<sql>
+		SELECT dvc_camera_base_dtls.id,cbd_name  FROM dvc_camera_base_dtls WHERE cbd_cus_number=? AND cbd_action_indc #$ 3
+		</sql>
+	</item>
+	
+	<item id="dvc_alertor_query">
+		<desc>报警名称查询</desc>
+		<sql>
+		SELECT abd_idnty,abd_name FROM  DVC_ALERTOR_BASE_DTLS  WHERE abd_cus_number =? AND abd_action_indc #$ 3
+		</sql>
+	</item>
+	
+	<!-- <item id="dvc_talkback_query">
+		<desc>对讲名称查询</desc>
+		<sql>
+		SELECT tbd_idnty,tbd_name FROM dvc_talkback_base_dtls WHERE tbd_cus_number=?
+		</sql>
+	</item>
+	
+	<item id="dvc_broadcast_query">
+		<desc>广播名称查询</desc>
+		<sql>
+		SELECT bbd_idnty,bbd_name FROM dvc_broadcast_base_dtls WHERE bbd_cus_number=? 
+		</sql>
+	</item> -->
+	
+	<item id="dvc_doorCtrl_query">
+		<desc>门禁名称查询</desc>
+		<sql>
+		SELECT dcb_idnty,dcb_name  FROM dvc_door_control_base_dtls WHERE dcb_cus_number=? 
+		</sql>
+	</item>
+	
+	<item id="cds_vfuView_labels">
+		<desc>查询视角菜单区域下的标注信息</desc>
+		<Const key="TYPE_NAME">lbdTypeIndc</Const>
+		<Const key="STATUS_NAME">lbdStatusIndc</Const> 
+		<Const key="DISPLAY_NAME">lbdDisplayIndc</Const>     
+		<sql>
+			SELECT lbd_cus_number,
+			       lbd_area_id,
+			       lbd_label_name,
+			       lbd_type_indc,
+			       lbd_type_indc    AS type_name,
+			       lbd_device_idnty,
+			       lbd_device_name,
+			       lbd_x_crdnt,
+			       lbd_y_crdnt,
+			       lbd_z_crdnt,
+			       lbd_icon,
+			       lbd_font,
+			       lbd_lod_min,
+			       lbd_lod_max,
+			       lbd_drive_up,
+			       lbd_font_color,
+			       lbd_font_bkcolor,
+			       lbd_status_indc,
+			       lbd_status_indc  AS status_name,
+			       lbd_display_indc,
+			       lbd_display_indc AS display_name
+			  FROM cds_lable_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE  lbd_cus_number=?
+		</where>
+		<where wid="1">
+			 WHERE  lbd_cus_number=?  AND  lbd_area_id = ?
+		</where>
+		<where wid="2">
+			 WHERE  lbd_cus_number=?  AND (lbd_label_name like ? or lbd_device_name like ?)
+		</where>
+		<where wid="3">
+			 WHERE  lbd_cus_number=?  AND lbd_type_indc=? 
+		</where>
+		<where wid="4">
+			 WHERE  lbd_cus_number=?  AND lbd_area_id = ? AND (lbd_label_name like ? or lbd_device_name like ?)
+		</where>
+		<where wid="5">
+			 WHERE  lbd_cus_number=? AND (lbd_label_name like ? or lbd_device_name like ?) 
+			 AND lbd_type_indc=? 
+		</where>
+		<where wid="6">
+			 WHERE  lbd_cus_number=? AND lbd_area_id = ?  AND lbd_type_indc=? 
+		</where>
+		<where wid="7">
+			 WHERE  lbd_cus_number=? AND lbd_area_id = ? 
+			   AND (lbd_label_name like ? or lbd_device_name like ?) AND lbd_type_indc=? 
+		</where>
+		<where wid="8">
+			 WHERE lbd_cus_number = ?
+			   AND (TRIM(?) IS NULL OR lbd_type_indc = ?) 
+			   AND (TRIM(?) IS NULL OR lbd_area_id IN (
+			       SELECT vfu_view_id
+			         FROM cds_view_func
+		 		  CONNECT BY PRIOR vfu_view_id = vfu_parent_view_id
+			   		START WITH vfu_view_id = ?
+			          AND vfu_cus_number = ?))
+		</where>
+		<where wid="9">
+			 WHERE lbd_cus_number = ?
+			   AND (TRIM(?) IS NULL OR lbd_type_indc = ?) 
+			   AND (TRIM(?) IS NULL OR lbd_area_id IN (
+			       SELECT vfu_view_id
+			         FROM cds_view_func
+		 		  CONNECT BY PRIOR vfu_view_id = vfu_parent_view_id
+			   		START WITH vfu_view_id = ?
+			          AND vfu_cus_number = ?))
+			   AND (lbd_label_name LIKE ? AND lbd_device_name LIKE ?)
+		</where>
+	</item>
+	
+	<item id="view_funcs_one">
+		<desc>区域一级名称查询</desc>
+		<sql>
+		select vfu_view_name, vfu_view_id
+		  from cds_view_func
+		 WHERE vfu_cus_number=?
+		   AND vfu_parent_view_id = ?
+		   AND (vfu_view_type IN (2, 3) OR (vfu_view_type = 1 AND vfu_area_id IS NOT NULL)) 
+		</sql>
+	</item>
+	
+	<item id="view_funcs_two">
+		<desc>区域二级名称查询</desc>
+		<sql>
+		select vfu_view_name, vfu_view_id
+		  from cds_view_func
+		 WHERE  vfu_cus_number=? AND vfu_parent_view_id=?
+		</sql>
+	</item>
+	
+	<item id="isRepeat_labelBase_info">
+		<desc>查询是否有重复的标注信息</desc>
+		<sql>
+		SELECT lbd_area_id FROM cds_lable_base_dtls   
+		 WHERE lbd_cus_number=? AND lbd_area_id=? AND lbd_type_indc=? AND lbd_device_idnty=?
+	 	</sql>
+	</item>
+	
+	<item id="cds_vfuView_funcs">
+		<desc>查询视角菜单信息</desc>
+		<Const key="TYPE_NAME">vfuViewType</Const>
+		<sql>
+			SELECT vfu_cus_number,
+			       vfu_view_id,
+			       vfu_view_name,
+			       vfu_view_type,
+			       vfu_view_type AS type_name,
+			       vfu_area_id,
+			       vfu_x_crdnt,
+			       vfu_y_crdnt,
+			       vfu_z_crdnt,
+			       vfu_pitch_crdnt,
+			       vfu_rotate_crdnt,
+			       vfu_3d_idnty,
+			       vfu_parent_view_id,
+			       vfu_srno,
+			       vfu_stts,
+			       vfu_def_indc
+			  FROM cds_view_func
+	 	</sql>
+	 	<where wid="0">
+			 WHERE  vfu_cus_number=? AND vfu_view_type!=0 AND LENGTH(vfu_srno) #$ 7
+		</where>
+		<where wid="1">
+			 WHERE  vfu_cus_number=? AND vfu_view_type!=0 AND LENGTH(vfu_srno) #$ 7 AND (vfu_view_id=? OR vfu_parent_view_id=?)
+		</where>
+		<where wid="2">
+			 WHERE  vfu_cus_number=? AND vfu_view_type!=0 AND LENGTH(vfu_srno) #$ 7 AND view_name like ?
+		</where>
+		<where wid="3">
+			 WHERE  vfu_cus_number=? AND vfu_view_type!=0 AND LENGTH(vfu_srno) #$ 7 AND (vfu_view_id=? OR vfu_parent_view_id=?) AND view_name like ?
+		</where>
+		<where wid="4">
+			CONNECT BY PRIOR vfu_view_id = vfu_parent_view_id
+			 START WITH vfu_cus_number = ?
+			 		AND (TRIM(?) IS NULL OR vfu_view_id = ?)
+		</where>
+		<where wid="5">
+			CONNECT BY PRIOR vfu_view_id = vfu_parent_view_id
+			 START WITH vfu_cus_number = ?
+			 		AND (TRIM(?) IS NULL OR vfu_view_id = ?)
+			        AND vfu_view_name like ?
+		</where>
+		<where wid="6">
+			 WHERE  vfu_cus_number=? 
+		</where>
+		<order oid="0">
+			ORDER BY vfu_srno
+		</order>
+		<order oid="1">
+			ORDER BY vfu_srno, vfu_view_id
+		</order>
+	</item>
+	
+	<item id="cds_geom_label_query">
+		<desc>查询图层信息</desc>
+		<Const key="GLA_STATUS_NAME">glaStatusIndc</Const>
+		<Const key="TYPE_NAME">glaTypeIndc</Const>
+		<sql>
+			SELECT gla_cus_number,
+			       gla_area_id,
+			       gla_type_indc,
+			       gla_type_indc AS type_name,
+			       gla_device_idnty,
+			       gla_device_name,
+			       gla_geom_name,
+			       gla_geom_file,
+			       gla_geom_color,
+			       gla_geom_alarm_color,
+			       gla_point,
+			       gla_font,
+			       gla_font_color,
+			       gla_font_bkcolor,
+			       gla_lod_min,
+			       gla_lod_max,
+			       gla_bkwidth,
+			       gla_gority,
+			       gla_status_indc,
+			       gla_status_indc AS gla_status_name
+			  FROM cds_geom_lable
+	 	</sql>
+	 	<where wid="0">
+			 WHERE  gla_cus_number=?
+		</where>
+		<where wid="1">
+			 WHERE  gla_cus_number=? AND gla_geom_name like ? 
+		</where>
+		<where wid="2">
+			 WHERE  gla_cus_number=? AND gla_type_indc=?
+		</where>
+		<where wid="3">
+			 WHERE  gla_cus_number=? AND gla_device_idnty=?
+		</where>
+		<where wid="4">
+			 WHERE  gla_cus_number=? AND gla_type_indc=? AND gla_geom_name like ? 
+		</where>
+		<where wid="5">
+			 WHERE  gla_cus_number=? AND gla_device_idnty=? AND gla_geom_name like ? 
+		</where>
+		<where wid="6">
+			 WHERE gla_cus_number = ?
+			   AND (TRIM(?) IS NULL OR gla_type_indc = ?)
+			   AND (TRIM(?) IS NULL OR gla_device_idnty = ?)
+			   AND (TRIM(?) IS NULL OR gla_geom_name like ?)
+		</where>
+	</item>
+	
+	<item id="cds_route_dtsl_query">
+		<desc>查询路线信息</desc>
+		<sql>
+			SELECT count(0) cnt,rdt_start_addrs,rdt_end_addrs     
+			FROM cds_route_dtls  
+	 	</sql>
+	 	<where wid="0">
+			 WHERE  rdt_cus_number=?  
+		</where>
+		<where wid="1">
+			 WHERE  rdt_cus_number=?  
+			 AND  (TRIM(?) is null or rdt_start_addrs = ?) 
+			 AND  (TRIM(?) is null or rdt_end_addrs = ?) 
+		</where>
+		<order oid="0">
+			 GROUP BY  rdt_start_addrs,rdt_end_addrs 
+		</order>
+	</item>
+	
+	<item id="cds_route_dtsl_start_query">
+		<desc>查询路线出发地</desc>
+		<sql>
+			SELECT distinct rdt_start_addrs AS rdt_start_addrs   
+			FROM cds_route_dtls  
+	 	</sql>
+	 	<where wid="0">
+			 WHERE  rdt_cus_number=?  
+		</where>
+	</item>
+	
+	<item id="cds_route_dtsl_end_query">
+		<desc>查询路线目的地</desc>
+		<sql>
+			SELECT distinct rdt_end_addrs AS rdt_end_addrs   
+			FROM cds_route_dtls  
+	 	</sql>
+	 	<where wid="0">
+			 WHERE  rdt_cus_number=?  
+		</where>
+	</item>	
+	
+	<item id="cds_route_points_query">
+		<desc>查询路线信息</desc>
+		<sql>
+			SELECT rdt_cus_number,rdt_record_id,rdt_x_crdnt,rdt_y_crdnt,
+			rdt_z_crdnt  FROM cds_route_dtls   
+	 	</sql>
+	 	<where wid="0">
+			 WHERE RDT_CUS_NUMBER=? AND rdt_start_addrs=? AND rdt_end_addrs=? 
+		</where>
+		<order oid="0">
+			  ORDER BY rdt_record_id 
+		</order>
+	</item>
+	
+	
+<!--LEFT JOIN (SELECT MAX(sso_cus_number) AS sso_cus_number,
+	MAX(sso_prison_id) AS sso_prison_id,
+	sso_early_warn_id 
+	FROM cds_safety_send_org GROUP BY sso_early_warn_id) ON
+    (sew_cus_number = sso_cus_number AND
+	 sew_early_warn_id = sso_early_warn_id) 
+	(SELECT wm_concat(sso_prison_name) FROM cds_safety_send_org WHERE sso_cus_number = sew_cus_number AND sso_early_warn_id = sew_early_warn_id) AS send_jail_names-->
+	<item id="cds_earlyWarnInfo_query">
+		<desc>查询预警信息</desc>
+		<Const key="WARN_TYPE_NAME">sewEarlyWarnType</Const>
+		<Const key="LEVEL_NAME">sewEarlyWarnLevel</Const> 
+		<Const key="SEW_STTS_INDC_CH">sewSttsIndc</Const> 
+		<Const key="SEW_UPDT_USER_ID">user</Const>
+		<Const key="SEW_CRTE_USER_ID">user</Const>
+		<Const key="SAA_APPROVAL_IDEA">aprProcessIndc</Const>
+		<sql>
+			SELECT sew_cus_number,
+				   obd_orga_name,
+				   sew_early_warn_id,
+				   sew_early_warn_type,
+				   sew_early_warn_month,
+				   sew_early_warn_type AS warn_type_name,
+				   sew_base_desc,
+				   sew_prisoner_out_desc,
+				   sew_happen_desc,
+				   sew_sec_device_desc,
+				   sew_risk_early_warn,
+				   sew_early_warn_measure,
+				   sew_early_warn_level,
+				   sew_early_warn_level AS level_name,
+				   sew_early_warn_time,
+				   to_char(sew_early_warn_time,'YYYY-MM-DD HH24:mi:SS') AS saft_time,
+				   sew_early_warn_desc,
+				   sew_stts_indc,
+				   sew_stts_indc AS sew_stts_indc_ch,
+				   sew_document_id,
+				   sew_crte_user_id,
+				   sew_crte_user_id AS crte_user,
+				   sew_updt_user_id,
+				   sew_crte_time,
+				   sew_updt_time,
+				   saa_approval_police_idnty,
+				   saa_approval_police_name,
+				   saa_approval_idea,
+				   saa_approval_content
+			  FROM cds_safety_early_warn LEFT JOIN
+				   com_organization_base_dtls ON
+				   (sew_cus_number = obd_orga_idnty) LEFT JOIN
+				   cds_safety_approval_affirm ON
+				   (sew_cus_number = saa_cus_number AND
+				    sew_early_warn_id = saa_early_warn_id)
+		</sql>
+		<where wid="0">
+			WHERE sew_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?)) AND
+				  sew_stts_indc = ? AND
+				  saa_approval_police_idnty = ?
+		</where>
+		<where wid="1">
+			WHERE (sew_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?)) OR
+				  sew_cus_number = ?) AND
+				  (sew_crte_user_id = ? OR
+				   sew_stts_indc = 2 OR
+				   saa_approval_police_idnty = ?)
+		</where>
+		<where wid="2">
+			WHERE (sew_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?)) OR
+				  sew_cus_number = ?) AND
+				  (sew_crte_user_id = ? OR
+				   sew_stts_indc = 2 OR
+				   saa_approval_police_idnty = ?) AND
+				  (TRIM(?) is null OR sew_early_warn_type = ?) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_month,'YYYY-MM') >= TO_DATE(?,'YYYY-MM')) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_month,'YYYY-MM') #= TO_DATE(?,'YYYY-MM')) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_time,'YYYY-MM-DD') >= TO_DATE(?,'YYYY-MM-DD')) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_time,'YYYY-MM-DD') #= TO_DATE(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="3">
+			WHERE sew_cus_number in (SELECT obd_orga_idnty FROM com_organization_base_dtls WHERE (TRIM(?) is null or obd_orga_idnty = ?)) AND
+				  (sew_crte_user_id = ? OR
+				   sew_stts_indc = 2 OR
+				   saa_approval_police_idnty = ?) AND
+				  (TRIM(?) is null OR sew_early_warn_type = ?) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_month,'YYYY-MM') >= TO_DATE(?,'YYYY-MM')) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_month,'YYYY-MM') #= TO_DATE(?,'YYYY-MM')) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_time,'YYYY-MM-DD') >= TO_DATE(?,'YYYY-MM-DD')) AND
+				  (TRIM(?) is null OR TO_DATE(sew_early_warn_time,'YYYY-MM-DD') #= TO_DATE(?,'YYYY-MM-DD'))
+		</where>
+		<order oid="0">
+			ORDER BY sew_early_warn_type,sew_early_warn_level
+		</order>
+	</item>
+	
+	<item id="cds_warnApproval_query">
+		<desc>查询预警审批信息</desc>
+		<Const key="SAA_TYPE_NAME">saaType</Const> 
+		<Const key="SAA_APPROVAL_IDEA">hsuIsAgree</Const>
+		<sql>
+			SELECT saa_type,
+			  	   saa_type AS saa_type_name,
+			       saa_approval_police_name,
+			       saa_approval_time,
+			       saa_approval_idea,
+		           saa_approval_content  
+		      FROM cds_safety_approval_affirm 
+		     WHERE saa_cus_number = ? AND 
+		     	   saa_early_warn_id=?  
+		</sql>
+		<order oid="0">
+			ORDER BY  saa_type 
+		</order>
+	</item>
+	
+	<item id="cds_warn_sendJail_query">
+		<desc>查询预警推送监狱名称信息</desc>
+		<sql>
+			SELECT sso_prison_name FROM cds_safety_send_org 
+			 WHERE sso_cus_number = ? AND 
+			 	   sso_early_warn_id = ?
+		</sql>
+	</item>
+	
+	<item id="cds_important_time_screen">
+		<desc>查询要害时段定时上屏信息</desc>
+		<sql>
+			SELECT its_cus_number,
+				   its_plan_id,
+				   its_plan_name,
+				   its_grp_id,
+				   its_screen_idnty,
+				   its_camera_idnty,
+				   its_remark,
+				   its_crte_time,
+				   its_crte_user_id,
+				   its_updt_time,
+				   its_updt_user_id
+			  FROM cds_important_time_screen
+		</sql>
+		<where wid="0">
+			WHERE its_cus_number = ? AND
+				  its_grp_id = ?
+		</where>
+	</item>
+	
+	<item id="cds_door_info">
+		<desc>门禁维护-查询门禁信息</desc>
+		<Const key="DCB_TYPE_INDC_CH">dcbTypeIndc</Const>
+		<Const key="DCB_STTS_INDC_CH">dcbSttsIndc</Const>
+		<sql>
+			SELECT dcb_cus_number,
+				   dcb_idnty,
+				   dcb_ctrl_idnty,
+				   dcb_door_idnty,
+				   dcb_name,
+				   dcb_pre_name,
+				   dcb_type_indc,
+				   dcb_type_indc AS dcb_type_indc_ch,
+				   dcb_addrs,
+				   dcb_ip_addrs,
+				   dcb_port,
+				   dcb_node_addrs,
+				   dcb_sn_id,
+				   dcb_stts_indc,
+				   dcb_stts_indc AS dcb_stts_indc_ch,
+				   dcb_chnnl_addrs,
+				   dcb_area_id,
+				   dcb_area,
+				   dcb_dprtmnt,
+				   dcb_x_crdnt,
+				   dcb_y_crdnt,
+				   dcb_z_crdnt,
+				   dcb_pitch_crdnt,
+				   dcb_rotate_crdnt,
+				   dcb_action_indc,
+				   dcb_remark,
+				   dcb_crte_time,
+				   dcb_crte_user_id,
+				   dcb_updt_time,
+				   dcb_updt_user_id,
+				   dre_rltn_device_idnty AS cameraId
+			 FROM dvc_door_control_base_dtls a LEFT JOIN
+			 	  dvc_device_relation b ON
+			 	  (a.dcb_ctrl_idnty||''||a.dcb_door_idnty = b.dre_device_idnty)
+		</sql>
+		<where wid="0">
+			 WHERE dcb_cus_number = ? AND
+			 	   dcb_action_indc #$ ?
+		</where>
+		<order oid="0">
+			ORDER BY dcb_area_id nulls last
+		</order>
+	</item>
+	
+	<item id="cds_message_release_query">
+		<desc>查询分析信息 1舆情信息 2社区信息</desc>
+		<Const key="MRI_CRTE_USER_ID_CH">user</Const>
+		<Const key="MRI_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT mri_cus_number, 
+				   mri_cus_name,
+				   mri_msg_record_id,
+				   mri_msg_content,
+				   mri_department_id,
+				   mri_department_name,
+				   mri_crte_user_id,
+				   mri_crte_user_id  AS  mri_crte_user_id_ch,
+				   DECODE(mri_release_time,null,'无',to_char(mri_release_time,'yyyy-mm-dd hh24:mi:ss')) mri_release_time,
+				   mri_crte_time,
+				   mri_updt_user_id,
+				   mri_updt_time
+			 FROM  cds_message_release_info 
+		</sql>
+		<where wid="0">
+			WHERE  mri_cus_number = ? AND		
+				   mri_msg_type = ?
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null or  mri_cus_number= ?) AND 
+				  (TRIM(?) is null or mri_msg_type = ?) AND
+				  (TRIM(?) is null or TRUNC(mri_release_time) $= to_date(?,'YYYY-MM-DD')) AND
+				  (TRIM(?) is null or TRUNC(mri_release_time) #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="2">	
+		    WHERE (TRIM(?) is null or mri_cus_number = ?) AND 
+		   	      mri_msg_type = ?   AND		
+		   	      (TRIM(?) is null or mri_department_id = ?)
+		</where>
+		<where wid="3">	
+			WHERE mri_cus_number = ? AND 
+		   		  mri_msg_type = ? AND
+				  TRUNC(mri_release_time) = to_date(?,'YYYY-MM-DD')
+		</where>
+		<where wid="4">	
+			WHERE  mri_cus_number = ?
+			 AND   mri_msg_record_id = ?
+			 AND   mri_crte_user_id = ? 				  
+		</where>
+		<order oid="0">
+			ORDER BY mri_crte_time  DESC
+		</order> 
+	</item>
+	
+	<item id="cds_department_base_query">
+		<desc>查询监狱名称</desc>
+		<sql>
+			SELECT  obd_orga_idnty,
+				    obd_orga_name
+			  FROM  com_organization_base_dtls
+		  ORDER BY  obd_seq
+		</sql>
+	</item>
+
+	<item id="cds_cusName_query">
+		<desc>查询监狱名称</desc>
+		<sql>
+			SELECT  obd_orga_idnty,
+				    obd_orga_name
+			  FROM  com_organization_base_dtls
+		</sql>
+		<where wid="0">
+			WHERE obd_orga_idnty = ?
+		</where>
+	</item>	
+	
+	<item id="cds_department_base_dept_query">
+		<desc>查询部门名称</desc>
+		<sql>
+			SELECT DISTINCT dbd_dprtmnt_id dbd_dprtmnt_id,dbd_dprtmnt_name
+			  FROM cds_department_base_dtls  
+		</sql>
+		<where wid="0">
+			WHERE dbd_cus_number = ?
+		</where>
+		<where wid="1">
+			WHERE dbd_dprtmnt_id = ?
+		</where>
+	</item>
+	
+	<item id="cds_arcgis_layer_query">
+		<desc>查询二维点位信息</desc>
+		<Const key="TYPE_NAME">alpDeviceType</Const> 
+		<Const key="STATUS_NAME">alpStatuIdnc</Const> 
+		<sql>
+	      SELECT alp_cus_number,
+	             alp_layer_point_id,
+	             alp_map_name,
+	             alp_device_type,
+	             abd_area_id AS area_id,
+	             abd_area_name AS area_name,
+	             alp_device_type AS type_name,
+	             alp_device_idnty,
+	             alp_device_name,
+	             alp_x_point_idnty,
+	             alp_y_point_idnty,
+	             alp_img_width,
+	             alp_img_height,
+	             alp_img_path,
+	             alp_statu_idnc,
+	             alp_statu_idnc AS status_name
+	        FROM cds_arcgis_layer_points
+	        LEFT JOIN cds_area_base_dtls
+	          ON alp_map_name = abd_map_name
+	         AND alp_cus_number = abd_cus_number
+		</sql>
+		<where wid="0">
+			WHERE alp_cus_number=? 
+		</where>
+		<where wid="1">	
+		    WHERE alp_cus_number=? AND alp_device_idnty=? 
+		</where>
+		<where wid="2">	
+		    WHERE alp_cus_number=? AND alp_device_type=? 
+		</where>
+		<where wid="3">	
+		    WHERE alp_cus_number = ? 
+			  AND (TRIM(?) is null or alp_device_type = ?) 
+			  AND (TRIM(?) is null or alp_device_idnty = ?) 
+		</where>
+		<where wid="4">	
+		    WHERE (TRIM(?) is null or alp_cus_number = ?)   
+			  AND (TRIM(?) is null or alp_device_type = ?) 
+			  AND (TRIM(?) is null or alp_device_name like ?) 
+		</where>
+	</item>
+	
+	<item id="cds_expert_info_query">
+		<desc>查询专家信息</desc>
+		<Const key="SEX_RENAME">sex</Const>  
+		<Const key="STATUS">dmiStatus</Const> 
+		<sql>
+			SELECT epi_cus_number,
+				   epi_expert_id,
+				   epi_expert_name,
+				   epi_company,
+				   epi_post,
+				   epi_sex AS sex_rename,
+				   epi_sex,
+			       epi_age,
+			       epi_function,
+				   epi_type,
+				   epi_specialty,
+				   epi_phone,
+				   epi_stts_indc,
+				   epi_stts_indc AS status,
+				   epi_remark
+			  FROM cds_expert_info   
+		</sql>
+		<where wid="0">
+			WHERE epi_cus_number=? AND EPI_STTS_INDC #$ 1
+		</where>
+		<where wid="1">
+			WHERE epi_cus_number=? AND EPI_STTS_INDC #$ 1 AND epi_expert_name like ? AND epi_specialty like ?
+		</where>
+		<where wid="2">
+			WHERE epi_cus_number=? AND EPI_STTS_INDC #$ 1 AND epi_specialty like ?
+		</where>
+		<where wid="3">
+			WHERE epi_cus_number=? AND EPI_STTS_INDC #$ 1 AND epi_expert_name like ?
+		</where>
+		<where wid="4">
+			WHERE epi_cus_number=? AND epi_expert_id = ?
+		</where>
+	</item>
+	
+	<item id="cds_workGroup_info_query">
+		<desc>查询工作组信息</desc>
+		<sql>
+			SELECT 	wgi_cus_number,
+					wgi_workgroup_id,
+					wgi_workgroup_name,
+					wgi_workgroup_task,
+					wgi_status      
+			FROM 	cds_workgroup_info   
+		</sql>
+		<where wid="0">
+			WHERE   wgi_cus_number=? 
+			AND  	wgi_status #$ 2
+		</where>
+		<where wid="1">
+			WHERE   (TRIM(?) is null or wgi_cus_number=?) 
+			AND     (TRIM(?) is null or wgi_workgroup_id=?) 
+			AND  	wgi_status #$ 2
+		</where>
+		<where wid="2">
+		LEFT JOIN   cds_emergency_plan_config ON(wgi_workgroup_id = epc_config_item_id)
+		    WHERE   (TRIM(?) is null or wgi_cus_number=?) 
+		      AND   (TRIM(?) is null or epc_plan_id = ?)
+		      AND	epc_config_type = 2
+		</where>
+		<where wid="3">
+		LEFT JOIN   cds_emergency_plan_config ON(wgi_workgroup_id = epc_config_item_id)
+		    WHERE   epc_plan_id = ?
+		      AND	epc_config_type = 2
+		</where>
+		<where wid="4">
+		LEFT JOIN   cds_emergency_plan_action ON(wgi_workgroup_id = epa_rel_action_id)
+			WHERE    (TRIM(?) is null or epa_cus_number = ?)
+		      AND    (TRIM(?) is null or epa_plan_id = ?)
+		      AND    (TRIM(?) is null or epa_method_id = ?) 
+		      AND	 epa_rel_action_type = 2
+		</where>
+		<where wid="5">
+		LEFT JOIN   cds_emergency_plan_config ON(wgi_workgroup_id = epc_config_item_id)
+			WHERE   wgi_cus_number = ?
+		      AND   epc_plan_id = ?
+		      AND   wgi_status #$ 2
+		      AND	epc_config_type = 2
+		</where>
+		<where wid="6">
+		LEFT JOIN   cds_emergency_plan_action ON(wgi_workgroup_id = epa_rel_action_id)
+			WHERE   epa_plan_id = ?
+		      AND   epa_method_id = ? 
+		      AND	epa_rel_action_type = 2
+		</where>
+		<where wid="7">
+			WHERE   wgi_workgroup_id=? 
+			AND  	wgi_status #$ 2
+		</where>
+		<order oid="0">
+			ORDER BY wgi_workgroup_id
+		</order>
+		<order oid="1">
+			ORDER BY epc_order_seq
+		</order>
+	</item>
+	
+	<item id="cds_workGroup_member_query">
+		<desc>查询工作组成员信息</desc>
+		<Const key="ROLE_NAME">wgmUserRole</Const> 
+		<sql>
+			SELECT 	wgm_cus_number,
+					wgm_workgroup_id,
+					wgm_user_role,
+					wgm_user_role AS role_name,
+					wgm_police_id,
+					wgm_police_name,
+					wgm_role_task,
+					pbd_phone    
+			FROM    cds_workgroup_member
+	   LEFT JOIN    v_police_base_dtls  
+	          ON    (wgm_police_id = pbd_police_idnty)
+		</sql>
+		<where wid="0">
+			WHERE  wgm_workgroup_id=?
+		</where>
+		<where wid="1">
+			WHERE  wgm_cus_number = ?
+			AND    wgm_workgroup_id = ? 
+		</where>
+		<where wid="2">
+			WHERE  (TRIM(?) is null or wgm_cus_number = ?)
+			AND    (TRIM(?) is null or wgm_workgroup_id = ?) 
+		</where>
+		<order oid="0">
+		  ORDER BY wgm_user_role
+		</order>
+	</item>
+	
+	<item id="cds_material_info_query">
+		<desc>查询物资信息</desc>
+		<Const key="STATUS">dmiStatus</Const>
+		<sql>
+			SELECT mri_cus_number,
+				   mri_material_id,
+				   mri_material_name,
+				   mri_material_type,
+				   mri_material_company,
+				   mri_status,
+				   mri_status AS status,
+				   mri_address,
+				   mri_charger,
+				   mri_count,
+				   mri_charge_phone,
+				   mri_use,
+				   mri_sign_company,
+				   mri_spec              
+			FROM   cds_material_info 
+		</sql>
+		<where wid="0">
+			WHERE mri_cus_number=? AND MRI_STATUS #$ 2
+		</where>
+		<where wid="1">
+			WHERE mri_cus_number=? AND MRI_STATUS #$ 2 AND mri_material_name like ?
+		</where>
+		<where wid="2">
+		     WHERE mri_material_name=? AND MRI_STATUS #$2
+		</where>
+		<where wid="3">
+		     WHERE mri_cus_number=? 
+		       AND mri_material_id = ?
+		</where>
+	</item>
+	
+	<item id="cds_disposal_method_info">
+		<desc>应急处置-查询处置方法信息</desc>
+		<Const key="DMI_STATUS_CH">dmiStatus</Const>
+		<Const key="DMI_PLAN_TYPE_CH">epiPlanType</Const>
+		<Const key="DMI_CRTE_USER_ID">user</Const>
+		<Const key="DMI_UPDT_USER_ID">user</Const>
+		<sql>
+			SELECT dmi_cus_number,
+				   dmi_method_id,
+				   dmi_method_name,
+				   dmi_method_desc,
+				   dmi_plan_type,
+				   dmi_plan_type AS dmi_plan_type_ch,						  
+				   dmi_status,
+				   dmi_status AS dmi_status_ch,
+				   dmi_crte_time,
+				   dmi_crte_user_id, 
+				   dmi_updt_time,
+				   dmi_updt_user_id 					
+			  FROM cds_disposal_method_info 
+			 
+		</sql>
+		<where wid="0">
+			WHERE dmi_cus_number = ? 
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null or dmi_cus_number = ?) 
+			AND   (TRIM(?) is null or dmi_method_name like ?)
+		    AND   (TRIM(?) is null or dmi_status like ?)
+		</where>
+		<where wid="2">
+			WHERE dmi_method_id = ? 
+		</where>
+		<order oid="0">
+			ORDER BY dmi_method_name
+		</order>
+	</item>	
+	<item id="cds_emergency_handle_record_query">
+	    <desc>应急处置-处置记录查询</desc>
+	    <Const key="EHR_CRTE_USER_ID">user</Const>
+		<Const key="EHR_UPDT_USER_ID">user</Const>
+	    <sql>
+	        SELECT   ehr_handle_id,
+	                 epi_plan_name,
+	                 ehr_type,
+	                 ehr_time,
+	                 ehr_address,
+	                 ehr_em_plan_id,
+	                 ehr_alarm_plan_id,
+	                 ehr_save_time,
+	                 ehr_status,
+	                 ehr_experience,
+	                 ehr_crte_time,
+	                 ehr_crte_user_id,
+	                 ehr_updt_time,
+	                 ehr_updt_user_id
+	          FROM   cds_emergency_handle_record
+	    </sql>
+	    <where wid="0">
+	       LEFT JOIN cds_emergency_plan_info
+	       ON        (ehr_em_plan_id=epi_plan_id)
+	       WHERE ehr_cus_number=? 
+	       AND   ehr_type =?
+	    </where>
+	    <where wid="1">
+	       WHERE  ehr_cus_number=?
+	       AND    ehr_handle_id=?
+	    </where>
+	    <where wid="2">
+	       LEFT JOIN cds_emergency_plan_info
+	       ON        (ehr_em_plan_id=epi_plan_id)
+	       WHERE     (TRIM(?) is null OR ehr_cus_number=?)
+	       AND       (TRIM(?) is null OR epi_plan_name=?)
+	       AND       (TRIM(?) is null OR ehr_type=?)
+	    </where>
+	    <order oid="0">
+	       ORDER BY ehr_handle_id
+	    </order>
+	</item>
+	<item id="cds_emergency_drill_record_query">
+	    <desc>应急处置-处置记录查询</desc>
+	    <sql>
+	        SELECT   ehr_handle_id,
+	                 edp_title,
+	                 ehr_type,
+	                 ehr_time,
+	                 ehr_address,
+	                 ehr_em_plan_id,
+	                 ehr_alarm_plan_id,
+	                 ehr_save_time,
+	                 ehr_status,
+	                 ehr_experience,
+	                 ehr_crte_time,
+	                 ehr_crte_user_id,
+	                 ehr_updt_time,
+	                 ehr_updt_user_id
+	          FROM   cds_emergency_handle_record
+	          LEFT JOIN cds_emergency_drill_plan
+	          ON        (ehr_em_plan_id=edp_drill_id)
+	    </sql>
+	    <where wid="0">	       
+	       WHERE ehr_cus_number=? 
+	       AND   ehr_type =?
+	    </where>
+	    <where wid="1">
+	       WHERE  ehr_cus_number=?
+	       AND    edp_title=?
+	    </where>	   
+	    <order oid="0">
+	       ORDER BY ehr_handle_id
+	    </order>
+	</item>
+	<item id="cds_laws_info_list_query">  
+		<desc>查询法规条例信息</desc>
+		<Const key="TYPE_NAME">lriLawsType</Const>
+		<Const key="STATUS">lpiSttsIndc</Const>
+		<sql>
+			SELECT lri_cus_number,
+				   lri_laws_id,
+				   lri_laws_type,
+				   lri_laws_type AS type_name,
+				   lri_laws_name,
+				   lri_laws_content,
+				   lpi_stts_indc,
+				   lpi_stts_indc AS status      
+			FROM   cds_laws_info 
+		</sql>
+		<where wid="0">
+			WHERE lri_cus_number=? 
+			AND   lpi_stts_indc #$ 2 
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null OR lri_cus_number = ?)
+			AND	  (TRIM(?) is null OR lri_laws_type = ?)
+			AND	  (TRIM(?) is null OR lri_laws_id = ?)
+			AND	  (TRIM(?) is null OR lpi_stts_indc = ?)
+			AND	  lpi_stts_indc #$ 2			
+		</where>
+		<where wid="2">
+		   WHERE lri_cus_number = ? 
+		   AND   lri_laws_id = ?
+		</where>
+		<order oid="0">
+			ORDER BY lri_laws_id 
+		</order>
+	</item>
+	
+	<item id="cds_laws_detail_query">  
+		<desc>查询法规条例详细信息</desc>
+		<sql>
+			SELECT lri_cus_number,
+				   lri_laws_id,
+				   lri_laws_type,
+				   lri_laws_name,
+				   lri_laws_content,
+				   lpi_stts_indc   
+			FROM   cds_laws_info 
+		</sql>
+		<where wid="0">
+			WHERE lri_cus_number=? 
+			AND   lri_laws_id = ?
+		</where>
+	</item>
+	
+	<item id="cds_type_law_query">
+		<desc>查询特定类型的法规条例信息</desc>
+		<sql>
+			SELECT lri_laws_id,lri_laws_name  FROM cds_laws_info 
+ 			WHERE lri_cus_number=? AND  lri_laws_type=? AND  lpi_stts_indc =0
+		</sql>
+	</item>
+	
+	<item id="cds_law_rules_query">
+		<desc>查询法规下的条例信息</desc>
+		<sql>
+			SELECT lra_regulations_id,lra_regulations_content   FROM cds_law_regulations_info   
+			WHERE lra_cus_number=? AND lra_law_id=?  AND lra_stts_indc =0
+		</sql>
+	</item>
+	
+	<item id="cds_query_dvctype_by_ein_file_name">
+		<desc>根据证据信息表的视频名称获取摄像机的设备类型(用于录像播放时获取录像的设备类型)</desc>
+		<sql>
+			SELECT vdi_brand 
+			FROM cds_evidence_info
+			INNER JOIN dvc_camera_base_dtls ON cbd_cus_number=ein_cus_number AND dvc_camera_base_dtls.id=ein_camera_id
+			INNER JOIN dvc_video_device_info ON vdi_cus_number=cbd_cus_number AND dvc_video_device_info.id=cbd_dvr_idnty
+		</sql>
+		<where wid="0">
+			WHERE ein_cus_number=? and ein_file_name=?
+		</where>
+	</item>
+	
+		<item id="cds_query_playfile_by_filename">
+		<desc>根据证据信息表的视频名称获取播放的文件信息</desc>
+		<sql>
+			SELECT ein_camera_id,
+			       ein_file_path,
+			       vdi_brand
+			  FROM cds_evidence_info
+			 INNER JOIN dvc_camera_base_dtls
+			    ON cbd_cus_number = ein_cus_number
+			   AND dvc_camera_base_dtls.id = ein_camera_id
+			 INNER JOIN dvc_video_device_info
+			    ON vdi_cus_number = cbd_cus_number
+			   AND dvc_video_device_info.id = cbd_dvr_idnty
+		</sql>
+		<where wid="0">
+			 WHERE ein_file_name = ?
+		</where>
+	</item>
+
+	<item id="query_department_id_by_wid">
+		<desc>获取部门ID根据查询条件</desc>
+		<sql>
+			SELECT dbd_cus_number   AS orga_code,
+			       dbd_dprtmnt_code AS dptt_id,
+			       dbd_dprtmnt_id   AS dptt_code,
+			       dbd_dprtmnt_name AS dptt_name
+			  FROM (SELECT dbd_cus_number,
+			               dbd_dprtmnt_id,
+			               dbd_dprtmnt_name,
+			               dbd_dprtmnt_code,
+			               dbd_parent_id
+			          FROM cds_department_base_dtls
+			         WHERE (TRIM(?) IS NULL OR dbd_cus_number = ?))
+		</sql>
+		<where wid="0">
+			CONNECT BY PRIOR dbd_dprtmnt_code = dbd_parent_id
+			 START WITH (TRIM(?) IS NULL OR dbd_dprtmnt_id = ?)
+		</where>
+		<order oid="0">
+			 ORDER BY dbd_cus_number, dbd_dprtmnt_code
+		</order>
+	</item>
+
+	<item id="cds_query_all_user_id">
+		<desc>获取所有的用户ID</desc>
+		<sql>
+			SELECT pbd_user_id 
+			FROM v_police_base_dtls
+		</sql>
+	</item>
+
+	<item id="cds_police_inout_query">
+		<desc>警员进出监区记录查询</desc>
+		<Const key="PIR_PEOPLE_TYPE_INDC">pirPeopleTypeIndc</Const>  
+		<sql>
+			SELECT 	pir_cus_number, 
+				    obd_orga_name,                    
+					pir_record_id,                         
+					TO_CHAR(pir_brush_date,'YYYY-MM-DD') AS pir_brush_date,                             
+					pir_police_idnty AS pbd_police_idnty,                     
+					DECODE(pbd_police_name,null,pir_police_name,pbd_police_name) AS pbd_police_name,                    
+					pir_enter_time AS pir_enter_time2,   
+					pir_enter_time,					
+					pir_leave_time,      
+					pbd_drptmnt_id,            
+					pbd_drptmnt,             
+					pir_door_card_idnty,  
+					pir_brush_idnty,                 
+					pir_remark,
+					pir_people_type_indc, 
+					pir_updt_time,
+					pbd_pstn_name		 
+			FROM 	v_police_inout_record
+			LEFT JOIN  v_police_base_dtls  ON(pir_cus_number = pbd_cus_number AND pir_police_idnty = pbd_police_idnty)
+			LEFT JOIN  com_organization_base_dtls  ON(pir_cus_number = obd_orga_idnty)
+		</sql>
+		<where wid="0">
+			WHERE pir_cus_number=?
+			  AND (TRUNC(pir_enter_time) = TRUNC(SYSDATE) OR TRUNC(pir_leave_time)	= TRUNC(SYSDATE)) 	
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null or pir_cus_number = ?) AND 
+			(TRIM(?) is null or pbd_drptmnt_id = ?) AND
+			(TRIM(?) is null or pir_police_idnty = ?) AND
+			(TRIM(?) is null or pbd_police_name = ?) AND
+			(TRIM(?) is null or TRUNC(pir_enter_time) $= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_enter_time) #= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_leave_time) $= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_leave_time) #= TO_DATE(?,'YYYY-MM-DD')) 
+		</where>
+		<where wid="2">
+			WHERE (TRIM(?) is null or pir_cus_number = ?) AND 
+			(TRIM(?) is null or pbd_drptmnt_id = ?) AND
+			(TRIM(?) is null or pir_police_idnty = ?) AND
+			(TRIM(?) is null or pir_police_name = ?) AND
+			(TRIM(?) is null or TRUNC(pir_enter_time) $= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_enter_time) #= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_leave_time) $= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_leave_time) #= TO_DATE(?,'YYYY-MM-DD')) AND
+			pir_leave_time is null 
+		</where>
+		<where wid="3">
+			WHERE (TRIM(?) is null or pir_cus_number = ?) AND 
+			(TRIM(?) is null or pbd_drptmnt_id = ?) AND
+			(TRIM(?) is null or pir_police_idnty = ?) AND
+			(TRIM(?) is null or pir_police_name = ?) AND
+			(TRIM(?) is null or TRUNC(pir_enter_time) $= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_enter_time) #= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_leave_time) $= TO_DATE(?,'YYYY-MM-DD')) AND
+			(TRIM(?) is null or TRUNC(pir_leave_time) #= TO_DATE(?,'YYYY-MM-DD')) AND
+			pir_enter_time is not null AND
+			pir_leave_time is not null 
+		</where>
+		<where wid="4">
+			WHERE pir_cus_number = ?
+			  AND pir_police_idnty = ?
+			  AND TRUNC(pir_enter_time) $= TO_DATE(?,'YYYY-MM-DD')
+			  AND (TRUNC(pir_leave_time) #= TO_DATE(?,'YYYY-MM-DD') OR pir_leave_time is null)
+		</where>
+		<where wid="5">
+			WHERE pir_cus_number = ?
+			  AND pir_police_idnty = ?
+			  AND TRUNC(pir_enter_time) $= TO_DATE(?,'YYYY-MM-DD')
+			  AND (TRUNC(pir_leave_time) #= TO_DATE(?,'YYYY-MM-DD') OR pir_leave_time is null)
+			  AND (pir_enter_time + 1 / 24.0 #= DECODE(pir_leave_time,null,SYSDATE,pir_leave_time))
+		</where>
+		<where wid="6">
+		    WHERE (TRIM(?) is null or pir_cus_number = ?) 	
+		     AND  pir_police_idnty = ?
+		</where>
+		<where wid="7">
+		    WHERE  (TRIM(?) is null or TO_CHAR(pir_enter_time,'YYYY-MM-DD HH24:MI:SS') $= ? ) 
+			 AND   (TRIM(?) is null or TO_CHAR(pir_enter_time,'YYYY-MM-DD HH24:MI:SS') #= ? ) 		     
+		     AND   (TRIM(?) is null or pir_cus_number = ?) 	
+		     AND   pir_police_idnty = ?
+		</where>
+		<where wid="8">
+			WHERE  TO_DATE(?,'YYYY-MM-DD') $= TRUNC(SYSDATE+1)
+		</where>
+		<where wid="9">
+			WHERE pir_cus_number = ?
+			  AND pir_police_idnty = ?
+			  AND TRUNC(pir_enter_time) $= TO_DATE(?,'YYYY-MM-DD')
+			  AND (TRUNC(pir_leave_time) #= TO_DATE(?,'YYYY-MM-DD') OR pir_leave_time is null)
+			  AND (DECODE(pir_leave_time,null,to_char(pir_enter_time,'YYYY-MM-DD') || ' 00:00:00',to_char(pir_leave_time,'YYYY-MM-DD hh24:mi:ss')) 
+			                  	   $ to_char(pir_enter_time,'YYYY-MM-DD') ||' 21:00:00'
+			   OR (pir_enter_time # to_char(pir_enter_time,'YYYY-MM-DD') ||' 06:00:00' AND
+			       pir_leave_time # to_char(pir_enter_time,'YYYY-MM-DD') ||' 06:00:00'))
+		</where>
+		<order oid="0">
+			ORDER BY pir_enter_time2 desc
+		</order>
+		<order oid="1">
+			ORDER BY pir_enter_time2 asc
+		</order>
+		<order oid="2">
+			ORDER BY pir_leave_time desc
+		</order>
+	</item>	
+
+	<item id="cds_door_card_query">
+		<desc>门禁刷卡记录查询</desc>
+		<Const key="DRD_IN_OUT_INDC">drdInOutIndc</Const>
+		<Const key="DRD_STATUS_INDC">drdStatusIndc</Const>
+		<Const key="PEOPLE_TYPE">drdPeopleTypeIndc</Const>
+		<sql>
+			SELECT 
+			 		drd_cus_number,       
+					to_char(drd_bsns_date,'YYYY-MM-DD') AS drd_bsns_date,      
+					drd_door_ctrl_idnty, 
+					drd_door_idnty,      
+					drd_addrs,           
+					drd_card_idnty,     
+					drd_in_out_indc,     
+					to_char(drd_brush_card_time,'HH24:mi:ss') AS drd_brush_card_time,
+					drd_status_indc,
+					people_type,
+					drd_remark,
+					door_name 
+			FROM		  
+			(SELECT drd_cus_number,       
+					drd_bsns_date,      
+					drd_door_ctrl_idnty, 
+					drd_door_idnty,      
+					drd_addrs,           
+					drd_card_idnty,     
+				    drd_in_out_indc,     
+					drd_brush_card_time,  
+					drd_status_indc,
+					drd_people_type_indc AS people_type,
+					drd_remark,
+					dcb_name AS door_name   
+			FROM 	cds_door_record_dtls
+			LEFT JOIN  dvc_door_control_base_dtls ON(drd_door_idnty = dcb_idnty)
+			UNION
+			SELECT drd_cus_number,       
+					drd_bsns_date,      
+					drd_door_ctrl_idnty, 
+					drd_door_idnty,      
+					drd_addrs,           
+					drd_card_idnty,     
+					drd_in_out_indc,     
+					drd_brush_card_time,  
+					drd_status_indc,
+					drd_people_type_indc AS people_type,
+					drd_remark,
+					dcb_name AS door_name   
+			FROM 	cds_door_record_dtls_h 
+			LEFT JOIN  dvc_door_control_base_dtls ON(drd_door_idnty = dcb_idnty))
+		</sql>
+		<where wid="0">
+			WHERE drd_cus_number=? 	
+		</where>
+		<where wid="1">
+			WHERE  drd_cus_number = ?  AND 
+			(TRIM(?) is null or drd_door_idnty like ?) AND
+			(TRIM(?) is null or TO_CHAR(drd_brush_card_time,'YYYY-MM-DD') $= ?) AND
+			(TRIM(?) is null or TO_CHAR(drd_brush_card_time,'YYYY-MM-DD') #= ?)
+		</where>
+		<order oid="0">
+			ORDER BY drd_bsns_date desc
+		</order>
+	</item>		
+    <item id="query_grp">
+		<desc>查询群组信息</desc>
+		<sql>
+			SELECT id,gma_grp_name,gma_type_indc,gma_sub_type_indc,gma_remark 
+			FROM cds_grp_master
+		</sql>
+		<where wid="0">
+			WHERE gma_cus_number=?
+			   AND gma_type_indc=? 
+			   AND 	gma_sub_type_indc=?
+		</where>
+	</item>
+	<item id="query_department_route">
+		<desc>根据外来车辆的去向查询路线和摄像机组</desc>
+		<sql>
+		  SELECT drr_route_start_addrs,
+		       drr_route_end_addrs,
+		       drr_camera_grp_id,
+		       drr_camera_grp_name
+		  FROM cds_department_route_rel drr
+		</sql>
+		<where wid="0">
+			 WHERE drr_cus_number = ?
+                AND drr_dprtmnt_name =?
+		</where>
+	</item>
+	<item id="cds_petition_info_query">
+		<desc>查询上访信息</desc>
+		<Const key="PEI_CRTE_USER_ID_CH">user</Const>
+		<Const key="PEI_UPDT_USER_ID">user</Const>
+		<sql>
+		     SELECT pei_cus_number,                    
+					pei_cus_name,        
+					pei_petition_record_id,             
+					pei_petition_name,   
+					pei_petition_sex,     
+					TO_CHAR(pei_petition_birthday,'YYYY-MM-DD') pei_petition_birthday, 
+					pei_cert_type,       
+					pei_cert_code,       
+					pei_family_address,   
+					TO_CHAR(pei_petition_time,'YYYY-MM-DD') pei_petition_time,    
+					pei_petition_reason,  
+					pei_petition_content,
+					pei_crte_time,                       
+					pei_crte_user_id,
+					pei_crte_user_id AS pei_crte_user_id_ch,                  
+					pei_updt_time,                     
+					pei_updt_user_id
+			   FROM cds_petition_info 
+		</sql>
+		<where wid="0">
+			 WHERE pei_cus_number = ?
+		</where>
+		<where wid="1">
+			 WHERE pei_cus_number = ? AND
+			 	   TRUNC(pei_petition_time) = to_date(?,'YYYY-MM-DD')
+		</where>
+		<where wid="2">
+			 WHERE (TRIM(?) is null or pei_cus_number = ?) AND
+			 	   (TRIM(?) is null or TRUNC(pei_petition_time)  $= to_date(?,'YYYY-MM-DD')) AND
+			 	   (TRIM(?) is null or TRUNC(pei_petition_time)  #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="3">
+			 WHERE   pei_cus_number = ?
+			   AND   pei_petition_record_id = ?
+			   AND   pei_crte_user_id = ?
+		</where>
+		<order oid="0">
+			ORDER BY pei_petition_time DESC
+		</order>
+	</item>
+	
+	<item id="query_camera_dvc_is_exist">
+		<desc>检查摄像机设备是否存在</desc>
+		<sql>
+			SELECT COUNT(0) AS count
+			  FROM dvc_camera_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE cbd_cus_number = ?
+			   AND dvc_camera_base_dtls.id = ?
+			   AND cbd_action_indc #$ 3
+		</where>
+	</item>
+
+	<item id="query_alertor_dvc_is_exist">
+		<desc>检查报警器设备是否存在</desc>
+		<sql>
+			SELECT COUNT(0) AS count
+			  FROM dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ?
+			   AND abd_idnty = ?
+			   AND abd_action_indc #$ 3
+		</where>
+	</item>
+
+	<item id="query_door_dvc_is_exist">
+		<desc>检查门禁设备是否存在</desc>
+		<sql>
+			SELECT COUNT(0) AS count
+			  FROM dvc_door_control_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE dcb_cus_number = ?
+			   AND (dcb_ctrl_idnty||','||dcb_door_idnty) = ?
+			   AND dcb_action_indc #$ 3
+		</where>
+	</item>
+	<item id="query_area_relation_department">
+		<desc>根据区域查询它和子区域关联的部门</desc>
+		<sql>
+			SELECT adr.adr_dprtmnt_id, adr.adr_dprtmnt_name
+			  FROM (SELECT abd_cus_number, abd_area_id, abd_area_name
+			          FROM cds_area_base_dtls
+			         WHERE abd_cus_number = ?
+			        CONNECT BY PRIOR abd_area_id = abd_parent_area_id
+			         START WITH abd_area_id = ?) abd
+			 INNER JOIN cds_area_department_relation adr
+			    ON (abd_cus_number = adr.adr_cus_number AND
+			       abd_area_id = adr.adr_area_id)
+		</sql>
+	</item>
+
+	<item id="cds_query_area_duty_police">
+		<desc>查询区域的值班民警信息</desc>
+		<sql>
+			SELECT *
+			  FROM (SELECT A.*, ROWNUM AS row_num
+			          FROM (SELECT b.pbd_police_idnty AS id,
+			                       b.pbd_police_name  AS name,
+			                       b.pbd_drptmnt_id   AS drptmnt_id,
+			                       b.pbd_drptmnt      AS drptmnt,
+			                       b.pbd_pstn_name    AS pstn_name,
+			                       b.pbd_short_phone  AS short_phone,
+			                       b.pbd_talk_num     AS talk_num,
+			                       b.pbd_phone        AS phone,
+			                       a.cip_enter_time   AS enter_time
+			                  FROM cds_cur_inprsn_police_record a
+			                 INNER JOIN v_police_base_dtls b
+			                    ON a.cip_cus_number = b.pbd_cus_number
+			                   AND a.cip_police_idnty = b.pbd_police_idnty
+			                 INNER JOIN (SELECT DISTINCT adr_dprtmnt_id
+			                              FROM cds_area_department_relation
+			                             WHERE adr_cus_number = ?
+			                               AND adr_area_id IN
+			                                   (SELECT abd_area_id
+			                                      FROM CDS_AREA_BASE_DTLS
+			                                    CONNECT BY PRIOR abd_area_id = abd_parent_area_id
+			                                     START WITH abd_area_id = ?
+			                                            AND abd_cus_number = ?)) c
+			                    ON b.pbd_drptmnt_id = c.adr_dprtmnt_id
+			                 WHERE a.cip_enter_time >= (TRUNC(SYSDATE) - 4)
+			                   AND a.cip_cus_number = ?			                  
+			                 ORDER BY drptmnt_id, a.cip_enter_time DESC) A
+			         WHERE ROWNUM #= ?)
+			 WHERE row_num > ?
+		</sql>
+	</item>
+
+	<item id="cds_query_area_duty_police_count">
+		<desc>查询区域的值班民警信息总数</desc>
+		<sql>
+			SELECT count(0) AS count
+			  FROM cds_police_inout_record a
+			 INNER JOIN v_police_base_dtls b
+			    ON a.pir_cus_number = b.pbd_cus_number
+			   AND a.pir_police_idnty = b.pbd_police_idnty
+			 INNER JOIN (SELECT DISTINCT adr_dprtmnt_id
+			              FROM cds_area_department_relation
+			             WHERE adr_cus_number = ?
+			               AND adr_area_id IN
+			                   (SELECT abd_area_id
+			                      FROM CDS_AREA_BASE_DTLS
+			                    CONNECT BY PRIOR abd_area_id = abd_parent_area_id
+			                     START WITH abd_area_id = ?
+			                            AND abd_cus_number = ?)) c
+			    ON b.pbd_drptmnt_id = c.adr_dprtmnt_id
+			 WHERE a.pir_enter_time >= (TRUNC(SYSDATE) - 4)
+			   AND a.pir_cus_number = ?
+			   AND a.pir_leave_time IS NULL
+		</sql>
+	</item>
+	
+	<item id="cds_area_department_relation">
+		<desc>查询区域关联的监区</desc>
+		<sql>
+			SELECT count(0) AS count
+			  FROM cds_area_department_relation
+			 LEFT JOIN cds_area_base_dtls
+			    ON (adr_cus_number = abd_cus_number AND
+			    	adr_area_id = abd_area_id)
+			 WHERE adr_cus_number = ?
+			   AND adr_area_id = ?
+		</sql>
+	</item>
+
+	<item id="cds_query_area_prisoner">
+		<desc>查询区域的重点罪犯信息</desc>
+		<Const key="PBD_SEX_INDC">sex</Const>
+		<Const key="PBD_TYPE_INDC">pbdTypeIndc</Const>
+		<Const key="PBD_STTS_INDC">pbdSttsIndc</Const>
+		<Const key="pbd_nation">4.3.6</Const><!-- 民族 -->
+		<Const key="accstn">4.4.1</Const><!-- 罪名 -->
+		<Const key="pbd_native_addrs">4.3.2</Const><!-- 籍贯-->
+		<Const key="pbd_cltre_level">4.3.7</Const><!-- 文化程度 -->
+		<sql>
+			SELECT *
+			  FROM (SELECT A.*, ROWNUM AS row_num
+			          FROM (SELECT a.pbd_prsnr_idnty     AS id,
+			                       a.pbd_prsnr_name      AS name,
+			                       a.pbd_type_indc       AS type,
+			                       a.pbd_prsn_area_idnty AS drptmnt_id,
+			                       c.adr_dprtmnt_name    AS drptmnt,
+			                       a.pbd_accstn          AS accstn,
+			                       a.pbd_sntn_type       AS sntn_type,
+			                       a.pbd_sntn_term       AS sntn_term,
+			                       a.pbd_Exctn_End_Date  AS end_date
+			                  FROM v_prisoner_master_base a
+			                 INNER JOIN (select DISTINCT pbd_cus_number,pbd_prsnr_idnty,pbd_prsn_area_idnty FROM v_prisoner_serious) b
+			                    ON a.pbd_cus_number = b.pbd_cus_number
+			                   AND a.pbd_prsnr_idnty = b.pbd_prsnr_idnty
+			                 INNER JOIN (SELECT DISTINCT adr_dprtmnt_id, adr_dprtmnt_name
+			                              FROM cds_area_department_relation
+			                             WHERE adr_cus_number = ?
+			                               AND adr_area_id IN
+			                                   (SELECT abd_area_id
+			                                      FROM CDS_AREA_BASE_DTLS
+			                                    CONNECT BY PRIOR abd_area_id = abd_parent_area_id
+			                                     START WITH abd_area_id = ?
+			                                            AND abd_cus_number = ?)) c
+			                    ON b.pbd_prsn_area_idnty = c.adr_dprtmnt_id
+			                 WHERE a.pbd_cus_number = ? AND
+			                 	   a.pbd_stts_indc = 1 AND
+								   a.pbd_prsnr_stts_indc in (11,12,13,14,15,19)
+			                 ORDER BY drptmnt_id, a.pbd_type_indc DESC, a.pbd_prsnr_idnty) A
+			         WHERE ROWNUM #= ?)
+			 WHERE row_num > ?
+		</sql>
+	</item>
+
+	<item id="cds_query_area_prisoner_count">
+		<desc>统计区域的重点罪犯信息</desc>
+		<sql>
+			 SELECT count(0) AS count
+               FROM v_prisoner_master_base a
+              INNER JOIN (select DISTINCT pbd_cus_number,pbd_prsnr_idnty,pbd_prsn_area_idnty FROM v_prisoner_serious) b
+                 ON a.pbd_cus_number = b.pbd_cus_number
+                AND a.pbd_prsnr_idnty = b.pbd_prsnr_idnty
+              INNER JOIN (SELECT DISTINCT adr_dprtmnt_id, adr_dprtmnt_name
+                           FROM cds_area_department_relation
+                          WHERE adr_cus_number = ?
+                            AND adr_area_id IN
+                                (SELECT abd_area_id
+                                   FROM CDS_AREA_BASE_DTLS
+                                 CONNECT BY PRIOR abd_area_id = abd_parent_area_id
+                                  START WITH abd_area_id = ?
+                                         AND abd_cus_number = ?)) c
+                 ON b.pbd_prsn_area_idnty = c.adr_dprtmnt_id
+              WHERE a.pbd_cus_number = ? AND
+              		a.pbd_stts_indc = 1 AND
+					a.pbd_prsnr_stts_indc in (11,12,13,14,15,19)
+		</sql>
+	</item>
+
+	<item id="query_cds_evidence_info_union">
+		<desc>查询未使用及指定监督单使用到的证据信息</desc>
+		<Const key="EIN_FILE_TYPE_INDC">fileType</Const>
+		<Const key="EIN_CONTENT_TYPE_INDC">contentType</Const>
+		<Const key="EIN_STTS_INDC">einStatus</Const>
+		<sql>
+			 SELECT cds_evidence_info.id as id,
+			 		ein_content_type_indc,
+			 		ein_content_desc,
+			 		ein_file_type_indc,
+			 		ein_stts_indc
+ 			   FROM cds_evidence_info
+ 			  
+		</sql>
+		<where wid="0">
+			WHERE ein_cus_number = ?
+ 				 AND  ein_stts_indc = 0
+ 			   UNION ALL
+ 			  SELECT cds_evidence_info.id as id,
+ 			  		 ein_content_type_indc,
+ 			  		 ein_content_desc,
+ 			  		 ein_file_type_indc,
+ 			  		 ein_stts_indc
+ 				FROM cds_evidence_info
+ 		   LEFT JOIN cds_monitor_evidence_relation 
+ 				  ON(cds_evidence_info.id = mer_evidence_sqno)
+ 			   WHERE ein_cus_number = ?
+ 			   AND   mer_monitor_sqno = ? 
+		</where>
+	</item>
+
+	<item id="cds_emergency_plan_info_query">
+		<desc>应急处置-预案查询</desc>
+		<Const key="PLAN_TYPE">epiPlanType</Const>
+		<Const key="PLAN_STATUS">epiPlanStatus</Const>
+		<Const key="USER_NAME">user</Const>
+		<sql>
+			 SELECT epi_cus_number,                            
+   					epi_plan_id,
+   					epi_plan_name,
+   					epi_plan_type,
+   					epi_plan_type AS plan_Type,
+   					epi_plan_desc,       
+   					epi_plan_status, 
+   					epi_plan_status AS plan_status,      
+   					epi_app_flow,
+   					epi_crte_time,
+   					epi_crte_user_id,
+   					epi_updt_time,
+   					epi_updt_user_id,
+   					epi_crte_user_id AS user_name
+   				FROM cds_emergency_plan_info
+		</sql>
+		<where wid="0">
+			   WHERE   epi_cus_number = ?
+		</where>
+		<where wid="1">
+		       WHERE  epi_plan_id = ?
+		</where>
+        <where wid="7">
+               LEFT JOIN cds_emergency_handle_approve
+		       ON      (epi_plan_id=eha_ph_id)
+		       WHERE (TRIM(?) is null OR  epi_plan_name = ?)
+		       AND   (TRIM(?) is null OR  epi_plan_type =?)	       
+		       AND   (TRIM(?) is null OR  epi_plan_status =?)
+		       AND   (TRIM(?) is null OR  eha_app_role	=?)
+		       AND   (TRIM(?) is null OR  epi_app_flow	=?)	 	   	
+		       AND   (TRIM(?) is null OR  eha_is_agree= ?)
+		       AND   (TRIM(?) is null OR  epi_cus_number = ?)
+		</where>
+		<where wid="5">
+		       RIGHT JOIN cds_emergency_handle_approve
+		       ON      (epi_plan_id=eha_ph_id)
+		       WHERE (TRIM(?) is null OR  epi_plan_name = ?)
+		       AND   (TRIM(?) is null OR  epi_plan_type =?)	       
+		       AND   (TRIM(?) is null OR  epi_plan_status =?)
+		       AND   (TRIM(?) is null OR  epi_app_flow = ?)
+		       AND   (TRIM(?) is null OR  eha_app_role	=?)
+		       AND   (TRIM(?) is null OR  epi_cus_number = ?)	   	
+		       AND     eha_is_agree=1
+		</where>
+		<where wid="6">
+		       WHERE  (TRIM(?) is null OR epi_cus_number = ?)
+		       AND    (TRIM(?) is null OR epi_plan_status =?)   		     
+		</where>
+		<where wid="4">
+		       LEFT JOIN cds_emergency_handle_approve
+		       ON      (epi_plan_id=eha_ph_id)
+		       WHERE   (TRIM(?) is null OR epi_cus_number = ?)
+		       AND     (TRIM(?) is null OR epi_plan_status =?)
+		       AND     (TRIM(?) is null OR epi_app_flow = ?)
+		       AND     eha_is_agree=1
+		       AND     (TRIM(?) is null OR eha_app_role	=?)	   		       
+		</where>
+        <where wid="8">
+               LEFT JOIN cds_emergency_handle_approve
+		       ON      (epi_plan_id=eha_ph_id)
+		       WHERE   epi_plan_status =?
+		       AND     epi_app_flow = ?	
+		       AND     eha_is_agree=1	       
+		</where>
+		 <where wid="9">
+		       LEFT JOIN cds_emergency_handle_approve
+		       ON      (epi_plan_id=eha_ph_id)
+		       WHERE   epi_plan_status =?
+		       AND     epi_app_flow = ?
+		       AND     eha_is_agree=1
+		       AND     eha_app_role	=?
+		       AND	   epi_cus_number = ?       
+		</where>
+		<where wid="10">
+		       WHERE   epi_cus_number = ?
+		       AND     epi_plan_status =?		   
+		</where>
+		<where wid="2">
+		       WHERE  (TRIM(?) is null OR epi_cus_number = ?)
+		       AND	  (TRIM(?) is null OR epi_plan_id = ?)
+		       AND	  (TRIM(?) is null OR epi_plan_type = ?)
+		       AND	  (TRIM(?) is null OR epi_plan_status = ?)	
+		</where>
+		<where wid="3">
+			   WHERE  epi_cus_number = ?
+			     AND  epi_plan_id = ?
+		</where>
+		<where wid="11">
+			 JOIN 
+ 			   v_police_base_dtls ON 
+ 			   epi_cus_number = pbd_cus_number
+ 			  WHERE  (TRIM(?) is null OR epi_cus_number = ?)
+		       AND    (TRIM(?) is null OR epi_plan_status =?)
+		       AND	  (trim(?) is null or epi_crte_user_id = ?)   
+		</where>
+
+		<order oid="0">
+			ORDER BY epi_plan_id
+		</order>
+	</item>
+	<item id="cds_emergency_handle_approve_query">
+	    <desc>应急预案-预案评审</desc>
+	    <sql>
+	        SELECT eha_app_role,
+	               eha_police_id,
+	               eha_police_name,
+	               eha_is_agree,
+	               eha_agree_content,
+	               eha_ph_id,
+	               eha_app_type
+	         FROM  cds_emergency_handle_approve
+	    </sql>
+	    <where wid="0">
+	        WHERE eha_cus_number = ?
+	    </where>
+	    <where wid="1">
+	        WHERE eha_ph_id=?
+	        AND   eha_app_role=?
+	    </where>
+	    <where wid="2">
+	        WHERE eha_cus_number = ?
+	        AND   eha_app_type=?
+	        AND   eha_ph_id=?
+	    </where>
+	    <where wid="3">
+	        WHERE eha_is_agree=?
+	        AND   eha_ph_id=?
+	        AND   eha_app_role=?
+	    </where>
+	    <order oid="0">
+	        ORDER BY  eha_ph_id
+	    </order>
+	</item>
+	<item id="cds_emergency_plan_workGroup_query">
+		<desc>应急处置-预案相关工作组查询</desc>
+		<sql>
+			 SELECT wgi_workgroup_id,
+			 	    wgi_workgroup_name,
+			 	    wgi_workgroup_task,
+			 	    wgm_user_role,
+			 	    wgm_police_id,
+			 	    wgm_role_task,
+                    wgm_police_name,
+			 	    epc_order_seq 
+			 FROM   cds_workgroup_info 
+	    LEFT JOIN   cds_emergency_plan_config 
+	           ON   (wgi_workgroup_id = epc_config_item_id)
+	    LEFT JOIN   cds_workgroup_member
+	           ON   (wgi_workgroup_id=wgm_workgroup_id)
+		</sql>
+		<where wid="0">
+			WHERE    epc_cus_number = ?
+      		  AND    epc_plan_id = ? 
+              AND    epc_config_type = 2
+		</where>
+		<where wid="1">
+		    WHERE    epc_plan_id = ? 
+		    AND      epc_config_type = 2
+		</where>
+		<order oid="0">
+			ORDER BY epc_order_seq
+		</order>
+	</item>
+					
+	<item id="cds_emergency_plan_config_query">
+	      <desc>应急处置-预案表中处置方法查询</desc>
+	      <sql>
+	           SELECT epc_config_item_id 
+	           FROM   cds_emergency_plan_config
+	      </sql>
+	      <where wid="0">
+	         WHERE epc_cus_number=?
+	         AND   epc_config_type=1
+	         AND   epc_config_item_id=?
+	      </where>
+	</item>
+	<item id="cds_disposal_method_info_status_query">
+	    <desc>应急处置-处置方法状态查询</desc>
+	    <sql>
+	         SELECT dmi_method_id
+	         FROM   cds_disposal_method_info
+	    </sql>
+	    <where wid="0">
+	         WHERE dmi_cus_number=?
+	         AND   dmi_method_id=?
+	         AND   dmi_status=?	        
+	    </where>
+	</item>
+
+	<item id="cds_planid_query">
+	<desc>预案编号查询</desc>
+		<sql>
+			 SELECT  EPI_PLAN_ID.CURRVAL
+ 			   FROM dual
+		</sql>
+	</item>
+	
+	<item id="cds_disposal_method_easy_query">
+	<desc>处置方法查询</desc>
+		<sql>
+			 SELECT  dmi_method_id,
+			 		 dmi_method_name,
+			 		 dmi_method_desc
+ 			   FROM  cds_disposal_method_info
+		</sql>
+		<where wid="0">
+			 WHERE dmi_cus_number  = ?
+			   AND dmi_plan_type IN(0,?)
+ 		</where>
+		<where wid="1">
+			 WHERE dmi_cus_number  = ?
+			 AND   dmi_method_id   = ?
+		</where>
+		<where wid="2">
+			 LEFT JOIN cds_emergency_plan_config ON(dmi_method_id = epc_config_item_id)
+			 WHERE (TRIM(?) is null OR dmi_cus_number  = ?)
+			 AND   (TRIM(?) is null OR epc_plan_id   = ?)
+		</where>
+		<where wid="3">
+			 LEFT JOIN cds_emergency_plan_config ON(dmi_method_id = epc_config_item_id)
+			 WHERE dmi_cus_number  = ?
+			 AND    epc_plan_id   = ?
+			 AND    epc_config_type=? 
+		</where>
+		<where wid="4">
+			 LEFT JOIN cds_emergency_plan_config ON(dmi_method_id = epc_config_item_id)
+			 WHERE epc_plan_id   = ?
+			 AND   epc_config_type=? 
+		</where>
+		<where wid="5">
+		   LEFT JOIN cds_emergency_plan_config ON(dmi_method_id = epc_config_item_id)
+			   WHERE epc_plan_id   = ?
+		</where>
+		<order oid="0">
+			ORDER BY dmi_method_id
+		</order>
+		<order oid="1">
+			ORDER BY epc_order_seq
+		</order>
+		
+	</item>
+			
+	<item id="cds_query_message_subscribe">
+		<desc>用户订阅消息查询</desc>
+		<sql>
+			 SELECT msd_cus_number, msd_user_id, msd_msg_idnty
+			  FROM com_msg_subscribe
+			 ORDER BY msd_msg_idnty
+		</sql>
+	</item>	
+	
+	<item id="cds_method_rel_action_query">
+		<desc>处置方法对应的关联操作项</desc>
+		<sql>
+			SELECT   cdt_key, 
+			         cdt_value, 
+			         mra_method_id
+		        FROM com_constant_dtls
+		        LEFT JOIN cds_method_rel_action
+		          ON cdt_key = mra_rel_action_type
+		         AND mra_method_id = ?
+		         AND mra_cus_number = ?
+		       WHERE cdt_cnstnt_idnty = 'handle_method'
+		       ORDER BY cdt_key
+		</sql>		
+	</item>
+
+	<item id="cds_method_rel_action_query_view">
+		<desc>处置方法对应的关联操作项</desc>
+		<sql>
+			 SELECT  mra_rel_action_type
+ 			   FROM  cds_method_rel_action
+		</sql>
+		<where wid="0">
+			 WHERE    mra_cus_number  = ?
+			   AND    mra_method_id   = ? 
+		</where>
+		<where wid="1">
+			 WHERE    mra_method_id   = ? 
+		</where>
+		<where wid="2">
+			 WHERE   (TRIM(?) is null OR mra_cus_number  = ?) 
+			   AND   (TRIM(?) is null OR mra_method_id   = ?) 
+		</where>
+		<order oid="0">
+			ORDER BY mra_rel_action_type
+		</order>
+	</item>
+	
+
+	<item id="cds_expert_info_checkList">
+		<desc>专家协助列表</desc>
+		<sql>
+			 SELECT  epi_expert_id,
+			 		 epi_expert_name
+ 			   FROM  cds_expert_info
+		</sql>
+		<where wid="0">
+			 WHERE    epi_cus_number  = ?
+		</where>
+		<where wid="1">
+			 LEFT JOIN cds_emergency_plan_action 
+			        ON (epi_expert_id = epa_rel_action_id)
+			 WHERE    (TRIM(?) is null OR epa_cus_number = ?)
+			   AND    (TRIM(?) is null OR epa_plan_id = ?)
+			   AND    (TRIM(?) is null OR epa_method_id = ?)
+			   AND    epa_rel_action_type = 3     
+		</where>
+		<where wid="2">
+			 LEFT JOIN cds_emergency_plan_action 
+			        ON (epi_expert_id = epa_rel_action_id)
+			 WHERE    epa_plan_id = ?
+			   AND    epa_method_id = ?
+			   AND    epa_rel_action_type = 3      
+		</where>
+		<order oid="0">
+			ORDER BY epi_expert_id
+		</order>
+	</item>
+<item id="cds_expert_info_select">
+<sql>
+ SELECT  epi_expert_name,
+		 epi_specialty
+  FROM   cds_expert_info
+</sql>
+</item>
+	<item id="cds_material_info_combobox">
+		<desc>新增预案-处置流程-应急物资下拉框</desc>
+		<sql>
+			 SELECT  mri_material_id,
+			 		 mri_material_name,
+			 		 mri_count
+ 			   FROM  cds_material_info
+		</sql>
+		<where wid="0">
+			 WHERE    mri_cus_number  = ?
+			 AND      mri_status #$ 2
+		</where>
+		<where wid="1">
+		 LEFT JOIN    cds_emergency_plan_action
+		        ON    (mri_material_id = epa_rel_action_id)	
+			 WHERE    (TRIM(?) is null OR epa_cus_number = ?)
+			   AND    (TRIM(?) is null OR epa_plan_id = ?)
+			   AND    (TRIM(?) is null OR epa_method_id = ?)
+			   AND    EPA_REL_ACTION_TYPE = 4
+		</where>
+		<where wid="2">
+		 LEFT JOIN    cds_emergency_plan_action
+		        ON    (mri_material_id = epa_rel_action_id)	
+			 WHERE    epa_plan_id = ?
+			   AND    epa_method_id = ?
+			   AND    EPA_REL_ACTION_TYPE = 4
+		</where>
+		<order oid="0">
+			ORDER BY mri_material_id
+		</order>
+	</item>
+
+	<item id="cds_laws_info_combobox">
+		<desc>新增预案-处置流程-法律法规下拉框</desc>
+		<sql>
+			 SELECT  lri_laws_id,
+			 		 lri_laws_name
+ 			   FROM  cds_laws_info
+		</sql>
+		<where wid="0">
+			 WHERE    lri_cus_number  = ?
+			 AND      lpi_stts_indc IN (0,3)
+		</where>
+		<where wid="1">
+		 LEFT JOIN    cds_emergency_plan_action
+		        ON    (lri_laws_id = epa_rel_action_id)	
+			 WHERE    (TRIM(?) is null OR epa_cus_number = ?)
+			   AND    (TRIM(?) is null OR epa_plan_id = ?)
+			   AND    (TRIM(?) is null OR epa_method_id = ?)
+			   AND    EPA_REL_ACTION_TYPE = 5
+		</where>
+		<where wid="2">
+		 LEFT JOIN    cds_emergency_plan_action
+		        ON    (lri_laws_id = epa_rel_action_id)	
+			 WHERE    epa_plan_id = ?
+			   AND    epa_method_id = ?
+			   AND    EPA_REL_ACTION_TYPE = 5
+		</where>		
+		<order oid="0">
+			ORDER BY lri_laws_id
+		</order>
+	</item>
+	
+	<item id="cds_emergency_event_record_query">
+		<desc>新增预案-处置流程-事件记录信息</desc>
+		<sql>
+			 SELECT  eer_reportor_name,
+			 		 eer_reportor_company,
+			 		 eer_reportor_phone,
+			 		 eer_event_time,
+			 		 eer_event_address,
+			 		 eer_event_company,
+			 		 eer_event_reason,
+			 		 eer_event_nature,
+			 		 eer_event_extent
+ 			   FROM  cds_emergency_event_record
+		</sql>
+		<where wid="0">
+			 WHERE     (TRIM(?) is null or eer_cus_number  = ?)
+			 AND       (TRIM(?) is null or eer_handle_id = ?)
+		</where>
+		<where wid="1">
+		   LEFT JOIN  cds_emergency_plan_action
+	       ON         (epa_rel_action_id=eer_handle_id)
+	       WHERE    epa_cus_number  = ?
+			 AND    epa_method_id = ?			  
+			 AND    epa_rel_action_type = ?
+		</where>
+		<where wid="2">
+		   LEFT JOIN  cds_emergency_plan_action
+	       ON         (epa_rel_action_id=eer_handle_id)
+	       WHERE      epa_method_id = ?			  
+			 AND      epa_rel_action_type = ?
+		</where>
+		<where wid="3">
+		   LEFT JOIN  cds_emergency_plan_action
+	       ON         (epa_rel_action_id=eer_handle_id)
+	       WHERE      epa_method_id = ?			  			
+		</where>
+	</item>												
+    <item id="cds_emergency_plan_workgroup_planName">
+       <desc>查询已配置工作组的预案</desc>
+       <sql>
+			 SELECT  epi_plan_id,
+			 		 epi_plan_name
+ 			   FROM  cds_emergency_plan_config 
+ 		     LEFT JOIN cds_emergency_plan_info 
+ 			  ON (epi_plan_id=epc_plan_id )  
+		</sql>
+		<where wid="0">
+			 WHERE    epi_cus_number  = ?
+			 AND      epc_config_type=?
+		</where>
+    </item>
+    <item id="cds_emergency_drill_plan_query">
+       <desc>应急处置-查询演练计划表</desc>
+       <sql>
+          SELECT edp_title,
+                 edp_drill_id,
+                 edp_time,
+                 edp_address,
+                 edp_release_time,
+                 edp_status,
+                 edp_crte_time,
+                 edp_crte_user_id,
+                 edp_updt_time,
+                 edp_updt_user_id,
+                 epi_plan_name,
+                 epi_plan_id
+           FROM cds_emergency_drill_plan
+           LEFT JOIN cds_emergency_plan_info
+                ON   (epi_plan_id=edp_em_plan_id)
+       </sql>
+       <where wid="0">           
+            WHERE     edp_cus_number  = ?
+       </where>
+       <where wid="1">           
+             WHERE    edp_cus_number  = ?
+             AND      edp_status=?
+       </where>
+       <where wid="2">       
+             WHERE   (TRIM(?) is null OR edp_cus_number  = ?) 
+             AND     (TRIM(?) is null OR edp_title=?) 
+             AND     (TRIM(?) is null OR edp_time=TO_TIMESTAMP(?,'YYYY-MM-DD HH24:MI:SS'))  
+             AND     (TRIM(?) is null OR edp_address=?) 
+             AND     (TRIM(?) is null OR edp_status=?)
+       </where>
+       <where wid="3">       
+             WHERE   edp_cus_number  = ?
+             AND     edp_drill_id=?
+       </where>
+       <where wid="4">
+        LEFT JOIN    cds_emergency_handle_approve
+             ON      (edp_drill_id=eha_ph_id)           
+             WHERE   edp_cus_number  = ?
+             AND     edp_status=?
+             AND     eha_is_agree=?
+             AND     eha_app_type=?
+       </where>
+       <order oid="0">
+			ORDER BY EDP_DRILL_ID
+		</order>
+    </item>
+	<item id="cds_emergency_plan_action_query_byActionType">
+		<desc>根据操作项类型查询</desc>
+		<sql>
+			 SELECT  epa_rel_action_id,
+			 		 epa_remark
+ 			   FROM  cds_emergency_plan_action 
+		</sql>
+		<where wid="0">
+			 WHERE    epa_cus_number  = ?
+			   AND    epa_plan_id = ?
+			   AND    epa_method_id = ?
+			   AND    epa_rel_action_type = ?
+		</where>
+		<where wid="1">
+			 WHERE    epa_cus_number  = ?
+			   AND    epa_plan_id = ?			  
+			   AND    epa_rel_action_type = ?
+		</where>
+	</item>
+	<item id="cds_emergency_plan_action_query_byActionType_two">
+		<desc>根据操作项类型查询-应急物资</desc>
+		<sql>
+			 SELECT  epa_rel_action_id,
+			         mri_material_name,
+			 		 epa_remark,
+			 		 mri_count
+ 			   FROM  cds_emergency_plan_action  a 
+ 			 LEFT JOIN cds_material_info_his b ON
+			 (a.epa_cus_number = b.mri_cus_number AND
+			  a.epa_rel_action_id = b.mri_material_id AND
+			  a.epa_plan_id = b.mri_handle_id)
+			 
+		</sql>
+		<where wid="0">
+			 WHERE    epa_cus_number  = ?
+			   AND    epa_plan_id = ?
+			   AND    epa_method_id = ?
+			   AND    epa_rel_action_type = ?
+		</where>
+	</item>
+
+	<item id="cds_emergency_plan_expert_query">
+	    <desc>查询预案专家关联操作项</desc>
+	    <sql>
+	        SELECT        epi_expert_id,
+	                      epi_expert_name,
+	                      epi_company,
+	                      epi_post,
+	                      epi_sex,
+	                      epi_age,
+	                      epi_function,
+	                      epi_type,
+	                      epi_specialty,
+	                      epi_phone	                   
+	        FROM         cds_emergency_plan_action
+	        LEFT JOIN     cds_expert_info
+	        ON          (epa_rel_action_id=epi_expert_id)
+	    </sql>
+	    <where wid="0">
+	         WHERE    epa_cus_number  = ?
+			   AND    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	    </where>
+	    <where wid="1">
+	         WHERE    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	    </where>
+	</item>
+	
+	<item id="cds_plan_workGroup_member_query">
+	     <desc>查询处置方法关联工作组成员信息</desc>
+	     <sql>
+	        SELECT   wgm_workgroup_id,
+	                 wgm_user_role,
+	                 wgm_police_id,
+	                 wgm_police_name,
+	                 wgm_role_task,
+	                 wgi_workgroup_name,
+	                 wgi_workgroup_task
+	        FROM     cds_emergency_plan_action
+	        LEFT JOIN     cds_workgroup_member
+	        ON          (epa_rel_action_id=wgm_workgroup_id)
+	        LEFT JOIN  cds_workgroup_info
+	        ON          (wgm_workgroup_id=wgi_workgroup_id) 
+	     </sql>
+	     <where wid="0">
+	         WHERE    epa_cus_number  = ?
+			   AND    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+			   AND    wgm_workgroup_id is not null   
+	    </where>
+	    <where wid="1">
+	         WHERE    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	    </where>
+	</item>
+	<item id="cds_metnod_material_info_query">
+	     <desc>应急预案-处置方法应急物资查询</desc>
+	     <sql>
+	       SELECT  mri_material_name,
+	               mri_material_id,
+	               mri_count
+	       FROM    cds_material_info
+	       LEFT JOIN cds_emergency_plan_action
+	       ON      (epa_rel_action_id=mri_material_id)
+	     </sql>
+	     <where wid="0">
+	         WHERE    epa_cus_number  = ?
+			   AND    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	     </where>
+	     <where wid="1">
+	         WHERE    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	     </where>
+	</item>
+	<item id="cds_metnod_laws_info_query">
+	    <desc>应急预案-处置方法法律法规查询</desc>
+	    <sql>
+		  SELECT     lri_laws_id,
+		             lri_laws_type,
+		             lri_laws_name,
+		             lri_laws_content,
+		             lpi_stts_indc,
+		             epa_remark
+		  FROM       cds_laws_info
+	      LEFT JOIN  cds_emergency_plan_action
+	      ON         (epa_rel_action_id=lri_laws_id)
+	    </sql>
+	    <where wid="0">
+	         WHERE    epa_cus_number  = ?
+			   AND    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	    </where>
+	    <where wid="1">
+	         WHERE    epa_method_id = ?			  
+			   AND    epa_rel_action_type = ?
+	    </where>
+	</item>	
+	
+	<item id="cds_construction_info_query">
+		<desc>查询施工情况信息</desc>
+		<Const key="COI_CRTE_USER_ID_CH">user</Const>
+		<Const key="COI_UPDT_USER_ID">user</Const>
+		<sql>
+		  	SELECT coi_cus_number,
+		       	   coi_cus_name,
+		       	   coi_cons_record_id,
+		       	   coi_cons_time,
+		       	   coi_end_time,
+		       	   coi_cons_address,
+		       	   coi_cons_person,
+		       	   coi_cons_number,
+		       	   coi_cons_content,
+		       	   coi_crte_time,
+		       	   coi_crte_user_id,
+		       	   coi_crte_user_id AS coi_crte_user_id_ch,
+		       	   coi_updt_time,
+		       	   coi_updt_user_id
+		 	  FROM cds_construction_info 
+		</sql>
+		<where wid="0">
+			WHERE coi_cus_number = ? 
+		</where>
+		<where wid="1">
+			WHERE (TRIM(?) is null OR coi_cus_number = ?) AND
+				  (TRIM(?) is null OR TRUNC(coi_cons_time)  $= to_date(?,'YYYY-MM-DD')) AND
+				  (TRIM(?) is null OR TRUNC(coi_cons_time ) #= to_date(?,'YYYY-MM-DD'))
+		</where>
+		<where wid="2">
+			WHERE coi_cus_number = ? AND
+				  TRUNC(coi_cons_time) = to_date(?,'YYYY-MM-DD')
+		</where>
+		<where wid="3">
+			WHERE   coi_cus_number = ?
+			  AND   coi_cons_record_id = ?
+			  AND 	coi_crte_user_id = ?
+		</where>
+		<order oid="0">
+			ORDER BY coi_cons_time DESC
+		</order>
+	</item>
+	
+	<item id="cds_expert_info_desc_querybyid">
+		<desc>根据编号查询专家详细信息</desc>
+		<Const key="EPI_SEX">sex</Const>
+		<sql>
+			 SELECT  epi_expert_id,
+			 		 epi_expert_name,
+			 		 epi_company,
+			 		 epi_post,
+			 		 epi_sex,
+			 		 epi_age,
+			 		 epi_function,
+			 		 epi_type,
+			 		 epi_specialty,
+			 		 epi_phone,
+			 		 obd_orga_name
+ 			   FROM  cds_expert_info
+ 	      LEFT JOIN  cds_emergency_plan_action
+ 	             ON  (epa_rel_action_id=epi_expert_id)
+ 	      LEFT JOIN  com_organization_base_dtls
+ 	             ON  (epi_company = obd_orga_idnty)    
+ 		</sql>
+		<where wid="0">
+			  WHERE    (TRIM(?) is null OR epa_cus_number  = ?)
+			   AND     (TRIM(?) is null OR epa_plan_id = ?)
+			   AND     (TRIM(?) is null OR epa_method_id = ?)	
+			   AND     (TRIM(?) is null OR epa_rel_action_id = ?)		  
+			   AND     epa_rel_action_type = 3
+		</where>
+		<where wid="1">
+			  WHERE   epa_plan_id = ?
+			   AND    epa_method_id = ?	
+			   AND    epa_rel_action_id = ?		  
+			   AND    epa_rel_action_type = 3
+		</where>
+	</item>
+
+	<item id="cds_material_info_desc_querybyid">
+		<desc>根据编号查询物资详细信息</desc>
+		<Const key="mri_status">mriStatus</Const>
+		<sql>
+			 SELECT  mri_material_id,
+			 		 mri_material_name,
+			 		 mri_material_type,
+			 		 mri_material_company,
+			 		 mri_address,
+			 		 mri_charger,
+			 		 mri_count,
+			 		 mri_charge_phone,
+			 		 mri_use,
+			 		 mri_sign_company,
+			 		 mri_spec,
+			 		 epa_remark,
+			 		 mri_status
+ 			   FROM  cds_material_info
+ 	      LEFT JOIN  cds_emergency_plan_action
+ 	             ON  (epa_rel_action_id=mri_material_id)
+ 		</sql>
+		<where wid="0">
+			  WHERE   (TRIM(?) is null OR epa_cus_number = ?)
+			   AND    (TRIM(?) is null OR epa_plan_id = ?)
+			   AND    (TRIM(?) is null OR epa_method_id = ?	)
+			   AND    (TRIM(?) is null OR epa_rel_action_id = ?)		  
+			   AND    epa_rel_action_type = 4
+		</where>
+		<where wid="1">
+			  WHERE   epa_plan_id = ?
+			   AND    epa_method_id = ?	
+			   AND    epa_rel_action_id = ?		  
+			   AND    epa_rel_action_type = 4
+		</where>
+	</item>
+	
+	<item id="cds_laws_info_desc_querybyid">
+		<desc>根据编号查询法律法规信息</desc>
+		<sql>
+			 SELECT  lri_laws_content,
+			 		 epa_remark
+ 			   FROM  cds_laws_info
+ 	      LEFT JOIN  cds_emergency_plan_action
+ 	             ON  (epa_rel_action_id=lri_laws_id)
+ 		</sql>
+		<where wid="0">
+			  WHERE   (TRIM(?) is null OR epa_cus_number = ?)
+			   AND    (TRIM(?) is null OR epa_plan_id = ?)
+			   AND    (TRIM(?) is null OR epa_method_id = ?)
+			   AND    (TRIM(?) is null OR epa_rel_action_id = ?)		  
+			   AND    epa_rel_action_type = 5
+		</where>
+		<where wid="1">
+			  WHERE   epa_plan_id = ?
+			   AND    epa_method_id = ?	
+			   AND    epa_rel_action_id = ?		  
+			   AND    epa_rel_action_type = 5
+		</where>
+	</item>
+	
+	<item id="cds_emergency_handle_record_no_query">
+		<desc>查询处置编号</desc>
+		<sql>
+			 SELECT  ehr_handle_id.nextVal	 		
+ 			   FROM  dual
+ 		</sql>
+	</item>	
+	<item id="dvc_talkback_base_dtls_query">
+	   <desc>查询对讲机信息</desc>
+	   <sql>
+	       SELECT tbd_name AS name,
+	              tbd_idnty AS id 
+	       FROM   dvc_talkback_base_dtls
+	   </sql>
+	   <where wid="0">
+	       WHERE tbd_cus_number=?
+	   </where>
+	   <order oid="0">
+		  ORDER BY tbd_seq_num DESC
+	   </order>
+	</item>
+	<item id="dvc_talkback_base_dtls_seqNum">
+	   <desc>查询对讲机排序号</desc>
+	   <sql>
+	     SELECT MAX(tbd_seq_num) AS TBD_SEQ_NUM
+	     FROM   dvc_talkback_base_dtls	       
+	   </sql>
+	   <where wid="0">
+	    WHERE tbd_cus_number=? 
+	    AND   tbd_area_id=?
+	   </where>
+	</item>	
+	<item id="dvc_talkback_base_dtls_detail">
+	   <Const key="STTS_INDC">meetTalkStatus</Const>
+	   <Const key="TYPE_INDC">meetTalkType</Const>
+	   <desc>查询对讲机的信息</desc>
+	   <sql>
+	      SELECT tbd_idnty,
+	      		 tbd_main_idnty,
+	             tbd_name,
+	             tbd_pre_name, 
+	             tbd_addrs,
+	             tbd_stts_indc,
+	             tbd_stts_indc AS stts_indc,
+	             tbd_area,
+	             tbd_area_id,
+	             tbd_dprtmnt,
+	             tbd_dprtmnt_id,
+	             tbd_ip_addrs,
+	             tbd_chnnl_addrs,
+	             tbd_type_indc,
+	             tbd_type_indc AS type_indc,
+	             tbd_action_indc,
+	             tbd_remark,
+	             tbd_pre_name,
+	             tbd_x_crdnt,
+	             tbd_y_crdnt,
+	             tbd_z_crdnt,
+	             tbd_pitch_crdnt,
+	             tbd_rotate_crdnt
+	      FROM   dvc_talkback_base_dtls	       
+	   </sql>
+	   <where wid="0">
+	      WHERE tbd_cus_number=?
+	      AND   tbd_idnty=?
+	   </where>
+	   <where wid="1">
+	      WHERE  tbd_cus_number=?
+	      AND    tbd_name like ?
+	      AND    (TRIM(?) is null OR tbd_idnty #$?)  
+	   </where>
+	    <where wid="2">
+	      WHERE  tbd_cus_number=?
+	      AND    tbd_idnty = ?	    
+	   </where>
+	   <where wid="3">
+	      WHERE  tbd_cus_number=?
+	      AND    tbd_ip_addrs=?
+	      AND    (TRIM(?) is null OR tbd_idnty #$?)  	    
+	   </where>
+	    <where wid="4">
+	      WHERE  tbd_cus_number=?
+	      AND    tbd_ip_addrs=?	     
+	   </where>
+	   <where wid="5">
+	      WHERE  tbd_cus_number=?
+	      AND    tbd_name like ?	    
+	   </where>	
+	   <where wid="6">
+	      WHERE tbd_cus_number=?
+	   </where>	  	
+	   <where wid="7">
+	      WHERE tbd_cus_number=?
+	      AND   tbd_idnty=?
+	      AND   tbd_ip_addrs=?
+	   </where>   	   
+	</item>
+
+	<item id="cds_query_talkbacks_area_for_tree">
+	     <desc>查询对讲机信息的树行结构</desc>
+	     <sql>
+			SELECT DISTINCT abd_cus_number AS orgId,
+			       DECODE(abd_parent_area_id,
+			              NULL,
+			              '1_' || TO_CHAR(abd_cus_number),
+			              '2_' || TO_CHAR(abd_parent_area_id)) AS parent_tree_id,
+			       '2_' || TO_CHAR(abd_area_id) AS tree_id,
+			       DECODE(abd_short_name, NULL, abd_area_name, abd_short_name) AS text,
+			       abd_area_id AS area_id,
+			       abd_srno
+			  FROM (SELECT * FROM cds_area_base_dtls WHERE abd_cus_number = ?)
+			CONNECT BY PRIOR abd_parent_area_id = abd_area_id
+			 START WITH abd_cus_number = ? AND abd_area_id IN (SELECT distinct tbd_area_id
+			                              FROM dvc_talkback_base_dtls
+			                             WHERE tbd_cus_number = ?
+			                               AND tbd_action_indc #$ 3
+			                             ORDER BY tbd_area_id)
+		 </sql>
+		<order oid="0">
+			 ORDER BY abd_srno
+		</order>	 
+	</item>
+	
+	<item id="cds_query_talkback_server_area_for_tree">
+	     <desc>查询对讲机信息的树行结构</desc>
+	     <sql>
+			SELECT DISTINCT abd_cus_number AS orgId,
+			       DECODE(abd_parent_area_id,
+			              NULL,
+			              '1_' || TO_CHAR(abd_cus_number),
+			              '2_' || TO_CHAR(abd_parent_area_id)) AS parent_tree_id,
+			       '2_' || TO_CHAR(abd_area_id) AS tree_id,
+			       DECODE(abd_short_name, NULL, abd_area_name, abd_short_name) AS text,
+			       abd_area_id AS area_id,
+			       abd_srno
+			  FROM (SELECT * FROM cds_area_base_dtls WHERE abd_cus_number = ?)
+			CONNECT BY PRIOR abd_parent_area_id = abd_area_id
+			 START WITH abd_cus_number = ? AND abd_area_id IN (SELECT distinct tse_area_id
+			                              FROM dvc_talkback_server
+			                             WHERE tse_cus_number = ?
+			                               AND tse_action_indc #$ 3
+			                             ORDER BY tse_area_id)
+		 </sql>
+		<order oid="0">
+			 ORDER BY abd_srno
+		</order>	 
+	</item>
+
+	<item id="cds_query_talkbacks_for_tree">
+	     <desc>查询对讲机信息的树行结构</desc>
+	     <sql>
+	     	SELECT a.tbd_cus_number AS orgId,
+			       DECODE(a.tbd_area_id,
+			              NULL,
+			              '1_' || TO_CHAR(a.tbd_cus_number),
+			              '2_' || TO_CHAR(a.tbd_area_id)) AS parent_tree_id,
+			       '3_' || TO_CHAR(a.tbd_idnty) AS tree_id,
+			       a.tbd_name AS text,
+			       a.tbd_idnty AS dvc_id,
+			       tbd_ip_addrs
+			  FROM dvc_talkback_base_dtls a
+		 </sql>
+	    <where wid="0">
+			 WHERE a.tbd_cus_number = ?
+			   AND a.tbd_cus_number = ?
+			   AND a.tbd_cus_number = ?
+			   AND a.tbd_action_indc #$ 3
+			   ORDER BY a.tbd_seq_num
+		</where>	 
+	</item>
+	
+	<item id="cds_query_talkbacks_for_tree_2">
+	     <desc>查询对讲机信息的树行结构</desc>
+	     <sql>
+	     	SELECT a.tbd_cus_number AS orgId,
+			       DECODE(a.tbd_main_idnty,
+			              NULL,
+			              '3_' || TO_CHAR(a.tbd_main_idnty),
+			              '3_' || TO_CHAR(a.tbd_main_idnty)) AS parent_tree_id,
+			       '4_' || TO_CHAR(a.tbd_idnty) AS tree_id,
+			       a.tbd_name AS text,
+			       a.tbd_idnty AS dvc_id,
+			       a.tbd_brand AS brand,
+			       tbd_ip_addrs
+			  FROM dvc_talkback_base_dtls a
+		 </sql>
+	    <where wid="0">
+			 WHERE a.tbd_cus_number = ?
+			   AND a.tbd_cus_number = ?
+			   AND a.tbd_cus_number = ?
+			   AND a.tbd_action_indc #$ 3
+			   AND a.tbd_main_idnty IS NOT NULL
+			   ORDER BY a.tbd_seq_num
+		</where>	 
+	</item>
+	
+	<item id="cds_query_talkback_server_for_tree">
+	     <desc>查询对讲主机信息的树行结构</desc>
+	     <sql>
+	     	SELECT a.tse_cus_number AS orgId,
+			       DECODE(a.tse_area_id,
+			              NULL,
+			              '1_' || TO_CHAR(a.tse_cus_number),
+			              '2_' || TO_CHAR(a.tse_area_id)) AS parent_tree_id,
+			       '3_' || TO_CHAR(a.tse_idnty) || '_' || a.tse_ip AS tree_id,
+			       a.tse_name AS text,
+			       a.tse_idnty AS dvc_id
+			  FROM dvc_talkback_server a
+		 </sql>
+	    <where wid="0">
+			 WHERE a.tse_cus_number = ?
+			   AND a.tse_cus_number = ?
+			   AND a.tse_cus_number = ?
+			   AND a.tse_action_indc #$ 3
+			   ORDER BY a.tse_seq_num
+		</where>	 
+	</item>
+	
+	<item id="com_message_info_query">
+	    <desc>查询消息信息列表</desc>
+	    <sql>
+	      SELECT msd_cus_number,
+	             msd_msg_id,
+	             msd_msg_name,
+	             msd_msg_en_name,
+	             msd_level_idnty
+	      FROM   com_message_info
+	    </sql>
+	    <where wid="0">
+	        where  msd_cus_number=?
+	    </where>
+	    <where wid="1">
+	      WHERE  msd_cus_number=? 
+	      AND    msd_msg_id= ?     
+	    </where>
+	    <where wid="2">
+	      WHERE  msd_cus_number=? 
+	      AND    msd_msg_name like ?
+	      AND    (TRIM(?) is null OR msd_msg_id #$?)  
+	    </where>
+	    <where wid="3">
+	      WHERE  msd_cus_number=? 
+	      AND    msd_msg_name like ?
+	    </where>
+	    <order oid="0">
+	        ORDER BY msd_msg_id
+	    </order>
+	</item>
+	<item id="com_msg_subscribe_query">
+	   <desc>已订阅消息列表</desc>
+	   <sql>
+	     SELECT  distinct  msd_msg_idnty	                         
+	     FROM    com_msg_subscribe
+	   </sql>
+	   <where wid="0">
+	      WHERE  msd_cus_number=?
+	      AND    msd_msg_idnty=?	
+	   </where>
+	</item>
+	<item id="com_msg_subscribe_search">
+	    <desc>查询已订阅消息</desc>
+	    <sql>
+	       SELECT  distinct b.msd_msg_id,
+	               b.msd_msg_name	             
+	      FROM     com_msg_subscribe a
+	      LEFT JOIN com_message_info b
+	      ON        (b.msd_msg_id=a.msd_msg_idnty) 
+	    </sql>
+	    <where wid="0">
+	       WHERE a.msd_cus_number=?
+	       AND   a.msd_user_id  =?
+	    </where>
+	    <where wid="1">
+	      WHERE   a.msd_cus_number=?
+	      AND     a.msd_msg_idnty=?
+	    </where>
+	    <order oid="0">
+	        ORDER BY msd_msg_id
+	    </order>
+	</item>
+	<item id="com_msg_subscribe_police_query">
+	     <desc>已订阅用户列表</desc>
+	     <sql>
+	         SELECT   distinct msd_user_id                         
+	          FROM    com_msg_subscribe	      
+	     </sql>
+	     <where wid="0">
+	         WHERE  msd_cus_number=?
+	         AND     msd_msg_idnty= ?  
+	     </where>
+	     <order oid="0">
+	           ORDER BY  msd_user_id  
+	     </order>
+	</item>
+	<item id="com_msg_subscribe_police_search">
+	     <desc>查询订阅用户信息</desc>
+	     <sql>
+	         SELECT   distinct msd_user_id,
+	                   pbd_police_name,
+	                   pbd_police_idnty
+	         FROM      com_msg_subscribe
+	         RIGHT JOIN v_police_base_dtls
+	         ON        (msd_user_id=pbd_police_idnty)	  
+	     </sql>
+	     <where wid="0">
+	         WHERE   msd_cus_number=?
+	         AND     msd_msg_idnty= ?
+	     </where>
+	     <order oid="0">
+	           ORDER BY  msd_user_id  
+	     </order>
+	</item>
+	<item id="cds_police_base_dtls_for_tree">
+	    <desc>查询民警信息树形结构</desc>
+	    <sql>
+	      SELECT a.pbd_cus_number AS orgId,
+			       DECODE(a.pbd_drptmnt_id,
+			              NULL,
+			              '1_' || TO_CHAR(a.pbd_cus_number),
+			              '2_' || TO_CHAR(a.pbd_drptmnt_id)) AS parent_tree_id,
+			       '3_' || TO_CHAR(a.pbd_police_idnty) AS tree_id,
+			       a.pbd_police_name AS text,
+			       a.pbd_police_idnty AS police_idnty
+			FROM v_police_base_dtls a
+	    </sql>
+	    <where wid="0">
+	      WHERE a.pbd_cus_number = ?
+	      AND   a.pbd_action_indc #$ 3 
+	    </where>
+	</item>
+	<item id="cds_department_base_dtls_for_tree">
+	    <desc>查询部门信息树形结构</desc>
+	    <sql>
+	       SELECT a.dbd_cus_number AS orgId,
+			       DECODE(a.dbd_parent_id,
+			              NULL,
+			              '1_' || TO_CHAR(a.dbd_cus_number),
+			              '2_' || TO_CHAR(a.dbd_parent_id)) AS parent_tree_id,
+			       '2_' || TO_CHAR(a.dbd_dprtmnt_id) AS tree_id,
+			       a.dbd_dprtmnt_name AS text,
+			       a.dbd_dprtmnt_id AS area_id
+			  FROM cds_department_base_dtls a
+	    </sql>
+	    <where wid="0">
+	       where a.dbd_cus_number = ?
+	    </where>
+	</item>		
+	<item id="cds_eventstatistics_Analysis_Day">
+	    <desc>处置统计-按日</desc>
+	    <sql>
+	      SELECT  substring(ehr_time,0,11) AS ehr_time,
+	              COUNT( substring(ehr_time,0,11)) activeNum
+		    FROM  cds_emergency_handle_record	   
+	    </sql>	    
+	    <where wid="0">
+	    LEFT JOIN cds_emergency_plan_info
+			   ON (epi_cus_number = ehr_cus_number)
+			WHERE epi_plan_id = ehr_em_plan_id
+			  AND (TRIM(?) is null or epi_cus_number=?)
+			  AND (TRIM(?) is null or TO_CHAR(ehr_time,'yyyy-MM-dd') $= ? ) 
+			  AND (TRIM(?) is null or TO_CHAR(ehr_time,'yyyy-MM-dd') #= ? ) 
+			  AND (TRIM(?) is null or ehr_type=?)
+			  AND (TRIM(?) is null or epi_plan_type=?)
+			  
+	    </where>
+	    <order oid="0">
+               GROUP BY substring(ehr_time,0,11)
+			   ORDER BY  substring(ehr_time,0,11)
+	   </order>
+	</item>
+	<item id="cds_eventstatistics_Analysis_Month">
+	    <desc>处置统计-按月</desc>
+	    <sql>
+	      SELECT  substring(ehr_time,0,7) AS ehr_time,
+	              COUNT( substring(ehr_time,0,7)) activeNum
+		    FROM  cds_emergency_handle_record	   
+	    </sql>	    
+	    <where wid="0">
+	    LEFT JOIN cds_emergency_plan_info
+			   ON (epi_cus_number = ehr_cus_number)
+			WHERE epi_plan_id = ehr_em_plan_id
+			  AND (TRIM(?) is null or epi_cus_number=?)
+			  AND (TRIM(?) is null or TO_CHAR(ehr_time,'yyyy-MM-dd') $= ? ) 
+			  AND (TRIM(?) is null or TO_CHAR(ehr_time,'yyyy-MM-dd') #= ? ) 
+			  AND (TRIM(?) is null or ehr_type=?)
+			  AND (TRIM(?) is null or epi_plan_type=?)
+			  
+	    </where>
+	    <order oid="0">
+               GROUP BY substring(ehr_time,0,7)
+			   ORDER BY  substring(ehr_time,0,7)
+	   </order>
+	</item>
+	<item id="cds_eventstatistics_Analysis_Year">
+	    <desc>处置统计-按年</desc>
+	    <sql>
+	      SELECT  substring(ehr_time,0,4) AS ehr_time,
+	              COUNT( substring(ehr_time,0,4)) activeNum
+		    FROM  cds_emergency_handle_record	   
+	    </sql>	    
+	    <where wid="0">
+	    LEFT JOIN cds_emergency_plan_info
+			   ON (epi_cus_number = ehr_cus_number)
+			WHERE epi_plan_id = ehr_em_plan_id
+			  AND (TRIM(?) is null or epi_cus_number=?)
+			  AND (TRIM(?) is null or TO_CHAR(ehr_time,'yyyy-MM-dd') $= ? ) 
+			  AND (TRIM(?) is null or TO_CHAR(ehr_time,'yyyy-MM-dd') #= ? ) 
+			  AND (TRIM(?) is null or ehr_type=?)
+			  AND (TRIM(?) is null or epi_plan_type=?)
+			  
+	    </where>
+	    <order oid="0">
+               GROUP BY substring(ehr_time,0,4)
+			   ORDER BY  substring(ehr_time,0,4)
+	   </order>
+	</item>
+	<item id="cds_lawName_query">
+	    <desc>查询法规名是否已存在</desc>
+	    <sql>
+	    	SELECT  COUNT(0) count  
+	    	  FROM  cds_laws_info
+	    </sql>
+	    <where wid="0">
+	    	 WHERE	lri_cus_number = ?
+	    	   AND  lri_laws_name = ?
+	    	   AND (TRIM(?) is null or lri_laws_id #$ ?) 
+	    </where>
+	</item>
+	<item id="cds_emergency_handle_process_query">
+	    <desc>查询过程记录</desc>
+	    <sql>
+	    	SELECT  ehp_handle_process  
+	    	  FROM  cds_emergency_handle_process
+	    </sql>
+	    <where wid="0">
+	    	 WHERE	ehp_cus_number = ?
+	    	   AND  ehp_handle_id = ?
+	    	   AND  ehp_method_id = ?
+	    </where>	   
+	</item>
+	<item id="cds_emergency_method_handle_process_query">
+	    <DESC>查询处置过程-处置方法</DESC>
+	    <sql>
+	        SELECT    dmi_method_name,
+                      ehp_handle_process 
+              FROM    cds_emergency_handle_process
+            LEFT JOIN cds_disposal_method_info
+                   ON (dmi_method_id=ehp_method_id)
+	    </sql>
+	    <where wid="0">
+	          WHERE	ehp_cus_number = ?
+	    	   AND  ehp_handle_id = ?
+	    </where>
+	</item>
+	<item id="cds_query_map_info_by_dprtmnt_id">
+		<desc>根据部门ID查询地图信息</desc>
+		<sql>
+			SELECT abd_map_name AS mapName,
+			       ali_center_point_x AS x,
+			       ali_center_point_y AS y,
+			       ali_show_extent AS extent,
+			       ali_statu_idnc AS status,
+			       abd_area_name AS areaName,
+			       abd_srno
+			  FROM cds_area_department_relation
+			 INNER JOIN cds_area_base_dtls
+			    ON abd_cus_number = adr_cus_number
+			   AND abd_area_id = adr_area_id
+			   AND abd_map_name IS NOT NULL
+			   AND abd_parent_area_id in (11,12)
+			  LEFT JOIN aio_arcgis_layer_info
+			    ON ali_cus_number = abd_cus_number
+			   AND abd_map_name = ali_map_name
+		</sql>
+		<where wid="0">
+			 WHERE adr_dprtmnt_id = ?
+			 ORDER BY abd_srno
+		</where>
+	</item>
+	<item id="cds_method_rel_action_numQuery">
+		<desc>处置方法关联操作数</desc>
+		<sql>
+			SELECT count(*) AS count 
+			  FROM cds_method_rel_action
+		</sql>
+		<where wid="0">
+			 WHERE mra_cus_number = ?
+			   AND mra_method_id = ?
+		</where>
+	</item>
+	<item id="cds_emergency_plan_action_numQuery">
+		<desc>处置方法关联操作已配置数 </desc>
+		<sql>
+			   SELECT count(*) As count FROM(
+           	  SELECT  DISTINCT epa_rel_action_type
+                FROM  cds_emergency_plan_action 
+		</sql>
+		<where wid="0">
+			 WHERE epa_cus_number = ?
+			   AND epa_plan_id = ?
+			   AND epa_method_id = ?)
+		</where>
+	</item>
+
+	<item id="cds_emergency_file_info_query">
+		<desc>查询事件报告是否已存在 </desc>
+		<sql>
+			   SELECT count(*) As count 
+                FROM  cds_emergency_file_info 
+		</sql>
+		<where wid="0">
+			 WHERE efi_cus_number = ?
+			   AND efi_handle_id = ?
+		</where>
+	</item>		
+	
+	<item id="cds_query_lable_base">
+		<desc>查询标注信息</desc>
+		<sql>
+			SELECT lbd_type_indc,
+			       lbd_device_idnty,
+			       lbd_area_id,
+			       lbd_display_indc,
+			       lbd_x_crdnt,
+			       lbd_y_crdnt,
+			       lbd_z_crdnt,
+			       lbd_icon,
+			       lbd_font,
+			       lbd_font_color,
+			       lbd_font_bkcolor,
+			       lbd_lod_min,
+			       lbd_lod_max,
+			       lbd_drive_up,
+			       lbd_remark,
+			       lbd_status_indc,
+			       lbd_label_name
+			  FROM cds_lable_base_dtls 
+		</sql>
+		<where wid="0">
+			 WHERE lbd_cus_number = ?
+			   AND lbd_type_indc = ?
+		</where>
+	</item>
+	
+	
+	<item id="cds_query_lable_base_area">
+		<desc>查询标注信息和区域信息</desc>
+		<sql>
+			SELECT lbd_type_indc,
+			       lbd_device_idnty,
+			       lbd_area_id,
+			       lbd_display_indc,
+			       lbd_x_crdnt,
+			       lbd_y_crdnt,
+			       lbd_z_crdnt,
+			       lbd_icon,
+			       lbd_font,
+			       lbd_font_color,
+			       lbd_font_bkcolor,
+			       lbd_lod_min,
+			       lbd_lod_max,
+			       lbd_drive_up,
+			       lbd_remark,
+			       lbd_status_indc,
+			       d.abd_area_id,
+			       d.abd_area_name AS lbd_label_name
+			  FROM cds_lable_base_dtls c
+			  LEFT JOIN cds_area_base_dtls d
+			    ON d.abd_cus_number = c.lbd_cus_number
+			   AND d.abd_area_id = c.lbd_device_idnty
+		</sql>
+		<where wid="0">
+			 WHERE lbd_cus_number = ?
+			   AND lbd_area_id = ?
+			   AND lbd_type_indc = ?
+		</where>
+	</item>
+	
+	<item id="cds_query_plan_device_rltn">
+		<desc>查询预案设备关联信息</desc>
+		<sql>
+			SELECT grd_cus_number,
+			       grd_grp_id,
+			       grd_grp_name,
+			       grd_type_indc,
+			       grd_mmbr_name,
+			       grd_mmbr_idnty,
+			       grd_show_seq,
+			       grd_remark,
+			       grd_crte_time,
+			       grd_crte_user_id,
+			       grd_updt_time,
+			       grd_updt_user_id
+			  FROM cds_grp_rltn_dtls 
+		</sql>
+		<where wid="0">
+			 WHERE grd_cus_number = ?
+			   AND grd_grp_id = ?
+			   AND grd_type_indc = ?
+		</where>
+		<order oid="0">
+			ORDER BY grd_show_seq
+		</order>
+	</item>
+	
+	<item id="cds_query_received_user">
+		<desc>查询已接收监督单--接收人</desc>
+		<sql>
+		  	 SELECT DISTINCT
+		  	 		mrr_rcpnt_idnty AS user_id,
+             		mrr_rcpnt_name  AS user_name
+      		 FROM   cds_monitor_recipient_relation
+		</sql>
+		<where wid="0">
+			WHERE   (TRIM(?) is null OR mrr_cus_number=?) 
+		</where>
+		<where wid="1">
+			WHERE   mrr_monitor_sqno=?
+		</where>
+		<order oid="0">
+			ORDER BY mrr_rcpnt_idnty 
+		</order>
+	</item>
+	
+	<item id="cds_query_sender_user">
+		<desc>查询已接收监督单--推送人</desc>
+		<sql>
+		  SELECT   DISTINCT
+		  		   DECODE(pbd_police_name,NULL,mdo_crte_user_id,pbd_police_name) AS user_name,
+		  		   mdo_crte_user_id AS user_id
+			FROM   cds_monitor_doc
+	   LEFT JOIN   v_police_base_dtls
+			  ON   (mdo_crte_user_id = pbd_police_idnty)
+		</sql>
+		<where wid="0"> 
+		  WHERE  (TRIM(?) is null OR mdo_cus_number=?) 
+		</where>
+		<order oid="0">
+			ORDER BY mdo_crte_user_id 
+		</order>
+	</item>
+	
+	<item id="cds_query_run_warn">
+	    <desc>防逃预警</desc>
+	    <Const key="RWA_AREA_TYPE_INDC">areaType</Const>
+	    <sql>
+	       SELECT rwa_record_idnty,
+	              rwa_area_type_indc,
+	              rwa_warn_time,
+	              rwa_local_img,
+	              rwa_crte_time,
+	              rwa_crte_user_id,
+	              rwa_cus_number
+	       FROM   cds_run_warn       
+	    </sql>
+	    <where wid="0">
+	       WHERE  (TRIM(?) is null OR RWA_CUS_NUMBER=?) 
+	    </where>
+	    <where wid="1">
+	       WHERE  (TRIM(?) is null OR RWA_CUS_NUMBER=?)
+	       AND    (TRIM(?) is null or TO_CHAR(rwa_warn_time,'yyyy-mm-dd') $= ? ) 
+		   AND    (TRIM(?) is null or TO_CHAR(rwa_warn_time,'yyyy-mm-dd') #= ? )
+		   AND    (TRIM(?) is null OR rwa_area_type_indc=?)
+	    </where>
+	    <order oid="0">
+	       ORDER BY RWA_RECORD_IDNTY DESC
+	    </order>
+	</item>	
+	<item id="query_prisoner_Img">
+	    <desc>防逃现场图片</desc>
+	    <sql>
+	      SELECT  rwa_local_img
+	       FROM   cds_run_warn    
+	    </sql>
+	    <where wid="0">
+	       WHERE  (TRIM(?) is null OR RWA_CUS_NUMBER=?)
+	       AND    rwa_record_idnty=?
+	    </where>
+	</item>
+	<item id="query_prisoner_localImg">
+	    <desc>疑似犯人</desc>
+	    <sql>
+	      SELECT     rwp_prisoner_idnty,
+	                 rwp_score
+	      FROM       cds_run_warn_prisoner	           
+	    </sql>
+	    <where wid="0">
+	       WHERE  (TRIM(?) is null OR RWP_CUS_NUMBER=?)
+	       AND    rwp_record_idnty=? 	      
+	    </where>
+	    <order oid="0">
+	       ORDER BY RWP_SCORE DESC
+	    </order>
+	</item>	
+
+	<item id="cds_query_exist_dprtmnt_id">
+		<desc>查询设备部门关联中已关联的部门ID</desc>
+		<sql>
+			SELECT ddr_dprtmnt_idnty AS dptt_id,
+				   ddr_stts_indc AS stts_id
+			  FROM cds_device_dprtmnt_relation
+		</sql>
+		<where wid="0">
+			 WHERE ddr_cus_number = ?
+			   AND ddr_dvc_type_indc = ?
+			 GROUP BY ddr_dprtmnt_idnty,ddr_stts_indc
+		</where>
+	</item>
+
+	<item id="cds_query_exist_dvc_id">
+		<desc>查询设备部门关联中已关联的设备ID</desc>
+		<sql>
+			SELECT ddr_dvc_idnty AS dvc_id, 
+				   ddr_stts_indc AS stts
+			  FROM cds_device_dprtmnt_relation
+		</sql>
+		<where wid="0">
+			 WHERE ddr_cus_number = ?
+			   AND ddr_dvc_type_indc = ?
+			   AND ddr_dprtmnt_idnty = ?
+		</where>
+	</item>
+	
+	<item id="cds_foreign_car_inspect_info">
+		<desc>查询车辆进出督查信息</desc>
+		<sql>
+			SELECT fca_cus_number, 
+				   fca_rgstr_idnty,
+				   fca_inout_idnty,
+				   fca_police_idnty,
+				   fca_people_count,
+				   fca_inspect_indc,
+				   fca_remark,
+				   fca_crte_time,
+				   fca_crte_user_id
+			  FROM cds_foreign_car_inspect
+		</sql>
+		<where wid="0">
+			 WHERE fca_cus_number = ?
+			   AND fca_rgstr_idnty = ?
+			   AND fca_inout_idnty = ?
+		</where>
+	</item>
+	
+	<item id="cds_document_info">
+		<desc></desc>
+		<sql>
+			SELECT doc_document_file FROM cds_document
+			 WHERE (TRIM(?) is null OR doc_cus_number = ? )AND
+			 	   doc_document_id = ? AND
+			 	   doc_type_indc = ?
+		</sql>
+	</item>
+	
+	<item id="dvc_camera_device_total_info">
+	     <desc>查询摄像机总数-正常总数-故障总数</desc>
+	     <sql>
+	        SELECT TOTAL_COUNT FROM( 
+				   SELECT  COUNT(dvc_camera_base_dtls.id) AS TOTAL_COUNT  
+				    FROM   dvc_camera_base_dtls
+				   WHERE   cbd_cus_number = ?
+				     AND   cbd_action_indc #$ 3 )
+			UNION ALL
+			SELECT NORMAL_COUNT FROM(   
+				    SELECT   COUNT(dvc_camera_base_dtls.id) AS NORMAL_COUNT 
+				      FROM   dvc_camera_base_dtls
+				     WHERE   cbd_cus_number = ?
+				       AND   cbd_stts_indc  = 0
+				       AND   cbd_action_indc #$ 3) 
+			UNION ALL
+			SELECT ABNORMAL_COUNT FROM(   
+				    SELECT   COUNT(dvc_camera_base_dtls.id) AS ABNORMAL_COUNT 
+				      FROM   dvc_camera_base_dtls
+				     WHERE   cbd_cus_number = ?
+				       AND   cbd_stts_indc #$ 0 
+				       AND   cbd_action_indc #$ 3)
+	     </sql>	   
+	</item>
+	<item id="dvc_alertor_device_total_info">
+	     <desc>查询报警器总数-正常总数-故障总数</desc>
+	     <sql>
+	        SELECT TOTAL_COUNT FROM( 
+				   SELECT  COUNT(abd_idnty) AS TOTAL_COUNT  
+				    FROM   dvc_alertor_base_dtls
+				   WHERE   abd_cus_number = ?
+				     AND   abd_action_indc #$ 3 )
+			UNION ALL
+			SELECT NORMAL_COUNT FROM(   
+				    SELECT   COUNT(abd_idnty) AS NORMAL_COUNT 
+				      FROM   dvc_alertor_base_dtls
+				     WHERE   abd_cus_number = ?
+				       AND   abd_stts_indc  = 0
+				       AND   abd_action_indc #$ 3) 
+			UNION ALL
+			SELECT ABNORMAL_COUNT FROM(   
+				    SELECT   COUNT(abd_idnty) AS ABNORMAL_COUNT 
+				      FROM   dvc_alertor_base_dtls
+				     WHERE   abd_cus_number = ?
+				       AND   abd_stts_indc #$ 0 
+				       AND   abd_action_indc #$ 3)
+	     </sql>	   
+	</item>
+	<item id="dvc_talkBack_device_total_info">
+	     <desc>查询可视对讲设备总数-正常总数-故障总数</desc>
+	     <sql>
+	        SELECT TOTAL_COUNT FROM( 
+				   SELECT  COUNT(tbd_idnty) AS TOTAL_COUNT  
+				    FROM   dvc_talkback_base_dtls
+				   WHERE   tbd_cus_number = ?
+				     AND   tbd_action_indc #$ 3 )
+			UNION ALL
+			SELECT NORMAL_COUNT FROM(   
+				    SELECT   COUNT(tbd_idnty) AS NORMAL_COUNT 
+				      FROM   dvc_talkback_base_dtls
+				     WHERE   tbd_cus_number = ?
+				       AND   tbd_stts_indc  #$ 1
+				       AND   tbd_action_indc #$ 3) 
+			UNION ALL
+			SELECT ABNORMAL_COUNT FROM(   
+				    SELECT   COUNT(tbd_idnty) AS ABNORMAL_COUNT 
+				      FROM   dvc_talkback_base_dtls
+				     WHERE   tbd_cus_number = ?
+				       AND   tbd_stts_indc = 1  
+				       AND   tbd_action_indc #$ 3)
+	     </sql>	   
+	</item>
+	<item id="dvc_door_device_total_info">
+	     <desc>查询门禁设备总数-正常总数-故障总数</desc>
+	     <sql>
+	        SELECT TOTAL_COUNT FROM( 
+				   SELECT  COUNT(dcb_idnty) AS TOTAL_COUNT  
+				    FROM   dvc_door_control_base_dtls
+				   WHERE   dcb_cus_number = ?
+				     AND   dcb_action_indc #$ 3 )
+			UNION ALL
+			SELECT NORMAL_COUNT FROM(   
+				    SELECT   COUNT(dcb_idnty) AS NORMAL_COUNT 
+				      FROM   dvc_door_control_base_dtls
+				     WHERE   dcb_cus_number = ?
+				       AND   dcb_stts_indc #$ 1
+				       AND   dcb_action_indc #$ 3) 
+			UNION ALL
+			SELECT ABNORMAL_COUNT FROM(   
+				    SELECT   COUNT(dcb_idnty) AS ABNORMAL_COUNT 
+				      FROM   dvc_door_control_base_dtls
+				     WHERE   dcb_cus_number = ?
+				       AND   dcb_stts_indc = 1  
+				       AND   dcb_action_indc #$ 3)
+	     </sql>	   
+	</item>
+	
+	<item id="dvc_power_network_device_total_info">
+	     <desc>查询高压电网设备总数-正常总数-故障总数</desc>
+	     <sql>
+	        SELECT TOTAL_COUNT FROM( 
+				   SELECT  COUNT(pnb_idnty) AS TOTAL_COUNT  
+				    FROM   dvc_power_network_base_dtls
+				   WHERE   pnb_cus_number = ?)
+			UNION ALL
+			SELECT NORMAL_COUNT FROM(   
+				    SELECT   COUNT(pnb_idnty) AS NORMAL_COUNT 
+				      FROM   dvc_power_network_base_dtls
+				     WHERE   pnb_cus_number = ?
+				       AND   pnb_stts_indc #$ 1)
+			UNION ALL
+			SELECT ABNORMAL_COUNT FROM(   
+				    SELECT   COUNT(pnb_idnty) AS ABNORMAL_COUNT 
+				      FROM   dvc_power_network_base_dtls
+				     WHERE   pnb_cus_number = ?
+				       AND   pnb_stts_indc = 1)
+	     </sql>	   
+	</item>
+	
+	<item id="cds_earlyWarn_approval">
+		<desc>统计预警审批数量</desc>
+		<sql>
+			SELECT COUNT(*) AS COUNT FROM cds_safety_approval_affirm
+		</sql>
+		<where wid="0">
+			WHERE saa_cus_number = ? AND 
+				  saa_approval_police_idnty = ? AND 
+				  saa_approval_time IS NULL 
+		</where>
+	</item>
+	
+	<item id="select_supervise_problem_classify">
+		<desc>查询督查问题分类信息</desc>
+		<sql>
+			SELECT spc_cus_number,
+				   spc_one_type_id,
+				   spc_two_type_id,
+				   spc_two_type_name,
+				   spc_crte_time,
+				   spc_crte_user_id,
+				   spc_updt_time,
+				   spc_updt_user_id
+			  FROM cds_supervise_problem_classify
+		</sql>
+		<where wid="0">
+			WHERE spc_cus_number = ?
+		</where>
+		<order oid="0">
+			ORDER BY spc_one_type_id,spc_two_type_id
+		</order>
+	</item>
+</sqlItem>

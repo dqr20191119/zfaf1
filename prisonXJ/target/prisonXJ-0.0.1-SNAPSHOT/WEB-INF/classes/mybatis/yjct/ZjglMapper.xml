@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.ZjglMapper">
+	 
+	<select id="getById" resultType="com.cesgroup.prison.yjct.entity.ZjglEntity"> 
+		SELECT A.* FROM CDS_EXPERT_INFO A 
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.yjct.entity.ZjglEntity" resultType="com.cesgroup.prison.yjct.entity.ZjglEntity">
+		SELECT A.* FROM CDS_EXPERT_INFO A 
+		WHERE A.EPI_STTS_INDC = 1  
+		<if test="epiCusNumber != null and epiCusNumber != ''"> 
+			AND A.EPI_CUS_NUMBER = #{epiCusNumber} 		
+		</if>
+		<if test="epiExpertName != null and epiExpertName != ''"> 
+			AND A.EPI_EXPERT_NAME like '%' || #{epiExpertName} || '%' 		
+		</if>
+		<if test="epiSpecialty != null and epiSpecialty != ''"> 
+			AND A.EPI_SPECIALTY like '%' || #{epiSpecialty} || '%' 		
+		</if>
+	</select>
+	
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.ZjglEntity" resultType="com.cesgroup.prison.yjct.entity.ZjglEntity">
+		SELECT A.* FROM CDS_EXPERT_INFO A 
+		<where>
+			<if test="epiCusNumber != null and epiCusNumber != ''"> 
+				AND A.EPI_CUS_NUMBER = #{epiCusNumber} 		
+			</if>
+			<if test='epiSttsIndc == "1"'> 
+				AND A.EPI_STTS_INDC = 1 	
+			</if>
+			<if test='actionExist == "0"'> 
+				AND NOT EXISTS(SELECT 1 FROM CDS_EMERGENCY_PLAN_ACTION B WHERE B.EPA_REL_ACTION_FID = A.ID 
+						AND B.EPA_REL_ACTION_TYPE = 3 
+						AND B.EPA_METHOD_FID = #{epaMethodFid} 
+						AND B.EPA_PLAN_FID = #{epaPlanFid}) 
+			</if>
+		</where>
+		ORDER BY A.EPI_CRTE_TIME DESC 
+	</select>
+	
+	<select id="updateStatusByIds" parameterType="arraylist"> 
+		UPDATE CDS_EXPERT_INFO A SET A.EPI_STTS_INDC = 0  
+		WHERE A.ID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+ 			#{item}		
+ 		</foreach> 
+	</select>
+</mapper>

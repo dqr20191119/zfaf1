@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.sppz.dao.VideoDeviceMapper">
+	<select id="searchVideoDevice" resultType="java.util.HashMap" 
+	parameterType="java.util.HashMap">
+		SELECT id, vdi_cus_number,
+				   vdi_device_name,
+				   vdi_type_indc,
+				   vdi_type_indc AS vdi_type_indc_ch,
+				   vdi_brand,
+				   vdi_brand AS vdi_brand_ch,
+				   vdi_mode,
+				   vdi_ip_addrs,
+				   vdi_ip2_addrs,
+				   vdi_port,
+				   vdi_user_name,
+				   vdi_user_password,
+				   vdi_crte_user_id,
+				   TO_CHAR(vdi_crte_time,'YYYY/MM/DD HH24:MI:SS') as vdi_crte_time
+			 FROM dvc_video_device_info
+			 <where>
+			 	<if test="videoDevice.vdiDeviceName!=null and videoDevice.vdiDeviceName!=''">
+			 		and vdi_device_name like concat('%',#{videoDevice.vdiDeviceName},'%' )
+			 	</if>
+			 	<if test="videoDevice.vdiTypeIndc!=null and videoDevice.vdiTypeIndc!=''">
+			 		and vdi_type_indc =#{videoDevice.vdiTypeIndc}
+			 	</if>
+			 	<if test="videoDevice.vdiCusNumber!=null and videoDevice.vdiCusNumber!=''">
+			 		AND vdi_cus_number=#{videoDevice.vdiCusNumber}
+			 	</if>
+			 </where> 
+	</select>
+	<select id="simpleVideoDeviceList" resultType="java.util.HashMap" parameterType="java.lang.String">
+		SELECT id as "value",
+				   vdi_device_name as "text"
+			 FROM dvc_video_device_info
+			 <where>
+			 	<if test="vdiCusNumber!=null and vdiCusNumber!=''">
+			 		AND vdi_cus_number=#{vdiCusNumber}
+			 	</if>
+			 </where> 
+	</select>
+</mapper>

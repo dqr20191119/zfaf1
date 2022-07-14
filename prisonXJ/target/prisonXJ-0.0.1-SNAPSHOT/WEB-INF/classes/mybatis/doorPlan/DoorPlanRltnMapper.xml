@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.doorPlan.dao.DoorPlanRltnMapper">
+
+	<select id="listAll" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select ID,DOR_CUS_NUMBER,
+		DOR_PLAN_ID,
+		DOR_DOOR_ID,
+		DOR_DOOR_NAME,
+		DOR_EXEC_ORDER,
+		DOR_REMARK
+		from CDS_PLAN_DOOR_RLTN
+		<where>
+			<if test="doorPlanRltnEntity.dorCusNumber != null and doorPlanRltnEntity.dorCusNumber!='' ">
+				AND dor_cus_number = #{doorPlanRltnEntity.dorCusNumber}
+			</if>
+
+			<if test="doorPlanRltnEntity.dorPlanId != null and doorPlanRltnEntity.dorPlanId!='' ">
+				AND dor_plan_id = #{doorPlanRltnEntity.dorPlanId}
+			</if>
+
+			<if test="doorPlanRltnEntity.dorDoorId != null and doorPlanRltnEntity.dorDoorId!='' ">
+				AND dor_door_id = #{doorPlanRltnEntity.dorDoorId}
+			</if>
+
+			<if test="doorPlanRltnEntity.dorDoorName != null and doorPlanRltnEntity.dorDoorName!='' ">
+				AND dor_door_name = #{doorPlanRltnEntity.dorDoorName}
+			</if>
+		</where>
+		order by dor_exec_order asc
+	</select>
+
+	<!-- 根据id批量删除 -->
+	<delete id="deleteByIds" parameterType="List">
+		DELETE FROM CDS_PLAN_DOOR_RLTN WHERE ID in
+		<foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<update id="updateInfo" parameterType="java.util.HashMap">
+		UPDATE CDS_PLAN_DOOR_RLTN
+		<set>
+			<if test="doorPlanRltnEntity.dorPlanId != null and doorPlanRltnEntity.dorPlanId!='' ">
+				dor_plan_id = #{doorPlanRltnEntity.dorPlanId},
+			</if>
+
+			<if test="doorPlanRltnEntity.dorDoorId != null and doorPlanRltnEntity.dorDoorId!='' ">
+				dor_door_id = #{doorPlanRltnEntity.dorDoorId},
+			</if>
+
+			<if test="doorPlanRltnEntity.dorDoorName != null and doorPlanRltnEntity.dorDoorName!='' ">
+				dor_door_name = #{doorPlanRltnEntity.dorDoorName},
+			</if>
+
+			<if test="doorPlanRltnEntity.dorExecOrder != null and doorPlanRltnEntity.dorExecOrder!='' ">
+				dor_exec_order = #{doorPlanRltnEntity.dorExecOrder},
+			</if>
+
+			<if test="doorPlanRltnEntity.dorRemark != null and doorPlanRltnEntity.dorRemark!='' ">
+				dor_remark = #{doorPlanRltnEntity.dorRemark},
+			</if>
+
+			<if test="doorPlanRltnEntity.dorUpdtTime != null and doorPlanRltnEntity.dorUpdtTime!='' ">
+				dor_updt_time = #{doorPlanRltnEntity.dorUpdtTime},
+			</if>
+
+			<if test="doorPlanRltnEntity.dorUpdtUserId != null and doorPlanRltnEntity.dorUpdtUserId!='' ">
+				dor_updt_user_id = #{doorPlanRltnEntity.dorUpdtUserId},
+			</if>
+		</set>
+		<where>
+			<if test="doorPlanRltnEntity.id !=null and doorPlanRltnEntity.id !=''">
+				AND (TRIM(#{doorPlanRltnEntity.id}) is null or id = #{doorPlanRltnEntity.id})
+			</if>
+		</where>
+	</update>
+
+
+	<select id="listAllForMj" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select id, DCB_NAME as DVC_NAME , DCB_CAMERA_ID as CAMERA_ID
+		from DVC_DOOR_CONTROL_BASE_DTLS
+		<where>
+			<if test="cusNumber != null and cusNumber !='' ">
+				and DCB_CUS_NUMBER = #{cusNumber} and DCB_ACTION_INDC != '3'
+			</if>
+			<if test="areaId != null and areaId !='' ">
+				and DCB_AREA_ID = #{areaId}
+			</if>
+			<if test="doorName!=null and doorName!=''">
+				and DCB_NAME like concat('%',#{doorName},'%' )
+			</if>
+			<if test="planId != null and planId !=''">
+				and id not in (select dor_door_id from CDS_PLAN_DOOR_RLTN where dor_plan_id = #{planId} )
+			</if>
+		</where>
+	</select>
+
+</mapper>

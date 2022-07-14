@@ -1,0 +1,858 @@
+.cameraGroup,.control-door-box{
+	height:98%;
+	width:98%;
+	position:relative;
+	margin-top:5px;
+	background:url(img/box-larger.png);
+	background-size:100% 100%;
+}
+.control-door-box{
+	padding-top:10px;
+}
+/* 视频树轮询字体大小 */
+#cameraGroup .coral-tree li a{
+	font-size:14px;
+}
+#control-door-tabs{
+	background: none;
+	height:100%;
+	width:95%;
+	margin:0 auto;
+}
+.control-door-box .coral-tabs>.coral-tabs-nav{
+	    border: 2px solid #2176a7;
+    color: #fff;
+    background: #0c2c78;
+}
+.control-door-box .coral-tabs>.coral-tabs-nav>li{
+	margin-bottom:0;
+	background-color:#0c2c78;
+}
+.control-door-box .coral-tabs>.coral-tabs-nav{
+	border: 2px solid #2176a7;
+    color: #fff;
+    background-color: #0c2c78;
+}
+.control-door-box .coral-tabs>.coral-tabs-nav>.coral-tabs-active .coral-tabs-anchor{
+	border:0;
+    color: #fff;
+    background-color: #091e4f;
+}
+.control-door-box .coral-tabs>.coral-tabs-nav>li>.coral-tabs-anchor{
+	padding:9px 20px;
+	color:#fff;
+}
+ .control-door-box .coral-tabs .coral-tree li a.coral-state-hover{
+	background-color: #0a2158;
+}
+ .control-door-box .tree-tabs-box1{
+ 	    height: 88%;
+    overflow: auto;
+    margin-top: 5px;
+ }
+ .control-door-box .button-tabs-box{
+ 	text-align: center;
+    margin: 0 auto;
+    padding: 0;
+    height: 73px;
+    margin-left: -10px;
+    margin-right: -10px;
+    width: 105%;
+    line-height: 63px;
+    background: url(img/box.png);
+    background-size: 100% 100%;
+ }
+ .control-door-box .button-tabs-box .coral-button{
+ 	border: 1px solid #2075a7;
+    background: #091e4f;
+    padding: 8px 12px;
+    color:#fff;
+ }
+ .tree-tabs-box1{
+ 	width: 101%;
+     padding: 0;
+     overflow-x: hidden;
+     /*三角箭头的颜色*/
+     scrollbar-arrow-color: rgba(16, 15, 55, 1);
+     /*滚动条滑块按钮的颜色*/
+     scrollbar-face-color: rgba(16, 15, 55, 1);
+     /*滚动条整体颜色*/
+     scrollbar-highlight-color: rgba(16, 15, 55, 1);
+     /*滚动条阴影*/
+     scrollbar-shadow-color: rgba(16, 15, 55, 1);
+     /*滚动条轨道颜色*/
+     scrollbar-track-color: rgba(16, 15, 55, 1);
+ }
+
+ /*视频预案列表滚动轴修改颜色 替换原.mscroll */
+.videotree-tabs-box{
+	width: 101%;
+	padding: 0;
+	overflow-x: hidden;
+	/*三角箭头的颜色*/
+	scrollbar-arrow-color: rgba(16, 15, 55, 1);
+	/*滚动条滑块按钮的颜色*/
+	scrollbar-face-color: rgba(51, 70, 113, 1);
+	/*滚动条整体颜色*/
+	scrollbar-highlight-color: rgba(16, 15, 55, 1);
+	/*滚动条阴影*/
+	scrollbar-shadow-color: rgba(16, 15, 55, 1);
+	/*滚动条轨道颜色*/
+	scrollbar-track-color: rgba(33, 35, 93, 1);
+}
+/*右边菜单的手风琴布局*/
+ .coral-layout .coral-accordion .coral-accordion-header.coral-accordion-header-active,.coral-layout .coral-accordion .coral-accordion-header.coral-state-default{
+	background: url(img/title-box.png) 0 0 no-repeat;
+    background-size: 100% 100%;
+    width: 92%;
+    margin-left: 10px;
+    margin-top:10px;
+    text-align:left;
+    padding-left:15px;
+}
+.coral-layout .coral-accordion .coral-textbox-default{
+	height: 30px;
+    color: #fff;
+}
+.coral-layout .coral-accordion .coral-accordion-content{
+	padding: 1.1em 0;
+	background: none;
+    background-size: 100% 100%;
+    overflow:hidden;
+} 
+.coral-accordion .vedio-panel .panel-toolbar{
+	margin-top:3px;
+	height:40px;
+	text-align: center;
+	opacity:1;
+	z-index:1;
+}
+.coral-accordion .vedio-panel .panel-toolbar.second .coral-button{
+	padding:8px 9px;
+}
+.coral-accordion .vedio-panel .panel-toolbar:first{
+	margin-top:10px;
+}
+
+.panel-toolbar .coral-textbox{
+	width:208px;
+}
+.panel-toolbar .coral-button{
+	padding: 6px 15px;
+}
+.coral-accordion .vedio-panel .panel-toolbar-custom{
+	height:50px;
+	display:none;
+	text-align:center;
+	margin-top:5px;
+}
+.coral-accordion .vedio-panel .panel-toolbar-custom .coral-textbox{
+	width:175px;
+	margin-right: 4px;
+}
+
+.coral-accordion .vedio-panel .sperator{
+	/* height:20px; */
+	display:none;
+	/* line-height:20px; */
+	text-align:center;
+	margin-top:5px;
+}
+
+.sperator .left-border{
+	width: 42%;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    height: 4px;
+    display: inline-block;
+}
+.sperator .right-border{
+	width: 42%;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    height: 4px;
+    display: inline-block;
+}
+.sperator .icon{
+	font-size:20px;
+	color:#fff;
+}
+.panel-toolbar .coral-button.hoving{
+	text-shadow: 0 0 3px 1px #dec473;
+	box-shadow: 0 0 3px 1px #dec473;
+    border-color: #dec473;
+    background: #dec473;
+    color: #333;
+    font-weight: bold;
+}
+.panel-toolbar .coral-button,.coral-accordion .panel-toolbar-custom .coral-button{
+	border-radius: 5px;
+	color:#fff;
+	background: #3a5bab;
+	margin-bottom: 5px;
+    margin-right: 5px;
+    vertical-align:top
+}
+.coral-accordion .panel-toolbar .coral-corner-all, .coral-accordion .panel-toolbar-custom .coral-corner-all{
+	border-radius: 3px;
+    background: #334671;
+    border: #706f87;
+}
+.panel-toolbar .coral-textbox-default,.panel-toolbar-custom .coral-textbox-default{
+	padding:0 12px;
+}
+.coral-accordion .coral-tree{
+	margin-bottom:20px;
+	width: 97%;
+    margin: 0 auto;
+}
+.coral-accordion .tree-box{
+	margin-top:12px; 
+	height:89%;
+	margin: 12px 0 0 13px;
+	letter-spacing: 1px;
+}
+.coral-accordion #active_2 .tree-box{
+	height:95%;
+}
+.coral-accordion .coral-accordion-content .coral-tree li a{
+	color:#fff;
+}
+.coral-accordion .coral-accordion-content .coral-tree li span.switch{
+	color:#fff;
+}
+.coral-accordion .coral-tree li a.coral-state-hover{
+	background-color: #4e72ce;
+}
+#cameraGroup .auto-head {
+	width: 100%;
+	height: 38px;
+	color: #FFF;
+	font-size: 13px;
+	font-weight: bold;
+	border: 0px none;
+	background: url(../img/head-title-bg.png) center center no-repeat transparent;
+	cursor: pointer;
+}
+#cameraGroup .auto-head:hover, #cameraGroup .auto-head-hover {
+	background: url(img/arrow_expand.png) 10px 9px no-repeat,
+				url(../img/head-title-bg.png) center center no-repeat transparent;
+	text-shadow: 1px 1px 2px #00FFFF;
+}
+#cameraGroup .auto-body {
+	position: relative;
+	width: 100%;
+	height: 653px;
+	overflow: hidden;
+}
+#cameraGroup .auto-body-transition {
+	transition: height 0.5s;
+}
+#cameraGroup .auto-body-close {
+	height: 0px;
+}
+#cameraGroup #btnCamera {
+	margin-top: 1px;
+}
+/*视频回放面板*/
+.coral-layout .coral-accordion .coral-accordion-content.multi-date{
+	padding: 1em 0.1em;
+}
+/* .tabPlayback_box .coral-textbox-default{
+	padding:0 1px;
+} */
+.tabPlayback_box .coral-textbox{
+	width: 145px;
+}
+.tabPlayback_box .tabPlayback{
+	margin-top:10px;
+	text-align:left;
+}
+
+.tabPlayback_box .date-seperate{
+	color:#fff;
+	font-size:13px;
+	font-weight:bold;
+}
+
+.btn {
+	border: 1px solid #000;
+	box-shadow: inset 0px 0px 3px 1px rgba(255,255,255,0.75);
+	background-color: rgba(90,90,90,0.2);
+}
+
+
+/* =====================銆愯彍鍗曡缃�戞寜閽牱寮�====================== */
+#cameraGroup .menu-set-btn {
+	position:absolute;
+	top: 9px;
+	right: 12px;
+	width: 20px;
+	height: 20px;
+	border: 0px none;
+	background: url(img/menu-set.png) center center no-repeat;
+	cursor: pointer;
+	z-index: 9;
+	transition: transform 1s;
+}
+#cameraGroup .menu-set-btn-hover {
+}
+#cameraGroup .menu-set-btn-hover:hover {
+	background-color: #00FFFF;
+	background: url(img/menu-set-hover.png) center center no-repeat;
+	/* transform: rotate(180deg); */
+}
+#cameraGroup .menu-set-btn-click {
+	background-color: #00FFFF;
+	background: url(img/menu-set-hover.png) center center no-repeat;
+	transform: rotate(180deg);
+}
+
+
+
+/* ===================== 銆愯彍鍗曡缃�戦潰鏉垮強鍐呴儴缁勪欢鏍峰紡 ====================== */
+#cameraGroup .menu-set-div {
+	position: absolute;
+	z-index: 5;
+	top: 18px;
+	left: 272px;
+	width: 0px;
+	height: 0px;
+	border: 1px solid #000;
+	background-color: rgba(0,0,0,0.5);
+	box-shadow: 0 0 5px 2px rgba(0,255,255,0.5), inset 0 0 3px 1px rgba(255,255,255,0.75);
+	overflow: hidden;
+}
+#cameraGroup .menu-set-div-transition {
+	transition: left 1s, width 1s, height 0.9s;
+}
+#cameraGroup .menu-set-div-open {
+	left: 172px;
+	width: 100px;
+	height: 100px;
+}
+#cameraGroup .menu-set-div .title {
+	width: 100px;
+	height: 21px;
+	border-bottom: 0px solid #00FFFF;
+	line-height: 21px;
+	font-size: 11px;
+	color: #FFF;
+	text-align: center;
+	margin-bottom: 2px;
+}
+#cameraGroup .menu-set-div .inner-panel {
+	width: 100px;
+	height: 100px;
+}
+#cameraGroup .menu-set-div input {
+	width: 100%;
+	height: 21px;
+	margin: 3px 0px 0px 2px;
+	border: 0px none;
+	text-align: left;
+	text-indent: 21px;
+	background: url(img/uncheck.png) left 4px center no-repeat;
+	color: #FFF;
+}
+#cameraGroup .menu-set-div .checked {
+	background: url(img/checked.png) left 4px center no-repeat;
+}
+
+
+
+/* ===================== 銆愯棰戠敾闈㈠竷灞�銆戞寜閽牱寮� ====================== */
+#cameraGroup .layout-set-btn {
+	position:absolute;
+	top: 22px;
+	right: 44px;
+	width: 15px;
+	height: 15px;
+	border: 0px none;
+	background: url(img/layout-set-.png) center center no-repeat;
+	cursor: pointer;
+	z-index: 4;
+	transition: transform 1s;
+}
+#cameraGroup .layout-set-btn-hover {
+}
+#cameraGroup .layout-set-btn-hover:hover {
+	background-color: #00FFFF;
+	box-shadow: 0px 0px 5px 0.5px #00FFFF;
+}
+#cameraGroup .layout-set-btn-click {
+	background-color: #00FFFF;
+	box-shadow: 0px 0px 5px 0.5px #00FFFF;
+	transform: rotate(180deg);
+}
+
+
+
+/* ===================== 銆愯棰戠敾闈㈠竷灞�銆戦潰鏉挎牱寮� ====================== */
+#cameraGroup .div-layout {
+	position: absolute;
+	top: 19px;
+	left: 271px;
+	width: 0px;
+	height: 0px;
+	/*border: 1px solid #000;*/
+	background-color: rgba(0,0,0,0.5);
+	/*box-shadow: 0 0 5px 2px rgba(0,255,255,0.5), inset 0 0 3px 1px rgba(255,255,255,0.75);*/
+	z-index: 3;
+	overflow: hidden;
+}
+#cameraGroup .div-layout .inner-panel {
+	width: 220px;
+	height: 640px;
+	padding-top: 10px;
+}
+#cameraGroup .div-layout-transition {
+	transition: left 1s, width 1s, height 0.8s;
+}
+#cameraGroup .div-layout-open {
+	left: 51px;
+	width: 220px;
+	height: 650px;
+	overflow: hidden;
+}
+
+
+
+/* ===================== 銆愯棰戠敾闈㈠竷灞�銆戞瘡涓竷灞�鐨勬牱寮� ====================== */
+#cameraGroup .my-layout-panel {
+	float: left;
+	width: 80px;
+	height: 70px;
+	margin: 8px 0px 0px 20px;
+	cursor: pointer;
+}
+#cameraGroup .my-layout-panel .layout-img{
+	width: 80px;
+	height: 50px;
+	background-color: rgba(0,0,0,0);
+	background-position: 0px 0px;
+	background-repeat: no-repeat;
+}
+#cameraGroup .my-layout-panel .layout-desc{
+	margin: auto;
+	margin-top: 3px;
+	width: 60px;
+	height: 16px;
+	line-height: 14px;
+	text-align: center;
+	font-size: 10px;
+	color: #FFF;
+	background-color: #555;
+	border-radius: 15px;
+}
+#cameraGroup .my-layout-panel:hover .layout-img,
+#cameraGroup .my-layout-panel-hover .layout-img {
+	background-color: #00FFFF;
+	box-shadow: 0px 0px 5px 2px #00FFFF;
+}
+#cameraGroup .my-layout-panel:hover .layout-desc,
+#cameraGroup .my-layout-panel-hover .layout-desc {
+	color: #93FF1F;
+}
+
+/* ===================== 鑷畾涔夋爲缁撴瀯鏍峰紡 ====================== */
+.my-tree {
+	position: absolute;
+	top: -2px;
+	left: 2px;
+	width: 289px;
+	height: 655px;
+	border: 1px solid #000;
+	border-top: 0px none;
+	box-shadow: inset 0px 0px 3px 1px rgba(255,255,255,0.75);
+	background: rgba(90,90,90,0.1);
+	z-index: 2;
+}
+.my-tree * {
+	font-size: 13px;
+}
+.my-tree .tree-bg {
+	width: 100%;
+	height: 650px;
+	padding-top: 5px;
+	overflow: hidden;
+}
+.my-tree .tree-search {
+	margin: 5px 0px 5px 2px; 
+	width: 190px;
+	height: 26px;
+	padding-left: 28px;
+	color: #FFF;
+	font-size: 12px;
+	border: 1px solid #000;
+	border-radius: 0px 5px 5px 0px;
+	box-shadow: inset 0px 0px 3px 1px rgba(255,255,255,0.75);
+	background: url(img/search_w.png) left 4px center no-repeat rgba(90,90,90,0.2);
+}
+.my-tree .tree-search:hover, .my-tree .tree-search-hover {
+	background: url(img/search_w_hover.png) left 1px center no-repeat rgba(90,90,90,0.2);
+}
+.my-tree .tree-tools {
+	margin: 5px 0px 5px 12px; 
+	width: 43px;
+	height: 28px;
+	color: #FFF;
+	font-size: 11px;
+	line-height: 26px;
+	border-radius: 5px 0px 0px 5px;
+}
+.my-tree .tree-tools:hover {
+	text-shadow: 1px 1px 2px #00FFFF;
+}
+.my-tree .tree-panel {
+	margin-left: 5px;
+	width: 280px;
+	height: 578px;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+/* --- my-ul-tree --- */
+.my-ul-tree {
+	color: #FFF;
+	font-size: 12px;
+	margin: 5px;
+}
+.my-ul-tree * {
+	-moz-user-select: -moz-none;
+	-ms-user-select: none;
+	-wekit-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+}
+
+.my-ul-tree .tree-node {
+	height: 19px;
+	padding: 2px 5px 2px 5px;
+	border: 1px solid rgba(0,0,0,0);
+}
+.my-ul-tree .tree-node:hover {
+	border: 1px solid #000;
+	border-radius: 3px;
+	box-shadow: inset 0 0 3px 1px rgba(255,255,255,0.75);
+	background-color: rgba(100,100,100, 0.2);
+	font-weight: bold;
+}
+.my-ul-tree .tree-node-selected {
+	border: 1px solid rgba(0,0,0,0);
+	background-color: transparent;
+	font-weight: bold;
+}
+.my-ul-tree .tree-node-selected .tree-title {}
+.my-ul-tree .tree-node:hover .tree-title {
+/* 	color: #FFF000; */
+	color: #FFF;
+	text-shadow: 0 0 4px #00FFFF;
+}
+.my-ul-tree .tree-collapsed {
+	background: url(../img/treeExpandImages.png) 0px 2px no-repeat;
+}
+.my-ul-tree .tree-node:hover .tree-collapsed, .my-ul-tree .tree-node-selected .tree-collapsed {
+	background: url(../img/treeExpandImages.png) -18px 2px no-repeat;
+}
+.my-ul-tree .tree-expanded {
+	background: url(../img/treeExpandImages.png) -36px 2px no-repeat;
+}
+.my-ul-tree .tree-node:hover .tree-expanded, .my-ul-tree .tree-node-selected .tree-expanded {
+	background: url(../img/treeExpandImages.png) -54px 2px no-repeat;
+}
+.my-ul-tree .tree-folder {
+	width: 0px;
+}
+/* --- my-ul-tree --- */
+
+.btn-play {
+	position: absolute;
+	width: 22px;
+	height: 22px;
+	border: 0px none;
+	z-index: 3;
+	cursor: pointer;
+	opacity: 0.6;
+}
+.btn-play:hover {
+	opacity: 1;
+}
+.btn-last {
+	top: 9px;
+	left: 80px;
+	background: url(../img/left.png) -1px -1px no-repeat transparent;
+}
+.btn-next {
+	position: absolute;
+	top: 9px;
+	left: 195px;
+	background: url(../img/right.png) 0 0 no-repeat transparent;
+}
+
+#divCameraTree .tree-node-selected .tree-title{
+	color: #FFF;
+	text-shadow: 0 0 4px #00FFFF;
+}
+#divGroupTree .tree-node-selected .tree-title,
+#divUserGroupTree .tree-node-selected .tree-title {
+	color: #FFF000;
+	font-weight: normal;
+}
+#divGroupTree .tree-file,
+#divUserGroupTree .tree-file {
+	width: 0px;
+	background-image: none;
+}
+
+/* ===================== 缈婚〉鎸夐挳鏍峰紡 ====================== */
+.btn-panel {
+	padding: 5px 0px;
+	text-align: center;
+}
+.btn-panel button,
+.btn-panel input {
+	width: 50px;
+	height: 22px;
+	color: #F2F2F2;
+	font-size: 12px;
+	cursor: pointer;
+}
+.btn-panel .hoving,
+.btn-panel button:hover {
+	text-shadow: 0 0 3px 1px rgba(0,255,255,0.75);
+	box-shadow: 0 0 3px 1px rgba(0,255,255,0.75);
+}
+.btn-panel .left {
+	border-radius: 5px 0 0 5px;
+}
+.btn-panel .right {
+	border-radius: 0 5px 5px 0;
+}
+.btn-panel .txt {
+	height: 20px;
+	padding: 0 10px;
+	width: 190px;
+	cursor: text;
+}
+.btn-panel .remark {
+	color: rgba(255,255,255,0.5);
+}
+.btn-panel .m-t-5 {
+	margin-top: 5px;
+}
+.sys-set {
+	margin: 10px;
+	list-style: none;
+}
+.sys-set li {
+	width: 100%;
+	height: 26px;
+	line-height: 26px;
+	border: 1px solid rgba(0,0,0,0);
+}
+.sys-set li:hover {
+	border-radius: 4px;
+	border-color: rgba(0,0,0,0.8);
+	background-color: rgba(90,90,90,0.25);
+	box-shadow: inset 0 0 3px 1px rgba(255,255,255,0.35);
+}
+.sys-set li span {
+	float: left;
+	color: #FFF;
+	font-size: 12px;
+	padding: 0 15px;
+	cursor: default;
+}
+.sys-set li:hover span {
+	text-shadow: 0 0 3px 1px rgba(0,255,255,0.5);
+}
+.sys-set .chkbox {
+	display: inherit;
+	float: right;
+	width: 20px;
+	height: 100%;
+	margin-right: 5px;
+	background: url(../img/uncheck.png) center center no-repeat;
+}
+.sys-set .checked {
+	background: url(../img/checked.png) center center no-repeat;
+}
+.sys-set .autotime {
+	float: right;
+	width: 35px;
+	height: 19px;
+	line-height:19px;
+	padding: 0 5px;
+	margin-top: 3px;
+	margin-right: 2px;
+	/*color: #FFF;*/
+	text-align: right;
+	background-color: transparent;
+}
+.sys-set .line {
+	width: 100%;
+	line-height: 21px;
+	text-align: center;
+	color: #FFF;
+	/* text-shadow: 0 0 3px 1px rgba(0,255,255,0.5); */
+}
+.sys-set .disabled * {
+	color: #999;
+}
+.sys-set .disabled:hover {
+	border-radius: 4px;
+	border-color: rgba(0,0,0,0);
+	background-color: rgba(0,0,0,0);
+	box-shadow: inset 0 0 0 0 rgba(0,0,0,0);
+}
+.sys-set .disabled:hover * {
+	text-shadow: 0 0 0 0 rgba(0,0,0,0);
+}
+
+.ztree li {
+	padding: 1px 0px;
+}
+.ztree li a {
+	padding: 0px 2px 2px 2px;
+	height: 16px;
+	border: 1px solid rgba(0,0,0,0);
+	color: #F2F2F2;
+	font-size: 13px;
+	line-height: 14px;
+}
+.ztree li a:hover {
+	background-color: rgba(0,0,0,0.25);
+	border: 1px solid #0099FF;
+	text-decoration: none;
+}
+.ztree li a.curSelectedNode {
+	padding: 0px 2px 2px 2px;
+	height: 16px;
+	line-height: 14px;
+	background-color: rgba(0,0,0,0.65);
+	color: #F2F2F2;
+}
+.ztree li span {
+	font-family: "寰蒋闆呴粦", Consales;
+}
+.ztree li span.button {
+	width: 18px;
+	height: 18px;
+	background-image: url(../img/treeExpandImages.png);
+}
+.ztree li span.roots_close.button {
+	background-position: 2px 2px;
+}
+.ztree li span.roots_close.button:hover {
+	background-position: -16px 2px;
+}
+.ztree li span.roots_open.button {
+	background-position: -34px 2px
+}
+.ztree li span.roots_open.button:hover {
+	background-position: -52px 2px;
+}
+.ztree li span.root_close.button {
+	background-position: 2px 2px;
+}
+.ztree li span.root_close.button:hover {
+	background-position: -16px 2px;
+}
+.ztree li span.root_open.button {
+	background-position: -34px 2px
+}
+.ztree li span.root_open.button:hover {
+	background-position: -52px 2px;
+}
+.ztree li span.center_close.button {
+	background-position: 2px 2px;
+}
+.ztree li span.center_close.button:hover {
+	background-position: -16px 2px;
+}
+.ztree li span.center_open.button {
+	background-position: -34px 2px
+}
+.ztree li span.center_open.button:hover {
+	background-position: -52px 2px;
+}
+.ztree li span.center_docu.button {
+	width: 0px;
+}
+.ztree li span.bottom_close.button {
+	background-position: 2px 2px;
+}
+.ztree li span.bottom_close.button:hover {
+	background-position: -16px 2px;
+}
+.ztree li span.bottom_open.button {
+	background-position: -34px 2px
+}
+.ztree li span.bottom_open.button:hover {
+	background-position: -52px 2px;
+}
+.ztree li span.bottom_docu.button {
+	width: 0px;
+}
+.ztree li span.ico_open.button {
+	width: 0px;
+}
+.ztree li span.ico_close.button {
+	width: 0px;
+}
+
+/*------------------------------themes default rightVideoPlan.css add by zk------------------------------*/
+@CHARSET "UTF-8";
+.camera_gun_0-cui-icon-file {
+	background:url('img/camera_gun_0.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_gun_1-cui-icon-file {
+	background:url('img/camera_gun_1.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_gun_2-cui-icon-file {
+	background:url('img/camera_gun_2.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_spherical_0-cui-icon-file {
+	background:url('img/camera_spherical_0.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_spherical_1-cui-icon-file {
+	background:url('img/camera_spherical_1.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_spherical_2-cui-icon-file {
+	background:url('img/camera_spherical_2.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_hemisphere_0-cui-icon-file {
+	background:url('img/camera_hemisphere_0.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_hemisphere_1-cui-icon-file {
+	background:url('img/camera_hemisphere_1.png') no-repeat;
+	margin-right: 4px;
+}
+.camera_hemisphere_2-cui-icon-file {
+	background:url('img/camera_hemisphere_2.png') no-repeat;
+	margin-right: 4px;
+}
+/*------------------------------themes default rightVideoPlan.css add by zk------------------------------*/
+
+/*------------------------------ broadcast icon style add by lincoln.cheng ------------------------------*/
+.broadcast_0-cui-icon-file {
+	background:url('img/broadcast_0.png') no-repeat;
+	margin-right: 4px;
+}
+.broadcast_1-cui-icon-file {
+	background:url('img/broadcast_1.png') no-repeat;
+	margin-right: 4px;
+}
+.broadcast_2-cui-icon-file {
+	background:url('img/broadcast_2.png') no-repeat;
+	margin-right: 4px;
+}
+/*------------------------------ broadcast icon style add by lincoln.cheng ------------------------------*/

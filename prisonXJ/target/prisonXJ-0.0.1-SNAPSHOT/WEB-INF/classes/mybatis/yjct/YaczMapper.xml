@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YaczMapper">
+	 
+	 <select id="findCountByPlanid" parameterType="com.cesgroup.prison.yjct.entity.YaczEntity" resultType="com.cesgroup.prison.yjct.entity.YaczEntity">
+		SELECT A.EPA_METHOD_FID, count(distinct epa_rel_action_type)  || '' ACTION_COUNT FROM CDS_EMERGENCY_PLAN_ACTION A 
+		<where>
+			<if test="epaPlanFid != null and epaPlanFid != ''"> 
+				AND A.EPA_PLAN_FID = #{epaPlanFid} 
+			</if>	 
+		</where>
+		GROUP BY A.EPA_METHOD_FID  
+	</select>	
+	<select id="findAllList" parameterType="com.cesgroup.prison.yjct.entity.YaczEntity" resultType="com.cesgroup.prison.yjct.entity.YaczEntity">
+		SELECT A.EPA_REMARK  
+		<if test='epaRelActionType == "3"'> 
+			, B.* 
+		</if>
+		<if test='epaRelActionType == "4"'> 
+			, B.* 
+		</if>
+		<if test='epaRelActionType == "5"'> 
+			, B.* 
+		</if>
+		FROM CDS_EMERGENCY_PLAN_ACTION A 
+		<if test='epaRelActionType == "3"'> 
+			LEFT JOIN CDS_EXPERT_INFO B ON B.ID = A.EPA_REL_ACTION_FID 
+		</if>
+		<if test='epaRelActionType == "4"'> 
+			LEFT JOIN CDS_MATERIAL_INFO B ON B.ID = A.EPA_REL_ACTION_FID 
+		</if>
+		<if test='epaRelActionType == "5"'> 
+			LEFT JOIN CDS_LAWS_INFO B ON B.ID = A.EPA_REL_ACTION_FID 
+		</if>
+		<where>
+			<if test="epaPlanFid != null and epaPlanFid != ''"> 
+				AND A.EPA_PLAN_FID = #{epaPlanFid} 		
+			</if>
+			<if test="epaMethodFid != null and epaMethodFid != ''"> 
+				AND A.EPA_METHOD_FID = #{epaMethodFid} 		
+			</if>
+			<if test="epaRelActionType != null and epaRelActionType != ''"> 
+				AND A.EPA_REL_ACTION_TYPE = #{epaRelActionType} 		
+			</if>
+		</where>
+	</select>	
+	
+	<select id="findAllList1" parameterType="com.cesgroup.prison.yjct.entity.YaczEntity" resultType="com.cesgroup.prison.yjct.entity.YaczEntity">
+		SELECT A.*  
+		FROM CDS_EMERGENCY_PLAN_ACTION A 
+		<where>
+			<if test="epaPlanFid != null and epaPlanFid != ''"> 
+				AND A.EPA_PLAN_FID = #{epaPlanFid} 		
+			</if>
+		</where>
+	</select>
+	
+	<select id="deleteByCondition" parameterType="com.cesgroup.prison.yjct.entity.YaczEntity">
+		DELETE FROM CDS_EMERGENCY_PLAN_ACTION A 
+		<where>
+			<if test="epaPlanFid != null and epaPlanFid != ''"> 
+				AND A.EPA_PLAN_FID = #{epaPlanFid} 		
+			</if>
+			<if test="epaMethodFid != null and epaMethodFid != ''"> 
+				AND A.EPA_METHOD_FID = #{epaMethodFid} 		
+			</if>
+			<if test="epaRelActionType != null and epaRelActionType != ''"> 
+				AND A.EPA_REL_ACTION_TYPE = #{epaRelActionType} 		
+			</if>
+		</where>
+	</select>
+	
+	<select id="deleteByPlanidAndMethodid">
+		DELETE FROM CDS_EMERGENCY_PLAN_ACTION A 
+		WHERE A.EPA_PLAN_FID = #{epaPlanFid} 		
+		AND A.EPA_METHOD_FID NOT IN 
+		<foreach collection="idList" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach> 
+	</select>
+	
+	<select id="batchDeleteByPlanid" parameterType="arraylist">
+		DELETE FROM CDS_EMERGENCY_PLAN_ACTION A 
+		WHERE A.EPA_PLAN_FID IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}		
+		</foreach>
+	</select>
+</mapper>

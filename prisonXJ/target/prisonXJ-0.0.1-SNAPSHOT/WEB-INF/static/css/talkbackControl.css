@@ -1,0 +1,374 @@
+* {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      box-sizing: content-box;
+    }
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.clearfix::after {
+            content: ".";
+            clear: both;
+            display: block;
+            overflow: hidden;
+            font-size: 0;
+            height: 0;
+        }
+
+.clearfix {
+            zoom: 1;
+        }
+.TC-content{
+	width: 1000px;
+	margin:0px auto;
+	height: 520px;
+	overflow: hidden;
+	position: relative;
+}
+.coral-corner-all, .coral-corner-bottom, .coral-corner-right, .coral-corner-br{
+	border-radius: 0px;
+}
+.TC-content .close-btn{
+	position: absolute;
+	right:10px;
+	top:8px;
+	width: 15px;
+	height: 15px;
+	background: url(../images/X.png);
+	cursor: pointer;
+}
+#TC-fragment-extension{
+	padding: 15px 10px;
+}
+#TC-fragment-host{
+	padding: 0px 10px;
+}
+ .TC-content .coral-tabs .coral-tabs-panel{
+    background: #8cb2f4;
+}
+.TC-content .TC-topTitle{
+	color:#fff;
+	height: 32px;
+	line-height: 32px;
+	font-size: 14px;
+	font-weight: bold;
+	padding-left: 22px;
+	background: #476dcc url(../images/topBg.png) 0 0 no-repeat; 
+	background-size: cover; 
+	margin: 0px;
+}
+.TC-content .left-nav{
+	height: 100%;
+	width: 130px;
+	background: #476dcc;
+}
+.TC-content .left-nav .left-nav-title{
+	position: relative;
+}
+.TC-content .left-nav .left-nav-title1:after{
+	position: absolute;
+	left:19px;
+	top:28px;
+	content: "";
+	display: block;
+	width: 25px;
+	height: 25px;
+	background: url(../images/realTime_callServer.png) 0 0 no-repeat;
+}
+.TC-content .left-nav .left-nav-title2:after{
+	position: absolute;
+	left:19px;
+	top:32px;
+	content: "";
+	display: block;
+	width: 25px;
+	height: 25px;
+	background: url(../images/realTime_callMian.png) 0 0 no-repeat;
+}
+.TC-content .coral-tabs>.coral-tabs-nav>.coral-tabs-active .coral-tabs-anchor{
+	font-size: 14px;
+	font-weight: bold;
+	color: #fff;
+	height: 65px;
+	line-height: 65px;
+	padding-left: 55px;
+}
+.TC-content .coral-tabs>.coral-tabs-nav>.coral-tabs-active{
+	background:#476dcc;
+	background: linear-gradient(to left, #8bb1f4 ,#8bb1f4, #476dcc); 
+}
+.TC-content .coral-tabs>.coral-tabs-nav>li>.coral-tabs-anchor{
+	font-size: 14px;
+	font-weight: bold;
+	color: #fff;
+	height: 65px;
+	line-height: 65px;
+	padding-left: 55px;
+}
+.TC-content .coral-tabs-left>.coral-tabs-nav .coral-tabs-active>.coral-tabs-anchor{
+	border: none;
+	background:linear-gradient(to left, #8bb1f4 ,#8bb1f4, #476dcc)
+}
+#TC-fragment-extension .TC-remindMessage{
+	box-sizing: border-box;
+    height: 43px;
+    width: 495px;
+    border: 1px solid #d9a751;
+    background: linear-gradient(to bottom, #fffefb , #ffe5b4);
+    border-radius: 6px;
+    padding:4px 50px;
+    color: #d9a751;
+    position: relative;
+}
+#TC-fragment-extension .TC-remindMessage:after{
+	position: absolute;
+    left: 12px;
+    top: 9px;
+    content: "";
+    display: block;
+    width: 28px;
+    height: 41px;
+    background: url(../images/realTime_info.png) 0 0 no-repeat;
+}
+#TC-fragment-extension .TC-main-left{
+	width: 495px;
+	height: 88%;
+}
+#TC-fragment-extension .TC-number{
+	width: 241px;
+	height: 100%;
+}
+#TC-fragment-extension .TC-number .TC-hostNumberTitle1,.TC-hostNumberTitle2{
+	width: 70px;
+	height: 40px;
+	background: #c6d9fa;
+	color: #000;
+	text-align: center;
+	line-height: 40px;
+	display: inline-block;
+	font-size: 14px;
+	font-weight: bold;
+
+}
+#TC-fragment-extension .TC-number .TC-hostNumberTitle2{
+	/*  width: 111px;  */
+	 width: 62%; 
+	margin-left: -4px;
+	border-left: 1px solid #898989;
+}
+#TC-fragment-extension .TC-hostNumberContent,.TC-extensionNumberContent{
+	height: 390px;
+	overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    max-width: 220px;
+}
+#TC-fragment-extension .TC-number ul li{
+	height:40px;
+}
+#TC-fragment-extension .TC-number ul li:nth-child(odd){
+	background: #e6e6e6;
+}
+ #TC-fragment-extension .TC-number ul li:nth-child(even){
+	background: #fff;
+} 
+#TC-fragment-extension .TC-number ul li span{
+	color: #000;
+	text-align: center;
+	line-height: 40px;
+}
+#TC-fragment-extension .TC-number ul li span:last-child{
+	padding-left: 10px;
+}
+#TC-fragment-extension .TC-number ul li span:first-child{
+    width: 70px;
+    height: 100%;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#TC-fragment-extension .TC-number ul li a{
+	color: #000;
+    display: inline-block;
+    height: 100%;
+    width: 123px;
+    line-height: 40px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 3px;
+    border-left: 1px solid #898989;
+}
+.TC-hostNumberContent::-webkit-scrollbar, 
+.TC-extensionNumberContent::-webkit-scrollbar 
+{  
+    width: 8px;  
+    height: 16px;  
+    background-color: #F5F5F5; 
+    position: relative;
+    left:10px;
+    top:0px; 
+}
+/*瀹氫箟婊氬姩鏉¤建閬� 鍐呴槾褰�+鍦嗚*/  
+.TC-hostNumberContent::-webkit-scrollbar-track,
+.TC-extensionNumberContent::-webkit-scrollbar-track 
+{  
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+    border-radius: 10px;  
+    background-color: #F5F5F5; 
+
+}  
+ 
+/*瀹氫箟婊戝潡 鍐呴槾褰�+鍦嗚*/  
+.TC-hostNumberContent::-webkit-scrollbar-thumb, 
+.TC-extensionNumberContent::-webkit-scrollbar-thumb
+{  
+    border-radius: 10px;  
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+    background-color: #555;  
+}  
+#TC-fragment-extension .TC-main-right{
+	width: 335px;
+	height: 88%;
+	padding:0px 15px;
+	box-sizing: border-box;
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .displayInp{
+	width: 230px;
+	height: 42px;
+	background: #dcdcdc;
+	border-radius: 5px;
+	border:2px solid #525252;
+	font-size: 25px;
+	font-weight: bold;
+	padding-left: 10px;
+}
+#TC-fragment-extension .TC-main-right{
+	position: relative;
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-top{
+    position: absolute;
+    top: -35px;
+    left: 96px;
+    color: #fff;
+    font-size:20px; 
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-top:after{
+	position: absolute;
+    right: -32px;
+    top: -11px;
+    content: "";
+    display: block;
+    width: 28px;
+    height: 41px;
+    background: url(../images/realTime_object.png) 0 0 no-repeat;
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm{
+    text-align: center;
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .displayInp{
+
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .numberButton li{
+	width: 80px;
+	height: 80px;
+	text-align: center;
+	line-height: 80px;
+	color: #fff;
+	font-size: 28px;
+    background: url(../images/realTime_button.png) 0 0 no-repeat;
+    background-size:100%; 
+    float: left;
+    margin:0px 7px 3px;
+    cursor: pointer; 
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .numberButton li:active{
+	background: url(../images/realTime_usr.png) 0 0 no-repeat;
+    background-size:100%; 
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .numberButton li:last-child{
+	font-size: 17px;
+}
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .numberButton .detleBtn{
+	width: 30px;
+	height: 20px;
+	display: inline-block;
+	background: url(../images/detleBtn.png) 0 0 no-repeat;
+	background-size: 100%;
+} 
+#TC-fragment-extension .TC-main-right .TC-main-right-btm .numberButton{
+	margin-top: 25px;
+}
+
+#TC-fragment-host .TC-host-btn li{
+	float: left;
+	width: 80px;
+	height: 33px;
+	background: url(../images/realTime_tab.png) 0 0 no-repeat;
+	background-size: 100%;
+	color: #000;
+	text-align: center;
+	line-height: 30px;
+	box-sizing: border-box;
+	margin:0px 1px;
+}
+ #TC-fragment-host .TC-host-btn{
+	padding:20px 0px;
+	background: #8cb2f4;
+	border:none;
+	border-radius: 0px; 
+}
+#TC-fragment-host .TC-host-btm{
+	 padding:0px 2px;
+} 
+
+#TC-fragment-host div ul li{
+	float: left;
+	width: 81px;
+	height: 72px;
+	background: linear-gradient(to top right, #e8e8e9 , #fdfdfd);
+	text-align: center;
+	line-height: 72px;
+	font-size: 17px;
+	font-weight: bold;
+} 
+#TC-fragment-host .coral-tabs>.coral-tabs-nav .coral-tabs-anchor{
+	border:none;
+	padding:0px 0px;
+}
+#TC-fragment-host .coral-tabs>.coral-tabs-nav>.coral-tabs-active .coral-tabs-anchor{
+	border:none;
+	padding:0px 15px;
+}
+
+#TC-fragment-host .coral-tabs>.coral-tabs-nav>.coral-tabs-active .coral-tabs-anchor{
+	font-size: 14px;
+	font-weight: bold;
+	color: #fff;
+	height: 30px;
+	line-height: 30px;
+}
+#TC-fragment-host .coral-tabs>.coral-tabs-nav>.coral-tabs-active{
+	background: url(../images/realTime_tabjh.png) 0 0 no-repeat;
+	background-size: 100%;
+	color: #fff;
+}
+#TC-fragment-host .coral-tabs>.coral-tabs-nav>li>.coral-tabs-anchor{
+	font-size: 14px;
+	font-weight: bold;
+	color: #000;
+	height: 30px;
+	line-height: 30px;
+}
+#TC-fragment-host .coral-tabs-left>.coral-tabs-nav .coral-tabs-active>.coral-tabs-anchor{
+	border: none;
+}
+#TC-host-tabs div{
+	padding:0px 10px;
+	border:none;
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.yjct.dao.YljhMapper">
+	 
+	<select id="getById" parameterType="com.cesgroup.prison.yjct.entity.YljhEntity" resultType="com.cesgroup.prison.yjct.entity.YljhEntity"> 
+		SELECT A.* 
+		<if test='isHaveSp == "1"'>
+			, B.EHA_IS_AGREE, B.EHA_AGREE_CONTENT 
+		</if>
+		FROM CDS_EMERGENCY_DRILL_PLAN A 
+		<if test='isHaveSp == "1"'>
+			LEFT JOIN CDS_EMERGENCY_HANDLE_APPROVE B ON B.EHA_PH_FID = A.ID AND B.EHA_APP_ROLE = 1
+		</if>
+		WHERE A.ID = #{id} 
+	</select>
+	
+	<select id="findList" parameterType="com.cesgroup.prison.yjct.entity.YljhEntity" resultType="com.cesgroup.prison.yjct.entity.YljhEntity">
+		SELECT A.*, B.EPI_PLAN_NAME FROM CDS_EMERGENCY_DRILL_PLAN A 
+		LEFT JOIN CDS_EMERGENCY_PLAN_INFO B ON B.ID = A.EDP_EM_PLAN_FID 
+		<where>
+			<if test="edpCusNumber != null and edpCusNumber != ''"> 
+				AND A.EDP_CUS_NUMBER = #{edpCusNumber} 		
+			</if>
+			<if test="edpTime != null and edpTime != ''"> 
+				AND TO_CHAR(A.EDP_TIME, 'yyyy-MM-dd') = TO_CHAR(#{edpTime}, 'yyyy-MM-dd') 		
+			</if>		
+			<if test="edpAddress != null and edpAddress != ''"> 
+				AND A.EDP_ADDRESS like '%' || #{edpAddress} || '%'  		
+			</if>
+			<if test="edpStatus != null and edpStatus != ''"> 
+				AND A.EDP_STATUS = #{edpStatus} 		
+			</if>
+			<if test="epiPlanName != null and epiPlanName != ''"> 
+				AND B.EPI_PLAN_NAME like '%' || #{epiPlanName} || '%'  		
+			</if>			
+		</where>
+	</select>
+</mapper>

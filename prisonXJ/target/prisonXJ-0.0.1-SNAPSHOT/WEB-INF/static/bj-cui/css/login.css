@@ -1,0 +1,250 @@
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	/* Firefox */
+	-webkit-box-sizing: border-box;
+	/* Safari */
+}
+html,body{
+	height:100%;
+	width:100%;
+}
+html, body, div, h4, h5, h6, p, ul, li, input, a, i, b, span {
+    box-sizing: border-box;
+    font-style: normal;
+    font-family: 微软雅黑;
+    font-size: 14px;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    outline: 0px;
+    text-decoration: none;
+}
+.pull-left{
+	float:left;
+}
+.pull-right{
+	float:right;
+}
+.clearfix:after {
+    display: table;
+    content: " ";
+    clear: both;
+}
+.clearfix{
+    *zoom: 1;
+} 
+.mainCon {
+	height:100%;
+	width:100%;
+	/*background-image: url(../img/bg.png);
+	background-repeat: no-repeat;
+	background-size: 100%;*/
+	/*background:url(../img/bg.png) no-repeat top center;*/
+	background:url(../img/newBg_shiju.png) 100% 100%;
+}
+.container{
+	width:1090px;
+	height: 800px;
+	margin: 0px auto;
+	position: relative;
+}
+.titleLogo{
+	position: relative;
+	/*padding-top: 178px;*/
+	padding-top:326px;
+}
+.titleLogo img{
+	display: none;
+}
+.titlePic{
+	display: block;
+	margin:0 auto;
+}
+.logoPic{
+	position: absolute;
+    left: 60px;
+    bottom: 8px;
+}
+.loginCon{
+	width:773px;
+	height:374px;
+	margin:40px 0px 0px 177px;
+	background: url(../img/loginBg.png) no-repeat center;
+	position: relative;
+    z-index: 5;
+    padding: 65px 0px 0px 105px;
+}
+.bottomPic{
+	width: 1084px;
+	height:171px;
+	margin:0 auto;
+	background: url(../img/centerBg.png) no-repeat center;
+	position: absolute;
+    top: 628px;
+    left: 10px;
+}
+.login-remember {
+    color: rgba(255, 255, 255, 0.8);
+}
+.login-remember > span {
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.login-checkbox {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    display: inline-block;
+    float: left;
+    margin-right: 8px;
+}
+.login-checkbox input[type=checkbox] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 18px;
+    z-index: 2;
+    opacity: 0;
+}
+.login-checkbox input[type=checkbox] + span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 18px;
+    background: url(../img/login-check.png) no-repeat;
+    background-size: 100% auto;
+    background-position: 0 -18px;
+}
+.login-checkbox input[type=checkbox]:checked + span {
+    background-position: 0 0px;
+}
+
+.loginIpt{
+	position: relative;
+	margin-bottom: 10px;
+}
+input.login-text,
+.login-button button{
+	width: 360px;
+    height: 50px;
+}
+input.login-text {
+    padding: 10px;
+    background: rgba(1, 76, 96, 0.5);
+    border-radius: 4px;
+    border: 1px solid #71c7d5;
+    color: #fff;
+    padding-left: 50px;
+    font-size: 20px;;
+}
+.loginIpt>img{
+	position: absolute;
+    top: 5px;
+    bottom: 0;
+    left: 10px;
+    margin: auto;
+}
+.loginIpt>img.passWordLogo{
+	left: 13px;
+}
+#useTxt{
+	margin-bottom: 15px;
+}
+.login-input {
+    margin-top: 10px;
+    position: relative;
+}
+.login-input button {
+    border-radius: 4px;
+    border: 1.3px solid #00346e;
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+    background: url(../img/loginBtnPic.png) no-repeat -1px -1px;
+    background-size: 101% 108%;
+    line-height: 50px;
+}
+.login-input button:hover{
+	
+	box-shadow: 0px 0px 5px 1px #74a3c2;
+}
+.login-input button i {
+    display: inline-block;
+    width: 8px;
+}
+.loginLogo{
+	position: absolute;
+    left: 533px;
+    top: 199px;
+}
+.loginLogo p{
+	text-align: center;
+	color:#e0a904;
+	font-size: 16px;
+}
+.CA{
+	margin-right: 20px;
+}
+.caPluIcon{
+	cursor: pointer;
+}
+.caPluIcon:hover img{
+	transition: transform 0.8s;
+	transform: scale(1.1);
+	/*box-shadow: 1px 1px 5px 1px #e0a904;*/
+}
+.caPluPic{
+	width:71px;
+	height:81px;
+	
+}
+.caPluPic1{
+	/*background: url(../img/caCertific.png) no-repeat center;*/
+	background: url(../img/spritPic.png) no-repeat -143px 0px;
+}
+.caPluPic2{
+	/*background: url(../img/Plugin.png) no-repeat center;*/
+	background: url(../img/spritPic.png) no-repeat -212px 0px;
+}
+.caPluIcon:hover .caPluPic1{
+	/*background: url(../img/caHeight.png) no-repeat center;*/
+	background: url(../img/spritPic.png) no-repeat  0px 0px;
+}
+.caPluIcon:hover .caPluPic2{
+	/*background: url(../img/pluinHeight.png) no-repeat center;*/
+	background: url(../img/spritPic.png) no-repeat  -71px 0px;
+}
+#tipMsg{
+	position: absolute;
+	left: 478px;
+    top: 123px;
+    color: rgba(223,19,29,0.8);
+    font-size: 16px;
+    display: none;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    background: #000b13;
+    z-index: 1000;
+}
+#tipMsg::after{
+	content: "";
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-left: 1px solid #ffffff;
+    border-top: 1px solid #ffffff;
+    position: absolute;
+    left: -6px;
+    top: 14px;
+    background: #000b13;
+    transform: rotateZ(-45deg);
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.criminal.dao.CriminalMapper">
+	
+	<select id="getCriminalCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from yzgl.t_yzgl_dk_jbxx jbxx 
+		where jbxx.zf_zt1 = '1' and jbxx.zf_zt2='11' and jbxx.jy_id = #{jyId} 
+		<if test="deptCode !=null and deptCode !='' ">
+		and jbxx.jq_id like '${deptCode}%'
+		</if>
+	</select>
+	
+	<select id="getImportCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from yzgl.t_yzgl_dk_jbxx jbxx, yzgl.t_yzgl_yqfx_jbxx yqfx 
+		where jbxx.zf_zt1 = '1' and jbxx.zf_zt2='11' and jbxx.jy_id = #{jyId} and jbxx.jq_id like '${deptCode}%'
+		and jbxx.bh=yqfx.zf_bh and yqfx.wx_dj='1'
+	</select>
+	
+	<select id="searchListPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select bh,xm,jy_id  
+		from yzgl.t_yzgl_dk_jbxx jbxx
+		left join auth.t_org org
+		on org.organize_code = jbxx.jq_id 
+		where jbxx.zf_zt1 = '1' and jbxx.jy_id = #{jyId}
+		and org.organize_name = #{deptName}
+		<if test="xm != null and xm != ''">
+				and jbxx.xm like '%${xm}%'
+		</if>
+		<if test="bh != null and bh != ''">
+				and jbxx.bh like '%${bh}%'
+		</if>
+	</select>
+	
+	<select id="getQy" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select sj,qy,bj from (
+			select
+			        DRD_BRUSH_CARD_TIME as sj,
+			        DRD_REMARK     as qy    ,
+			        DRD_IN_OUT_INDC as bj
+			from
+			        prison.cds_door_record_dtls
+			where
+			        DRD_PEOPLE_TYPE_INDC = '2'
+			    and DRD_PEOPLE_IDNTY     = #{BH}
+			union all
+			select 
+					st as sj, 
+					LOCATION_NAME  as qy,
+					'-1' as bj
+			from 
+					prison.t_rlsb_hmd 
+			where   card_no = #{BH})
+		order by sj desc
+		limit 1
+	</select>
+	
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.xxyp.dao.DaylyMapper">
+	<select id="getDaylyData" resultType="java.util.HashMap"
+		parameterType="java.util.HashMap">
+		SELECT * from CDS_PRISON_INFORMATION_DAYLY
+		<where>
+			<if test="pidDate!=null and pidDate!=''">
+				and PID_DATE =#{pidDate}
+			</if>
+			<if test="pidCusNumber!=null and pidCusNumber!=''">
+				and PID_CUS_NUMBER =#{pidCusNumber}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteSameDay" parameterType="java.lang.String">
+		delete from CDS_PRISON_INFORMATION_DAYLY
+		where PID_DATE =TO_CHAR(SYSDATE,'YYYY-MM-DD') 
+		and PID_CUS_NUMBER =#{cusNumber} 
+	</delete>
+	<!-- <insert id="insert" parameterType="com.cesgroup.prison.xxyp.entity.Dayly">
+		insert into CDS_PRISON_INFORMATION_DAYLY (ID, PID_CUS_NUMBER,
+		PID_DATE,
+		PID_HOUR, PID_RECORD_ID, PID_RECORD_ITEM,
+		PID_RECORD_VALUE)
+		values (#{id,jdbcType=VARCHAR}, #{pidCusNumber,jdbcType=VARCHAR},
+		#{pidDate,jdbcType=TIMESTAMP},
+		#{pidHour,jdbcType=VARCHAR}, #{pidRecordId,jdbcType=VARCHAR}, #{pidRecordItem,jdbcType=VARCHAR},
+		#{pidRecordValue,jdbcType=VARCHAR})
+	</insert> -->
+	<update id="updatePart" parameterType="com.cesgroup.prison.xxyp.entity.Dayly">
+		update CDS_PRISON_INFORMATION_DAYLY
+		<set>
+			<if test="pidCusNumber != null">
+				PID_CUS_NUMBER = #{pidCusNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="pidDate != null">
+				PID_DATE = #{pidDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pidHour != null">
+				PID_HOUR = #{pidHour,jdbcType=VARCHAR},
+			</if>
+			<if test="pidRecordId != null">
+				PID_RECORD_ID = #{pidRecordId,jdbcType=VARCHAR},
+			</if>
+			<if test="pidRecordItem != null">
+				PID_RECORD_ITEM = #{pidRecordItem,jdbcType=VARCHAR},
+			</if>
+			<if test="pidRecordValue != null">
+				PID_RECORD_VALUE = #{pidRecordValue,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="cds_query_alarm_type_level">
+		<desc>查询报警类型等级</desc>
+		<sql>
+			SELECT alt_cus_number, 
+			       alt_type_id, 
+			       alt_level
+			  FROM cds_alarm_type
+		</sql>
+		<where wid="0">
+			 WHERE (TRIM(?) IS NULL OR alt_cus_number = ?)
+		</where>
+	   	<order oid="0">
+			 ORDER BY alt_cus_number, alt_type_id
+	   	</order>
+	</item>
+
+	<item id="cds_query_saved_alarm_type">
+		<desc>查询已保存设置的报警类型</desc>
+		<sql>
+			SELECT alt_type_id AS alarm_dvc_type
+			  FROM cds_alarm_type
+		</sql>
+		<where wid="0">
+			 WHERE alt_cus_number = ?
+		</where>
+	   	<order oid="0">
+			 GROUP BY alt_type_id
+			 ORDER BY alt_type_id
+	   	</order>
+	</item>
+
+	<item id="cds_query_orga_list">
+		<desc>查询监狱机构列表</desc>
+		<sql>
+			SELECT obd_orga_idnty AS orga_code, 
+			       obd_orga_name AS orga_name
+			  FROM com_organization_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE obd_parent_id #$ -1
+		</where>
+	   	<order oid="0">
+			 ORDER BY obd_seq
+	   	</order>
+	</item>
+	
+	<item id="cds_query_alarm_area_view_list">
+		<desc>查询报警区域视角列表</desc>
+		<sql>
+			SELECT vfu_cus_number     AS orga_code,
+			       vfu_view_id        AS view_id,
+			       vfu_view_name      AS view_name,
+			       vfu_area_id        AS area_id,
+			       vfu_parent_view_id AS parent_id
+			  FROM cds_view_func
+			 INNER JOIN cds_area_base_dtls
+			    ON abd_cus_number = vfu_cus_number
+			   AND abd_area_id = vfu_area_id
+		</sql>
+		<where wid="0">
+			 WHERE vfu_cus_number = ?
+			   AND vfu_stts = ?
+		</where>
+		<order oid="0">
+			 ORDER BY vfu_srno, parent_id
+		</order>
+	</item>
+</sqlItem>

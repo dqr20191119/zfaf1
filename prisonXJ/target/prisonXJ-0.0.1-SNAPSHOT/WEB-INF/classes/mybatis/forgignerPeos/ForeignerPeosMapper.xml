@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.foreignerPeos.dao.ForeignerPeosMapper">
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.foreignerPeos.entity.ForeignerPeosEntity">
+		<result column="ID" jdbcType="CHAR" property="id" />
+		<result column="CUS_NUMBER" jdbcType="CHAR" property="cusNumber" />
+		<result column="C_NAME" jdbcType="CHAR" property="cName" />
+		<result column="C_SEX" jdbcType="CHAR" property="cSex" />
+		<result column="C_SFZBH" jdbcType="CHAR" property="cSfzbh" />
+		<result column="D_CSRQ" jdbcType="CHAR" property="dCsrq" />
+		<result column="D_DJRQ" jdbcType="CHAR" property="dDjrq" />
+		<result column="C_SY" jdbcType="CHAR" property="cSy" />
+		<result column="C_CPH" jdbcType="CHAR" property="cCph" />
+		<result column="C_CXYS" jdbcType="CHAR" property="cCxys" />
+		<result column="C_ZP" jdbcType="CHAR" property="cZp" />
+		<result column="C_SPLD" jdbcType="CHAR" property="cSpld" />
+		<result column="C_CZRY" jdbcType="CHAR" property="cCzry" />
+		<result column="C_CZRYJH" jdbcType="CHAR" property="cCzryjh" />
+		<result column="C_BM" jdbcType="CHAR" property="cBm" />
+		<result column="C_QY" jdbcType="CHAR" property="cQy" />
+	</resultMap>
+	
+	<select id="searchCounts" resultType="java.lang.Integer" useCache="true">
+		SELECT 
+			count(0) 
+		FROM T_OUTSIDER_WLRY T1 
+		WHERE TO_CHAR(T1.D_DJRQ, 'yyyy-MM-dd') = '${dDjrq}'
+		<if test="cusNumber != null and cusNumber != ''">
+			AND T1.CUS_NUMBER = #{cusNumber}
+		</if>
+		
+	</select>
+	
+	<select id="findList" resultMap="BaseResultMap" useCache="true">
+		SELECT 
+			distinct CUS_NUMBER ,C_NAME,C_SEX ,C_SFZBH    ,D_CSRQ,D_DJRQ,C_SY  ,C_CPH ,C_CXYS,C_ZP  ,C_SPLD,C_CZRY,C_CZRYJH 
+		FROM T_OUTSIDER_WLRY T1
+		WHERE 1 = 1
+		<if test="cusNumber != null and cusNumber != ''">
+			AND T1.CUS_NUMBER = #{cusNumber}
+		</if>
+		<if test="cName != null and cName != ''">
+			AND T1.C_NAME LIKE '%${cName}%'
+		</if>
+		<if test="cSy != null and cSy != ''">
+			AND T1.C_SY LIKE '%${cSy}%'
+		</if>
+		<if test="dDjrq != null and dDjrq != ''">
+			AND TO_CHAR(T1.D_DJRQ, 'yyyy-MM-dd') = '${dDjrq}'
+		</if>
+		ORDER by T1.D_DJRQ DESC
+	</select>
+</mapper>

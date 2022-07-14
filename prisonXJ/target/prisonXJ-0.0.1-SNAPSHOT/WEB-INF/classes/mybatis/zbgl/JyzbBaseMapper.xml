@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.pbtbhz.dao.JyzbBaseMapper">
+
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbBaseEntity" resultType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbBaseEntity">
+		SELECT * FROM CDS_DUTY_JYZB_BASE 
+	   <where>
+	   	<if test="cusNumber !=null and cusNumber !=''">
+	   	 and CUS_NUMBER = #{cusNumber}
+	   	</if>
+	   	<if test="zbYf !=null and zbYf !=''">
+	   	 and  ZB_YF  = #{zbYf}
+	   	 </if>
+	   	 <if test=" zt !=null and zt !=''">
+	   	 	and  ZT = #{zt}
+	   	 </if>
+	   </where>
+	   order by zt 
+	</select> 
+	<update id="updateById" parameterType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbBaseEntity">
+		update CDS_DUTY_JYZB_BASE 
+			<set>
+				<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+				<if test="zbYf !=null and zbYf !=''">
+					ZB_YF= #{zbYf},
+				</if>
+				<if test="zbDh !=null and zbDh !=''">
+					ZB_DH  = #{zbDh},
+				</if>
+				<if test="cjrq !=null and cjrq !=''">
+					CJRQ  = #{cjrq},
+				</if>
+				<if test="cjrId !=null and cjrId !=''">
+					CJR_ID  = #{cjrId},
+				</if>
+				<if test="cjrName !=null and cjrName !=''">
+					CJR_NAME  = #{cjrName},
+				</if>
+				<if test="zt !=null and zt !=''">
+					ZT  = #{zt},
+				</if>
+				<if test="updateDate !=null and updateDate !=''">
+					UPDATE_DATE  = #{updateDate},
+				</if>
+				<if test="updateId !=null and updateId !=''">
+					UPDATE_ID  = #{updateId},
+				</if>
+				<if test="updateName !=null and updateName !=''">
+					UPDATE_NAME  = #{updateName},
+				</if>
+			</set>
+			
+			where id = #{id}
+	</update>
+	
+	
+	<update id="updateZtByZbYf" parameterType="com.cesgroup.prison.zbgl.pbtbhz.entity.JyzbBaseEntity">
+	update CDS_DUTY_JYZB_BASE  set zt =#{zt}  where zt ='1'   and  zb_yf = #{zbYf} 
+	
+	</update>
+	
+</mapper>

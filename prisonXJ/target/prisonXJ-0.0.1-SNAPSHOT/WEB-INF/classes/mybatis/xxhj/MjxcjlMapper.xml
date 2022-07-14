@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cesgroup.prison.xxhj.mjxcjl.dao.MjxcjlMapper">
+  <resultMap id="BaseResultMap" type="com.cesgroup.prison.xxhj.mjxcjl.entity.MjxcjlEntity">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="POLICE_ID" jdbcType="VARCHAR" property="policeId" />
+    <result column="POLICE_NAME" jdbcType="VARCHAR" property="policeName" />
+    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="PATROL_ROUTE" jdbcType="VARCHAR" property="patrolRoute" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_PERSON" jdbcType="VARCHAR" property="createPerson" />
+  </resultMap>
+   <select id="findList" parameterType="com.cesgroup.prison.xxhj.mjxcjl.entity.MjxcjlEntity"
+		resultType="com.cesgroup.prison.xxhj.mjxcjl.entity.MjxcjlEntity">
+		SELECT ID, POLICE_ID, POLICE_NAME, 
+      START_TIME, END_TIME, PATROL_ROUTE FROM
+		"PRISON"."CDS_POLICE_PATROL" ORDER BY START_TIME DESC
+	</select>
+  <select id="searchSwdbPage" parameterType="com.cesgroup.prison.xxhj.mjxcjl.entity.MjxcjlEntity"
+		resultType="com.cesgroup.prison.xxhj.mjxcjl.entity.MjxcjlEntity">
+		SELECT ID, POLICE_ID, POLICE_NAME, 
+      START_TIME, END_TIME, PATROL_ROUTE FROM "PRISON"."CDS_POLICE_PATROL" A
+		 <where>
+			<if test="policeName != null and policeName != ''">
+				AND A.POLICE_NAME = #{policeName}
+			</if>
+			
+			<if test="startTime != null and startTime != ''">
+				AND to_char(A.START_TIME,'yyyy-MM-dd HH:mm:ss') &gt;= #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND to_char(A.END_TIME,'yyyy-MM-dd HH:mm:ss') &lt;= #{endTime}
+			</if>
+		 </where>
+		ORDER BY START_TIME DESC
+	</select>
+</mapper>

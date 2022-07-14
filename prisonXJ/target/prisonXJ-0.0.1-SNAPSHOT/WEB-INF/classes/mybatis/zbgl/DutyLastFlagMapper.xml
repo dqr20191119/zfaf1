@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.rygl.dao.DutyLastFlagMapper">
+    <select id="selectListByOrderByGxDate" parameterType="com.cesgroup.prison.zbgl.rygl.entity.DutyLastFlagEntity" resultType="com.cesgroup.prison.zbgl.rygl.entity.DutyLastFlagEntity">
+        SELECT * from PRISON.CDS_DUTY_LAST_FLAG
+        <where>
+            <if test="cusNumber !=null and cusNumber !='' ">
+                CUS_NUMBER = #{cusNumber}
+            </if>
+        </where>
+        order by GX_DATE
+    </select>
+
+	
+
+</mapper>

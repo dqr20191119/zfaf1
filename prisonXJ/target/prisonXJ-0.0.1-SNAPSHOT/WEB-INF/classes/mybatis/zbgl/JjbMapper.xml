@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.zbgl.jjb.dao.JjbMapper">
+
+	
+	<select id="findList" parameterType="com.cesgroup.prison.zbgl.jjb.entity.JjbEntity" resultType="com.cesgroup.prison.zbgl.jjb.entity.JjbEntity">
+		SELECT * FROM CDS_DUTY_JJB_BASE 
+	   <where>
+	   	<if test="cusNumber !=null and cusNumber !=''">
+	   	 and CUS_NUMBER = #{cusNumber}
+	   	</if>
+	   	<if test="deptNumber !=null and deptNumber !=''">
+	   	 and  DEPT_NUMBER  = #{deptNumber}
+	   	 </if>
+	   	 <if test=" zt !=null and zt !=''">
+	   	 	and  ZT = #{zt}
+	   	 </if>
+	   	  <if test=" zbzName !=null and zbzName !=''">
+	   	 	and  ZBZ_NAME like  '%'||#{zbzName}||'%'
+	   	 </if>
+	   	  <if test=" zbyName !=null and zbyName !=''">
+	   	 	and  ZBY_NAME like  '%'||#{zbyName}||'%'
+	   	 </if>
+	   	 <if test=" orderName !=null and orderName !=''">
+	   	 	and  ORDER_NAME = #{orderName}
+	   	 </if>
+	   	 <if test=" dutyDate !=null and dutyDate !=''">
+	   	 	and  DUTY_DATE = #{dutyDate}
+	   	 </if>
+	   </where>
+	   order by DUTY_DATE DESC,ZT,START_TIME
+	</select> 
+	
+	<update id="updateById" parameterType="com.cesgroup.prison.zbgl.jjb.entity.JjbEntity">
+		update CDS_DUTY_JJB_BASE 
+			<set>
+				<if test="cusNumber !=null and cusNumber!=''">
+					CUS_NUMBER  = #{cusNumber},
+				</if>
+				<if test="zt !=null and zt!=''">
+					ZT  = #{zt},
+				</if>
+				<if test="jbTime !=null and jbTime != ''">
+					JB_TIME  = #{jbTime},
+				</if>
+				<if test="gxrId !=null and gxrId != ''">
+					GXR_ID  = #{gxrId},
+				</if>
+				<if test="gxrName !=null and gxrName != ''">
+					GXR_NAME  = #{gxrName},
+				</if>
+				<if test="updateTime !=null and updateTime != ''">
+					UPDATE_TIME  = #{updateTime},
+				</if>
+			</set>
+			where id = #{id}
+	</update>
+	
+	<select id="selectNowDayDutyData" parameterType="com.cesgroup.prison.zbgl.jjb.dto.DutyDataDto" resultType="com.cesgroup.prison.zbgl.jjb.dto.DutyDataDto" >
+		select
+			t1.DBD_CUS_NUMBER "cusNumber" , 
+			t2.DMD_DPRTMNT_ID "deptNumber",
+			WM_CONCAT(t1.DBD_STAFF_ID)  "zbrId",
+			WM_CONCAT(t1.DBD_STAFF_NAME)   "zbrName",
+			t4.DOR_DUTY_ORDER_NAME  "orderName", 
+			t5.CDJ_JOB_NAME "JobName", 
+			t1.DBD_DUTY_DATE "dutyDate",
+			t4.DOR_START_TIME "sartTime",
+			t4.DOR_END_TIME "endTime"
+	from
+	        prison.CDS_DUTY_BASE_DTLS t1      ,
+	        prison.CDS_DUTY_MODE_DEPARTMENT t2,
+	        prison.CDS_DUTY_MODE_ORDER_JOB t3 ,
+	        prison.CDS_DUTY_ORDER t4          ,
+	        prison.CDS_DUTY_JOB t5
+	where
+	        t1.DBD_DUTY_MODE_DEPARTMENT_ID          = t2.id
+	    and t1.DBD_DUTY_MODE_ORDER_JOB_ID           = t3.id
+	    and t3.MOJ_JOB_ID                           = t5.id
+	    and t3.MOJ_ORDER_ID                         = t4.id
+	    and t4.DOR_STATUS ='1'
+	    and t5.CDJ_STATUS ='1'
+	    and t2.DMD_ZT = '1'
+	    and t5.CDJ_JOB_NAME != '指挥长'
+	    <if test=" dutyDate !=null and dutyDate!='' ">
+	    and to_char(t1.DBD_DUTY_DATE, 'yyyy-MM-dd')=to_char(#{dutyDate}, 'yyyy-MM-dd')
+	     </if >
+	   <if test=" cusNumber !=null and cusNumber!='' ">
+	   and t1.DBD_CUS_NUMBER =#{cusNumber}
+	   </if>
+	   <if test=" deptNumber !=null and deptNumber !='' ">
+	   and t2.DMD_DPRTMNT_ID =#{deptNumber}
+	   </if>
+	   <if test=" JobName !=null and JobName !='' ">
+	   and t5.CDJ_JOB_NAME =#{JobName}
+	   </if>
+	   GROUP BY t1.DBD_DUTY_MODE_ORDER_JOB_ID,t3.MOJ_ORDER_ID,t1.DBD_DUTY_DATE,t2.DMD_DPRTMNT_ID,t1.DBD_CUS_NUMBER,t4.DOR_START_TIME,t4.DOR_DUTY_ORDER_NAME , 
+			t5.CDJ_JOB_NAME ,
+			t4.DOR_END_TIME 
+	   order by t1.DBD_DUTY_DATE,t4.DOR_START_TIME,t4.DOR_END_TIME
+	</select>
+	
+	<select id="getNextOrder" parameterType="com.cesgroup.prison.zbgl.jjb.entity.JjbEntity" resultType="com.cesgroup.prison.zbgl.jjb.entity.JjbEntity">
+		SELECT * FROM CDS_DUTY_JJB_BASE 
+		<where>
+			<if test="dutyDate !=null and dutyDate !='' ">
+			 and DUTY_DATE  = #{dutyDate}
+			</if>
+			<if test="startTime !=null and startTime !='' ">
+			 and START_TIME  <![CDATA[ > ]]> #{startTime}
+			</if>
+		</where>
+		order by START_TIME
+	</select>
+</mapper>

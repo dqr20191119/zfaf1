@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 罪犯收押数据访问类映射文件 -->
+<mapper namespace="com.cesgroup.prison.zfxx.zfsy.dao.ZfSyDao">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.zfxx.zfsy.entity.ZfSy">
+		<id column="ID" jdbcType="CHAR" property="id" />
+		<result column="C_ZFBH" jdbcType="CHAR" property="cZfbh" />
+		<result column="C_ID" jdbcType="CHAR" property="cId" />
+		<result column="C_SYLB" jdbcType="CHAR" property="cSylb" />
+		<result column="D_SYRQ" jdbcType="DATE" property="dSyrq" />
+		<result column="C_SYJG" jdbcType="CHAR" property="cSyjg" />
+		<result column="C_SYJG_QH" jdbcType="CHAR" property="cSyjgQh" />
+		<result column="C_SYJG_MX" jdbcType="CHAR" property="cSyjgMx" />
+		<result column="C_SYBZ" jdbcType="CHAR" property="cSybz" />
+		<result column="D_URL_TIME" jdbcType="DATE" property="dUrlTime" />
+	</resultMap>
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, C_ZFBH, C_ID, C_SYLB, D_SYRQ, C_SYJG, C_SYJG_QH, C_SYJG_MX, C_SYBZ, D_URL_TIME
+	</sql>
+	
+	<!-- 根据罪犯标识、收押类别、收押日期，查询罪犯收押信息 -->
+	<select id="findByCIdAndCSylbAndDSyrq" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			ZFINFO.T_ZF_SY T1 
+		WHERE T1.C_ID = '${cId}' AND T1.C_SYLB = '${cSylb}' AND to_char(T1.D_SYRQ, 'yyyy-MM-dd') = '${dSyrq}'
+	</select>
+</mapper>

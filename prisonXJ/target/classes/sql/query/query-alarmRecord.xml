@@ -1,0 +1,1157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="cds_query_alarm_record">
+		<desc>查询报警记录</desc>
+		<Const key="ALARM_DVC_TYPE_CH">alarmDvcType</Const>
+		<Const key="ALARM_TYPE_CH">alarmType</Const>
+		<Const key="ALARM_LEVEL_CH">alarmLevel</Const>
+	    <Const key="OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number AS cus_number,
+			       obd_orga_name AS cus_number_ch,
+			       ard_record_id AS record_id,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') AS alarm_date,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') AS alarm_time,
+			       ard_alertor_idnty AS alarm_dvc_id,
+			       ard_cus_number || '_' || ard_type_indc || '_' || ard_alertor_idnty AS alarm_name,
+			       ard_cus_number || '_' || ard_type_indc || '_' || ard_alertor_idnty AS alarm_address,
+			       ard_type_indc AS alarm_dvc_type,
+			       ard_type_indc AS alarm_dvc_type_ch,
+			       ard_alarm_type_indc AS alarm_type,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alert_level_indc AS alarm_level,
+			       ard_alert_level_indc AS alarm_level_ch,
+			       ard_oprtn_stts_indc AS oprtn_stts,
+			       ard_oprtn_stts_indc AS oprtn_stts_ch,
+			       ard_receive_alarm_police AS receive_alarm_police,
+			       aev_event_time AS event_time
+			  FROM cds_alert_record_dtls
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN com_organization_base_dtls 
+			  	ON ard_cus_number = obd_orga_idnty
+			 WHERE (TRIM(?) is null or ard_cus_number = ?)
+		</sql>
+		<where wid="0">
+			   AND (ard_bsns_date BETWEEN SYSDATE - 5 AND SYSDATE)
+		</where>
+		<where wid="1">
+			   AND ard_record_id = ?
+			   AND ard_type_indc = ?
+		</where>
+		<where wid="2">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date, 'YYYY-MM-DD') $ = ?)
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date, 'YYYY-MM-DD') # = ?)
+			   AND (TRIM(?) is null or ard_alert_level_indc = ?)
+			   AND (TRIM(?) is null or ard_type_indc = ?)
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ?)
+		</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE - 5 AND SYSDATE)
+			   AND ard_type_indc = ?
+		</where>
+		<where wid="4">
+			   AND ard_type_indc = ?
+		</where>
+		<where wid="5">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS')
+		</where>
+		<where wid="6">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date, 'YYYY-MM-DD') $ = ?)
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date, 'YYYY-MM-DD') # = ?)
+			   AND (TRIM(?) is null or ard_alert_level_indc = ?)
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ?)
+		</where>
+		<where wid="7">
+			   AND (TRIM(?) is null or ard_type_indc = ?)
+			   AND TRUNC(ard_alert_time) = to_date(?, 'YYYY-MM-DD')
+		</where>
+		<where wid="8">
+			   AND TRUNC(ard_alert_time) = to_date(?, 'YYYY-MM-DD')
+		</where>
+		<where wid="9">
+			   AND TRUNC(ard_alert_time) = to_date(?, 'YYYY-MM-DD')
+			   AND ard_type_indc #$ 8
+		</where>
+		<where wid="10">
+			   AND TRUNC(ard_alert_time) = to_date(?, 'YYYY-MM-DD')
+			   AND ard_type_indc = 8
+		</where>
+		<where wid="11">
+			   AND TRUNC(ard_alert_time) = to_date(?, 'YYYY-MM-DD')
+			   AND ard_oprtn_stts_indc #$ 1
+		</where>
+		<where wid="12">
+			   AND TRUNC(ard_alert_time) = to_date(?, 'YYYY-MM-DD')
+			   AND ard_oprtn_stts_indc = 1
+		</where>
+		<order oid="0">
+			 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+		</order>
+		<order>
+		</order>
+	</item>
+	
+	<item id="cds_query_alarm_record_1">
+		<desc>网络报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       abd_x_crdnt,
+			       abd_y_crdnt,
+			       abd_z_crdnt,
+			       abd_pitch_crdnt,
+			       abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_alertor_base_dtls
+			    ON ard_cus_number = abd_cus_number
+			   AND ard_alertor_idnty = abd_idnty
+			   AND ard_type_indc = abd_type_indc
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON abd_cus_number = adr_cus_number
+			   AND abd_area_id = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 1
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_2">
+		<desc>高压电网报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       pnb_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       '' AS abd_x_crdnt,
+			       '' AS abd_y_crdnt,
+			       '' AS abd_z_crdnt,
+			       '' AS abd_pitch_crdnt,
+			       '' AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_power_network_base_dtls
+			    ON ard_cus_number = pnb_cus_number
+			   AND ard_alertor_idnty = pnb_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON pnb_cus_number = adr_cus_number
+			   AND pnb_area = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 2
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_3">
+		<desc>周界红外报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       ibi_name AS abd_name,
+			       '' AS adr_dprtmnt_id,
+			       '' AS adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       ibi_pos_x AS abd_x_crdnt,
+			       ibi_pos_y AS abd_y_crdnt,
+			       ibi_pos_z AS abd_z_crdnt,
+			       ibi_pos_pitch AS abd_pitch_crdnt,
+			       ibi_pos_rotate AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_infrared_base_info
+			    ON ard_cus_number = ibi_cus_number
+			   AND ard_alertor_idnty = ibi_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 3
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_4">
+		<desc>门类设备报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       dcb_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       dcb_x_crdnt AS abd_x_crdnt,
+			       dcb_y_crdnt AS abd_y_crdnt,
+			       dcb_z_crdnt AS abd_z_crdnt,
+			       dcb_pitch_crdnt AS abd_pitch_crdnt,
+			       dcb_rotate_crdnt AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_door_control_base_dtls
+			    ON ard_cus_number = dcb_cus_number
+			   AND ard_alertor_idnty = dcb_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON dcb_cus_number = adr_cus_number
+			   AND dcb_area_id = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 4
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_5">
+		<desc>蛇腹网报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       swi_defense_name AS abd_name,
+			       '' AS adr_dprtmnt_id,
+			       '' AS adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       swi_pos_x AS abd_x_crdnt,
+			       swi_pos_y AS abd_y_crdnt,
+			       swi_pos_z AS abd_z_crdnt,
+			       swi_pos_pitch AS abd_pitch_crdnt,
+			       swi_pos_rotate AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_snake_wire_info
+			    ON ard_cus_number = swi_cus_number
+			   AND ard_alertor_idnty = swi_detector_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 5
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_6">
+		<desc>摄像机报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       cbd_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       cbd_x_crdnt AS abd_x_crdnt,
+			       cbd_y_crdnt AS abd_y_crdnt,
+			       cbd_z_crdnt AS abd_z_crdnt,
+			       cbd_pitch_crdnt AS abd_pitch_crdnt,
+			       cbd_rotate_crdnt AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_camera_base_dtls
+			    ON ard_cus_number = cbd_cus_number
+			   AND ard_alertor_idnty = cbd_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON cbd_cus_number = adr_cus_number
+			   AND cbd_area_id = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 6
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_8">
+		<desc>人工报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       abd_area_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       vfu_x_crdnt AS abd_x_crdnt,
+			       vfu_y_crdnt AS abd_y_crdnt,
+			       vfu_z_crdnt AS abd_z_crdnt,
+			       vfu_pitch_crdnt AS abd_pitch_crdnt,
+			       vfu_rotate_crdnt AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN cds_area_base_dtls
+			    ON ard_cus_number = abd_cus_number
+			   AND ard_alertor_idnty = to_char(abd_area_id)
+			  LEFT JOIN cds_view_func
+			    ON abd_cus_number = vfu_cus_number
+			   AND abd_area_id = vfu_area_id
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON abd_cus_number = adr_cus_number
+			   AND abd_area_id = adr_area_id
+			 WHERE (TRIM(?) IS NULL OR ard_cus_number = ?)
+			   AND ard_type_indc = 8
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_10">
+		<desc>对讲设备报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       tbd_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       tbd_x_crdnt AS abd_x_crdnt,
+			       tbd_y_crdnt AS abd_y_crdnt,
+			       tbd_z_crdnt AS abd_z_crdnt,
+			       tbd_pitch_crdnt AS abd_pitch_crdnt,
+			       tbd_rotate_crdnt AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_talkback_base_dtls
+			    ON ard_cus_number = tbd_cus_number
+			   AND ard_alertor_idnty = tbd_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON tbd_cus_number = adr_cus_number
+			   AND tbd_area_id = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 10
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_11">
+		<desc>钥匙箱报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       skb_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       '' AS abd_x_crdnt,
+			       '' AS abd_y_crdnt,
+			       '' AS abd_z_crdnt,
+			       '' AS abd_pitch_crdnt,
+			       '' AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_smart_keybox_base_dtls
+			    ON ard_cus_number = skb_cus_number
+			   AND ard_alertor_idnty = skb_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON skb_cus_number = adr_cus_number
+			   AND skb_area = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 11
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+	<item id="cds_query_alarm_record_12">
+		<desc>电子围栏报警记录查询</desc>
+		<Const key="ARD_CRTE_USER_ID">user</Const>
+		<Const key="ARD_UPDT_USER_ID">user</Const>
+		<Const key="ARD_ALERT_LEVEL_INDC">alarmLevel</Const>
+	    <Const key="ARD_TYPE_INDC">alarmDvcType</Const>
+	    <Const key="ALARM_TYPE_CH">alarmType</Const>
+	    <Const key="ARD_ALERT_STTS_INDC">alarmStatus</Const>
+	    <Const key="ARD_OPRTN_STTS_CH">alarmOprtnStatus</Const>
+		<sql>
+			SELECT ard_cus_number,
+			       obd_orga_name,
+			       TO_CHAR(ard_alert_time, 'YYYY-MM-DD') ard_bsns_date,
+			       ard_record_id,
+			       ard_alertor_idnty,
+			       efb_name AS abd_name,
+			       adr_dprtmnt_id,
+			       adr_dprtmnt_name,
+			       ard_alarm_police,
+			       ard_alert_level_indc AS ard_alarm_level,
+			       ard_alert_level_indc,
+			       ard_type_indc AS ard_alarm_type,
+			       ard_type_indc,
+			       ard_type_indc || '_' || ard_alarm_type_indc AS alarm_type_ch,
+			       ard_alarm_type_indc,
+			       TO_CHAR(ard_alert_time, 'HH24:MI:SS') ard_alert_time,
+			       ard_event_id,
+			       ard_event_type,
+			       ard_alert_stts_indc,
+			       ard_receive_alarm_police,
+			       ard_receive_time,
+			       ard_local_case,
+			       ard_oprtr,
+			       ard_oprtn_time,
+			       ard_oprtn_desc,
+			       ard_oprtn_finish_time,
+			       ard_finish_sure_police,
+			       ard_oprtn_stts_indc,
+			       ard_oprtn_stts_indc AS ard_oprtn_stts_ch,
+			       '' AS abd_x_crdnt,
+			       '' AS abd_y_crdnt,
+			       '' AS abd_z_crdnt,
+			       '' AS abd_pitch_crdnt,
+			       '' AS abd_rotate_crdnt,
+			       '' AS abd_analyse_chnnl_idnty,
+			       ard_remark,
+			       ard_save_file,
+			       ard_crte_time,
+			       ard_crte_user_id,
+			       ard_updt_time,
+			       ard_updt_user_id,
+			       aev_event_time
+			  FROM cds_alert_record_dtls
+			 INNER JOIN com_organization_base_dtls
+			    ON ard_cus_number = obd_orga_idnty
+			 INNER JOIN dvc_electron_fence_base_dtls
+			    ON ard_cus_number = efb_cus_number
+			   AND ard_alertor_idnty = efb_idnty
+			  LEFT JOIN cds_alert_event_rep
+			    ON ard_cus_number = aev_cus_number
+			   AND ard_record_id = aev_record_id
+			  LEFT JOIN cds_area_department_relation
+			    ON efb_cus_number = adr_cus_number
+			   AND efb_area = adr_area_id
+		     WHERE (TRIM(?) IS NULL OR ard_cus_number = ? )
+			   AND ard_type_indc = 12
+		</sql>
+		<where wid="0">
+			   AND ard_record_id = ?
+		</where>
+	   	<where wid="1">
+			   AND ard_oprtn_finish_time BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+	   	</where>
+	   	<where wid="2">
+			   AND TRUNC(ard_alert_time) = to_date(?,'YYYY-MM-DD')
+	   	</where>
+		<where wid="3">
+			   AND (ard_bsns_date BETWEEN SYSDATE-5 AND SYSDATE)
+		</where>
+	   	<where wid="4">
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') $= ? )
+			   AND (TRIM(?) is null or TO_CHAR(ard_bsns_date,'YYYY-MM-DD') #= ? )
+			   AND (TRIM(?) is null or ard_alert_level_indc = ? )
+			   AND (TRIM(?) is null or ard_oprtn_stts_indc = ? )
+	   	</where>
+	   	<order oid="0">
+	   		 ORDER BY ard_bsns_date DESC, ard_alert_time DESC, ard_alert_level_indc ASC
+	   	</order>
+	</item>
+
+
+
+
+
+
+	<!-- 为查询报警记录转换查询的SQL BEIGN -->
+	<item id="query_alarm_dvc_for_record_1">
+		<desc>查询网络报警设备信息</desc>
+		<sql>
+			SELECT abd_name AS dvc_name,
+			       abd_addrs AS addrs
+			  FROM dvc_alertor_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ?
+			   AND abd_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_2">
+		<desc>查询高压电网设备信息</desc>
+		<sql>
+			SELECT pnb_name AS dvc_name,
+			       pnb_addrs AS addrs
+			  FROM dvc_power_network_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE pnb_cus_number = ?
+			   AND pnb_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_3">
+		<desc>查询周界红外报警设备信息</desc>
+		<sql>
+			SELECT ibi_name AS dvc_name,
+			       ibi_addrs AS addrs
+			  FROM dvc_infrared_base_info
+		</sql>
+		<where wid="0">
+			 WHERE ibi_cus_number = ?
+			   AND ibi_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_4">
+		<desc>查询门禁控制设备信息</desc>
+		<sql>
+			SELECT dcb_name AS dvc_name,
+			       dcb_addrs AS addrs
+			  FROM dvc_door_control_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE dcb_cus_number = ?
+			   AND dcb_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_5">
+		<desc>查询蛇腹网设备信息</desc>
+		<sql>
+			SELECT swi_defense_name AS dvc_name,
+			       swi_addrs AS addrs
+			  FROM dvc_snake_wire_info
+		</sql>
+		<where wid="0">
+			 WHERE swi_cus_number = ?
+			   AND swi_detector_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_6">
+		<desc>查询摄像机设备信息</desc>
+		<sql>
+			SELECT cbd_name AS dvc_name,
+			       cbd_area AS addrs
+			  FROM dvc_camera_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE cbd_cus_number = ?
+			   AND cbd_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_8">
+		<desc>查询人工报警信息（这里实际查询的是区域表信息）</desc>
+		<sql>
+			SELECT abd_area_name AS dvc_name,
+			       abd_area_name AS addrs
+			  FROM cds_area_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE abd_cus_number = ?
+			   AND abd_area_id = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_10">
+		<desc>查询可视对讲设备信息</desc>
+		<sql>
+			SELECT tbd_name AS dvc_name,
+			       tbd_addrs AS addrs
+			  FROM dvc_talkback_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE tbd_cus_number = ?
+			   AND tbd_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_11">
+		<desc>查询钥匙箱设备信息</desc>
+		<sql>
+			SELECT skb_name AS dvc_name,
+			       skb_addrs AS addrs
+			  FROM dvc_smart_keybox_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE skb_cus_number = ?
+			   AND skb_idnty = ?
+		</where>
+	</item>
+
+	<item id="query_alarm_dvc_for_record_12">
+		<desc>查询电子围栏设备信息</desc>
+		<sql>
+			SELECT efb_name       AS dvc_name,
+			       efb_addrs      AS addrs
+			  FROM dvc_electron_fence_base_dtls
+		</sql>
+		<where wid="0">
+			 WHERE efb_cus_number = ?
+			   AND efb_idnty = ?
+		</where>
+	</item>
+	
+	<item id="cds_meet_alarm_info">
+		<desc>查询接警信息</desc>
+		<sql>
+			SELECT COUNT(*) AS count
+			  FROM cds_meet_alarm
+		</sql>
+		<where wid="0">
+			 WHERE mal_cus_number = ? AND
+			 	   mal_alarm_idnty = ?
+		</where>
+	</item>
+	<item id="query_cds_alert_record_dtls_max120munite">
+	     <desc>查询报警时间大于120秒</desc>
+	     <sql>
+	        SELECT  ard_alert_time,
+	                ard_alertor_idnty
+	          FROM  cds_alert_record_dtls
+	     </sql>
+	     <where wid="0">
+	         WHERE  ard_cus_number = ?
+              AND   ard_alertor_idnty = ?
+              AND   DATEDIFF(SECOND,ard_alert_time,?) # 120
+	     </where>
+	     <order oid="0">
+	        ORDER BY ard_alert_time DESC
+	     </order>
+	</item>
+</sqlItem>
