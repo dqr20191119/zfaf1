@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.rlsb.dao.RlsbMapper">
+	<select id="searchRlsbList" parameterType="com.cesgroup.prison.rlsb.entity.RlsbEntity" resultType="com.cesgroup.prison.rlsb.entity.RlsbEntity">
+		select 
+			ID as id,
+			ST as st,
+			NAMELIST_NAME as namelistName,
+			SIMILARITY as similarity,
+			CARD_NO as cardNo,
+			CHANNEL_NAME as channelName,
+			LOCATION_NAME as locationName,
+			GENDER as gender,
+			FACEPIC_URL as facepicUrl,
+			CAP_SMALLPIC_URL as capSmallpicUrl 
+		from PRISON.T_RLSB_HMD_NOW
+		<where>
+			<if test="cusNumber != null and cusNumber != ''">
+				AND CUS_NUMBER = #{cusNumber}
+			</if>
+			<if test="namelistName != null and namelistName != ''">
+				AND NAMELIST_NAME like '%${namelistName}%'
+			</if>
+			<if test="st != null and st != ''">
+				AND to_char(ST,'yyyy-MM-dd') = to_char(#{st},'yyyy-MM-dd')
+			</if>
+			<if test="cardNo != null and cardNo != ''">
+				AND CARD_NO like '%${cardNo}%'
+			</if>
+			<if test="locationName != null and locationName != ''">
+				AND LOCATION_NAME like '%${locationName}%'
+			</if>
+		</where>
+		order by st desc
+	</select>
+	
+	
+	
+	
+	<select id="getUrl" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select 
+			FACEPIC_URL,
+			CAP_SMALLPIC_URL 
+		from PRISON.T_RLSB_HMD
+		where ID = #{id}
+	</select>
+	
+</mapper>

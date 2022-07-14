@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cesgroup.prison.jfsb.dao.PowerNetworkMapper">
+	<!-- 基础结果集 -->
+	<resultMap id="BaseResultMap" type="com.cesgroup.prison.jfsb.entity.PowerNetwork">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="PNB_CUS_NUMBER" jdbcType="CHAR" property="pnbCusNumber" />
+		<result column="PNB_IDNTY" jdbcType="CHAR" property="pnbIdnty" />
+		<result column="PNB_NAME" jdbcType="CHAR" property="pnbName" />
+		<result column="PNB_BRAND" jdbcType="CHAR" property="pnbBrand" />
+		<result column="PNB_MODEL" jdbcType="CHAR" property="pnbModel" />
+		<result column="PNB_IP" jdbcType="VARCHAR" property="pnbIp" />
+		<result column="PNB_PORT" jdbcType="DECIMAL" property="pnbPort" />
+		<result column="PNB_ADDRS" jdbcType="CHAR" property="pnbAddrs" />
+		<result column="PNB_DPRTMNT" jdbcType="DECIMAL" property="pnbDprtmnt" />
+		<result column="PNB_AREA" jdbcType="CHAR" property="pnbArea" />
+		<result column="PNB_VIEW" jdbcType="DECIMAL" property="pnbView" />
+		<result column="PNB_A_BOX_VOLTAGE" jdbcType="DECIMAL" property="pnbABoxVoltage" />
+		<result column="PNB_B_BOX_VOLTAGE" jdbcType="DECIMAL" property="pnbBBoxVoltage" />
+		<result column="PNB_POWER_SOURCE_VOLTAGE" jdbcType="DECIMAL" property="pnbPowerSourceVoltage" />
+		<result column="PNB_A_BOX_POWER_FLOW" jdbcType="DECIMAL" property="pnbABoxPowerFlow" />
+		<result column="PNB_B_BOX_POWER_FLOW" jdbcType="DECIMAL" property="pnbBBoxPowerFlow" />
+		<result column="PNB_POWER_SOURCE_FLOW" jdbcType="DECIMAL" property="pnbPowerSourceFlow" />
+		<result column="PNB_TIME" jdbcType="TIMESTAMP" property="pnbTime" />
+		<result column="PNB_STTS_INDC" jdbcType="CHAR" property="pnbSttsIndc" />
+		<result column="PNB_REMARK" jdbcType="CHAR" property="pnbRemark" />
+		<result column="PNB_CRTE_TIME" jdbcType="TIMESTAMP" property="pnbCrteTime" />
+		<result column="PNB_CRTE_USER_ID" jdbcType="CHAR" property="pnbCrteUserId" />
+		<result column="PNB_UPDT_TIME" jdbcType="TIMESTAMP" property="pnbUpdtTime" />
+		<result column="PNB_UPDT_USER_ID" jdbcType="CHAR" property="pnbUpdtUserId" />
+		<result column="PNB_AREA_NAME" jdbcType="VARCHAR" property="pnbAreaName" />
+		<result column="PNB_ORDER_ID" jdbcType="DECIMAL" property="pnbOrderId" />
+	</resultMap>
+	
+	<!-- 基础字段 -->
+	<sql id="Base_Column_List">
+		ID, PNB_CUS_NUMBER, PNB_IDNTY, PNB_NAME, PNB_BRAND, PNB_MODEL, PNB_IP, PNB_PORT, 
+		PNB_ADDRS, PNB_DPRTMNT, PNB_AREA, PNB_VIEW, PNB_A_BOX_VOLTAGE, PNB_B_BOX_VOLTAGE, 
+		PNB_POWER_SOURCE_VOLTAGE, PNB_A_BOX_POWER_FLOW, PNB_B_BOX_POWER_FLOW, PNB_POWER_SOURCE_FLOW, 
+		PNB_TIME, PNB_STTS_INDC, PNB_REMARK, PNB_CRTE_TIME, PNB_CRTE_USER_ID, PNB_UPDT_TIME, 
+		PNB_UPDT_USER_ID, PNB_AREA_NAME, PNB_ORDER_ID
+	</sql>
+	
+	<select id="searchPowerNetwork" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT     	
+			ID, 
+			PNB_CUS_NUMBER, 
+			PNB_IDNTY, 
+			PNB_NAME, 
+			PNB_BRAND, 
+			PNB_MODEL, 
+			PNB_IP, 
+			PNB_PORT, 
+		    PNB_ADDRS, 
+		    PNB_DPRTMNT, 
+		    PNB_AREA, 
+		    PNB_VIEW, 
+		    PNB_A_BOX_VOLTAGE,
+		    PNB_B_BOX_VOLTAGE, 
+		    PNB_POWER_SOURCE_VOLTAGE, 
+		    PNB_A_BOX_POWER_FLOW, 
+		    PNB_B_BOX_POWER_FLOW, 
+		    PNB_POWER_SOURCE_FLOW, 
+		    PNB_TIME, 
+		    PNB_STTS_INDC, 
+		    PNB_REMARK, 
+		    TO_CHAR(PNB_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as PNB_CRTE_TIME, 
+		    PNB_CRTE_USER_ID, 
+		    TO_CHAR(PNB_UPDT_TIME,'YYYY-MM-DD HH24:MI:SS') as PNB_UPDT_TIME, 
+		    PNB_UPDT_USER_ID, 
+		    PNB_AREA_NAME, 
+		    PNB_ORDER_ID
+		FROM 
+			DVC_POWER_NETWORK_BASE_DTLS
+		<where>
+			<if test="powerNetwork.pnbName!=null and powerNetwork.pnbName!=''">
+				and PNB_NAME like concat('%',#{powerNetwork.pnbName},'%' )
+			</if>
+			<if test="powerNetwork.pnbSttsIndc!=null and powerNetwork.pnbSttsIndc!=''">
+				and pnb_stts_indc =#{powerNetwork.pnbSttsIndc}
+			</if>
+			<if test="powerNetwork.pnbCusNumber!=null and powerNetwork.pnbCusNumber!=''">
+				AND pnb_cus_number=#{powerNetwork.pnbCusNumber}
+			</if>
+			ORDER BY PNB_IDNTY
+		</where>
+	</select>
+	
+	<select id="findPowerNetworkInfo" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT     	
+			ID, 
+			PNB_CUS_NUMBER, 
+			PNB_IDNTY, 
+			PNB_NAME, 
+			PNB_BRAND, 
+			PNB_MODEL, 
+			PNB_IP, 
+			PNB_PORT, 
+		    PNB_ADDRS, 
+		    PNB_DPRTMNT, 
+		    PNB_AREA, 
+		    PNB_VIEW, 
+		    PNB_A_BOX_VOLTAGE,
+		    PNB_B_BOX_VOLTAGE, 
+		    PNB_POWER_SOURCE_VOLTAGE, 
+		    PNB_A_BOX_POWER_FLOW, 
+		    PNB_B_BOX_POWER_FLOW, 
+		    PNB_POWER_SOURCE_FLOW, 
+		    PNB_TIME, 
+		    PNB_STTS_INDC, 
+		    PNB_REMARK, 
+		    TO_CHAR(PNB_CRTE_TIME,'YYYY-MM-DD HH24:MI:SS') as PNB_CRTE_TIME, 
+		    PNB_CRTE_USER_ID, 
+		    TO_CHAR(PNB_UPDT_TIME,'YYYY-MM-DD HH24:MI:SS') as PNB_UPDT_TIME, 
+		    PNB_UPDT_USER_ID, 
+		    PNB_AREA_NAME, 
+		    PNB_ORDER_ID
+		 FROM 
+		 	DVC_POWER_NETWORK_BASE_DTLS
+		 <where>
+		 	<if test="powerNetwork.pnbName!=null and powerNetwork.pnbName!=''">
+		 		and PNB_NAME like concat('%',#{powerNetwork.pnbName},'%' )
+		 	</if>
+		 	<if test="powerNetwork.pnbSttsIndc!=null and powerNetwork.pnbSttsIndc!=''">
+		 		and pnb_stts_indc =#{powerNetwork.pnbSttsIndc}
+		 	</if>
+		 	<if test="powerNetwork.pnbCusNumber!=null and powerNetwork.pnbCusNumber!=''">
+		 		AND pnb_cus_number=#{powerNetwork.pnbCusNumber}
+		 	</if>
+		 	<if test="powerNetwork.id!=null and powerNetwork.id!=''">
+		 		AND ID=#{powerNetwork.id}
+		 	</if>
+		 	ORDER BY PNB_IDNTY asc
+		 </where>
+	</select>
+		
+	<update id="updatePart" parameterType="com.cesgroup.prison.jfsb.entity.PowerNetwork" >
+		update DVC_POWER_NETWORK_BASE_DTLS
+		<set >
+			<if test="pnbCusNumber != null" >
+				PNB_CUS_NUMBER = #{pnbCusNumber},
+			</if>
+			<if test="pnbIdnty != null" >
+				PNB_IDNTY = #{pnbIdnty},
+			</if>
+			<if test="pnbName != null" >
+				PNB_NAME = #{pnbName},
+			</if>
+			<if test="pnbBrand != null" >
+				PNB_BRAND = #{pnbBrand},
+			</if>
+			<if test="pnbModel != null" >
+				PNB_MODEL = #{pnbModel},
+			</if>
+			<if test="pnbIp != null" >
+				PNB_IP = #{pnbIp},
+			</if>
+			<if test="pnbPort != null" >
+				PNB_PORT = #{pnbPort},
+			</if>
+			<if test="pnbAddrs != null" >
+				PNB_ADDRS = #{pnbAddrs},
+			</if>
+			<if test="pnbDprtmnt != null" >
+				PNB_DPRTMNT = #{pnbDprtmnt},
+			</if>
+			<if test="pnbArea != null" >
+				PNB_AREA = #{pnbArea},
+			</if>
+			<if test="pnbView != null" >
+				PNB_VIEW = #{pnbView},
+			</if>
+			<if test="pnbABoxVoltage != null" >
+				PNB_A_BOX_VOLTAGE = #{pnbABoxVoltage},
+			</if>
+			<if test="pnbBBoxVoltage != null" >
+				PNB_B_BOX_VOLTAGE = #{pnbBBoxVoltage},
+			</if>
+			<if test="pnbPowerSourceVoltage != null" >
+				PNB_POWER_SOURCE_VOLTAGE = #{pnbPowerSourceVoltage},
+			</if>
+			<if test="pnbABoxPowerFlow != null" >
+				PNB_A_BOX_POWER_FLOW = #{pnbABoxPowerFlow},
+			</if>
+			<if test="pnbBBoxPowerFlow != null" >
+				PNB_B_BOX_POWER_FLOW = #{pnbBBoxPowerFlow},
+			</if>
+			<if test="pnbPowerSourceFlow != null" >
+				PNB_POWER_SOURCE_FLOW = #{pnbPowerSourceFlow},
+			</if>
+			<if test="pnbTime != null" >
+				PNB_TIME = #{pnbTime},
+			</if>
+			<if test="pnbSttsIndc != null" >
+				PNB_STTS_INDC = #{pnbSttsIndc},
+			</if>
+			<if test="pnbRemark != null" >
+				PNB_REMARK = #{pnbRemark},
+			</if>
+			<if test="pnbCrteTime != null" >
+				PNB_CRTE_TIME = TO_CHAR(#{pnbCrteTime},'YYYY-MM-DD HH24:MI:SS'),
+			</if>
+			<if test="pnbCrteUserId != null" >
+				PNB_CRTE_USER_ID = #{pnbCrteUserId},
+			</if>
+			<if test="pnbUpdtTime != null" >
+				PNB_UPDT_TIME = TO_CHAR(#{pnbUpdtTime},'YYYY-MM-DD HH24:MI:SS'),
+			</if>
+			<if test="pnbUpdtUserId != null" >
+				PNB_UPDT_USER_ID = #{pnbUpdtUserId},
+			</if>
+			<if test="pnbAreaName != null" >
+				PNB_AREA_NAME = #{pnbAreaName},
+			</if>
+			<if test="pnbOrderId != null" >
+				PNB_ORDER_ID = #{pnbOrderId},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+
+	<!-- 根据监狱编号、电力网络编号，查询电网数据列表 -->
+	<select id="findByPnbCusNumberAndPnbIdnty" resultMap="BaseResultMap" useCache="true">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM 
+			DVC_POWER_NETWORK_BASE_DTLS T1
+		<where>
+			<if test="pnbCusNumber != null and pnbCusNumber != ''">
+				AND T1.PNB_CUS_NUMBER = '${pnbCusNumber}'
+			</if>
+			<if test="pnbIdnty != null and pnbIdnty != ''">
+				AND T1.PNB_IDNTY = '${pnbIdnty}'
+			</if>
+			ORDER BY PNB_UPDT_TIME DESC
+		</where>
+	</select>
+	
+	<!-- 根据监狱编号查询电网数据段数 -->
+	<select id="findCountByPnbCusNumber" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT 
+			count(*)
+		FROM 
+			DVC_POWER_NETWORK_BASE_DTLS T1
+		<where>
+			<if test="pnbCusNumber != null and pnbCusNumber != ''">
+				AND T1.PNB_CUS_NUMBER = '${pnbCusNumber}'
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<!-- 全局配置对象，补充原来的全局配置-->
+	<bean class="com.cesgroup.framework.base.config.Configuration" depends-on="globalConfiguration"/>
+
+    <mvc:annotation-driven validator="validator" 
+    	conversion-service="conversionService" 
+    	content-negotiation-manager="contentNegotiationManager"
+    	enable-matrix-variables="true">
+    	<!-- 异步支持 默认30秒超时 -->
+        <mvc:async-support default-timeout="30000" />
+        <mvc:message-converters register-defaults="true">
+        	<!-- 将文件对象直接转换输出 -->
+            <bean class="com.cesgroup.framework.springmvc.converter.FileDownloadHttpMessageConverter">
+            </bean>
+            <!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <!-- 将Jackson2HttpMessageConverter的默认格式化输出设为true -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            	<property name="objectMapper" ref="jsonObjectMapper"></property>
+                <property name="prettyPrint" value="true"/>
+            </bean>
+            <!-- 将Jackson2XmlHttpMessageConverter的默认格式化输出设为true -->
+            <bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">
+            	<property name="objectMapper" ref="xmlObjectMapper"></property>
+                <property name="prettyPrint" value="true"/>
+            </bean>
+        </mvc:message-converters>
+        
+        <!-- 自定义参数解析器 -->
+        <mvc:argument-resolvers>
+            <bean class="com.cesgroup.framework.springmvc.support.PageableMethodArgumentResolver"/>
+            <bean class="com.cesgroup.framework.springmvc.support.SearchableMethodArgumentResolver"/>
+            <bean class="com.cesgroup.framework.springmvc.support.FormModelMethodArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+    
+    <!-- 对于RequestMappingHandlerAdapter的补充 -->
+    <bean class="com.cesgroup.framework.springmvc.support.adapter.RequestMappingHandlerAdapterListener">
+		<property name="argumentResolverAdvices">
+			<list>
+				<ref bean="noModelArgumentResolverAdvice"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- @NoModel参数注解拦截器 -->
+	<bean id="noModelArgumentResolverAdvice" class="com.cesgroup.framework.springmvc.support.NoModelArgumentResolverAdvice">
+		<property name="annotationModelNames">
+			<array>
+				<value>com.cesgroup.framework.springmvc.support.FormModel</value>
+			</array>
+		</property>
+	</bean>
+    
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+    	<bean class="org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor">
+            <constructor-arg ref="conversionService"/>
+        </bean>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="language"/>
+        </bean>
+    </mvc:interceptors>
+    
+	<!-- 根据后缀转发 -->
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="mediaTypes">
+			<value>
+				xml=application/xml
+				json=application/json
+				jsonp=application/javascript
+			</value>
+		</property>
+		<property name="defaultContentType" value="text/html"/>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="0"/>
+		<property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+		<!-- 默认视图 放在解析链最后 --> 
+        <property name="defaultViews">  
+            <list>
+            	<!-- Json视图 -->
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" >
+                	<property name="objectMapper" ref="jsonObjectMapper"></property>
+                    <property name="disableCaching" value="false"></property>
+                </bean>
+                <!-- Xml视图 -->
+                <bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" > 
+                	<property name="objectMapper" ref="xmlObjectMapper"></property> 
+                    <property name="disableCaching" value="false"></property>  
+                </bean>  
+            </list>  
+        </property>  
+	</bean>
+	
+	<!-- ObjectMapper的工厂，可以继承覆盖 -->
+	<bean id="objectMapperFactory" class="com.cesgroup.framework.springmvc.utils.ObjectMapperFactory" >
+	</bean>
+	
+	<!-- 默认的json转换器，可以覆盖实现自己的转换规则 -->
+	<bean id="jsonObjectMapper" factory-bean="objectMapperFactory" factory-method="createJsonMapper" scope="prototype">
+	</bean>
+	
+	<!-- 默认的xml转换器，可以覆盖实现自己的转换规则 -->
+	<bean id="xmlObjectMapper" factory-bean="objectMapperFactory" factory-method="createXmlMapper" scope="prototype">
+	</bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="cookieName" value="language"/>
+        <property name="cookieMaxAge" value="3600"/>
+        <property name="defaultLocale" value="zh_CN"/>
+    </bean>
+    
+    <!-- 定义JSP文件的位置 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+	<!-- AOP进行方法拦截 -->
+	<!--<aop:aspectj-autoproxy proxy-target-class="true" />-->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+
+    <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 静态资源映射 -->
+    <mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
+
+    <!-- Maps '/' requests to the 'home' view -->
+    <mvc:view-controller path="/" view-name="redirect:/index"/>
+
+    <!-- 将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+            	<!-- Shiro权限认证 -->
+                <prop key="org.apache.shiro.authz.UnauthorizedException">unauthorized</prop>
+                <prop key="java.lang.Throwable">error/500</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- 支持上传文件 -->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<!-- 限制上传文件大小 -->
+    	<property name="maxUploadSize" value="#{globalConfiguration.maxUploadSize}"/>
+    </bean>  
+    <!-- 默认大小为10M -->
+    <bean class="com.cesgroup.framework.base.config.ConfigItem" >
+		<property name="name" value="maxUploadSize"></property>
+		<property name="value" value="1048576000"></property>
+	</bean>
+</beans>

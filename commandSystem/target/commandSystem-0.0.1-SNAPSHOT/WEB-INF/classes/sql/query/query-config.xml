@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlItem>
+	<item id="query_t_xtcs">
+		<desc>查询系统参数表数据</desc>
+		<sql>
+			SELECT
+				ID, CSBM, CSMC, CSZ, SJZT
+			FROM T_XTCS
+			WHERE SJZT = '0'
+		</sql>
+	</item>
+</sqlItem>
