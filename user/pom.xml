@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+						http://maven.apache.org/xsd/maven-4.0.0.xsd">
+						
+  	<modelVersion>4.0.0</modelVersion>
+  	<parent>
+	    <groupId>com.cesgroup.prison</groupId>
+	    <artifactId>parent</artifactId>
+	    <version>0.0.1-SNAPSHOT</version>
+	    <relativePath>../parent/pom.xml</relativePath>  
+  	</parent>
+  	<artifactId>user</artifactId>
+
+	<properties>
+		<!-- 框架引用 -->
+		<framework.version>LATEST</framework.version>
+
+		<!-- 引用框架 -->
+		<druid.version>1.0.11</druid.version>
+		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+		<jstl.version>1.2</jstl.version>
+		<sitemesh.version>2.4.2</sitemesh.version>
+		
+		<!-- 数据库连接 -->		
+		<!-- auth3.5 -->
+		<jdbc.driver.groupId.authsdk3>mysql</jdbc.driver.groupId.authsdk3>
+		<jdbc.driver.artifactId.authsdk3>mysql-connector-java</jdbc.driver.artifactId.authsdk3>
+		<jdbc.driver.version.authsdk3>5.1.22</jdbc.driver.version.authsdk3>
+		
+		<!-- 基本参数 -->
+		<java.version>1.8</java.version>
+		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.cesgroup.prison</groupId>
+			<artifactId>common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	
+		<!-- 框架基础组件 -->
+		<dependency>
+			<groupId>com.cesgroup.framework</groupId>
+			<artifactId>framework-base</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.framework</groupId>
+			<artifactId>framework-commons</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.framework</groupId>
+			<artifactId>framework-mybatis</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.framework</groupId>
+			<artifactId>framework-biz</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.framework</groupId>
+			<artifactId>framework-springmvc</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.cesgroup.framework</groupId>
+			<artifactId>framework-redis</artifactId>
+		</dependency> 
+		
+		<!-- 框架插件 -->
+		<dependency>
+			<groupId>com.cesgroup.framework.plugins</groupId>
+			<artifactId>framework-plugins-audit</artifactId>
+		</dependency>
+		<!-- 新增  JAR  -->
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.31</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxrpc</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>dm</groupId>
+			<artifactId>dm-jdbc</artifactId>
+			<version>16</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.4.0.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>ces</groupId>
+			<artifactId>sdk</artifactId>
+			<version>3.6</version>
+		</dependency>
+		
+		<!-- 		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency> -->		
+		<!-- 新增结束  -->
+
+		<!-- 引用框架 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>opensymphony</groupId>
+			<artifactId>sitemesh</artifactId>
+			<version>${sitemesh.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>${jdbc.driver.groupId}</groupId>
+			<artifactId>${jdbc.driver.artifactId}</artifactId>
+			<version>${jdbc.driver.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>${jdbc.driver.groupId.authsdk3}</groupId>
+			<artifactId>${jdbc.driver.artifactId.authsdk3}</artifactId>
+			<version>${jdbc.driver.version.authsdk3}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>net.sf.json-lib</groupId>
+		    <artifactId>json-lib</artifactId>
+		    <version>2.1</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>net.sf.ezmorph</groupId>
+		    <artifactId>ezmorph</artifactId>
+		    <version>1.0.6</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- 编译版本 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			
+			<!-- test插件, 仅测试名称为*Test的类,使用支持分组测试的surefire-junit47 driver -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<argLine>-Dfile.encoding=UTF-8 -Xmx256M</argLine>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.16</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			
+			<!-- source插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- war打包插件, 设定war包名称不带版本号 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<warName>${project.artifactId}</warName>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!-- 脚手架插件 -->
+		<!-- <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-archetype-plugin</artifactId>
+            <version>2.2</version>
+        </plugin> -->
+	</build>
+</project>
